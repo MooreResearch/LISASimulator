@@ -1,0 +1,9 @@
+Builds*
+*.xojo_uistate
+*.obsolete*
+TempSaveFile*
+Thumbs.db
+*.DS_Store
+*.ipa
+Packaging.log
+*debug*
