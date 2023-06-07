@@ -20,7 +20,7 @@ Begin DesktopWindow MainWindow
    MinimumHeight   =   64
    MinimumWidth    =   64
    Resizeable      =   True
-   Title           =   "LISA Simulator App"
+   Title           =   "LISA Simulator"
    Type            =   0
    Visible         =   True
    Width           =   1278
