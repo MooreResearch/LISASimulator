@@ -1548,7 +1548,7 @@ End
 		    LBMain.CellTypeAt(i,3) = DesktopListBox.CellTypes.CheckBox
 		    LBMain.CellCheckBoxStateAt(i, 3) = DesktopCheckbox.VisualStates.Checked
 		  Next
-		  LBMain.ColumnTypeAt(2) = DesktopListBox.CellTypes.TextField
+		  LBMain.ColumnTypeAt(1) = DesktopListBox.CellTypes.TextField
 		  LBMain.DefaultRowHeight = 35
 		End Sub
 	#tag EndEvent
