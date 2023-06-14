@@ -162,7 +162,7 @@ Inherits Canvas
 
 	#tag Method, Flags = &h0
 		Sub ClearFrame()
-		  
+		  //changing
 		  // This method clears everything in the frame area to the color in CWhite.
 		  // Note that the existing foreground color is preserved and restored.
 		  
@@ -1919,7 +1919,7 @@ Inherits Canvas
 		  Var val as double
 		  
 		  if GWidth <> 0  then // This method will do nothing if there is no graph
-		     val = (coord - GLeft)/XVToPix + XMin
+		    val = (coord - GLeft)/XVToPix + XMin
 		    if val > XMin - Abs(XMin)*0.00001 and val < XMax + Abs(XMin)*0.00001 then
 		      Return val
 		    else
