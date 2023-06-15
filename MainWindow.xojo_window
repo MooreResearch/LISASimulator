@@ -24,616 +24,6 @@ Begin DesktopWindow MainWindow
    Type            =   0
    Visible         =   True
    Width           =   1278
-   Begin DesktopListBox LBVariableNamesMain
-      AllowAutoDeactivate=   True
-      AllowAutoHideScrollbars=   True
-      AllowExpandableRows=   False
-      AllowFocusRing  =   True
-      AllowResizableColumns=   False
-      AllowRowDragging=   False
-      AllowRowReordering=   False
-      Bold            =   False
-      ColumnCount     =   1
-      ColumnWidths    =   "50%,50%"
-      DefaultRowHeight=   34
-      DropIndicatorVisible=   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      GridLineStyle   =   3
-      HasBorder       =   True
-      HasHeader       =   False
-      HasHorizontalScrollbar=   False
-      HasVerticalScrollbar=   False
-      HeadingIndex    =   -1
-      Height          =   633
-      Index           =   -2147483648
-      InitialValue    =   "case\nM (sols)\nδ\nf(mHz)\nR(ly)\nβ (°)\nψ (°)\nλ0\nΘ (°)\nΦ(°)\nχ10x \nχ10y\nχ10z\nχ20x\nχ20y\nχ20z\nPN Order\nDetectors\ndt(s)\nK"
-      Italic          =   False
-      Left            =   40
-      LockBottom      =   True
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      RequiresSelection=   False
-      RowSelectionType=   0
-      Scope           =   0
-      TabIndex        =   0
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Tooltip         =   ""
-      Top             =   96
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   263
-      _ScrollOffset   =   0
-      _ScrollWidth    =   -1
-      Begin DesktopListBox LBInputValues
-         AllowAutoDeactivate=   True
-         AllowAutoHideScrollbars=   True
-         AllowExpandableRows=   True
-         AllowFocusRing  =   True
-         AllowResizableColumns=   False
-         AllowRowDragging=   False
-         AllowRowReordering=   False
-         Bold            =   False
-         ColumnCount     =   1
-         ColumnWidths    =   "50%,50%"
-         DefaultRowHeight=   34
-         DropIndicatorVisible=   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         GridLineStyle   =   3
-         HasBorder       =   True
-         HasHeader       =   False
-         HasHorizontalScrollbar=   True
-         HasVerticalScrollbar=   False
-         HeadingIndex    =   -1
-         Height          =   633
-         Index           =   -2147483648
-         InitialParent   =   "LBVariableNamesMain"
-         InitialValue    =   "1\n10000\n0\n2.000\n1000\n39\n24\n0\n5\n268.5\n*0.0\n*0.0\n*0.0\n*0.0\n*0.0\n*0.0\n4\n2\n50\n0"
-         Italic          =   False
-         Left            =   130
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         RequiresSelection=   True
-         RowSelectionType=   0
-         Scope           =   0
-         TabIndex        =   0
-         TabPanelIndex   =   0
-         TabStop         =   True
-         Tooltip         =   ""
-         Top             =   96
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   173
-         _ScrollOffset   =   0
-         _ScrollWidth    =   -1
-         Begin DesktopCheckBox CheckBox1
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   0
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   444
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   1
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox2
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   1
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   479
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   1
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox3
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   2
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   512
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   1
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox4
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   3
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   545
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   1
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox5
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   4
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   578
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   1
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox6
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   5
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   612
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   1
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox7
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   6
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   409
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox8
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   7
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   376
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox9
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   8
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   340
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox10
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   9
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   307
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox11
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   10
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   274
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox12
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   11
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   240
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox13
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   12
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   205
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   19
-         End
-         Begin DesktopCheckBox CheckBox14
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   13
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   172
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   18
-         End
-         Begin DesktopCheckBox CheckBox15
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Caption         =   ""
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   21
-            Index           =   -2147483648
-            InitialParent   =   "LBInputValues"
-            Italic          =   False
-            Left            =   282
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            Scope           =   0
-            TabIndex        =   14
-            TabPanelIndex   =   0
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   138
-            Transparent     =   False
-            Underline       =   False
-            Value           =   False
-            Visible         =   True
-            VisualState     =   0
-            Width           =   19
-         End
-      End
-   End
-   Begin DesktopListBox LBOutputValues
-      AllowAutoDeactivate=   True
-      AllowAutoHideScrollbars=   True
-      AllowExpandableRows=   False
-      AllowFocusRing  =   True
-      AllowResizableColumns=   False
-      AllowRowDragging=   False
-      AllowRowReordering=   False
-      Bold            =   False
-      ColumnCount     =   1
-      ColumnWidths    =   "50%,50%"
-      DefaultRowHeight=   34
-      DropIndicatorVisible=   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      GridLineStyle   =   3
-      HasBorder       =   True
-      HasHeader       =   False
-      HasHorizontalScrollbar=   True
-      HasVerticalScrollbar=   False
-      HeadingIndex    =   -1
-      Height          =   494
-      Index           =   -2147483648
-      InitialValue    =   "Uncertainties\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-"
-      Italic          =   False
-      Left            =   303
-      LockBottom      =   True
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      RequiresSelection=   True
-      RowSelectionType=   0
-      Scope           =   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Tooltip         =   ""
-      Top             =   96
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   173
-      _ScrollOffset   =   0
-      _ScrollWidth    =   -1
-   End
    Begin DesktopLabel LAOmega
       AllowAutoDeactivate=   True
       Bold            =   False
@@ -644,7 +34,7 @@ Begin DesktopWindow MainWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   328
+      Left            =   495
       LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
@@ -660,7 +50,7 @@ Begin DesktopWindow MainWindow
       TextAlignment   =   0
       TextColor       =   &c000000
       Tooltip         =   ""
-      Top             =   624
+      Top             =   741
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -791,11 +181,11 @@ Begin DesktopWindow MainWindow
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   1178
+      Left            =   302
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   False
-      LockRight       =   True
+      LockLeft        =   True
+      LockRight       =   False
       LockTop         =   True
       MacButtonStyle  =   0
       Scope           =   0
@@ -803,7 +193,7 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   122
+      Top             =   142
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -821,7 +211,7 @@ Begin DesktopWindow MainWindow
       InitialParent   =   ""
       InitialValue    =   "Binary\n.csv\n"
       Italic          =   False
-      Left            =   1086
+      Left            =   1059
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   False
@@ -833,7 +223,7 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   260
+      Top             =   102
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -853,7 +243,7 @@ Begin DesktopWindow MainWindow
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   1178
+      Left            =   1151
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   False
@@ -865,7 +255,7 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   260
+      Top             =   102
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -883,7 +273,7 @@ Begin DesktopWindow MainWindow
       InitialParent   =   ""
       InitialValue    =   "dh/dM\ndh/dδ\ndh/df0\ndh/dR\ndh/dβ\ndh/dψ\ndh/dλ0\ndh/dΘ\ndh/dΦ\ndh/dχ10x\ndh/dχ10y\ndh/dχ10z\ndh/dχ20x\ndh/dχ20y\ndh/dχ20z\nh\nhp\nhc\nα\nι\n ζ\nLNhatx\nLNhaty\nLNhatz\nχ1hatX\nχ1hatY\nχ1hatZ\nχ2hatX\nχ2hatY\nχ2hatZ\nnoise"
       Italic          =   False
-      Left            =   556
+      Left            =   476
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -895,11 +285,11 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   260
+      Top             =   103
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   180
+      Width           =   92
    End
    Begin DesktopLabel LAGraphMain
       AllowAutoDeactivate=   True
@@ -911,7 +301,7 @@ Begin DesktopWindow MainWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   495
+      Left            =   415
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -927,7 +317,7 @@ Begin DesktopWindow MainWindow
       TextAlignment   =   0
       TextColor       =   &c000000
       Tooltip         =   ""
-      Top             =   260
+      Top             =   103
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -946,11 +336,11 @@ Begin DesktopWindow MainWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   808
+      Left            =   68
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   False
-      LockRight       =   True
+      LockLeft        =   True
+      LockRight       =   False
       LockTop         =   True
       MacButtonStyle  =   0
       Scope           =   0
@@ -958,11 +348,11 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   122
+      Top             =   142
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   135
+      Width           =   90
    End
    Begin DesktopListBox LBOmega
       AllowAutoDeactivate=   True
@@ -991,7 +381,7 @@ Begin DesktopWindow MainWindow
       Index           =   -2147483648
       InitialValue    =   ""
       Italic          =   False
-      Left            =   328
+      Left            =   542
       LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
@@ -1004,7 +394,7 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   643
+      Top             =   741
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -1026,7 +416,7 @@ Begin DesktopWindow MainWindow
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   495
+      Left            =   68
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -1038,11 +428,11 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   122
+      Top             =   108
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   80
+      Width           =   84
    End
    Begin DesktopCheckBox CBWriteCases
       AllowAutoDeactivate=   True
@@ -1055,7 +445,7 @@ Begin DesktopWindow MainWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   1063
+      Left            =   1036
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   False
@@ -1066,7 +456,7 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   260
+      Top             =   102
       Transparent     =   False
       Underline       =   False
       Value           =   False
@@ -1084,7 +474,7 @@ Begin DesktopWindow MainWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   873
+      Left            =   846
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   False
@@ -1100,7 +490,7 @@ Begin DesktopWindow MainWindow
       TextAlignment   =   0
       TextColor       =   &c000000
       Tooltip         =   ""
-      Top             =   260
+      Top             =   102
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -1108,9 +498,9 @@ Begin DesktopWindow MainWindow
    End
    Begin Graph CAGraphMain
       AllowAutoDeactivate=   True
-      AllowFocus      =   False
+      AllowFocus      =   True
       AllowFocusRing  =   True
-      AllowTabs       =   False
+      AllowTabs       =   True
       Backdrop        =   0
       CBlack          =   &c00000000
       CGrid           =   &c00000000
@@ -1126,11 +516,11 @@ Begin DesktopWindow MainWindow
       GWidth          =   0
       GXP             =   0
       HasGrid         =   False
-      Height          =   483
+      Height          =   580
       Index           =   -2147483648
       InitialParent   =   ""
       InvLog10        =   0.0
-      Left            =   495
+      Left            =   415
       LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
@@ -1153,10 +543,10 @@ Begin DesktopWindow MainWindow
       TitleH          =   0
       TitleV          =   0
       Tooltip         =   ""
-      Top             =   292
+      Top             =   140
       Transparent     =   True
       Visible         =   True
-      Width           =   763
+      Width           =   843
       XColor          =   &c00000000
       XFlags          =   0
       XLabel          =   ""
@@ -1191,7 +581,7 @@ Begin DesktopWindow MainWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   748
+      Left            =   580
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -1203,7 +593,7 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   260
+      Top             =   103
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -1383,11 +773,11 @@ Begin DesktopWindow MainWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   955
+      Left            =   201
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   False
-      LockRight       =   True
+      LockLeft        =   True
+      LockRight       =   False
       LockTop         =   True
       MacButtonStyle  =   0
       Scope           =   0
@@ -1395,7 +785,7 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   122
+      Top             =   142
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -1409,7 +799,7 @@ Begin DesktopWindow MainWindow
       Height          =   37
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   587
+      Left            =   179
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -1420,7 +810,7 @@ Begin DesktopWindow MainWindow
       TabIndex        =   26
       TabPanelIndex   =   0
       Tooltip         =   ""
-      Top             =   114
+      Top             =   102
       Transparent     =   False
       Visible         =   False
       Width           =   33
@@ -1441,11 +831,11 @@ Begin DesktopWindow MainWindow
    Begin ProgressBar PGBProgress
       AllowAutoDeactivate=   True
       Enabled         =   True
-      Height          =   9
+      Height          =   14
       Indeterminate   =   False
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   643
+      Left            =   241
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -1457,11 +847,59 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   127
+      Top             =   108
       Transparent     =   True
       Value           =   0.0
       Visible         =   True
       Width           =   134
+   End
+   Begin DesktopListBox LBMain
+      AllowAutoDeactivate=   True
+      AllowAutoHideScrollbars=   True
+      AllowExpandableRows=   False
+      AllowFocusRing  =   True
+      AllowResizableColumns=   True
+      AllowRowDragging=   False
+      AllowRowReordering=   False
+      Bold            =   False
+      ColumnCount     =   4
+      ColumnWidths    =   "75,40,80,150"
+      DefaultRowHeight=   26
+      DropIndicatorVisible=   False
+      Enabled         =   True
+      FontName        =   "System"
+      FontSize        =   0.0
+      FontUnit        =   0
+      GridLineStyle   =   3
+      HasBorder       =   True
+      HasHeader       =   True
+      HasHorizontalScrollbar=   True
+      HasVerticalScrollbar=   True
+      HeadingIndex    =   -1
+      Height          =   532
+      Index           =   -2147483648
+      InitialValue    =   "Unit	Used	Case: 1 	Uncertainity	\nM (sols)		10000			\nδ		0			\nf(mHz)		2.00			\nR(ly)		1000			\nβ (°)		39			\nψ (°)		24			\nλ0		0			\nΘ (°)		5			\nΦ(°)		268.5			\nχ10x		0			\nχ10y		0			\nχ10z		0			\nχ20x		0			\nχ20y		0			\nx20z		0			\nPN Order		4			\nDetectors		2			\ndt(s)		50			\nK		0			"
+      Italic          =   False
+      Left            =   40
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      RequiresSelection=   False
+      RowSelectionType=   0
+      Scope           =   0
+      TabIndex        =   29
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Tooltip         =   ""
+      Top             =   174
+      Transparent     =   False
+      Underline       =   False
+      Visible         =   True
+      Width           =   363
+      _ScrollOffset   =   0
+      _ScrollWidth    =   -1
    End
 End
 #tag EndDesktopWindow
@@ -1469,17 +907,7 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Opening()
-		  str = LBInputValues.width.tostring
-		End Sub
-	#tag EndEvent
-
-	#tag Event
-		Sub Resizing()
-		  LBInputValues.DefaultRowHeight = LBInputValues.height \ 20
-		  LBVariableNamesMain.DefaultRowHeight = LBInputValues.height \ 20
-		  LBOutputValues.DefaultRowHeight = LBInputValues.height \ 20
-		  
-		  
+		  SetUpMainLB()
 		End Sub
 	#tag EndEvent
 
@@ -1820,7 +1248,6 @@ End
 		  MainWindow.CAGraphMain.GetContent
 		  
 		  
-		  
 		End Sub
 	#tag EndMethod
 
@@ -1851,9 +1278,9 @@ End
 		  // populate the uncertainties in the main window
 		  For i As Integer = 0 to 14
 		    If thisUncertaintyCalculator.σ(i) < 1e-98 Then
-		      LBOutputValues.CellTextAt(i + 1, CaseCounter) = "-"
+		      LBMain.CellTextAt(i,3+2*CaseCounter) = "-"
 		    Else
-		      LBOutputValues.CellTextAt(i + 1, CaseCounter) = Format(thisUncertaintyCalculator.σ(i), "#.##e")
+		      LBMain.CellTextAt(i, 3+2*CaseCounter) = Format(thisUncertaintyCalculator.σ(i), "#.##e")
 		    End If
 		  Next
 		  
@@ -1868,13 +1295,13 @@ End
 		  
 		  // check if we are solving for the various parameters and create a list of booleans to store this data
 		  Var values() As Double
-		  For i As Integer = 1 To 19
-		    If LBInputValues.CellTextAt(i, CaseCounter).Left(1) = "*" Then
-		      values.Add(LBInputValues.CellTextAt(i, CaseCounter).Replace("*", "").ToDouble)
-		      solveList.Add(False)
-		    Else
-		      values.Add(LBInputValues.CellTextAt(i, CaseCounter).ToDouble)
+		  For i As Integer = 0 To 18
+		    If LBMain.CellCheckBoxStateAt(i, 1+2*CaseCounter) = DesktopCheckbox.VisualStates.Checked Then
+		      values.Add(LBMain.CellTextAt(i, 2+2*CaseCounter).ToDouble)
 		      solveList.Add(True)
+		    Else
+		      values.Add(LBMain.CellTextAt(i, 2+ 2*CaseCounter).Replace("*", "").ToDouble)
+		      solveList.Add(False)
 		    End If
 		  Next
 		  
@@ -1913,6 +1340,19 @@ End
 		  CaseCounter = CaseCounter + 1
 		  
 		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetUpMainLB()
+		  For i As Integer = 0 to 18
+		    LBMain.CellTypeAt(i,1) = DesktopListBox.CellTypes.CheckBox
+		    if (i <9 or i >14) then
+		      LBMain.CellCheckBoxStateAt(i, 1) = DesktopCheckbox.VisualStates.Checked
+		    end
+		  Next
+		  LBMain.ColumnTypeAt(2) = DesktopListBox.CellTypes.TextField
 		  
 		End Sub
 	#tag EndMethod
@@ -2077,225 +1517,26 @@ End
 
 #tag EndWindowCode
 
-#tag Events LBVariableNamesMain
-	#tag Event
-		Function MouseWheel(x As Integer, y As Integer, deltaX As Integer, deltaY As Integer) As Boolean
-		  return True
-		End Function
-	#tag EndEvent
-#tag EndEvents
-#tag Events LBInputValues
-	#tag Event
-		Function CellPressed(row As Integer, column As Integer, x As Integer, y As Integer) As Boolean
-		  LBInputValues.CellTypeAt(row,column) = DesktopListBox.CellTypes.TextField
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function MouseWheel(x As Integer, y As Integer, deltaX As Integer, deltaY As Integer) As Boolean
-		  return True
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function CellKeyDown(row as Integer, column as Integer, key as String) As Boolean
-		  If key = chr(13) then
-		    LBInputValues.CellTypeAt(row+1,column) = DesktopListBox.CellTypes.TextField
-		    LBInputValues.EditCellAt(row+1,column) 
-		    return True
-		  end if 
-		End Function
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox1
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox1.Value Then
-		    LBInputValues.CellTextAt(10, CaseCounter) = "*" + LBInputValues.CellTextAt(10, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(10, CaseCounter) = LBInputValues.CellTextAt(10, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox2
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox2.Value Then
-		    LBInputValues.CellTextAt(11, CaseCounter) = "*" + LBInputValues.CellTextAt(11, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(11, CaseCounter) = LBInputValues.CellTextAt(11, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox3
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox3.Value Then
-		    LBInputValues.CellTextAt(12, CaseCounter) = "*" + LBInputValues.CellTextAt(12, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(12, CaseCounter) = LBInputValues.CellTextAt(12, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox4
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox4.Value Then
-		    LBInputValues.CellTextAt(13, CaseCounter) = "*" + LBInputValues.CellTextAt(13, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(13, CaseCounter) = LBInputValues.CellTextAt(13, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox5
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox5.Value Then
-		    LBInputValues.CellTextAt(14, CaseCounter) = "*" + LBInputValues.CellTextAt(14, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(14, CaseCounter) = LBInputValues.CellTextAt(14, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox6
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox6.Value Then
-		    LBInputValues.CellTextAt(15, CaseCounter) = "*" + LBInputValues.CellTextAt(15, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(15, CaseCounter) = LBInputValues.CellTextAt(15, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox7
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox7.Value Then
-		    LBInputValues.CellTextAt(9, CaseCounter) = "*" + LBInputValues.CellTextAt(9, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(9, CaseCounter) = LBInputValues.CellTextAt(9, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox8
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox8.Value Then
-		    LBInputValues.CellTextAt(8, CaseCounter) = "*" + LBInputValues.CellTextAt(8, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(8, CaseCounter) = LBInputValues.CellTextAt(8, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox9
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox9.Value Then
-		    LBInputValues.CellTextAt(7, CaseCounter) = "*" + LBInputValues.CellTextAt(7, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(7, CaseCounter) = LBInputValues.CellTextAt(7, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox10
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox10.Value Then
-		    LBInputValues.CellTextAt(6, CaseCounter) = "*" + LBInputValues.CellTextAt(6, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(6, CaseCounter) = LBInputValues.CellTextAt(6, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox11
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox11.Value Then
-		    LBInputValues.CellTextAt(5, CaseCounter) = "*" + LBInputValues.CellTextAt(5, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(5, CaseCounter) = LBInputValues.CellTextAt(5, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox12
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox12.Value Then
-		    LBInputValues.CellTextAt(4, CaseCounter) = "*" + LBInputValues.CellTextAt(4, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(4, CaseCounter) = LBInputValues.CellTextAt(4, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox13
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox13.Value Then
-		    LBInputValues.CellTextAt(3, CaseCounter) = "*" + LBInputValues.CellTextAt(3, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(3, CaseCounter) = LBInputValues.CellTextAt(3, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox14
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox14.Value Then
-		    LBInputValues.CellTextAt(2, CaseCounter) = "*" + LBInputValues.CellTextAt(2, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(2, CaseCounter) = LBInputValues.CellTextAt(2, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CheckBox15
-	#tag Event
-		Sub ValueChanged()
-		  If CheckBox15.Value Then
-		    LBInputValues.CellTextAt(1, CaseCounter) = "*" + LBInputValues.CellTextAt(1, CaseCounter)
-		  Else
-		    LBInputValues.CellTextAt(1, CaseCounter) = LBInputValues.CellTextAt(1, CaseCounter).Replace("*", "")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events LBOutputValues
-	#tag Event
-		Function CellPressed(row As Integer, column As Integer, x As Integer, y As Integer) As Boolean
-		  LBInputValues.CellTypeAt(row,column) = DesktopListBox.CellTypes.TextField
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function MouseWheel(x As Integer, y As Integer, deltaX As Integer, deltaY As Integer) As Boolean
-		  return True
-		End Function
-	#tag EndEvent
-#tag EndEvents
 #tag Events BUAddColumn
 	#tag Event
 		Sub Pressed()
-		  LBInputValues.ColumnCount = LBInputValues.ColumnCount + 1
-		  LBOutputValues.ColumnCount = LBInputValues.ColumnCount + 1
-		  
-		  str = str +","+ LBInputValues.Width.tostring
-		  
-		  LBInputValues.ColumnWidths = str 
-		  LBOutputValues.ColumnWidths = str 
-		  
-		  LBInputValues.CellTextAt(0, LBInputValues.ColumnCount-1) = LBInputValues.ColumnCount.tostring
-		  LBOutputValues.CellTextAt(0, LBOutputValues.ColumnCount-1) = LBOutputValues.ColumnCount.tostring
-		  
+		  //Make Column Widths String
+		  str = LBMain.ColumnWidths + ","+ "25,100,150"
+		  // Add 3 New Columns
+		  LBMain.ColumnCount = LBMain.ColumnCount + 3
+		  //Set Column Widths
+		  LBMain.ColumnWidths = str
+		  //Create Case Header
+		  LBMain.HeaderAt(LBMain.ColumnCount - 2) = "Case: " + Str((LBMain.ColumnCount - 1) / 3)
+		  //Create Uncertainity Header
+		  LBMain.HeaderAt(LBMain.ColumnCount -1) = "Uncertainity"
+		  //Make Case Column Text Field
+		  LBMain.ColumnTypeAt(LBMain.ColumnCount - 2) = DesktopListBox.CellTypes.TextField
+		  //Make Use Column Check Boxes
+		  For i As Integer = 0 to 18
+		    LBMain.CellTypeAt(i,LBMain.ColumnCount -3) = DesktopListBox.CellTypes.CheckBox
+		    LBMain.CellCheckBoxStateAt(i, LBMain.ColumnCount -1) = DesktopCheckbox.VisualStates.Checked
+		  Next
 		  
 		End Sub
 	#tag EndEvent
@@ -2394,6 +1635,26 @@ End
 		  end if
 		  
 		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events LBMain
+	#tag Event
+		Function CellPressed(row As Integer, column As Integer, x As Integer, y As Integer) As Boolean
+		  If column = 3 Then 
+		    If Me.CellCheckBoxStateAt(row, column) = DesktopCheckbox.VisualStates.Checked Then
+		      // The checkbox was just checked.
+		      // Add an asterisk to the start of the text in the cell to the left.
+		      If   not Me.CellTextAt(row, column - 2).contains("*") then
+		        Me.CellTextAt(row, column - 2) = "*" + Me.CellTextAt(row, column - 2)
+		      end
+		      
+		    Else
+		      // The checkbox was just unchecked.
+		      // Remove the asterisk from the start of the text in the cell to the left.
+		      Me.CellTextAt(row, column - 2) = Me.CellTextAt(row, column - 2).Replace("*", "")
+		    End If
+		  End If
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag ViewBehavior
