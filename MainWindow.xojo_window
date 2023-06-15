@@ -1278,9 +1278,9 @@ End
 		  // populate the uncertainties in the main window
 		  For i As Integer = 0 to 14
 		    If thisUncertaintyCalculator.σ(i) < 1e-98 Then
-		      LBMain.CellTextAt(i,2+2*CaseCounter) = "-"
+		      LBMain.CellTextAt(i,3+2*CaseCounter) = "-"
 		    Else
-		      LBMain.CellTextAt(i, 2+2*CaseCounter) = Format(thisUncertaintyCalculator.σ(i), "#.##e")
+		      LBMain.CellTextAt(i, 3+2*CaseCounter) = Format(thisUncertaintyCalculator.σ(i), "#.##e")
 		    End If
 		  Next
 		  
