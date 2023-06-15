@@ -51,7 +51,7 @@ Begin DesktopWindow MainWindow
       Index           =   -2147483648
       InitialValue    =   "case\nM (sols)\nδ\nf(mHz)\nR(ly)\nβ (°)\nψ (°)\nλ0\nΘ (°)\nΦ(°)\nχ10x \nχ10y\nχ10z\nχ20x\nχ20y\nχ20z\nPN Order\nDetectors\ndt(s)\nK"
       Italic          =   False
-      Left            =   40
+      Left            =   53
       LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
@@ -99,7 +99,7 @@ Begin DesktopWindow MainWindow
          InitialParent   =   "LBVariableNamesMain"
          InitialValue    =   "1\n10000\n0\n2.000\n1000\n39\n24\n0\n5\n268.5\n*0.0\n*0.0\n*0.0\n*0.0\n*0.0\n*0.0\n4\n2\n50\n0"
          Italic          =   False
-         Left            =   130
+         Left            =   143
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
@@ -131,7 +131,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -162,7 +162,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -193,7 +193,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -224,7 +224,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -255,7 +255,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -286,7 +286,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -317,7 +317,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -348,7 +348,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -379,7 +379,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -410,7 +410,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -441,7 +441,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -472,7 +472,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -503,7 +503,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -534,7 +534,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -565,7 +565,7 @@ Begin DesktopWindow MainWindow
             Index           =   -2147483648
             InitialParent   =   "LBInputValues"
             Italic          =   False
-            Left            =   282
+            Left            =   295
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -585,54 +585,6 @@ Begin DesktopWindow MainWindow
             Width           =   19
          End
       End
-   End
-   Begin DesktopListBox LBOutputValues
-      AllowAutoDeactivate=   True
-      AllowAutoHideScrollbars=   True
-      AllowExpandableRows=   False
-      AllowFocusRing  =   True
-      AllowResizableColumns=   False
-      AllowRowDragging=   False
-      AllowRowReordering=   False
-      Bold            =   False
-      ColumnCount     =   1
-      ColumnWidths    =   "50%,50%"
-      DefaultRowHeight=   34
-      DropIndicatorVisible=   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      GridLineStyle   =   3
-      HasBorder       =   True
-      HasHeader       =   False
-      HasHorizontalScrollbar=   True
-      HasVerticalScrollbar=   False
-      HeadingIndex    =   -1
-      Height          =   494
-      Index           =   -2147483648
-      InitialValue    =   "Uncertainties\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-"
-      Italic          =   False
-      Left            =   303
-      LockBottom      =   True
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      RequiresSelection=   True
-      RowSelectionType=   0
-      Scope           =   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Tooltip         =   ""
-      Top             =   96
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   173
-      _ScrollOffset   =   0
-      _ScrollWidth    =   -1
    End
    Begin DesktopLabel LAOmega
       AllowAutoDeactivate=   True
@@ -887,7 +839,7 @@ Begin DesktopWindow MainWindow
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   False
+      LockRight       =   True
       LockTop         =   True
       Scope           =   0
       SelectedRowIndex=   0
@@ -962,7 +914,7 @@ Begin DesktopWindow MainWindow
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   135
+      Width           =   90
    End
    Begin DesktopListBox LBOmega
       AllowAutoDeactivate=   True
@@ -1107,7 +1059,7 @@ Begin DesktopWindow MainWindow
       Width           =   189
    End
    Begin Graph CAGraphMain
-      AllowAutoDeactivate=   True
+      AllowAutoDeactivate=   False
       AllowFocus      =   False
       AllowFocusRing  =   True
       AllowTabs       =   False
@@ -1194,8 +1146,8 @@ Begin DesktopWindow MainWindow
       Left            =   748
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
+      LockLeft        =   False
+      LockRight       =   True
       LockTop         =   True
       MacButtonStyle  =   0
       Scope           =   0
@@ -1420,7 +1372,7 @@ Begin DesktopWindow MainWindow
       TabIndex        =   26
       TabPanelIndex   =   0
       Tooltip         =   ""
-      Top             =   114
+      Top             =   113
       Transparent     =   False
       Visible         =   False
       Width           =   33
@@ -1441,7 +1393,7 @@ Begin DesktopWindow MainWindow
    Begin ProgressBar PGBProgress
       AllowAutoDeactivate=   True
       Enabled         =   True
-      Height          =   9
+      Height          =   14
       Indeterminate   =   False
       Index           =   -2147483648
       InitialParent   =   ""
@@ -1449,7 +1401,7 @@ Begin DesktopWindow MainWindow
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   False
+      LockRight       =   True
       LockTop         =   True
       MaximumValue    =   100
       Scope           =   0
@@ -1457,11 +1409,108 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   127
+      Top             =   122
       Transparent     =   True
       Value           =   0.0
       Visible         =   True
       Width           =   134
+   End
+   Begin DesktopListBox LBMain
+      AllowAutoDeactivate=   True
+      AllowAutoHideScrollbars=   True
+      AllowExpandableRows=   False
+      AllowFocusRing  =   True
+      AllowResizableColumns=   False
+      AllowRowDragging=   False
+      AllowRowReordering=   False
+      Bold            =   False
+      ColumnCount     =   1
+      ColumnWidths    =   ""
+      DefaultRowHeight=   -1
+      DropIndicatorVisible=   False
+      Enabled         =   True
+      FontName        =   "System"
+      FontSize        =   0.0
+      FontUnit        =   0
+      GridLineStyle   =   3
+      HasBorder       =   True
+      HasHeader       =   True
+      HasHorizontalScrollbar=   False
+      HasVerticalScrollbar=   True
+      HeadingIndex    =   -1
+      Height          =   281
+      Index           =   -2147483648
+      InitialValue    =   ""
+      Italic          =   False
+      Left            =   513
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      RequiresSelection=   False
+      RowSelectionType=   0
+      Scope           =   0
+      TabIndex        =   29
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Tooltip         =   ""
+      Top             =   222
+      Transparent     =   False
+      Underline       =   False
+      Visible         =   True
+      Width           =   378
+      _ScrollOffset   =   0
+      _ScrollWidth    =   -1
+   End
+   Begin DesktopListBox LBOutputValues
+      AllowAutoDeactivate=   True
+      AllowAutoHideScrollbars=   True
+      AllowExpandableRows=   False
+      AllowFocusRing  =   True
+      AllowResizableColumns=   False
+      AllowRowDragging=   False
+      AllowRowReordering=   False
+      Bold            =   False
+      ColumnCount     =   1
+      ColumnWidths    =   "50%,50%"
+      DefaultRowHeight=   34
+      DropIndicatorVisible=   False
+      Enabled         =   True
+      FontName        =   "System"
+      FontSize        =   0.0
+      FontUnit        =   0
+      GridLineStyle   =   3
+      HasBorder       =   True
+      HasHeader       =   False
+      HasHorizontalScrollbar=   True
+      HasVerticalScrollbar=   False
+      HeadingIndex    =   -1
+      Height          =   494
+      Index           =   -2147483648
+      InitialParent   =   ""
+      InitialValue    =   "Uncertainties\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-"
+      Italic          =   False
+      Left            =   315
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      RequiresSelection=   True
+      RowSelectionType=   0
+      Scope           =   0
+      TabIndex        =   30
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Tooltip         =   ""
+      Top             =   96
+      Transparent     =   False
+      Underline       =   False
+      Visible         =   True
+      Width           =   173
+      _ScrollOffset   =   0
+      _ScrollWidth    =   -1
    End
 End
 #tag EndDesktopWindow
@@ -1470,6 +1519,37 @@ End
 	#tag Event
 		Sub Opening()
 		  str = LBInputValues.width.tostring
+		  LBMain.ColumnCount = 4
+		  LBMain.HeaderAt(0) = "Use"
+		  LBMain.HeaderAt(1) = "Case"
+		  LBMain.HeaderAt(2) = "Uncertainity"
+		  LBMain.ColumnWidths = "75,100,150,25"
+		  
+		  LBMain.AddRow(Array("M (sols)", "1000",""))
+		  LBMain.AddRow(Array("δ", "0",""))
+		  LBMain.AddRow(Array("f(mHz)", "2.00",""))
+		  LBMain.AddRow(Array("R(ly)", "100",""))
+		  LBMain.AddRow(Array("β (°)", "3",""))
+		  LBMain.AddRow(Array("ψ (°)", "2",""))
+		  LBMain.AddRow(Array("λ0", "0",""))
+		  LBMain.AddRow(Array("Θ (°)", "0",""))
+		  LBMain.AddRow(Array("Φ(°)", "268.5",""))
+		  LBMain.AddRow(Array("χ10x ", "0.",""))
+		  LBMain.AddRow(Array("χ10y", "0.",""))
+		  LBMain.AddRow(Array("χ10z", "0.",""))
+		  LBMain.AddRow(Array("χ20x ", "0.",""))
+		  LBMain.AddRow(Array("χ20y", "0.",""))
+		  LBMain.AddRow(Array("χ20z", "0.",""))
+		  LBMain.AddRow(Array("PN Order", "0",""))
+		  LBMain.AddRow(Array("Detectors", "0",""))
+		  LBMain.AddRow(Array("dt(s)", "5",""))
+		  LBMain.AddRow(Array("K", "0",""))
+		  For i As Integer = 0 to 18
+		    LBMain.CellTypeAt(i,3) = DesktopListBox.CellTypes.CheckBox
+		    LBMain.CellCheckBoxStateAt(i, 3) = DesktopCheckbox.VisualStates.Checked
+		  Next
+		  LBMain.ColumnTypeAt(1) = DesktopListBox.CellTypes.TextField
+		  LBMain.DefaultRowHeight = 35
 		End Sub
 	#tag EndEvent
 
@@ -1820,7 +1900,6 @@ End
 		  MainWindow.CAGraphMain.GetContent
 		  
 		  
-		  
 		End Sub
 	#tag EndMethod
 
@@ -1868,12 +1947,12 @@ End
 		  
 		  // check if we are solving for the various parameters and create a list of booleans to store this data
 		  Var values() As Double
-		  For i As Integer = 1 To 19
-		    If LBInputValues.CellTextAt(i, CaseCounter).Left(1) = "*" Then
-		      values.Add(LBInputValues.CellTextAt(i, CaseCounter).Replace("*", "").ToDouble)
+		  For i As Integer = 0 To 18
+		    If LBMain.CellTextAt(i, 1+2*CaseCounter).Left(1) = "*" Then
+		      values.Add(LBMain.CellTextAt(i, 1+ 2*CaseCounter).Replace("*", "").ToDouble)
 		      solveList.Add(False)
 		    Else
-		      values.Add(LBInputValues.CellTextAt(i, CaseCounter).ToDouble)
+		      values.Add(LBMain.CellTextAt(i, 1+2*CaseCounter).ToDouble)
 		      solveList.Add(True)
 		    End If
 		  Next
@@ -2270,18 +2349,6 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events LBOutputValues
-	#tag Event
-		Function CellPressed(row As Integer, column As Integer, x As Integer, y As Integer) As Boolean
-		  LBInputValues.CellTypeAt(row,column) = DesktopListBox.CellTypes.TextField
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function MouseWheel(x As Integer, y As Integer, deltaX As Integer, deltaY As Integer) As Boolean
-		  return True
-		End Function
-	#tag EndEvent
-#tag EndEvents
 #tag Events BUAddColumn
 	#tag Event
 		Sub Pressed()
@@ -2394,6 +2461,35 @@ End
 		  end if
 		  
 		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events LBMain
+	#tag Event
+		Function CellPressed(row As Integer, column As Integer, x As Integer, y As Integer) As Boolean
+		  If column = 3 Then ' Adjust these as necessary
+		    If Me.CellCheckBoxStateAt(row, column) = DesktopCheckbox.VisualStates.Checked Then
+		      ' The checkbox was just checked.
+		      ' Add an asterisk to the start of the text in the cell to the left.
+		      Me.CellTextAt(row, column - 2) = "*" + Me.CellTextAt(row, column - 2)
+		    Else
+		      ' The checkbox was just unchecked.
+		      ' Remove the asterisk from the start of the text in the cell to the left.
+		      Me.CellTextAt(row, column - 2) = Me.CellTextAt(row, column - 2).Replace("*", "")
+		    End If
+		  End If
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events LBOutputValues
+	#tag Event
+		Function CellPressed(row As Integer, column As Integer, x As Integer, y As Integer) As Boolean
+		  LBInputValues.CellTypeAt(row,column) = DesktopListBox.CellTypes.TextField
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function MouseWheel(x As Integer, y As Integer, deltaX As Integer, deltaY As Integer) As Boolean
+		  return True
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag ViewBehavior
