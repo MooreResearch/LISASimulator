@@ -1065,6 +1065,7 @@ Inherits Canvas
 		    
 		    GXP = nil
 		    GXP = New Picture(FWidth, FHeight)
+		    
 		    if GXP = nil then
 		      // optional -- do somthing here
 		    else
@@ -1919,7 +1920,7 @@ Inherits Canvas
 		  Var val as double
 		  
 		  if GWidth <> 0  then // This method will do nothing if there is no graph
-		     val = (coord - GLeft)/XVToPix + XMin
+		    val = (coord - GLeft)/XVToPix + XMin
 		    if val > XMin - Abs(XMin)*0.00001 and val < XMax + Abs(XMin)*0.00001 then
 		      Return val
 		    else
