@@ -1,31 +1,11 @@
 #tag Class
-Protected Class GraphException
-Inherits RuntimeException
-	#tag Method, Flags = &h0
-		Sub RangeError()
-		  Var e As RuntimeException
-		  Raise e 
-		End Sub
-	#tag EndMethod
+Protected Class HNCalculator
+	#tag Property, Flags = &h0
+		myTermData() As HTermData
+	#tag EndProperty
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ErrorNumber"
-			Visible=false
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Message"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
