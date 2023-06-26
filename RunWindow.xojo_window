@@ -1,5 +1,5 @@
 #tag DesktopWindow
-Begin DesktopWindow GraphWindow
+Begin DesktopWindow RunWindow
    Backdrop        =   0
    BackgroundColor =   &cFFFFFF
    Composite       =   False
@@ -10,7 +10,7 @@ Begin DesktopWindow GraphWindow
    HasFullScreenButton=   False
    HasMaximizeButton=   True
    HasMinimizeButton=   True
-   Height          =   394
+   Height          =   795
    ImplicitInstance=   True
    MacProcID       =   0
    MaximumHeight   =   32000
@@ -20,41 +20,45 @@ Begin DesktopWindow GraphWindow
    MinimumHeight   =   64
    MinimumWidth    =   64
    Resizeable      =   True
-   Title           =   "Graph"
-   Type            =   0
+   Title           =   "Run"
+   Type            =   4
    Visible         =   True
-   Width           =   600
-   Begin DesktopCanvas CAGraphWindow
+   Width           =   1278
+   Begin DesktopLabel Label1
       AllowAutoDeactivate=   True
-      AllowFocus      =   False
-      AllowFocusRing  =   True
-      AllowTabs       =   False
-      Backdrop        =   0
+      Bold            =   False
       Enabled         =   True
-      Height          =   329
+      FontName        =   "System"
+      FontSize        =   0.0
+      FontUnit        =   0
+      Height          =   20
       Index           =   -2147483648
-      Left            =   20
+      Italic          =   False
+      Left            =   103
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
+      Multiline       =   False
       Scope           =   0
+      Selectable      =   False
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Case #:"
+      TextAlignment   =   0
+      TextColor       =   &c000000
       Tooltip         =   ""
-      Top             =   20
+      Top             =   60
       Transparent     =   False
+      Underline       =   False
       Visible         =   True
-      Width           =   560
+      Width           =   100
    End
-   Begin DesktopButton BUExportGraph
+   Begin DesktopLabel Label2
       AllowAutoDeactivate=   True
       Bold            =   False
-      Cancel          =   False
-      Caption         =   "Export"
-      Default         =   False
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -62,30 +66,31 @@ Begin DesktopWindow GraphWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   500
+      Left            =   103
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
-      MacButtonStyle  =   0
+      Multiline       =   False
       Scope           =   0
+      Selectable      =   False
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Elapsed Time"
+      TextAlignment   =   0
+      TextColor       =   &c000000
       Tooltip         =   ""
-      Top             =   361
+      Top             =   129
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   80
+      Width           =   100
    End
-   Begin DesktopButton BUPrintGraph
+   Begin DesktopLabel Label3
       AllowAutoDeactivate=   True
       Bold            =   False
-      Cancel          =   False
-      Caption         =   "Print"
-      Default         =   False
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -93,23 +98,27 @@ Begin DesktopWindow GraphWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   408
+      Left            =   103
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
-      MacButtonStyle  =   0
+      Multiline       =   False
       Scope           =   0
+      Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Tc"
+      TextAlignment   =   0
+      TextColor       =   &c000000
       Tooltip         =   ""
-      Top             =   361
+      Top             =   185
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   80
+      Width           =   100
    End
 End
 #tag EndDesktopWindow
@@ -277,7 +286,7 @@ End
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="FullScreen"
-		Visible=false
+		Visible=true
 		Group="Behavior"
 		InitialValue="False"
 		Type="Boolean"
@@ -309,7 +318,7 @@ End
 	#tag ViewProperty
 		Name="ImplicitInstance"
 		Visible=true
-		Group="Windows Behavior"
+		Group="Window Behavior"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType=""
