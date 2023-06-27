@@ -238,7 +238,10 @@ Protected Class ListBoxCanvas
 		  Var isSub As Boolean = False
 		  Var isSup As Boolean = False
 		  Var currentText As String = ""
+		  value.italic = True
 		  For n As Integer = 0 to expressions.lastIndex
+		    value.FontName = "Palatino"
+		    
 		    If expressions(n) = "^" Then //process previous strings and then go to super mode
 		      if isSub then
 		        x=x-counter*5
@@ -248,12 +251,14 @@ Protected Class ListBoxCanvas
 		        value.HorizontalAlignment = TextShape.Alignment.Left
 		        value.value = currentText
 		        g.DrawObject(value,x,y+5)
+		        x = x+ 5*currentText.length
 		        currentText = ""
 		      else 
 		        value.FontSize = 15
 		        value.HorizontalAlignment = TextShape.Alignment.Left
 		        value.value = currentText
 		        g.DrawObject(value,x,y)
+		        x = x+ 10*currentText.length
 		        currentText = ""
 		      end if 
 		      isSup = True
@@ -267,13 +272,15 @@ Protected Class ListBoxCanvas
 		        value.FontSize = 10
 		        value.HorizontalAlignment = TextShape.Alignment.Left
 		        value.value = currentText
-		        g.DrawObject(value,x,y-5)
+		        g.DrawObject(value,x,y-8)
+		        x = x+ 5*currentText.length
 		        currentText = ""
 		      else 
 		        value.FontSize = 15
 		        value.HorizontalAlignment = TextShape.Alignment.Left
 		        value.value = currentText
 		        g.DrawObject(value,x,y)
+		        x = x+ 10*currentText.length
 		        currentText = ""
 		      end if 
 		      isSup = False
@@ -282,8 +289,17 @@ Protected Class ListBoxCanvas
 		      
 		    Elseif expressions(n) = "@" Then //change italics
 		      value.italic = False
+		      
 		    Elseif expressions(n) = "\" Then //change italics
 		      value.italic = True
+		      
+		      if n = expressions.lastIndex Then
+		        value.FontSize = 15
+		        value.HorizontalAlignment = TextShape.Alignment.Left
+		        value.value = currentText
+		        g.DrawObject(value,x,y)
+		        currentText = ""
+		      end if 
 		      
 		    Elseif expressions(n) = "}" Then //finish prevous super/sub then go to reg mode
 		      if isSup Then
@@ -293,38 +309,44 @@ Protected Class ListBoxCanvas
 		        value.FontSize = 10
 		        value.HorizontalAlignment = TextShape.Alignment.Left
 		        value.value = currentText
-		        g.DrawObject(value,x,y-5)
+		        g.DrawObject(value,x,y-8)
+		        x = x+ 5*currentText.length
 		        currentText = ""
+		        
 		      Else
 		        value.FontSize = 10
 		        value.HorizontalAlignment = TextShape.Alignment.Left
 		        value.value = currentText
-		        g.DrawObject(value,x,y)
+		        g.DrawObject(value,x,y+5)
+		        x = x+ 5*currentText.length
 		        currentText = ""
 		      end if
 		      isReg = True
-		      
+		    Elseif n = expressions.lastIndex Then
+		      currentText = currentText+expressions(n)
+		      value.FontSize = 15
+		      value.HorizontalAlignment = TextShape.Alignment.Left
+		      value.value = currentText
+		      g.DrawObject(value,x,y)
+		      currentText = ""
 		    Else //regular characters, add to currentStirng value
 		      if isReg Then
 		        //add regular character
 		        currentText = currentText+ expressions(n)
-		        x = x+7
+		        
 		        counter= 0
 		      elseif isSub Then
 		        //add sub character
 		        currentText = currentText+ expressions(n)
-		        x = x+5
 		        counter = counter +1
 		        
 		      elseif isSup Then
 		        //add sup character
 		        currentText = currentText+ expressions(n)
-		        x = x+5
 		        counter = counter+1
 		      end if 
 		    end if 
 		  Next
-		  
 		End Sub
 	#tag EndMethod
 
@@ -337,7 +359,7 @@ Protected Class ListBoxCanvas
 		  Next
 		  for i As integer = 1 To Me.RowCount
 		    //g.drawtext(cells(i-1).Content,10,cellHeight*i - 5)
-		    DrawText(g, 5, cellHeight*i-5, cells(i-1).Content)
+		    DrawText2(g, 5, cellHeight*i-8, cells(i-1).Content)
 		  next
 		End Sub
 	#tag EndMethod
