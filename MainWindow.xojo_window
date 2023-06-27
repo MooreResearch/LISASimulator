@@ -111,6 +111,32 @@ Begin DesktopWindow MainWindow
          Width           =   949
          _ScrollOffset   =   0
          _ScrollWidth    =   -1
+         Begin DesktopCanvas Canvas1
+            AllowAutoDeactivate=   True
+            AllowFocus      =   False
+            AllowFocusRing  =   True
+            AllowTabs       =   False
+            Backdrop        =   0
+            Enabled         =   True
+            Height          =   504
+            Index           =   -2147483648
+            InitialParent   =   "MainListBox"
+            Left            =   31
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            TabIndex        =   0
+            TabPanelIndex   =   1
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   72
+            Transparent     =   False
+            Visible         =   True
+            Width           =   78
+         End
       End
       Begin DesktopButton RunCasesButton
          AllowAutoDeactivate=   True
@@ -1715,6 +1741,11 @@ End
 	#tag EndMethod
 
 
+	#tag Property, Flags = &h0
+		Shared list As ListBoxCanvas
+	#tag EndProperty
+
+
 #tag EndWindowCode
 
 #tag Events InterfaceUpdateTimer
@@ -1748,6 +1779,24 @@ End
 		    End If
 		  End If
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events Canvas1
+	#tag Event
+		Sub Paint(g As Graphics, areas() As Rect)
+		  g.ForeColor = &cffffff
+		  list.paint(g)
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Opening()
+		  Var values() As String = Array( "M(sols)", "𝛅", "f(mHz)", "R(ly)", "β (°)", "ψ (°)", "λ_{0}", "θ (°)", "φ (°)", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "PN Order", "detectors", "dt(s)")
+		  list = new ListBoxCanvas(Me, 26,77, values())
+		  Me.ordertofront
+		  
+		  
+		  
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events RunCasesButton
