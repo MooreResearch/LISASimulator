@@ -113,7 +113,7 @@ Begin DesktopWindow MainWindow
          _ScrollWidth    =   -1
          Begin DesktopCanvas Canvas1
             AllowAutoDeactivate=   True
-            AllowFocus      =   False
+            AllowFocus      =   True
             AllowFocusRing  =   True
             AllowTabs       =   False
             Backdrop        =   0
@@ -1792,7 +1792,8 @@ End
 		Sub Opening()
 		  Var values() As String = Array( "M(sols)", "𝛅", "f(mHz)", "R(ly)", "β (°)", "ψ (°)", "λ_{0}", "θ (°)", "φ (°)", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "PN Order", "detectors", "dt(s)")
 		  list = new ListBoxCanvas(Me, 26,77, values())
-		  Me.ordertofront
+		  
+		  
 		  
 		  
 		  
