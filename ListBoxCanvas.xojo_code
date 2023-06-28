@@ -365,7 +365,7 @@ Protected Class ListBoxCanvas
 
 	#tag Method, Flags = &h0
 		Sub paint(g As Graphics)
-		  g.DrawingColor = Color.Black
+		  g.DrawingColor = Color.Gray
 		  g.DrawRectangle(0,0,Me.CellWidth, Me.RowCount*CellHeight)
 		  for i As integer = 1 To Me.rowCount-1
 		    g.DrawLine(0,cellHeight*i, cellWidth-1, cellHeight*i)

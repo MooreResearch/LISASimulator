@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   10
       Transparent     =   False
       Underline       =   False
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox MainListBox
@@ -1820,7 +1820,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Opening()
-		  Var values() As String = Array("M\r(sols)\", "𝜹", "f\r(mHz)\", "R\r(ly)\", "β\r(°)\", "ψ\r(°)\", "λ_{0}", "θ\r(°)\", "φ\r(°)\", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "PN Order", "detectors", "dt\r(s)\")
+		  Var values() As String = Array("M\r(sols)\", "𝜹", "f\r(mHz)\", "R\r(ly)\", "β\r(°)\", "ψ\r(°)\", "λ_{0}", "θ\r(°)\", "φ\r(°)\", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "\rPN Order\", "\rdetectors\", "dt\r(s)\")
 		  list = new ListBoxCanvas(Me, 26,77, values())
 		  
 		  
@@ -1908,7 +1908,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Opening()
-		  Var values2() As String = Array("M\r(sols)\", "𝜹", "f\r(mHz)\", "R\r(ly)\", "β\r(°)\", "ψ\r(°)\", "λ_{0}", "θ\r(°)\", "φ\r(°)\", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "PN Order", "detectors","dt\r(s)\", "Ω")
+		  Var values2() As String = Array("M\r(sols)\", "𝜹", "f\r(mHz)\", "R\r(ly)\", "β\r(°)\", "ψ\r(°)\", "λ_{0}", "θ\r(°)\", "φ\r(°)\", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "\rPN Order\", "\rdetectors\","dt\r(s)\", "Ω")
 		  list2 = new ListBoxCanvas(Me, 26,77, values2())
 		  
 		  
