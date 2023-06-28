@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   10
       Transparent     =   False
       Underline       =   False
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox MainListBox
@@ -111,17 +111,17 @@ Begin DesktopWindow MainWindow
          Width           =   949
          _ScrollOffset   =   0
          _ScrollWidth    =   -1
-         Begin DesktopCanvas Canvas1
+         Begin DesktopCanvas UnitsBoxSetUp
             AllowAutoDeactivate=   True
             AllowFocus      =   True
             AllowFocusRing  =   True
             AllowTabs       =   False
-            Backdrop        =   0
+            Backdrop        =   249319423
             Enabled         =   True
             Height          =   504
             Index           =   -2147483648
             InitialParent   =   "MainListBox"
-            Left            =   31
+            Left            =   32
             LockBottom      =   False
             LockedInPosition=   False
             LockLeft        =   True
@@ -135,7 +135,7 @@ Begin DesktopWindow MainWindow
             Top             =   72
             Transparent     =   False
             Visible         =   True
-            Width           =   78
+            Width           =   74
          End
       End
       Begin DesktopButton RunCasesButton
@@ -430,6 +430,32 @@ Begin DesktopWindow MainWindow
          Width           =   322
          _ScrollOffset   =   0
          _ScrollWidth    =   -1
+         Begin DesktopCanvas UnitsBoxSetUp1
+            AllowAutoDeactivate=   True
+            AllowFocus      =   True
+            AllowFocusRing  =   True
+            AllowTabs       =   False
+            Backdrop        =   249319423
+            Enabled         =   True
+            Height          =   538
+            Index           =   -2147483648
+            InitialParent   =   "ResultsListBox"
+            Left            =   21
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            TabIndex        =   0
+            TabPanelIndex   =   3
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   80
+            Transparent     =   False
+            Visible         =   True
+            Width           =   74
+         End
       End
       Begin DesktopChart ProgressChart
          AllowAutoDeactivate=   True
@@ -1745,6 +1771,10 @@ End
 		Shared list As ListBoxCanvas
 	#tag EndProperty
 
+	#tag Property, Flags = &h0
+		Shared list2 As listboxCanvas
+	#tag EndProperty
+
 
 #tag EndWindowCode
 
@@ -1781,7 +1811,7 @@ End
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events Canvas1
+#tag Events UnitsBoxSetUp
 	#tag Event
 		Sub Paint(g As Graphics, areas() As Rect)
 		  g.ForeColor = &cffffff
@@ -1790,7 +1820,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Opening()
-		  Var values() As String = Array( "M(sols)", "𝛅", "f(mHz)", "R(ly)", "β (°)", "ψ (°)", "λ_{0}", "θ (°)", "φ (°)", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "PN Order", "detectors", "dt(s)")
+		  Var values() As String = Array("M\r(sols)\", "𝜹", "f\r(mHz)\", "R\r(ly)\", "β\r(°)\", "ψ\r(°)\", "λ_{0}", "θ\r(°)\", "φ\r(°)\", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "PN Order", "detectors", "dt\r(s)\")
 		  list = new ListBoxCanvas(Me, 26,77, values())
 		  
 		  
@@ -1867,6 +1897,25 @@ End
 		    End If
 		  End If
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events UnitsBoxSetUp1
+	#tag Event
+		Sub Paint(g As Graphics, areas() As Rect)
+		  g.ForeColor = &cffffff
+		  list2.paint(g)
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Opening()
+		  Var values2() As String = Array("M\r(sols)\", "𝜹", "f\r(mHz)\", "R\r(ly)\", "β\r(°)\", "ψ\r(°)\", "λ_{0}", "θ\r(°)\", "φ\r(°)\", "χ_{10x}", "χ_{10y}", "χ_{10z}", "χ_{20x}", "χ_{20y}", "χ_{20z}", "σ_{0}", "PN Order", "detectors","dt\r(s)\", "Ω")
+		  list2 = new ListBoxCanvas(Me, 26,77, values2())
+		  
+		  
+		  
+		  
+		  
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag ViewBehavior

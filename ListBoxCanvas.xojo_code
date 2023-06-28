@@ -288,9 +288,21 @@ Protected Class ListBoxCanvas
 		      isReg = False
 		      
 		    Elseif expressions(n) = "@" Then //change italics
+		      value.FontSize = 15
+		      value.HorizontalAlignment = TextShape.Alignment.Left
+		      value.value = currentText
+		      g.DrawObject(value,x,y)
+		      x = x+ 10*currentText.length+3
+		      currentText = ""
 		      value.italic = False
 		      
 		    Elseif expressions(n) = "\" Then //change italics
+		      value.FontSize = 15
+		      value.HorizontalAlignment = TextShape.Alignment.Left
+		      value.value = currentText
+		      g.DrawObject(value,x,y)
+		      x = x+ 10*currentText.length
+		      currentText = ""
 		      value.italic = True
 		      
 		      if n = expressions.lastIndex Then
@@ -347,6 +359,7 @@ Protected Class ListBoxCanvas
 		      end if 
 		    end if 
 		  Next
+		  
 		End Sub
 	#tag EndMethod
 
