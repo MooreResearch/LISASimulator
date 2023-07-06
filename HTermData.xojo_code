@@ -1,5 +1,14 @@
 #tag Class
 Protected Class HTermData
+	#tag Method, Flags = &h0
+		Sub Constructor(Amplitude As Double, an As Integer, bn As Integer)
+		  Me.A = Amplitude
+		  Me.an = an
+		  Me.bn = bn
+		End Sub
+	#tag EndMethod
+
+
 	#tag Property, Flags = &h0
 		A As Double
 	#tag EndProperty
@@ -160,6 +169,30 @@ Protected Class HTermData
 			Group="Behavior"
 			InitialValue=""
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DADcosι"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DADβ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DADδ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
