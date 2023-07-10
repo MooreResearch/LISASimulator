@@ -1,10 +1,22 @@
 #tag Class
 Protected Class HX0CalculatorClass
-Inherits HNCalculator1
+Inherits HNCalculator
+	#tag Event
+		Sub GetTerms()
+		  AddTerm(AddressOf GetA1(AP), 1, -2)
+		  AddTerm(AddressOf GetA2(AP), 2, -2)
+		  AddTerm(AddressOf GetA3(AP), 1, 2)
+		  AddTerm(AddressOf GetA4(AP), 2, 2)
+		  
+		End Sub
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Sub Constructor(MyParameters As CaseParametersClass)
 		  Super.Constructor(MyParameters) // Call the superclass
-		  
+		  Cross = True  // This class is plus polarization
+		  PNOrder = 0 // and for zeroth order
 		  // This part of the constructor should set up any constants that the class might need
 		  // to calculate the wave and its derivatives. Be sure to define the constants as
 		  // properties of this particular subclass.

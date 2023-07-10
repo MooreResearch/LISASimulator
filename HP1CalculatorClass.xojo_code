@@ -1,10 +1,26 @@
 #tag Class
 Protected Class HP1CalculatorClass
-Inherits HNCalculator1
+Inherits HNCalculator
+	#tag Event
+		Sub GetTerms()
+		  AddTerm(AddressOf GetA1, 2, 2)
+		  AddTerm(AddressOf GetA2, 1, 2)
+		  AddTerm(AddressOf GetA3, 1, -2)
+		  AddTerm(AddressOf GetA4, 2,-2)
+		  AddTerm(AddressOf GetA5, 1, 2)
+		End Sub
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Sub Constructor(MyParameters As CaseParametersClass)
 		  Super.Constructor(MyParameters) // Call the superclass
-		  
+		  Super.Constructor(MyParameters) // Call the superclass
+		  Cross = False  // This class is plus polarization
+		  PNOrder = 1 // and for zeroth order
+		  // This part of the constructor should set up any constants that the class might need
+		  // to calculate the wave and its derivatives. Be sure to define the constants as
+		  // properties of this particular subclass.
 		  // This part of the constructor should set up any constants that the class might need
 		  // to calculate the wave and its derivatives. Be sure to define the constants as
 		  // properties of this particular subclass.
