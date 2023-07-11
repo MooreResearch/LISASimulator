@@ -1,181 +1,165 @@
 #tag Class
-Protected Class CaseParametersClass
+Protected Class AmplitudeParameters
 	#tag Method, Flags = &h0
-		Function Clone() As CaseParametersClass
-		  // This creates a clone of the current parameter list
-		  Var CP As New CaseParametersClass
-		  CP.Detectors = Detectors
-		  CP.F0 = F0
-		  CP.GMΩe = GMΩe
-		  CP.H0 = H0
-		  CP.M1 = M1
-		  CP.M2 = M2
-		  CP.R = R
-		  CP.RunDuration = RunDuration
-		  CP.V0 = V0
-		  CP.Ve = Ve
-		  CP.Z = Z
-		  CP.β = β
-		  CP.δ = δ
-		  CP.η = η
-		  CP.ΔT = ΔT
-		  CP.Θ = Θ
-		  CP.λ0 = λ0
-		  CP.π = π
-		  CP.ρ0 = ρ0
-		  CP.Φ = Φ
-		  CP.χ10x = χ10x
-		  CP.χ10y = χ10y
-		  CP.χ10z = χ10z
-		  CP.χ20x = χ20x
-		  CP.χ20y = χ20y
-		  CP.χ20z = χ20z
-		  CP.ψ = ψ
-		  return CP
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTweaked(Which As Item, ε As Double) As CaseParametersClass
-		  // This method creates a parameter list where the specified parameter has
-		  // been tweaked by the value ε.
-		  // For this method to work properly, the current parameter class must have been
-		  // fleshed out by the CaseSupervisor.
-		  Var CP As CaseParametersClass = Clone
-		  Select Case Which
+		Sub Constructor(Parameters As CaseParametersClass, Tweak As Item, Myε As Double)
+		  // Initialize the fixed parameters
+		  δ = Parameters.δ
+		  η = Parameters.η
+		  Var β As Double = Parameters.β
+		  // Deal with tweaked cases
+		  Select Case Tweak
 		  Case Item.δ
-		    CP.δ = δ+ε
-		    CP.η = 0.25*(1.0-(δ+ε)^2)
-		  Case Item.v0
-		    CP.V0 = V0+V0*ε
-		  Case Item.χ10x
-		    CP.χ10x = χ10x+ε
-		  Case Item.χ10y
-		    CP.χ10y = χ10y+ε
-		  Case Item.χ10z
-		    CP.χ10z = χ10z+ε
-		  Case Item.χ20x
-		    CP.χ20x = χ20x+ε
-		  Case Item.χ20y
-		    CP.χ20y = χ20y+ε
-		  Case Item.χ20z
-		    CP.χ20z = χ20z+ε
+		    δ = δ + Myε
+		    η = 0.25*(1-δ*δ)
+		    εδ = Myε
+		  Case Item.β
+		    β = β + Myε
+		    εβ = Myε
+		  Case Item.Cosι
+		    εCosι = Myε
+		  Case Item.χax
+		    εχax = Myε
+		  Case Item.χay
+		    εχay = Myε
+		  Case Item.χaz
+		    εχaz = Myε
+		  Case Item.χsx
+		    εχsx = Myε
+		  Case Item.χsy
+		    εχsy = Myε
+		  Case Item.χsz
+		    εχsz = Myε
 		  End Select
+		  // Set up cosines and sines of β
+		  Cβ = Cos(β)
+		  Sβ = Sin(β)
+		  C2β = Cos(2*β)
+		  S2β = Sin(2*β)
+		  C3β = Cos(3*β)
+		  S3β = Sin(3*β)
+		  C4β = Cos(4*β)
+		  S4β = Sin(4*β)
+		  C5β = Cos(5*β)
+		  S5β = Sin(5*β)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Update(Cosι As Double, χs As Vector, χa As Vector)
+		  // Use this to update the amplitude parameters after every time step
+		  // Add tweaking if there is any
+		  χsx = χs.X + εχsx
+		  χsy = χs.Y + εχsy
+		  χsz = χs.Z + εχsz
+		  χax = χa.X + εχax
+		  χay = χa.Y + εχsy
+		  χaz = χa.Z + εχsz
+		  C2 = Cosι + εCosι
+		  C1 = Sqrt(0.5*(1+C2))
+		  Var C13 As Double = C1*C1*C1
+		  C3 = -3*C1 + 4*C13
+		  C4 = 2*C2-1
+		  C5 = 5*C1 - 20*C13 + 16*C13*C1*C1
+		  S1 = Sqrt(0.5*(1-C2))
+		  Var S13 As Double = S1*S1*S1
+		  S2 = 2*C1*S1
+		  S3 = 3*S1 - 4*S13
+		  S4 = 2*C2*S2
+		  S5 = 5*S1 - 20*S13 + 16*S13*S1*S1
+		  S6 = 2*C3*S3
 		  
-		End Function
+		  
+		  
+		End Sub
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		Detectors As Integer
+		C1 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		F0 As Double
+		C2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		GM As Double
+		C2β As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		GMΩe As Double
+		C3 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		H0 As Double
+		C3β As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		M1 As Double
+		C4 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		M2 As Double
+		C4β As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		PNOrder As Integer
+		C5 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		R As Double
+		C5β As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		RunDuration As Double
+		C6 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForH0 As Boolean = True
+		Cβ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForV0 As Boolean = True
+		S1 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForZ As Boolean = True
+		S2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForβ As Boolean = True
+		S2β As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForδ As Boolean = True
+		S3 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForΘ As Boolean = True
+		S3β As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForλ0 As Boolean = True
+		S4 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForΦ As Boolean = True
+		S4β As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForχ10x As Boolean = True
+		S5 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForχ10y As Boolean = True
+		S5β As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForχ10z As Boolean = True
+		S6 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForχ20x As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SolveForχ20y As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SolveForχ20z As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SolveForψ As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Ve As Double = 0.993362e-5
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Z As Double
+		Sβ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -187,7 +171,39 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ΔT As Double
+		εCosι As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		εβ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		εδ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		εχax As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		εχay As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		εχaz As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		εχsx As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		εχsy As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		εχsz As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -195,63 +211,41 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Θ As Double
+		χax As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		λ0 As Double
+		χay As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		π As Double
+		χaz As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ρ0 As Double
+		χsx As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Φ As Double
+		χsy As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ10x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χ10y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χ10z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χ20x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χ20z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ψ As Double
+		χsz As Double
 	#tag EndProperty
 
 
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
-		v0
+		None
 		  δ
-		  χ10x
-		  χ10y
-		  χ10z
-		  χ20x
-		  χ20y
-		χ20z
+		  Cosι
+		  β
+		  χax
+		  χay
+		  χaz
+		  χsx
+		  χsy
+		χsz
 	#tag EndEnum
 
 
@@ -297,199 +291,7 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="H0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Detectors"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="GMΩe"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Ve"
-			Visible=false
-			Group="Behavior"
-			InitialValue="0.993362e-5"
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="δ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ΔT"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Θ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="λ0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ρ0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Φ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χ10x"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χ10y"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χ10z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χ20x"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χ20y"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χ20z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ψ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="F0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="M1"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="M2"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="R"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="RunDuration"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -505,7 +307,7 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="π"
+			Name="Cβ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -513,127 +315,295 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForH0"
+			Name="C2β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForV0"
+			Name="C3β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForZ"
+			Name="C4β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForβ"
+			Name="C5β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForδ"
+			Name="S2β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForΘ"
+			Name="S3β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForλ0"
+			Name="S4β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForΦ"
+			Name="S5β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForχ10x"
+			Name="Sβ"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForχ10y"
+			Name="β"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForχ10z"
+			Name="C1"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForχ20x"
+			Name="C2"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForχ20y"
+			Name="C3"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForχ20z"
+			Name="C4"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForψ"
+			Name="C5"
 			Visible=false
 			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="GM"
+			Name="C6"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S4"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S5"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S6"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χax"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χay"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χaz"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χsx"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χsy"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χsz"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εχax"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εCosι"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εχay"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εχaz"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εχsx"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εχsy"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εχsz"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εβ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εδ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

@@ -1,7 +1,15 @@
 #tag Class
-Protected Class HValuesClass
+Protected Class DataRecord
+	#tag Method, Flags = &h0
+		Sub Constructor(NItems As Integer)
+		  // Do not ever create a DataRecord on your own. Use RecordArrayClass.GetNewRecord instead.
+		  Values.ResizeTo(NItems-1)
+		End Sub
+	#tag EndMethod
+
+
 	#tag Property, Flags = &h0
-		DhDq(14) As Double
+		Values() As Double
 	#tag EndProperty
 
 
@@ -47,11 +55,11 @@ Protected Class HValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DhDq(14)"
+			Name="Values()"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Double"
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

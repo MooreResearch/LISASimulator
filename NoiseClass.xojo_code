@@ -1,29 +1,30 @@
 #tag Class
-Protected Class Noise
+Protected Class NoiseClass
 	#tag Method, Flags = &h0
-		Sub Constructor(fn As double, dτ As Double)
+		Function GetNoise(VCubed As Double) As Double
 		  //  Class subroutine to generate the noise in LISA at each frequency
+		  //  This dates from a very early version of the code.
 		  
+		  Var fn As Double = VCubed/(2*Parameters.π*Parameters.GM)
 		  Var stot, sb as Double
-		  
 		  stot = sqrt(sx*sx + (sa/(fn*fn*fn*fn))*(sa/(fn*fn*fn*fn)))
 		  stot = stot*(1+(fn*fn)/fc2)
 		  sb = b1/(fn^(1.9))
-		  if fn >= fb1 then sb = b2/(fn^(7.5))
-		  if fn >= fb2 then sb = b3/(fn^(2.6))
+		  If fn >= fb1 Then sb = b2/(fn^(7.5))
+		  If fn >= fb2 Then sb = b3/(fn^(2.6))
 		  stot = sqrt(stot^2 + 4*sb*sb)
 		  
 		  //  This correction specifies the noise value that matches
 		  //  the Benacquista data at f = 0.002 Hz.  Note that this is
 		  //  ONLY valid at that frequency.
 		  
-		  sn = stot/(2*dτ) // return the calculated noise
-		End Sub
+		  Return stot/(2*Parameters.ΔT) // return the calculated noise
+		End Function
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		sn As Double
+		Parameters As CaseParametersClass
 	#tag EndProperty
 
 
@@ -91,14 +92,6 @@ Protected Class Noise
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="sn"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

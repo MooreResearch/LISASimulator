@@ -1,139 +1,163 @@
 #tag Class
 Protected Class UncertaintyCalculatorClass
 	#tag Method, Flags = &h0
-		Sub Arrange()
-		  '// This method removes the rows/columns of the parameters we don't want to solve for and fills in the matrix elements below the diagonal.
-		  '
-		  '// First, remove any row/column that we aren't solving for
-		  'Var j As Integer
-		  'Var numRem As Integer = 0  // store the number of rows/columns we've already removed
-		  'For i As Integer = 1 to 15
-		  'If Not solveList(i-1) Then  // if the parameter isn't to be solved for then:
-		  'j = i - numRem  // calculate the appropriate index
-		  'Y.RemoveInds(j,j)  // remove it
-		  'numRem = numRem + 1  // and update the number of rows removed
-		  'End If
-		  'Next
-		  '
-		  '
-		  '// Then, fill in the rest of the elements in the lower left (below diagonal)
-		  'For k As Integer = 0 To (14 - numRem)
-		  'For m As Integer = 0 to (14 - numRem)
-		  'Y.pData(m, k) = Y.pData(k, m)  // the matrix is symmetric
-		  'Next
-		  'Next
-		  '
-		  'MainWindow.arrangedMatrix = Y.ToString  // store the string of the matrix to be displayed for the user
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub CalculateUncertainties()
-		  '// This method calculates each uncertainty of the parameters we're solving for.
-		  '
-		  'For i As Integer = 0 to 14
-		  'If solveList(i) Then  // if we are solving for the parameter
-		  'σ(i) = sqrt(Y.pdata(i,i)*Y.diagfactors(i))  // calculate the uncertainty and store it in an array
-		  'Else
-		  'σ(i) = 9.999e-99  // this is the placeholder for an uncertainty we aren't calculating
-		  'End If
-		  'Next
+		Function Calculate(ATAMatrix As Matrix) As UncertaintyValuesClass
+		  ATA = ATAMatrix  // Get a local reference to the matrix
 		  
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor(matrix(, ) As Double, mySolveList() As Boolean)
-		  '// The Uncertainty Calculator class performs the necessary operations to calculate parameter uncertainties. The appropriate order is
-		  '// to DiagNormalize, then Arrange, then InvertY, then Unarrange, and finally CalculateUncertainties. This class takes a 2D list (matrix) 
-		  '// and makes a Matrix out of it, as well as a solveList for determining which parameters to solve for. 
-		  '
-		  'Y = New Matrix(matrix)  // create a new Matrix out of the 2D list
-		  '
-		  'MainWindow.originalMatrix = Y.ToString  // store the string value of this matrix for UI display
-		  '
-		  'solveList = mysolveList  // store the solveList
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub DiagNormalize()
-		  '// This method normalizes the matrix, making each diagonal element equal to one
-		  '
-		  'Y.DiagNormz(Y.pDim)  // normalize the matrix
-		  '
-		  'MainWindow.normalizedMatrix= Y.ToString // store this matrix as a string for UI display
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function InvertY() As Integer
-		  '// This method inverts the matrix. It returns 0 if the inversion is successful and the row of the failed part of the matrix inversion if unsuccessful.
-		  '
-		  'Var invertCheck As Integer = Y.LUInvert(Y.pDim)  // attempt to invert the matrix
-		  '
-		  '// if the matrix inversion worked, store the inverted matrix as a string for UI display
-		  'If invertCheck = 0 Then
-		  'MainWindow.invertedMatrix = Y.ToString
-		  'End If
-		  '
-		  'Return invertCheck
+		  // Now we will complile uncertainty values.
+		  Var k As Integer = 0  // Index to the actual row in the inverted matrix
+		  Var s As String = "NAN"  
+		  Var nan As Double = s.ToDouble  // This "not a number" will indicate an uncertainty not calculated
+		  Var uncList(14) As Double  // create an uncertainty list
+		  For j As Integer = 0 to 14
+		    If SolveList(j) Then  // if we solved for this, get its value
+		      uncList(j) = Sqrt(Y.pData(k,k))
+		      k = k + 1   // and update the row number in the actual matrix
+		    Else
+		      UncList(j) = nan  // otherwise, the uncertainty is "not a number"
+		    End If
+		  Next
+		  Var uv As New UncertaintyValuesClass // Get a new instance of the uncertainty values class
+		  // Note that the order here is assumed to be that specified by the enumeration "Item"
+		  uv.OfH0 = uncList(0)
+		  uv.Ofδ = uncList(1)
+		  uv.OfV0 = uncList(2)
+		  uv.OfZ = uncList(3)
+		  uv.Ofβ = uncList(4)
+		  uv.Ofψ = uncList(5)
+		  uv.Ofλ0 = uncList(6)
+		  uv.OfΘ = uncList(7)
+		  uv.OfΦ = uncList(8)
+		  uv.Ofχ10x = uncList(9)
+		  uv.Ofχ10y = uncList(10)
+		  uv.Ofχ10z = uncList(11)
+		  uv.Ofχ20x = uncList(12)
+		  uv.Ofχ20y = uncList(13)
+		  uv.Ofχ20z = uncList(14)
+		  Return uv
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Unarrange()
-		  '// This method puts the matrix back in 15x15 form, with placeholders in the rows/columns that we removed. 
-		  '
-		  'Var i, j, k, m As Integer
-		  'Var YY(14,14) As Double  // this is the "temporary" new matrix
-		  '
-		  'm = 0
-		  'For i = 0 to 14
-		  'If solveList(i) Then
-		  'm = m + 1
-		  'End If
-		  '
-		  'k = 0
-		  'For j = 0 to 14
-		  'If solveList(j) Then
-		  'k = k + 1
-		  'End If
-		  'If solveList(i) And solveList(j) Then
-		  'YY(i,j) = Y.pData(m-1,k-1)  // if we solved for this entry, place the appropriate matrix element here
-		  'Else
-		  'YY(i,j) = 9.99e-99  // if we didn't solve this entry, put in a placeholder value to signify such
-		  'End If
-		  'Next
-		  'Next
-		  '
-		  'Y.ResizeTo(14,14)  // make sure the Y matrix is the appropriate size for unarrangment
-		  '
-		  '// copy the temporary new matrix back into the Y matrix
-		  'For i = 0 to 14
-		  'For j = 0 to 14
-		  'Y.pData(i,j) = YY(i,j)
-		  'Next
-		  'Next
-		  '
-		  'MainWindow.unarrangedMatrix = Y.ToString  // store the matrix as a string for UI display
+		Sub Constructor(MyParameters As CaseParametersClass)
+		  Parameters = MyParameters
+		  InitSolveList
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub GetYToSolve()
+		  Var M(-1,-1) As Double
+		  Var RowsToInclude As Integer = 0
+		  For j As Integer = 0 to 14
+		    If SolveList(j)Then RowsToInclude = RowsToInclude + 1
+		  Next
+		  If RowsToInclude = 0 Then Raise New RuntimeException("Nothing to Solve For")
+		  Var n As Integer = RowsToInclude - 1
+		  M.ResizeTo(n,n)
+		  Var jj As Integer = 0
+		  Var kk As Integer = 0
+		  For j As Integer = 0 to 14
+		    If SolveList(j) Then
+		      kk = 0
+		      For k As Integer = 0 to 14
+		        If SolveList(k) Then
+		          M(jj,kk) = ATA.pData(j,k)
+		          kk = kk + 1
+		        End If
+		      Next
+		      jj = jj + 1
+		    End If
+		  Next
+		  Y = New Matrix(M)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub InitSolveList()
+		  // This creates an array of items to solve for. This is the canonical order
+		  // of items, by the way. This must be consistent with the order in the
+		  // enumeration "Item."
+		  SolveList(0) = Parameters.SolveForH0
+		  SolveList(1) = Parameters.SolveForδ
+		  SolveList(2) = Parameters.SolveForV0
+		  SolveList(3) = Parameters.SolveForZ
+		  SolveList(4) = Parameters.SolveForβ
+		  SolveList(5) = Parameters.SolveForψ
+		  SolveList(6) = Parameters.SolveForλ0
+		  SolveList(7) = Parameters.SolveForΘ
+		  SolveList(8) = Parameters.SolveForΦ
+		  SolveList(9) = Parameters.SolveForχ10x
+		  SolveList(10) = Parameters.SolveForχ10y
+		  SolveList(11) = Parameters.SolveForχ10z
+		  SolveList(12) = Parameters.SolveForχ20x
+		  SolveList(13) = Parameters.SolveForχ20y
+		  SolveList(14) = Parameters.SolveForχ20z
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub InvertY()
+		  // This method inverts the Y matrix or whatever submatrix we can invert
+		  Var badRow As Integer
+		  Do // We will keep trying to invert smaller and smaller matrices until we find one that we can
+		    GetYToSolve  // Get the submatrix to actually solve for
+		    badRow = Y.LUInvert(Y.PDim) - 1  // Get the row index for the bad row if any
+		    Var k As Integer = 0  // This will be the row index in the actual matrix
+		    If badRow <> -1 Then  // If we have a bad row
+		      For j As Integer = 0 to 14   // Scan through the solve list
+		        If SolveList(j) Then  // if we are solving for this item
+		          If k = badRow Then  // and the k index is the same as the bad row
+		            SolveList(j) = False  // then we are not going to solve for that item
+		          Else  // Otherwise
+		            k = k + 1  // update the row number for a good row
+		          End If
+		        End If
+		      Next
+		    End If
+		    // Note that if we ever get to a matrix with zero size, a runtime exception will happen
+		  Loop Until badRow = -1
+		  // When we get here, the Y matrix should be inverted
+		  
 		End Sub
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		solveList() As Boolean
+		ATA As Matrix
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Parameters As CaseParametersClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SolveList(14) As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		Y As Matrix
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		σ(14) As Double
-	#tag EndProperty
+
+	#tag Enum, Name = Item, Type = Integer, Flags = &h0
+		h0
+		  δ
+		  v0
+		  z
+		  β
+		  ψ
+		  λ0
+		  Θ
+		  Φ
+		  χ10x
+		  χ10y
+		  χ10z
+		  χ20x
+		  χ20y
+		χ20z
+	#tag EndEnum
 
 
 	#tag ViewBehavior

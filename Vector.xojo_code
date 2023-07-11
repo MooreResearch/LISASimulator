@@ -3,28 +3,28 @@ Protected Class Vector
 	#tag Method, Flags = &h0
 		Function Add(rhs as vector) As Vector
 		  // adds two vectors and returns their sum
-		  dim sum as New Vector
-		  sum.x = rhs.x + x
-		  sum.y = rhs.y + y
-		  sum.z = rhs.z + z
-		  return sum
+		  return New Vector(rhs.X + X, rhs.Y + Y, rhs.Z + Z)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Clone() As Vector
+		  return New Vector(X,Y,Z)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Compare(rhs as vector) As integer
 		  // compares the magnitude of two vectors
-		  dim magnitude1 as double = sqrt(x^2+y^2+z^2)
-		  dim magnitude2 as double = sqrt(rhs.x^2+rhs.y^2+rhs.z^2)
-		  if magnitude1 = magnitude2 then 
+		  Var Mag1  As Double = GetMagnitude
+		  Var Mag2 as Double = rhs.GetMagnitude
+		  if Mag1 = Mag2 then 
 		    return 0
-		  end if 
-		  if magnitude1 > magnitude2 then 
-		    return 1 
-		  end if 
-		  if magnitude2 > magnitude1 then
-		    return 2
-		  end if 
+		  Elseif Mag1 > Mag2 then 
+		    return 1
+		  Else
+		    return -1
+		  end if
 		End Function
 	#tag EndMethod
 
@@ -36,112 +36,79 @@ Protected Class Vector
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(x0 as double, y0 as double, z0 as double)
+		Sub Constructor(X0 as double, Y0 as double, Z0 as double)
 		  // creates the vector constructor with the three vector components
-		  x = x0
-		  y = y0
-		  z = z0
+		  X = X0
+		  Y = Y0
+		  Z = Z0
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function crossProduct(rhs as vector) As Vector
+		Sub CopyOfVector(b as vector)
+		  X = b.X
+		  Y = b.Y
+		  Z = b.Z
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function CrossProduct(rhs as vector) As Vector
 		  // returns the cross product of two vectors
-		  dim crossProduct as New Vector
-		  crossProduct.x = y*rhs.z - z*rhs.y
-		  crossProduct.y = z*rhs.x - x*rhs.z
-		  crossProduct.z = x*rhs.y - y*rhs.x
-		  return crossProduct
+		  return New Vector(Y*rhs.Z - Z*rhs.Y, Z*rhs.X - X*rhs.Z, X*rhs.Y - Y*rhs.X)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Divide(rhs as double) As vector
-		  // return the resulting vector when 
-		  // a vector is divided by a scalar
-		  dim Divide as new vector
-		  Divide.x = x/rhs
-		  Divide.y = y/rhs
-		  Divide.z = z/rhs
-		  return Divide
+		  // return the resulting vector when dividing by a scalar
+		  Return New Vector(X/rhs, Y/rhs, Z/rhs)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function dotProduct(rhs as vector) As double
+		Function DotProduct(rhs as vector) As Double
 		  // calculates and returns the dot product of two vectors
-		  dim dotProduct as double 
-		  dotProduct = rhs.x*x + rhs.y*y + rhs.z* z
-		  return dotProduct
+		  return rhs.X*X + rhs.Y*Y + rhs.Z*z
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function getMagnitude() As double
+		Function GetMagnitude() As double
 		  // returns the magnitude of a vector
-		  return sqrt(x^2+y^2+z^2)
+		  return sqrt(X^2+Y^2+Z^2)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function getSquare() As double
+		Function GetSquare() As double
 		  // returns the square of a vector
-		  return x^2+y^2+z^2
+		  return X^2+Y^2+Z^2
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetString() As String
-		  return "( " + Str(x) + " , " + Str(y) + " , " + Str(z) + " )"
+		  return "( " + X.ToString + " , " + Y.ToString + " , " + Z.ToString + " )"
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function getUnitVector() As Vector
-		  dim unitVector as New Vector
-		  if me.getMagnitude = 0 then
-		    return me
-		  else 
-		    unitVector.x = x / me.getMagnitude
-		    unitVector.y = y / me.getMagnitude
-		    unitVector.z = z / me.getMagnitude
-		    return unitVector
+		Function GetUnitVector() As Vector
+		  Var Mag As Double = GetMagnitude
+		  if Mag = 0.0 then
+		    Return Nil
+		  else
+		    Return New Vector(X/Mag, Y/Mag, Z/Mag)
 		  end if 
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function getVector() As Vector
-		  return me
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function getX() As double
-		  return x
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function getY() As double
-		  return y
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function getZ() As double
-		  return z
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Negate() As vector
 		  // returns the negated version of a vector
-		  dim negateVector as New Vector 
-		  negateVector.x = -x
-		  negateVector.y = -y
-		  negateVector.z = -z
-		  return negateVector
+		  return New Vector(-X, -Y, -Z)
 		  
 		  
 		End Function
@@ -162,21 +129,17 @@ Protected Class Vector
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Multiply(a as double) As vector
+		Function Operator_Multiply(a as Double) As Vector
 		  //overrides the multiplication * symbol and calculates the product of a scalar with a vector
-		  dim scalarProduct as New Vector
-		  scalarProduct.x = x*a
-		  scalarProduct.y = y *a
-		  scalarProduct.z = z*a
-		  return scalarProduct
+		  return New Vector(a*X, a*Y, a*Z)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Multiply(a as vector) As double
+		Function Operator_Multiply(a as Vector) As Double
 		  // again overrides the multiplication symbol * and
 		  // returns the dot product of two vectors using the dotProduct method
-		  return dotProduct(a)
+		  return DotProduct(a)
 		End Function
 	#tag EndMethod
 
@@ -184,11 +147,7 @@ Protected Class Vector
 		Function Operator_MultiplyRight(lhs as double) As vector
 		  // overrides the multplication symbol * so it accepts the vector quantity 
 		  // to be in the left side of the operation
-		  dim product as New Vector
-		  product.x = x*lhs
-		  product.y = y *lhs
-		  product.z = z*lhs
-		  return product
+		  return New Vector(lhs*X, lhs*Y, lhs*Z)
 		End Function
 	#tag EndMethod
 
@@ -196,58 +155,28 @@ Protected Class Vector
 		Function Operator_Power(rhs as vector) As vector
 		  // overrides the power operator ^ to produce the cross product of two vectors
 		  // uses the crossProduct method to achieve this
-		  return crossProduct(rhs)
+		  return CrossProduct(rhs)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Operator_Subtract(rhs as vector) As Vector
 		  // overrides the subtraction operator - and returns the difference between two vectors
-		  dim difference as New Vector
-		  difference.x = x - rhs.x  
-		  difference.y = y - rhs.y  
-		  difference.z = z - rhs.z
-		  return difference
+		  return New Vector(X-rhs.X, Y-rhs.Y, Z-rhs.Z)
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub setVector(b as vector)
-		  me.setX(b.x)
-		  me.setY(b.y)
-		  me.setZ(b.z)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub setX(b as double)
-		  x = b
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub setY(b as double)
-		  y = b
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub setZ(b as double)
-		  z = b
-		End Sub
-	#tag EndMethod
-
 
 	#tag Property, Flags = &h0
-		x As Double
+		X As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		y As Double
+		Y As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		z As Double
+		Z As Double
 	#tag EndProperty
 
 
@@ -293,7 +222,7 @@ Protected Class Vector
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="x"
+			Name="X"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -301,7 +230,7 @@ Protected Class Vector
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="y"
+			Name="Y"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -309,7 +238,7 @@ Protected Class Vector
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="z"
+			Name="Z"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
