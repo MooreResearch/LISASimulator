@@ -38,6 +38,7 @@ Class=CurrentDerivativesClass;../../Downloads/CurrentDerivativesClass.xojo_code;
 Class=CurrentValuesClass;../../Downloads/CurrentValuesClass.xojo_code;&h000000006E988FFF;&h0000000000000000;false
 Class=HP1CalculatorClass;HP1CalculatorClass.xojo_code;&h000000002620AFFF;&h0000000000000000;false
 Class=HP2CalculatorClass;HP2CalculatorClass.xojo_code;&h000000005081A7FF;&h0000000000000000;false
+Class=HX2CalculatorClass;HX2CalculatorClass.xojo_code;&h000000006BF52FFF;&h0000000000000000;false
 Class=HX1CalculatorClass;HX1CalculatorClass.xojo_code;&h000000001DFA0FFF;&h0000000000000000;false
 Class=HX0CalculatorClass;HX0CalculatorClass.xojo_code;&h000000000C263FFF;&h0000000000000000;false
 Class=HTermData1;../../Downloads/HTermData.xojo_code;&h000000005736BFFF;&h0000000000000000;false

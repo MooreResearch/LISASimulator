@@ -3,11 +3,21 @@ Protected Class HP1CalculatorClass
 Inherits HNCalculator
 	#tag Event
 		Sub GetTerms()
-		  AddTerm(AddressOf GetA1, 2, 2)
-		  AddTerm(AddressOf GetA2, 1, 2)
-		  AddTerm(AddressOf GetA3, 1, -2)
-		  AddTerm(AddressOf GetA4, 2,-2)
-		  AddTerm(AddressOf GetA5, 1, 2)
+		  AddTerm(AddressOf GetA1, 3, 3)
+		  AddTerm(AddressOf GetA2, 1, 1)
+		  AddTerm(AddressOf GetA3, 1, -1)
+		  AddTerm(AddressOf GetA4, 3,1)
+		  AddTerm(AddressOf GetA5, 1, 3)
+		  AddTerm(AddressOf GetA6, 1, -3)
+		  AddTerm(AddressOf GetA7, 3, -1)
+		  AddTerm(AddressOf GetA8, 3, -3)
+		  AddTerm(AddressOf GetA9, 0, 3)
+		  AddTerm(AddressOf GetA10,2, 1)
+		  AddTerm(AddressOf GetA11, 2, 3)
+		  AddTerm(AddressOf GetA12, 2, -1)
+		  AddTerm(AddressOf GetA13, 2, -3)
+		  AddTerm(AddressOf GetA14, 0, 1)
+		  
 		End Sub
 	#tag EndEvent
 
@@ -241,6 +251,150 @@ Inherits HNCalculator
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="h"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDα"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDΨr"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDβ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDΘ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDΦ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDλ0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDδ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDZ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDV0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ10x"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ10z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ10y"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ20x"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ20y"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ20z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Cross"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PNOrder"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="π"
 			Visible=false
