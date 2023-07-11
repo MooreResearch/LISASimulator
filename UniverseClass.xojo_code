@@ -1,31 +1,18 @@
 #tag Class
-Protected Class GraphException
-Inherits RuntimeException
+Protected Class UniverseClass
 	#tag Method, Flags = &h0
-		Sub RangeError()
-		  Var e As RuntimeException
-		  Raise e 
-		End Sub
+		Function GetZFrom(RinSeconds As Double) As Double
+		  return HubbleConstant*RInSeconds
+		End Function
 	#tag EndMethod
 
 
+	#tag Property, Flags = &h0
+		HubbleConstant As Double = 2.2798e-18
+	#tag EndProperty
+
+
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ErrorNumber"
-			Visible=false
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Message"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
@@ -64,6 +51,14 @@ Inherits RuntimeException
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HubbleConstant"
+			Visible=false
+			Group="Behavior"
+			InitialValue="2.2798e-18"
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
