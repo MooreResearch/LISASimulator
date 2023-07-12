@@ -69,16 +69,19 @@ Protected Class SpinEvolverClass
 		  Else
 		    χ1HatN = New Vector(0.0, 0.0, 0.0)
 		  end if
+		  χ1HatP = χ1HatN
 		  if Magχ2 > 0.0 Then 
 		    χ2HatN = New Vector(P.χ20x/Magχ2, P.χ20y/Magχ2, P.χ20z/Magχ2)
 		  Else
 		    χ2HatN = New Vector(0.0, 0.0, 0.0)
 		  End if
+		  χ2HatP = χ2HatN
 		  // The following method calculates the orbital angular momentum unit vector L,
 		  // the antisymmetric spin sum χa, the symmetric spin sum χs, and their projections
 		  // χa𝓁 and χa𝓁 on the L direction. Note that the last five parameters of the method are
 		  // passed by reference so that we can return the five calculated values at once.
 		  InitializeSpins(P, χs𝓁, χa𝓁, LN, χsN, χaN)
+		  LP = LN
 		  χa0 = χaN
 		  χs0 = χsN
 		  Var LProj As Double = LN.x^2 + LN.y^2 // squared projection of LHat on xy plane
@@ -132,6 +135,8 @@ Protected Class SpinEvolverClass
 		    CosιF = CosιN
 		    αDotN = 0.0
 		    DτIdeal = Infinity
+		    χsF = χsN
+		    χaF = χaN
 		  Else // spins are not strictly zero
 		    Var DτRatio As Double = DτF/DτP // calculate this ratio once so we don't have to do it many times
 		    Var OneMinusRatio As Double = 1.0 - DτRatio // Calculate this only once also

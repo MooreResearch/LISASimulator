@@ -48,6 +48,10 @@ Protected Class HTermData
 		DADχsz As Double
 	#tag EndProperty
 
+	#tag Property, Flags = &h0
+		Sine As Boolean
+	#tag EndProperty
+
 
 	#tag ViewBehavior
 		#tag ViewProperty

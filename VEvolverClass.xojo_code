@@ -75,13 +75,12 @@ Protected Class VEvolverClass
 		    DvDχ20z = DvDχa𝓁N*SpinEvolver.DχaDχ20z + DvDχs𝓁N*SpinEvolver.DχsDχ20z
 		    // This part chooses a time step such that the change in 
 		    // the value of v is equal to ε times its magnitude.
-		    Var ε As Double = (1.0-VN)*1.0e-2
+		    Var ε As Double = VN*2.0e-3
 		    DτIdeal = SpinEvolver.Infinity // value will be infinity if vDot is zero
 		    // If the magnitude of the change is not strictly zero, then calculate
 		    // what time step would lead to a change of 1/100 in the value of v.
 		    If vDotN > 0.0 Then DτIdeal = ε/vDotN  // Note that vDot should never be negative
 		  End If
-		  If VN > 0.6 Then Raise New RuntimeException("Reached Speed Limit")
 		End Sub
 	#tag EndMethod
 

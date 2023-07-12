@@ -6,6 +6,7 @@ Inherits Thread
 		  Var CaseParameterSet As CaseParametersClass
 		  For each CaseParameterSet in Cases
 		    CaseSupervisor = New CaseSupervisorClass(CaseParameterSet)
+		    CaseSupervisor.DoSteps
 		  Next
 		End Sub
 	#tag EndEvent

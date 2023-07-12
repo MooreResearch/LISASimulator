@@ -1,11 +1,12 @@
 #tag Class
 Protected Class HNCalculator
 	#tag Method, Flags = &h0
-		Sub AddTerm(AMethod As AmplitudeMethod, Ak As Integer, Bk As Integer)
+		Sub AddTerm(AMethod As AmplitudeMethod, Ak As Integer, Bk As Integer, Sine As Boolean)
 		  Var NewTerm As New HTermData
 		  NewTerm.A = AMethod.Invoke(AP0)
 		  NewTerm.ak = Ak
 		  NewTerm.bk = Bk
+		  NewTerm.Sine = Sine
 		  NewTerm.DADcosι = (AMethod.Invoke(APCosιPlus) - AMethod.Invoke(APCosιMinus))/(2*APCosιPlus.εCosι)
 		  NewTerm.DADβ = (AMethod.Invoke(APβPlus) - AMethod.Invoke(APβMinus))/(2*APβPlus.εβ)
 		  NewTerm.DADδ = (AMethod.Invoke(APδPlus) - AMethod.Invoke(APδMinus))/(2*APδPlus.εδ)
@@ -28,6 +29,7 @@ Protected Class HNCalculator
 		  CurrentValues = TheValues
 		  CurrentDerivatives = TheDerivatives
 		  UpdateAmpParameters
+		  UpdateNoiseFactors
 		  // Clear the TermData array for this PN polarization term
 		  TermData.RemoveAll  // Empty the array
 		  GetTerms  // Request the terms from the subclass
@@ -59,6 +61,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADV0 As Double = term.DADcosι*CurrentDerivatives.DCosιDV0 _
 		    + term.DADχsx*CurrentDerivatives.DχsxDV0 _
 		    + term.DADχsy*CurrentDerivatives.DχsyDV0 _
@@ -66,10 +69,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDV0 _
 		    + term.DADχay*CurrentDerivatives.DχayDV0 _
 		    + term.DADχaz*CurrentDerivatives.DχazDV0
-		    If Cross Then
-		      sum = sum + totalDADV0*sin(term.ak*α + term.bk*Ψr)
+		    If term.Sine Then
+		      sum = sum + totalDADV0*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADV0*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADV0*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDV0 = sum
@@ -84,6 +87,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADZ As Double = term.DADcosι*CurrentDerivatives.DCosιDZ _
 		    + term.DADχsx*CurrentDerivatives.DχsxDZ _
 		    + term.DADχsy*CurrentDerivatives.DχsyDZ _
@@ -91,10 +95,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDZ _
 		    + term.DADχay*CurrentDerivatives.DχayDZ _
 		    + term.DADχaz*CurrentDerivatives.DχazDZ
-		    If Cross Then
-		      sum = sum + totalDADZ*sin(term.ak*α + term.bk*Ψr)
+		    If term.Sine Then
+		      sum = sum + totalDADZ*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADZ*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADZ*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDZ = sum
@@ -107,10 +111,11 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
-		    If Cross Then
-		      sum = sum + term.A*cos(term.ak*α + term.bk*Ψr)*term.ak
+		    Var noiseIndex As Integer = Abs(term.bk)
+		    If term.Sine Then
+		      sum = sum + term.A*cos(term.ak*α + term.bk*Ψr)*term.ak*Snr(noiseIndex)
 		    Else
-		      sum = sum - term.A*sin(term.ak*α + term.bk*Ψr)*term.bk
+		      sum = sum - term.A*sin(term.ak*α + term.bk*Ψr)*term.bk*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDα = sum
@@ -123,10 +128,11 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
-		    If Cross Then
-		      sum = sum + term.DADβ*sin(term.ak*α + term.bk*Ψr)
+		    Var noiseIndex As Integer = Abs(term.bk)
+		    If term.Sine Then
+		      sum = sum + term.DADβ*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + term.DADβ*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + term.DADβ*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDβ = sum
@@ -141,6 +147,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADδ As Double = term.DADδ _
 		    + term.DADcosι*CurrentDerivatives.DCosιDδ _
 		    + term.DADχsx*CurrentDerivatives.DχsxDδ _
@@ -149,10 +156,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDδ _
 		    + term.DADχay*CurrentDerivatives.DχayDδ _
 		    + term.DADχaz*CurrentDerivatives.DχazDδ
-		    If Cross Then
-		      sum = sum + totalDADδ*sin(term.ak*α + term.bk*Ψr)
+		    If term.Sine Then
+		      sum = sum + totalDADδ*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADδ*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADδ*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDδ = sum
@@ -179,6 +186,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADχ10x As Double = term.DADcosι*CurrentDerivatives.DCosιDχ10x _
 		    + term.DADχsx*CurrentDerivatives.DχsxDχ10x _
 		    + term.DADχsy*CurrentDerivatives.DχsyDχ10x _
@@ -186,10 +194,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDχ10x _
 		    + term.DADχay*CurrentDerivatives.DχayDχ10x _
 		    + term.DADχaz*CurrentDerivatives.DχazDχ10x
-		    If Cross Then
-		      sum = sum + totalDADχ10x*sin(term.ak*α + term.bk*Ψr)
+		    If term.Sine Then
+		      sum = sum + totalDADχ10x*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADχ10x*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADχ10x*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDχ10x = sum
@@ -204,6 +212,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADχ10y As Double = term.DADcosι*CurrentDerivatives.DCosιDχ10y _
 		    + term.DADχsx*CurrentDerivatives.DχsxDχ10y _
 		    + term.DADχsy*CurrentDerivatives.DχsyDχ10y _
@@ -211,10 +220,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDχ10y _
 		    + term.DADχay*CurrentDerivatives.DχayDχ10y _
 		    + term.DADχaz*CurrentDerivatives.DχazDχ10y
-		    If Cross Then
-		      sum = sum + totalDADχ10y*sin(term.ak*α + term.bk*Ψr)
+		    If Term.Sine Then
+		      sum = sum + totalDADχ10y*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADχ10y*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADχ10y*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDχ10y = sum
@@ -229,6 +238,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADχ10z As Double = term.DADcosι*CurrentDerivatives.DCosιDχ10z _
 		    + term.DADχsx*CurrentDerivatives.DχsxDχ10z _
 		    + term.DADχsy*CurrentDerivatives.DχsyDχ10z _
@@ -236,10 +246,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDχ10z _
 		    + term.DADχay*CurrentDerivatives.DχayDχ10z _
 		    + term.DADχaz*CurrentDerivatives.DχazDχ10z
-		    If Cross Then
-		      sum = sum + totalDADχ10z*sin(term.ak*α + term.bk*Ψr)
+		    If term.Sine Then
+		      sum = sum + totalDADχ10z*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADχ10z*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADχ10z*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDχ10z = sum
@@ -254,6 +264,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADχ20x As Double = term.DADcosι*CurrentDerivatives.DCosιDχ20x _
 		    + term.DADχsx*CurrentDerivatives.DχsxDχ20x _
 		    + term.DADχsy*CurrentDerivatives.DχsyDχ20x _
@@ -261,10 +272,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDχ20x _
 		    + term.DADχay*CurrentDerivatives.DχayDχ20x _
 		    + term.DADχaz*CurrentDerivatives.DχazDχ20x
-		    If Cross Then
-		      sum = sum + totalDADχ20x*sin(term.ak*α + term.bk*Ψr)
+		    If term.Sine Then
+		      sum = sum + totalDADχ20x*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADχ20x*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADχ20x*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDχ20x = sum
@@ -279,6 +290,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADχ20y As Double = term.DADcosι*CurrentDerivatives.DCosιDχ20y _
 		    + term.DADχsx*CurrentDerivatives.DχsxDχ20y _
 		    + term.DADχsy*CurrentDerivatives.DχsyDχ20y _
@@ -286,10 +298,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDχ20y _
 		    + term.DADχay*CurrentDerivatives.DχayDχ20y _
 		    + term.DADχaz*CurrentDerivatives.DχazDχ20y
-		    If Cross Then
-		      sum = sum + totalDADχ20y*sin(term.ak*α + term.bk*Ψr)
+		    If term.Sine Then
+		      sum = sum + totalDADχ20y*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADχ20y*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADχ20y*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDχ20y = sum
@@ -304,6 +316,7 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
+		    Var noiseIndex As Integer = Abs(term.bk)
 		    Var totalDADχ20z As Double = term.DADcosι*CurrentDerivatives.DCosιDχ20z _
 		    + term.DADχsx*CurrentDerivatives.DχsxDχ20z _
 		    + term.DADχsy*CurrentDerivatives.DχsyDχ20z _
@@ -311,10 +324,10 @@ Protected Class HNCalculator
 		    + term.DADχax*CurrentDerivatives.DχaxDχ20z _
 		    + term.DADχay*CurrentDerivatives.DχayDχ20z _
 		    + term.DADχaz*CurrentDerivatives.DχazDχ20z
-		    If Cross Then
-		      sum = sum + totalDADχ20z*sin(term.ak*α + term.bk*Ψr)
+		    If term.Sine Then
+		      sum = sum + totalDADχ20z*sin(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    Else
-		      sum = sum + totalDADχ20z*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + totalDADχ20z*cos(term.ak*α + term.bk*Ψr)*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDχ20z = sum
@@ -327,10 +340,11 @@ Protected Class HNCalculator
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
-		    If Cross Then
-		      sum = sum + term.A*cos(term.ak*α + term.bk*Ψr)*term.bk
+		    Var noiseIndex As Integer = Abs(term.bk)
+		    If term.Sine Then
+		      sum = sum + term.A*cos(term.ak*α + term.bk*Ψr)*term.bk*Snr(noiseIndex)
 		    Else
-		      sum = sum - term.A*sin(term.ak*α + term.bk*Ψr)*term.bk
+		      sum = sum - term.A*sin(term.ak*α + term.bk*Ψr)*term.bk*Snr(noiseIndex)
 		    End If
 		  Next
 		  DhDΨr = sum
@@ -341,16 +355,24 @@ Protected Class HNCalculator
 	#tag Method, Flags = &h0
 		Sub CalculateH()
 		  Var sum As Double
+		  Var sumA As Double
+		  Var hterm As Double
 		  Var α As Double = CurrentValues.α
 		  Var Ψr As Double = CurrentValues.Ψr
 		  For Each term As HTermData in TermData
-		    If Cross Then
-		      sum = sum + term.A*sin(term.ak*α + term.bk*Ψr)
+		    Var noiseIndex As Integer = Abs(term.bk)
+		    If term.Sine Then
+		      hterm = term.A*sin(term.ak*α + term.bk*Ψr)
+		      sum = sum + hterm
+		      sumA = sumA + hterm*Snr(noiseIndex)
 		    Else
-		      sum = sum + term.A*cos(term.ak*α + term.bk*Ψr)
+		      hterm = term.A*cos(term.ak*α + term.bk*Ψr)
+		      sum = sum + hterm
+		      sumA = sumA + hterm*Snr(noiseIndex)
 		    End If
 		  Next
 		  h = sum
+		  HAdjusted = sumA
 		End Sub
 	#tag EndMethod
 
@@ -361,6 +383,8 @@ Protected Class HNCalculator
 		  // Set properties for various parameters that we commonly need
 		  // so they can be accessed more quickly
 		  π = Parameters.π
+		  // Set up noise class reference
+		  Noise = New NoiseClass(Parameters.ΔT)
 		  // Initialize all the side-case AmplitudeParameters
 		  AP0 = New AmplitudeParameters(MyParameters, AmplitudeParameters.Item.None, 0)
 		  APCosιPlus = New AmplitudeParameters(MyParameters, AmplitudeParameters.Item.Cosι, 1.0e-6)
@@ -408,6 +432,25 @@ Protected Class HNCalculator
 		  APχsyPlus.Update(Cosι, χs, χa)
 		  APχszMinus.Update(Cosι, χs, χa)
 		  APχszPlus.Update(Cosι, χs, χa)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub UpdateNoiseFactors()
+		  // This is the value of the observed orbital frequency in Hz
+		  Var fN As Double =  CurrentValues.V^3/(2*π*Parameters.GM*(1.0 + Parameters.Z))
+		  //  get the noise at various frequencies
+		  Var n2 As Double = Noise.GetNoise(2*fN) // This is the noise at the fundamental gravitational wave frequency
+		  // The following array contains ratios that we will use to enhance derivatives of harmonics at higher frequencies
+		  // to reflect how they may be better or more poorly received by the detector than the fundamental harmonic
+		  Snr(1 )= Sqrt(n2/Noise.GetNoise(fN))
+		  Snr(2) = 1.0
+		  Snr(3) = Sqrt(n2/Noise.GetNoise(3*fN))
+		  Snr(4) = Sqrt(n2/Noise.GetNoise(4*fN))
+		  Snr(5) = Sqrt(n2/Noise.GetNoise(5*fN))
+		  Snr(6) = Sqrt(n2/Noise.GetNoise(6*fN))
+		  Sn2 = Sqrt(n2)  // This is the basic square root of noise at the fundamental gravitational wave frequency
 		  
 		End Sub
 	#tag EndMethod
@@ -571,11 +614,27 @@ Protected Class HNCalculator
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		HAdjusted As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Noise As NoiseClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Parameters As CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		PNOrder As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Sn2 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Snr(6) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -778,6 +837,22 @@ Protected Class HNCalculator
 			Group="Behavior"
 			InitialValue=""
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HAdjusted"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

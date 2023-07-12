@@ -90,10 +90,11 @@ Protected Class EvolverClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DoMainStep(TheMainStep As Integer)
+		Function DidMainStepOK(TheMainStep As Integer) As Boolean
 		  // This method will execute as many steps of the source evolution code as necessary to stay ahead of
 		  // (or at least in step with) steps of the main program.
 		  
+		  Var OKToContinue As Boolean = True
 		  MainStep = TheMainStep  // Record the current main step number
 		  If MainStep = 0 Then // If this is the first step
 		    UpdateValues  // Get the new values and store them in the present values property
@@ -131,6 +132,10 @@ Protected Class EvolverClass
 		    Var StepsDone As Integer = 0
 		    Do
 		      DoSourceStep  // Do a source step
+		      If StepPowerF < -10 Then
+		        OKToContinue = False
+		        Exit
+		      End If
 		      StepsDone = StepsDone + 1  // Count the step
 		      If StepPowerF < StepUnitPower And StepsDone < StepsToDo Then
 		        // If the next step size will be smaller and we have not reached the target
@@ -138,11 +143,14 @@ Protected Class EvolverClass
 		        StepsDone = StepsDone*2^(StepUnitPower-StepPowerF)  // and rescale the steps already done
 		      End If
 		    Loop Until StepsDone = StepsToDo
-		    UpdateValues  // Get the new values and store them in the present values property
-		    UpdateDerivatives  // and the same with the derivatives
-		    WhereInSourceStep = 0 // and we will report the present values
+		    If OKToContinue Then // if we haven't exited becase we are too close to coalescence
+		      UpdateValues  // Get the new values and store them in the present values property
+		      UpdateDerivatives  // and the same with the derivatives
+		      WhereInSourceStep = 0 // and we will report the present values
+		    End If
 		  End If
-		End Sub
+		  Return OKToContinue
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -362,35 +370,35 @@ Protected Class EvolverClass
 		  Dχa = VEvolverForV0Plus.SpinEvolver.χaN -  VEvolverForV0Minus.SpinEvolver.χaN
 		  DerivativesN.DχaxDV0 = Dχa.X*inverse2ε
 		  DerivativesN.DχayDV0 = Dχa.Y*inverse2ε
-		  DerivativesN.DχayDV0 = Dχa.Y*inverse2ε
+		  DerivativesN.DχazDV0 = Dχa.Z*inverse2ε
 		  Dχa = VEvolverForδPlus.SpinEvolver.χaN -  VEvolverForδMinus.SpinEvolver.χaN
 		  DerivativesN.DχaxDδ = Dχa.X*inverse2ε
 		  DerivativesN.DχayDδ = Dχa.Y*inverse2ε
-		  DerivativesN.DχayDδ = Dχa.Y*inverse2ε
+		  DerivativesN.DχazDδ = Dχa.Z*inverse2ε
 		  Dχa = VEvolverForχ10xPlus.SpinEvolver.χaN -  VEvolverForχ10xMinus.SpinEvolver.χaN
 		  DerivativesN.DχaxDχ10x = Dχa.X*inverse2ε
 		  DerivativesN.DχayDχ10x = Dχa.Y*inverse2ε
-		  DerivativesN.DχayDχ10x = Dχa.Y*inverse2ε
+		  DerivativesN.DχazDχ10x = Dχa.Z*inverse2ε
 		  Dχa = VEvolverForχ10yPlus.SpinEvolver.χaN -  VEvolverForχ10yMinus.SpinEvolver.χaN
 		  DerivativesN.DχaxDχ10y = Dχa.X*inverse2ε
 		  DerivativesN.DχayDχ10y = Dχa.Y*inverse2ε
-		  DerivativesN.DχayDχ10y = Dχa.Y*inverse2ε
+		  DerivativesN.DχazDχ10y = Dχa.Z*inverse2ε
 		  Dχa = VEvolverForχ10zPlus.SpinEvolver.χaN -  VEvolverForχ10zMinus.SpinEvolver.χaN
 		  DerivativesN.DχaxDχ10z = Dχa.X*inverse2ε
 		  DerivativesN.DχayDχ10z = Dχa.Y*inverse2ε
-		  DerivativesN.DχayDχ10z = Dχa.Y*inverse2ε
+		  DerivativesN.DχazDχ10z = Dχa.Z*inverse2ε
 		  Dχa = VEvolverForχ20xPlus.SpinEvolver.χaN -  VEvolverForχ20xMinus.SpinEvolver.χaN
 		  DerivativesN.DχaxDχ20x = Dχa.X*inverse2ε
 		  DerivativesN.DχayDχ20x = Dχa.Y*inverse2ε
-		  DerivativesN.DχayDχ20x = Dχa.Y*inverse2ε
+		  DerivativesN.DχazDχ20x = Dχa.Z*inverse2ε
 		  Dχa = VEvolverForχ20yPlus.SpinEvolver.χaN -  VEvolverForχ20yMinus.SpinEvolver.χaN
 		  DerivativesN.DχaxDχ20y = Dχa.X*inverse2ε
 		  DerivativesN.DχayDχ20y = Dχa.Y*inverse2ε
-		  DerivativesN.DχayDχ20y = Dχa.Y*inverse2ε
+		  DerivativesN.DχazDχ20y = Dχa.Z*inverse2ε
 		  Dχa = VEvolverForχ20zPlus.SpinEvolver.χaN -  VEvolverForχ20zMinus.SpinEvolver.χaN
 		  DerivativesN.DχaxDχ20z = Dχa.X*inverse2ε
 		  DerivativesN.DχayDχ20z = Dχa.Y*inverse2ε
-		  DerivativesN.DχayDχ20z = Dχa.Y*inverse2ε
+		  DerivativesN.DχazDχ20z = Dχa.Z*inverse2ε
 		End Sub
 	#tag EndMethod
 
@@ -404,35 +412,35 @@ Protected Class EvolverClass
 		  Dχs = VEvolverForV0Plus.SpinEvolver.χaN -  VEvolverForV0Minus.SpinEvolver.χaN
 		  DerivativesN.DχsxDV0 = Dχs.X*inverse2ε
 		  DerivativesN.DχsyDV0 = Dχs.Y*inverse2ε
-		  DerivativesN.DχsyDV0 = Dχs.Y*inverse2ε
+		  DerivativesN.DχszDV0 = Dχs.Z*inverse2ε
 		  Dχs = VEvolverForδPlus.SpinEvolver.χaN -  VEvolverForδMinus.SpinEvolver.χaN
 		  DerivativesN.DχsxDδ = Dχs.X*inverse2ε
 		  DerivativesN.DχsyDδ = Dχs.Y*inverse2ε
-		  DerivativesN.DχsyDδ = Dχs.Y*inverse2ε
+		  DerivativesN.DχszDδ = Dχs.Z*inverse2ε
 		  Dχs = VEvolverForχ10xPlus.SpinEvolver.χaN -  VEvolverForχ10xMinus.SpinEvolver.χaN
 		  DerivativesN.DχsxDχ10x= Dχs.X*inverse2ε
 		  DerivativesN.DχsyDχ10x = Dχs.Y*inverse2ε
-		  DerivativesN.DχsyDχ10x= Dχs.Y*inverse2ε
+		  DerivativesN.DχszDχ10x= Dχs.Z*inverse2ε
 		  Dχs = VEvolverForχ10yPlus.SpinEvolver.χaN -  VEvolverForχ10yMinus.SpinEvolver.χaN
 		  DerivativesN.DχsxDχ10y= Dχs.X*inverse2ε
 		  DerivativesN.DχsyDχ10y = Dχs.Y*inverse2ε
-		  DerivativesN.DχsyDχ10y= Dχs.Y*inverse2ε
-		  Dχs = VEvolverForχ10zPlus.SpinEvolver.χaN -  VEvolverForχ10xMinus.SpinEvolver.χaN
+		  DerivativesN.DχszDχ10y= Dχs.Z*inverse2ε
+		  Dχs = VEvolverForχ10zPlus.SpinEvolver.χaN -  VEvolverForχ10zMinus.SpinEvolver.χaN
 		  DerivativesN.DχsxDχ10z= Dχs.X*inverse2ε
 		  DerivativesN.DχsyDχ10z = Dχs.Y*inverse2ε
-		  DerivativesN.DχsyDχ10z= Dχs.Y*inverse2ε
+		  DerivativesN.DχszDχ10z= Dχs.Z*inverse2ε
 		  Dχs = VEvolverForχ20xPlus.SpinEvolver.χaN -  VEvolverForχ20xMinus.SpinEvolver.χaN
 		  DerivativesN.DχsxDχ20x= Dχs.X*inverse2ε
 		  DerivativesN.DχsyDχ20x = Dχs.Y*inverse2ε
-		  DerivativesN.DχsyDχ20x= Dχs.Y*inverse2ε
+		  DerivativesN.DχszDχ20x= Dχs.Z*inverse2ε
 		  Dχs = VEvolverForχ20yPlus.SpinEvolver.χaN -  VEvolverForχ20yMinus.SpinEvolver.χaN
 		  DerivativesN.DχsxDχ20y= Dχs.X*inverse2ε
 		  DerivativesN.DχsyDχ20y = Dχs.Y*inverse2ε
-		  DerivativesN.DχsyDχ20y= Dχs.Y*inverse2ε
+		  DerivativesN.DχszDχ20y= Dχs.Z*inverse2ε
 		  Dχs = VEvolverForχ20zPlus.SpinEvolver.χaN -  VEvolverForχ20zMinus.SpinEvolver.χaN
 		  DerivativesN.DχsxDχ20z= Dχs.X*inverse2ε
 		  DerivativesN.DχsyDχ20z = Dχs.Y*inverse2ε
-		  DerivativesN.DχsyDχ20z= Dχs.Y*inverse2ε
+		  DerivativesN.DχszDχ20z= Dχs.Z*inverse2ε
 		  
 		End Sub
 	#tag EndMethod
