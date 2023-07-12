@@ -57,16 +57,29 @@ Protected Class AmplitudeParameters
 		  C2 = Cosι + εCosι
 		  C1 = Sqrt(0.5*(1+C2))
 		  Var C13 As Double = C1*C1*C1
+		  Var C15 As Double = C13*C1*C1
+		  Var C17 As Double = C13*C13*C1
 		  C3 = -3*C1 + 4*C13
-		  C4 = 2*C2-1
-		  C5 = 5*C1 - 20*C13 + 16*C13*C1*C1
+		  C4 = 2*C2*C2-1
+		  C5 = 5*C1 - 20*C13 + 16*C15
+		  C6 = 2*C3*C3-1
+		  C7 = 64*C17 - 112*C15 + 56*C13 - 7*C1
+		  C8 = 2*C4*C4 - 1
+		  C9 = -3*C3 + 4*C3*C3*C3
+		  C10 = 2*C5*C5-1
 		  S1 = Sqrt(0.5*(1-C2))
 		  Var S13 As Double = S1*S1*S1
+		  Var S15 As Double = S13*S1*S1
+		  Var S17 As Double = S13*S13*S1
 		  S2 = 2*C1*S1
 		  S3 = 3*S1 - 4*S13
 		  S4 = 2*C2*S2
-		  S5 = 5*S1 - 20*S13 + 16*S13*S1*S1
+		  S5 = 5*S1 - 20*S13 + 16*S15
 		  S6 = 2*C3*S3
+		  S7 = 7*S1 - 56*s13 +112*S15 - 64*S17
+		  S8 = 2*C4*S4
+		  S9 = 3*S3 - 4*S3*S3*S3
+		  S10 = 2*C5*S5
 		  
 		  
 		  
@@ -76,6 +89,10 @@ Protected Class AmplitudeParameters
 
 	#tag Property, Flags = &h0
 		C1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		C10 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -115,11 +132,27 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		C7 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		C8 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		C9 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Cβ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		S1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S10 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -156,6 +189,18 @@ Protected Class AmplitudeParameters
 
 	#tag Property, Flags = &h0
 		S6 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S7 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S8 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S9 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

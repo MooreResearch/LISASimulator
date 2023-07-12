@@ -2,33 +2,43 @@
 Protected Class CaseSupervisorClass
 	#tag Method, Flags = &h0
 		Sub Constructor(currentCaseParameterSet As CaseParametersClass)
-		  // The CaseSupervisor class handles the running of each individual case. This constructor handles everything: when
-		  // it returns, the case is finished. It accepts the list of parameters from the currentCase ParameterSet, initializes the
-		  // calculation, executes the time steps, and calculates the uncertainties at the end. When the contructor returns, one
-		  // should have a complete list of uncertainties in the Uncertainty property.
+		  // The CaseSupervisor class handles the running of each individual case.
+		  // The constructor accepts the list of parameters from the currentCase ParameterSet
+		  // and initializes the calculation
 		  
-		  Var terminationMessage As String
-		  Var n As Integer
+		  StartTicks = System.Ticks
 		  CaseParameters = currentCaseParameterSet // save the parameters for the current case
 		  InitializeParameters // flesh out the supplied parameters and put them into the right units
 		  τr = -Dτr // set this back a step so that the first step is at time τr = 0.
+		  Evolver = New EvolverClass(CaseParameters, Dτr) // create an instance of the Evolver class and initialize it
+		  HCalculator = New HCalculatorClass(CaseParameters) // create an instance of the HCalculatorClass and initialize it
+		  UncertaintyCalculator = New UncertaintyCalculatorClass(CaseParameters)
+		  ATAMatrix = New Matrix(15) // Initalize an empty 15x15 matrix
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DoSteps()
+		  // This method actually executes the steps for the current case in question.
+		  // When it is done, the uncertainties should be in the Uncertainties property.
 		  Try
-		    Evolver = New EvolverClass(CaseParameters, Dτr) // create an instance of the Evolver class and initialize it
-		    HCalculator = New HCalculatorClass(CaseParameters) // create an instance of the HCalculatorClass and initialize it
-		    UncertaintyCalculator = New UncertaintyCalculatorClass(CaseParameters)
-		    ATAMatrix = ATAMatrix.GetZeroMatrix(15) // Initialize an empty 15x15 matrix
-		    For n = 0 to NSteps
+		    For N = 0 to NSteps
 		      τr = τr + Dτr // one step to the future
-		      Evolver.DoMainStep(n) // this directs the evolver to update values to the present step
-		      Var currentValues As CurrentValuesClass = Evolver.ValuesN // get the all values we need
-		      Var currentDerivs As CurrentDerivativesClass = Evolver.DerivativesN // get all the derivatives
-		      HCalculator.Calculate(currentValues, currentDerivs, ATAMatrix) // calculate the polarizations and update ATA matrix
+		      If Evolver.DidMainStepOK(n) Then  // If the evolver was able to execute a step
+		        // update values to the present step
+		        Var currentValues As CurrentValuesClass = Evolver.ValuesN // get the all values we need
+		        Var currentDerivs As CurrentDerivativesClass = Evolver.DerivativesN // get all the derivatives
+		        HCalculator.Calculate(currentValues, currentDerivs, ATAMatrix) // calculate the polarizations and update ATA matrix
+		      Else  // If the evolver was not able to complete the step, we are at coalescence
+		        TerminationMessage = "Coalescence Happened"
+		        Exit  // Abort the loop
+		      End If
 		    Next
 		    Uncertainty = UncertaintyCalculator.Calculate(ATAMatrix) // solve for the uncertainties
 		  Catch err As RuntimeException
-		    terminationMessage = err.Message + " at step " + n.ToString
+		    TerminationMessage = err.Message + " at step " + N.ToString
 		  End Try
-		  If terminationMessage = "" Then terminationMessage = "Normal termination."
+		  If TerminationMessage = "" Then terminationMessage = "Normal termination."
 		End Sub
 	#tag EndMethod
 
@@ -91,10 +101,6 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		GM As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		GMSun As Double = 4.92708e-6
 	#tag EndProperty
 
@@ -103,7 +109,19 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		N As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		NSteps As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		StartTicks As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		TerminationMessage As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -209,15 +227,31 @@ Protected Class CaseSupervisorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="GM"
+			Name="NSteps"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Double"
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="NSteps"
+			Name="N"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TerminationMessage"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StartTicks"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

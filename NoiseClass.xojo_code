@@ -1,11 +1,16 @@
 #tag Class
 Protected Class NoiseClass
 	#tag Method, Flags = &h0
-		Function GetNoise(VCubed As Double) As Double
+		Sub Constructor(dT As Double)
+		  ΔT = dT
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetNoise(fn As Double) As Double
 		  //  Class subroutine to generate the noise in LISA at each frequency
 		  //  This dates from a very early version of the code.
 		  
-		  Var fn As Double = VCubed/(2*Parameters.π*Parameters.GM)
 		  Var stot, sb as Double
 		  stot = sqrt(sx*sx + (sa/(fn*fn*fn*fn))*(sa/(fn*fn*fn*fn)))
 		  stot = stot*(1+(fn*fn)/fc2)
@@ -18,13 +23,13 @@ Protected Class NoiseClass
 		  //  the Benacquista data at f = 0.002 Hz.  Note that this is
 		  //  ONLY valid at that frequency.
 		  
-		  Return stot/(2*Parameters.ΔT) // return the calculated noise
+		  Return stot/(2*ΔT) // return the calculated noise
 		End Function
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		Parameters As CaseParametersClass
+		ΔT As Double
 	#tag EndProperty
 
 

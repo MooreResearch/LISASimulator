@@ -20,6 +20,21 @@ Protected Class Matrix
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Constructor(NDimensions As Integer)
+		  // Initialize a zero matrix with a certain number of dimensions
+		  pDim = nDimensions     // stores dimension of matrix as property
+		  Var n As Integer = nDimensions - 1
+		  pData.ResizeTo(n, n)  // resizes matrix data array appropriately (n-1 used because of 0-indexing)
+		  // This part is probably not necessary, but just to be safe
+		  For i As Integer = 0 To n      // loop over matrix entries
+		    For j As Integer = 0 To n
+		      pData(i,j) = 0.0
+		    Next
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub DiagNormz(n As Integer)
 		  // This method "normalizes" a matrix, or upper-left submatrix of specified size, by dividing all elements in each row of the (sub)matrix
 		  // by the diagonal entry in that row. The method modifies the original matrix.

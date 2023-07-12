@@ -61,6 +61,7 @@ Protected Class CaseParametersClass
 		  Case Item.χ20z
 		    CP.χ20z = χ20z+ε
 		  End Select
+		  Return CP
 		  
 		End Function
 	#tag EndMethod
@@ -638,6 +639,14 @@ Protected Class CaseParametersClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PNOrder"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

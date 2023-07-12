@@ -2,23 +2,24 @@
 Protected Class HCalculatorClass
 	#tag Method, Flags = &h0
 		Sub Add2ATAMatrix(TheATA As Matrix)
+		  Var InverseNoise As Double = 1.0/HP0Calculator.Sn2
 		  // Load the derivatives into an array
 		  Var DArray(14) As Double
-		  DArray(0) = DH.Dh0
-		  DArray(1) = DH.Dδ
-		  DArray(2) = DH.DV0
-		  DArray(3) = DH.Dz
-		  DArray(4) = DH.Dβ
-		  DArray(5) = DH.Dψ
-		  DArray(6) = DH.Dλ0
-		  DArray(7) = DH.DΘ
-		  DArray(8) = DH.DΦ
-		  DArray(9) = DH.Dχ10x
-		  DArray(10) = DH.Dχ10y
-		  DArray(11) = DH.Dχ10z
-		  DArray(12) = DH.Dχ20x
-		  DArray(13) = DH.Dχ20y
-		  DArray(14) = DH.Dχ20z
+		  DArray(0) = DH.Dh0*InverseNoise
+		  DArray(1) = DH.Dδ*InverseNoise
+		  DArray(2) = DH.DV0*InverseNoise
+		  DArray(3) = DH.Dz*InverseNoise
+		  DArray(4) = DH.Dβ*InverseNoise
+		  DArray(5) = DH.Dψ*InverseNoise
+		  DArray(6) = DH.Dλ0*InverseNoise
+		  DArray(7) = DH.DΘ*InverseNoise
+		  DArray(8) = DH.DΦ*InverseNoise
+		  DArray(9) = DH.Dχ10x*InverseNoise
+		  DArray(10) = DH.Dχ10y*InverseNoise
+		  DArray(11) = DH.Dχ10z*InverseNoise
+		  DArray(12) = DH.Dχ20x*InverseNoise
+		  DArray(13) = DH.Dχ20y*InverseNoise
+		  DArray(14) = DH.Dχ20z*InverseNoise
 		  // Add all the derivatives into the ATA matrix
 		  For j As Integer = 0 to 14
 		    For k As Integer = 0 to 14
@@ -141,6 +142,9 @@ Protected Class HCalculatorClass
 		  HX = H0V2*(HX0Calculator.h + V*(HX1Calculator.h + HX1SOCalculator.h) _
 		  + V2*(HX2Calculator.h + HX2SOCalculator.h) _
 		  + V3*(HX3Calculator.h + HX3SOCalculator.h))
+		  HXAdjusted = H0V2*(HX0Calculator.HAdjusted + V*(HX1Calculator.HAdjusted + HX1SOCalculator.HAdjusted) _
+		  + V2*(HX2Calculator.HAdjusted + HX2SOCalculator.HAdjusted) _
+		  + V3*(HX3Calculator.HAdjusted + HX3SOCalculator.HAdjusted))
 		  DhxDV0 = H0V2*(HX0Calculator.DhDV0 _
 		  + V*(HX1Calculator.DhDV0 + HX1SOCalculator.DhDV0) _
 		  + V2*(HX2Calculator.DhDV0 + HX2SOCalculator.DhDV0) _
@@ -239,8 +243,8 @@ Protected Class HCalculatorClass
 		  Var FCross As Double = FCross1 + FCross2
 		  H = FPlus*HP + FCross*HX
 		  DH.Value = H
-		  DH.Dh0 = H/H0
-		  DH.Dψ = 2*(-FCross*HP + FPlus*HX)
+		  DH.Dh0 = (FPlus*HPAdjusted + FCross*HXAdjusted)/H0
+		  DH.Dψ = 2*(-FCross*HPAdjusted + FPlus*HXAdjusted)
 		  Var DFpDq As Double = HalfCos2ψ*(DDp1DΘ + DDp2DΘ) - HalfSin2ψ*(DDx1DΘ + DDx2DΘ)
 		  Var DFxDq As Double = HalfSin2ψ*(DDp1DΘ + DDp2DΘ) + HalfCos2ψ*(DDx1DΘ + DDx2DΘ)
 		  DH.DΘ = DFpDq*HP + DFxDq*HX + FPlus*DhpDΘ + FCross*DhxDΘ
@@ -268,6 +272,9 @@ Protected Class HCalculatorClass
 		  HP = H0V2*(HP0Calculator.h + V*(HP1Calculator.h + HP1SOCalculator.h) _
 		  + V2*(HP2Calculator.h + HP2SOCalculator.h) _
 		  + V3*(HP3Calculator.h + HP3SOCalculator.h))
+		  HPAdjusted = H0V2*(HP0Calculator.HAdjusted+ V*(HP1Calculator.HAdjusted + HP1SOCalculator.HAdjusted) _
+		  + V2*(HP2Calculator.HAdjusted + HP2SOCalculator.HAdjusted) _
+		  + V3*(HP3Calculator.HAdjusted + HP3SOCalculator.HAdjusted))
 		  DhpDV0 = H0V2*(HP0Calculator.DhDV0 _
 		  + V*(HP1Calculator.DhDV0 + HP1SOCalculator.DhDV0) _
 		  + V2*(HP2Calculator.DhDV0 + HP2SOCalculator.DhDV0) _
@@ -654,6 +661,10 @@ Protected Class HCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		HPAdjusted As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		HX As Double
 	#tag EndProperty
 
@@ -683,6 +694,10 @@ Protected Class HCalculatorClass
 
 	#tag Property, Flags = &h0
 		HX3SOCalculator As HNCalculator
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		HXAdjusted As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

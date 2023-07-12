@@ -3,10 +3,10 @@ Protected Class HX0CalculatorClass
 Inherits HNCalculator
 	#tag Event
 		Sub GetTerms()
-		  AddTerm(AddressOf GetA1, 1, -2)
-		  AddTerm(AddressOf GetA2, 2, -2)
-		  AddTerm(AddressOf GetA3, 1, 2)
-		  AddTerm(AddressOf GetA4, 2, 2)
+		  AddTerm(AddressOf GetA1, 1, -2, True)
+		  AddTerm(AddressOf GetA2, 2, -2, True)
+		  AddTerm(AddressOf GetA3, 1, 2, True)
+		  AddTerm(AddressOf GetA4, 2, 2, True)
 		End Sub
 	#tag EndEvent
 
@@ -48,6 +48,22 @@ Inherits HNCalculator
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="HAdjusted"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
