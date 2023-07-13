@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   1
+      Value           =   2
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -1153,7 +1153,7 @@ Begin DesktopWindow MainWindow
          Height          =   558
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Case 1\n5000\n5000\n2.00	\n1000\n39\n24\n0\n5\n268.5\n0\n0\n0\n0\n0\n0\n0\n3\n2\n50\n1.0"
+         InitialValue    =   "Case 1\n5000\n5000\n2.00	\n1000\n39\n24\n0\n5\n268.5\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n3\n2\n50\n1.0"
          Italic          =   False
          Left            =   120
          LockBottom      =   False
@@ -2175,6 +2175,29 @@ End
 
 
 	#tag Method, Flags = &h0
+		Sub DisplayUncertainties(Params As CaseParametersClass, Uncertainties As UncertaintyValuesClass)
+		  ResultsListBox1.CellTextAt(0,0) = Params.H0.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfH0)
+		  ResultsListBox1.CellTextAt(0,1) = Params.δ.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofδ)
+		  ResultsListBox1.CellTextAt(0,2) = Params.V0.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfV0)
+		  ResultsListBox1.CellTextAt(0,3) = Params.Z.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfZ)
+		  ResultsListBox1.CellTextAt(0,4) = Params.β.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofβ)
+		  ResultsListBox1.CellTextAt(0,5) = Params.ψ.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofψ)
+		  ResultsListBox2.CellTextAt(0,0) = Params.λ0.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofλ0)
+		  ResultsListBox2.CellTextAt(0,1) = Params.Θ.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfΘ)
+		  ResultsListBox2.CellTextAt(0,2) = Params.Φ.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfΦ)
+		  ResultsListBox2.CellTextAt(0,4) = Params.χ10x.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ10x)
+		  ResultsListBox2.CellTextAt(0,5) = Params.χ10y.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ10y)
+		  ResultsListBox2.CellTextAt(0,6) = Params.χ10z.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ10z)
+		  ResultsListBox3.CellTextAt(0,0) = Params.χ20x.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ20x)
+		  ResultsListBox3.CellTextAt(0,1) = Params.χ20y.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ20y)
+		  ResultsListBox3.CellTextAt(0,2) = Params.χ20z.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ20z)
+		  ResultsListBox1.Refresh
+		  ResultsListBox2.Refresh
+		  ResultsListBox3.Refresh
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass, SpinStuff As SpinEvolverClass) As Double
 		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
 		  Var δ As Double = parameters.δ
@@ -2189,6 +2212,16 @@ End
 		  Var Term4 As Double = 64*c*c + (128/9)*(1855099/14450688 + (56975/258048)*η - (371/2048)*η*η)
 		  Var A As Double = 5*Parameters.GM/(256*η*TheSuper.Year*v0^8)
 		  Return A*(1 + Term2*v0*v0 + Term3*v0*v0*v0 + Term4*v0*v0*v0*v0)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetUncertaintyString(uc As Double) As String
+		  If uc.IsNotANumber then
+		    Return "Not Solved For"
+		  Else
+		    Return "± " + uc.ToString
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -2581,6 +2614,9 @@ End
 		    me.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped"
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
+		    'If TheSuper.TerminationMessage = "Normal Termination" or TheSuper.TerminationMessage = "Coalescence Happened" then
+		    'DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
+		    'end if
 		  end if
 		  
 		End Sub
@@ -2681,6 +2717,13 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events ResultsListBox1
+	#tag Event
+		Sub Opening()
+		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events CasesListBox
 	#tag Event
 		Function CellKeyDown(row as Integer, column as Integer, key as String) As Boolean
@@ -2706,6 +2749,20 @@ End
 	#tag Event
 		Sub Opening()
 		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextField
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ResultsListBox2
+	#tag Event
+		Sub Opening()
+		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ResultsListBox3
+	#tag Event
+		Sub Opening()
+		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
 		End Sub
 	#tag EndEvent
 #tag EndEvents
