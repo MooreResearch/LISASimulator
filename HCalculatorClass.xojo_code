@@ -1386,6 +1386,7 @@ Protected Class HCalculatorClass
 			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
+
 		#tag ViewProperty
 			Name="HPAdjusted"
 			Visible=false
@@ -1402,6 +1403,7 @@ Protected Class HCalculatorClass
 			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
+
 	#tag EndViewBehavior
 End Class
 #tag EndClass

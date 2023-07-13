@@ -1153,7 +1153,9 @@ Begin DesktopWindow MainWindow
          Height          =   558
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
+
          InitialValue    =   "Case 1\n5000\n5000\n2.00	\n1000\n39\n24\n0\n5\n268.5\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n3\n2\n50\n1.0"
+
          Italic          =   False
          Left            =   120
          LockBottom      =   False
@@ -1425,8 +1427,13 @@ Begin DesktopWindow MainWindow
          Scope           =   0
          TabIndex        =   15
          TabPanelIndex   =   4
+
          TabStop         =   True
+         Text            =   ""
+         TextAlignment   =   0
+         TextColor       =   &c000000
          Tooltip         =   ""
+
          Top             =   68
          Transparent     =   False
          Underline       =   False
@@ -2149,6 +2156,7 @@ Begin DesktopWindow MainWindow
          Transparent     =   False
          Underline       =   False
          Visible         =   True
+
          Width           =   114
       End
    End
@@ -2176,6 +2184,7 @@ End
 
 	#tag Method, Flags = &h0
 
+
 		Sub DisplayUncertainties(Params As CaseParametersClass, Uncertainties As UncertaintyValuesClass)
 		  ResultsListBox1.CellTextAt(0,0) = Params.H0.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfH0)
 		  ResultsListBox1.CellTextAt(0,1) = Params.δ.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofδ)
@@ -2195,10 +2204,12 @@ End
 		  ResultsListBox1.Refresh
 		  ResultsListBox2.Refresh
 		  ResultsListBox3.Refresh
+
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 
 		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass, SpinStuff As SpinEvolverClass) As Double
 		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
@@ -2214,10 +2225,12 @@ End
 		  Var Term4 As Double = 64*c*c + (128/9)*(1855099/14450688 + (56975/258048)*η - (371/2048)*η*η)
 		  Var A As Double = 5*Parameters.GM/(256*η*TheSuper.Year*v0^8)
 		  Return A*(1 + Term2*v0*v0 + Term3*v0*v0*v0 + Term4*v0*v0*v0*v0)
+
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 
 		Function GetUncertaintyString(uc As Double) As String
 		  If uc.IsNotANumber then
@@ -2225,10 +2238,13 @@ End
 		  Else
 		    Return "± " + uc.ToString
 		  End If
+
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
+		  
 
 		Function GetValueAndSolveFlag(ByRef Solve as Boolean, Source as String) As Double
 		  If Source.BeginsWith("x ") Then
@@ -2238,10 +2254,12 @@ End
 		    Solve = True
 		    Return Source.ToDouble
 		  End If
+
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 		Sub oldCreateArrays()
 		  '//This method does the majority of the work in the main window. It feeds the necessary parameters
 		  '//to a new instance of the EvolverClass class in order to perform the DoStep method enough times to make
@@ -2356,11 +2374,13 @@ End
 		  
 		  
 		  
+
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 		Function oldGetHighestValue(InputArray() As Double, Min As Integer, Max As Integer) As Double
 		  //Parameters: InputArray() an array of double values
 		  '//Return: CurrentHighest as double
@@ -2386,11 +2406,12 @@ End
 		  '
 		  
 		  
-		  
+
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 		Function oldGetIndexOfClosest(InputValue As String) As Integer
 		  '// This method helps with graphing (GetLowerBound and GetUpperBound in particular) by returning the index of the value closest to the
 		  '// input value.
@@ -2466,11 +2487,13 @@ End
 		  'next 
 		  '
 		  'return CurrentLowest
+
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 		Function oldGetUpperBound() As Integer
 		  '// Returns the upper bound based on user input
 		  '
@@ -2517,6 +2540,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 		Sub oldSetInitialValues(CaseCounter As Integer)
 		  '//This method takes the inputs from LBInputValues and sets the properties in the main window equal to them
 		  '
@@ -2619,9 +2643,11 @@ End
 		    ValueOfStatusLabel.Text = "Stopped"
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
 
+
 		    'If TheSuper.TerminationMessage = "Normal Termination" or TheSuper.TerminationMessage = "Coalescence Happened" then
 		    'DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
 		    'end if
+
 
 		  end if
 		  
@@ -2661,6 +2687,7 @@ End
 	#tag EndEvent
 #tag EndEvents
 #tag Events StartStopButton
+
 	#tag Event
 		Sub Pressed()
 		  If me.Caption = "Run Cases" Then
@@ -2727,6 +2754,7 @@ End
 	#tag Event
 		Sub Opening()
 		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
+
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -2751,6 +2779,7 @@ End
 		  me.EditCellAt(row, column)
 		  
 		End Function
+
 	#tag EndEvent
 	#tag Event
 		Sub Opening()
@@ -2772,6 +2801,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+
 #tag ViewBehavior
 	#tag ViewProperty
 		Name="Name"
