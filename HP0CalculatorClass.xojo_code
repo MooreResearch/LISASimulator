@@ -31,7 +31,7 @@ Inherits HNCalculator
 
 	#tag Method, Flags = &h0
 		Function GetA2(AP As AmplitudeParameters) As Double
-		  
+		  Return -2*AP.S2β/2*AP.C1^3*AP.S1
 		End Function
 	#tag EndMethod
 

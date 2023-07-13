@@ -3,7 +3,7 @@ Protected Class UncertaintyCalculatorClass
 	#tag Method, Flags = &h0
 		Function Calculate(ATAMatrix As Matrix) As UncertaintyValuesClass
 		  ATA = ATAMatrix  // Get a local reference to the matrix
-		  GetYToSolve  // Get the submatrix we are actually going to solve for
+
 		  InvertY // Invert the matrix
 		  // Now we will complile uncertainty values.
 		  Var k As Integer = 0  // Index to the actual row in the inverted matrix
@@ -15,7 +15,7 @@ Protected Class UncertaintyCalculatorClass
 		      uncList(j) = Sqrt(Y.pData(k,k))
 		      k = k + 1   // and update the row number in the actual matrix
 		    Else
-		      UncList(j) = nan  // otherwise, the uncertainty is "not a number"
+		      uncList(j) = nan  // otherwise, the uncertainty is "not a number"
 		    End If
 		  Next
 		  Var uv As New UncertaintyValuesClass // Get a new instance of the uncertainty values class
@@ -111,6 +111,7 @@ Protected Class UncertaintyCalculatorClass
 		        If SolveList(j) Then  // if we are solving for this item
 		          If k = badRow Then  // and the k index is the same as the bad row
 		            SolveList(j) = False  // then we are not going to solve for that item
+		            Exit // No need to go on
 		          Else  // Otherwise
 		            k = k + 1  // update the row number for a good row
 		          End If
