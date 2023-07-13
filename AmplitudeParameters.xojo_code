@@ -61,7 +61,7 @@ Protected Class AmplitudeParameters
 		    S1 = 0.0  // as the derivative of a parameter maximum should be
 		  Else // Otherwise, we are safely far from this maximum
 		    C2 = Cosι + εCosι
-		    S1 = 0.0
+		    S1 = Sqrt(0.5*(1-C2))
 		  End If
 		  // Fill in the rest of the values
 		  C1 = Sqrt(0.5*(1+C2))
