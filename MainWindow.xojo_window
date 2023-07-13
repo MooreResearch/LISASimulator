@@ -2175,6 +2175,7 @@ End
 
 
 	#tag Method, Flags = &h0
+
 		Sub DisplayUncertainties(Params As CaseParametersClass, Uncertainties As UncertaintyValuesClass)
 		  ResultsListBox1.CellTextAt(0,0) = Params.H0.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfH0)
 		  ResultsListBox1.CellTextAt(0,1) = Params.δ.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofδ)
@@ -2198,6 +2199,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass, SpinStuff As SpinEvolverClass) As Double
 		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
 		  Var δ As Double = parameters.δ
@@ -2216,6 +2218,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 		Function GetUncertaintyString(uc As Double) As String
 		  If uc.IsNotANumber then
 		    Return "Not Solved For"
@@ -2226,6 +2229,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+
 		Function GetValueAndSolveFlag(ByRef Solve as Boolean, Source as String) As Double
 		  If Source.BeginsWith("x ") Then
 		    Solve = False
@@ -2614,9 +2618,11 @@ End
 		    me.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped"
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
+
 		    'If TheSuper.TerminationMessage = "Normal Termination" or TheSuper.TerminationMessage = "Coalescence Happened" then
 		    'DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
 		    'end if
+
 		  end if
 		  
 		End Sub

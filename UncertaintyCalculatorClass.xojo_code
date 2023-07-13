@@ -3,6 +3,7 @@ Protected Class UncertaintyCalculatorClass
 	#tag Method, Flags = &h0
 		Function Calculate(ATAMatrix As Matrix) As UncertaintyValuesClass
 		  ATA = ATAMatrix  // Get a local reference to the matrix
+
 		  InvertY // Invert the matrix
 		  // Now we will complile uncertainty values.
 		  Var k As Integer = 0  // Index to the actual row in the inverted matrix
