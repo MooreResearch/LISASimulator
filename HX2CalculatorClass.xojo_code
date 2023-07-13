@@ -3,6 +3,7 @@ Protected Class HX2CalculatorClass
 Inherits HNCalculator
 	#tag Event
 		Sub GetTerms()
+
 		  AddTerm(AddressOf GetA1, 2, 2, True)
 		  AddTerm(AddressOf GetA2, 4, 4, True)
 		  AddTerm(AddressOf GetA3, 3, 4, True)
@@ -20,6 +21,7 @@ Inherits HNCalculator
 		  AddTerm(AddressOf GetA15, 4, -4, True)
 		  AddTerm(AddressOf GetA16, 0, 2, True)
 		  AddTerm(AddressOf GetA17, 0, 4, True)
+
 		  
 		End Sub
 	#tag EndEvent
@@ -29,7 +31,9 @@ Inherits HNCalculator
 		Sub Constructor(MyParameters As CaseParametersClass)
 		  Super.Constructor(MyParameters) // Call the superclass
 		  Cross = True  // This class is cross polarization
-		  PNOrder = 2 // and for zeroth order
+
+		  PNOrder = 2 // and for second post-Newtonian order
+
 		  // This part of the constructor should set up any constants that the class might need
 		  // to calculate the wave and its derivatives. Be sure to define the constants as
 		  // properties of this particular subclass.
@@ -212,6 +216,7 @@ Inherits HNCalculator
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="h"
 			Visible=false
 			Group="Behavior"

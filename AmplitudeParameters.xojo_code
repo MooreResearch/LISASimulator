@@ -54,7 +54,18 @@ Protected Class AmplitudeParameters
 		  χax = χa.X + εχax
 		  χay = χa.Y + εχsy
 		  χaz = χa.Z + εχsz
-		  C2 = Cosι + εCosι
+
+		  // If we are very close to having Cosι = 1, then the difference
+		  // scheme fails, because Sinι is undefined.
+		  If εCosι <> 0.0 And Cosι + Abs(1.1*εCosι) > 1.0 Then
+		    C2 = 1.0  // This should make the Cosι derivative strictly zero
+		    S1 = 0.0  // as the derivative of a parameter maximum should be
+		  Else // Otherwise, we are safely far from this maximum
+		    C2 = Cosι + εCosι
+		    S1 = Sqrt(0.5*(1-C2))
+		  End If
+		  // Fill in the rest of the values
+
 		  C1 = Sqrt(0.5*(1+C2))
 		  Var C13 As Double = C1*C1*C1
 		  Var C15 As Double = C13*C1*C1
@@ -67,7 +78,7 @@ Protected Class AmplitudeParameters
 		  C8 = 2*C4*C4 - 1
 		  C9 = -3*C3 + 4*C3*C3*C3
 		  C10 = 2*C5*C5-1
-		  S1 = Sqrt(0.5*(1-C2))
+
 		  Var S13 As Double = S1*S1*S1
 		  Var S15 As Double = S13*S1*S1
 		  Var S17 As Double = S13*S13*S1
@@ -649,6 +660,71 @@ Protected Class AmplitudeParameters
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="εδ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+
+		#tag ViewProperty
+			Name="C10"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C7"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C8"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C9"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S10"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S7"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S8"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S9"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

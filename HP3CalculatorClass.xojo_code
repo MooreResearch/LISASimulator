@@ -3,6 +3,7 @@ Protected Class HP3CalculatorClass
 Inherits HNCalculator
 	#tag Event
 		Sub GetTerms()
+
 		  AddTerm(AddressOf GetA1, 2, 2, False)
 		  AddTerm(AddressOf GetA2, 1, 2, False)
 		  AddTerm(AddressOf GetA3, 1, -2, False)
@@ -42,7 +43,7 @@ Inherits HNCalculator
 		  AddTerm(AddressOf GetA37, 2, -1, False)
 		  AddTerm(AddressOf GetA38, 0, 1, False)
 		  
-		  
+
 		End Sub
 	#tag EndEvent
 
@@ -57,6 +58,7 @@ Inherits HNCalculator
 		  // properties of this particular subclass.
 		End Sub
 	#tag EndMethod
+
 
 	#tag Method, Flags = &h0
 		Function GetA1(AP As AmplitudeParameters) As Double
@@ -342,6 +344,7 @@ Inherits HNCalculator
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="h"
 			Visible=false
 			Group="Behavior"

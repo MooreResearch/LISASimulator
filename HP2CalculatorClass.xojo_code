@@ -3,6 +3,7 @@ Protected Class HP2CalculatorClass
 Inherits HNCalculator
 	#tag Event
 		Sub GetTerms()
+
 		  AddTerm(AddressOf GetA1, 2, 2, False)
 		  AddTerm(AddressOf GetA2, 4, 4, False)
 		  AddTerm(AddressOf GetA3, 3, 4, False)
@@ -21,6 +22,7 @@ Inherits HNCalculator
 		  AddTerm(AddressOf GetA16, 0, 2, False)
 		  AddTerm(AddressOf GetA17, 0, 4, False)
 		  AddTerm(AddressOf GetA18, 1, 2, False)
+
 		End Sub
 	#tag EndEvent
 
@@ -30,11 +32,13 @@ Inherits HNCalculator
 		  Super.Constructor(MyParameters) // Call the superclass
 		  Cross = False  // This class is plus polarization
 		  PNOrder = 2 // and for zeroth order
+
 		  // This part of the constructor should set up any constants that the class might need
 		  // to calculate the wave and its derivatives. Be sure to define the constants as
 		  // properties of this particular subclass.
 		End Sub
 	#tag EndMethod
+
 
 	#tag Method, Flags = &h0
 		Function GetA1(AP As AmplitudeParameters) As Double
@@ -168,6 +172,7 @@ Inherits HNCalculator
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="h"
 			Visible=false
 			Group="Behavior"
