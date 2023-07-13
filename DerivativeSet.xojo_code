@@ -1,107 +1,67 @@
 #tag Class
-Protected Class OrbitValuesClass
+Protected Class DerivativeSet
 	#tag Property, Flags = &h0
-		cosι As Double
+		Dh0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DcosιDv0 As Double
+		DV0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DcosιDδ As Double
+		Dz As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DcosιDχ10x As Double
+		Dβ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DcosιDχ10y As Double
+		Dδ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DcosιDχ10z As Double
+		DΘ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DcosιDχ20x As Double
+		Dλ0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DcosιDχ20y As Double
+		DΦ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DcosιDχ20z As Double
+		Dχ10x As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DDαDτDχ10x As Double
+		Dχ10y As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DDαDτDχ10y As Double
+		Dχ10z As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DDαDτDχ10z As Double
+		Dχ20x As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DDαDτDχ20x As Double
+		Dχ20y As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DDαDτDχ20y As Double
+		Dχ20z As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DDαDτDχ20z As Double
+		Dψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDv0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDz As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDδ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDτ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDχ10x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDχ10y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDχ10z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDχ20x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDχ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DαDχ20z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		α As Double
+		Value As Double
 	#tag EndProperty
 
 
@@ -147,7 +107,7 @@ Protected Class OrbitValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="α"
+			Name="Dh0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

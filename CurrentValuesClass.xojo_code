@@ -1,55 +1,73 @@
 #tag Class
-Protected Class HTermData
+Protected Class CurrentValuesClass
+	#tag Method, Flags = &h0
+		Function Operator_Add(RHS As CurrentValuesClass) As CurrentValuesClass
+		  Var Result As New CurrentValuesClass  // Create an empty version of the class
+		  Var info As Introspection.TypeInfo = Introspection.GetType(self) // Get information about this class
+		  Var childProperties() As Introspection.PropertyInfo = info.GetProperties
+		  For Each p As Introspection.PropertyInfo In childProperties // iterate through the array
+		    // add each value in this instance to the value in the right instance to get the result value
+		    p.Value(Result) = p.Value(self).DoubleValue + p.Value(RHS).DoubleValue
+		  Next
+		  Return Result // Return the result
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_MultiplyRight(LHS As Double) As CurrentValuesClass
+		  Var Result As New CurrentValuesClass  // Create a new empty version of the class
+		  Var info As Introspection.TypeInfo = Introspection.GetType(self)  // Get the information about this class
+		  Var childProperties() As Introspection.PropertyInfo = info.GetProperties  // Get an array of information about the properties
+		  For Each p As Introspection.PropertyInfo In childProperties // Iterate over all the properties
+		    p.Value(Result) = LHS*p.Value(self).DoubleValue // multiply each value in self by the scalar and put it in the result
+		  Next
+		  Return Result // Return the result
+		End Function
+	#tag EndMethod
+
+
 	#tag Property, Flags = &h0
-		A As Double
+		Cosι As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ak As Integer
+		V As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		bk As Integer
+		α As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DADcosι As Double
+		τr As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DADβ As Double
+		χax As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DADδ As Double
+		χay As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DADχax As Double
+		χaz As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DADχay As Double
+		χsx As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DADχaz As Double
+		χsy As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DADχsx As Double
+		χsz As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DADχsy As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DADχsz As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Sine As Boolean
+		Ψr As Double
 	#tag EndProperty
 
 
@@ -95,7 +113,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DADχax"
+			Name="V"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -103,7 +121,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DADχay"
+			Name="α"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -111,7 +129,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DADχaz"
+			Name="cosι"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -119,7 +137,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DADχsx"
+			Name="Ψr"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -127,7 +145,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DADχsy"
+			Name="χax"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -135,7 +153,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DADχsz"
+			Name="χay"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -143,7 +161,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="A"
+			Name="χaz"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -151,23 +169,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ak"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="bk"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DADcosι"
+			Name="χsx"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -175,7 +177,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DADβ"
+			Name="χsy"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -183,7 +185,7 @@ Protected Class HTermData
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DADδ"
+			Name="χsz"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

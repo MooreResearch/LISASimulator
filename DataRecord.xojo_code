@@ -1,20 +1,15 @@
 #tag Class
-Protected Class Cell
+Protected Class DataRecord
 	#tag Method, Flags = &h0
-		Sub Constructor(cont As String)
-		  Me.Content = cont
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Untitled()
-		  
+		Sub Constructor(NItems As Integer)
+		  // Do not ever create a DataRecord on your own. Use RecordArrayClass.GetNewRecord instead.
+		  Values.ResizeTo(NItems-1)
 		End Sub
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		Content As String
+		Values() As Double
 	#tag EndProperty
 
 
@@ -60,12 +55,12 @@ Protected Class Cell
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Content"
+			Name="Values()"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="String"
-			EditorType="MultiLineEditor"
+			Type="Integer"
+			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

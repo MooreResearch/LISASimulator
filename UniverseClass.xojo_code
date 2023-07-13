@@ -1,43 +1,14 @@
 #tag Class
-Protected Class VValuesClass
-	#tag Property, Flags = &h0
-		DvDv0 As Double
-	#tag EndProperty
+Protected Class UniverseClass
+	#tag Method, Flags = &h0
+		Function GetZFrom(RinSeconds As Double) As Double
+		  return HubbleConstant*RInSeconds
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
-		DvDz As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DvDδ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DvDχ10x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DvDχ10y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DvDχ10z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DvDχ20x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DvDχ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DvDχ20z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		v As Double
+		HubbleConstant As Double = 2.2798e-18
 	#tag EndProperty
 
 
@@ -83,11 +54,11 @@ Protected Class VValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="v"
+			Name="HubbleConstant"
 			Visible=false
 			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
+			InitialValue="2.2798e-18"
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

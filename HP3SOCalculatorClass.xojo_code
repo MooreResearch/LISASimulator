@@ -1,71 +1,178 @@
 #tag Class
-Protected Class FixedSpinValuesClass
-	#tag Property, Flags = &h0
-		DχaDδ As Double
-	#tag EndProperty
+Protected Class HP3SOCalculatorClass
+Inherits HNCalculator
+	#tag Event
+		Sub GetTerms()
+		  
+		End Sub
+	#tag EndEvent
 
-	#tag Property, Flags = &h0
-		DχaDχ10x As Double
-	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		DχaDχ10y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχaDχ10z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχaDχ20x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχaDχ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχaDχ20z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχsDδ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχsDχ10x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχsDχ10y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχsDχ10z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχsDχ20x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχsDχ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DχsDχ20z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χa As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χs As Double
-	#tag EndProperty
+	#tag Method, Flags = &h0
+		Sub Constructor(MyParameters As CaseParametersClass)
+		  Super.Constructor(MyParameters) // Call the superclass
+		  Cross = False  // This class is plus polarization
+		  PNOrder = 3 // and for third post-Newtonian order
+		  // This part of the constructor should set up any constants that the class might need
+		  // to calculate the wave and its derivatives. Be sure to define the constants as
+		  // properties of this particular subclass.
+		End Sub
+	#tag EndMethod
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="h"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDα"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDΨr"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDβ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDΘ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDΦ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDλ0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDδ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDZ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDV0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ10x"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ10z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ10y"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ20x"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ20y"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DhDχ20z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Cross"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PNOrder"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="π"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
@@ -104,126 +211,6 @@ Protected Class FixedSpinValuesClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χa"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχaDδ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχaDχ10x"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχaDχ10y"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχaDχ10z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχaDχ20x"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχaDχ20z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχsDδ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχsDχ10x"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχsDχ10y"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχsDχ10z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχsDχ20x"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχsDχ20y"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχsDχ20z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χs"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

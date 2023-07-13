@@ -3,20 +3,20 @@ Protected Class HP1CalculatorClass
 Inherits HNCalculator
 	#tag Event
 		Sub GetTerms()
-		  AddTerm(AddressOf GetA1, 3, 3)
-		  AddTerm(AddressOf GetA2, 1, 1)
-		  AddTerm(AddressOf GetA3, 1, -1)
-		  AddTerm(AddressOf GetA4, 3,1)
-		  AddTerm(AddressOf GetA5, 1, 3)
-		  AddTerm(AddressOf GetA6, 1, -3)
-		  AddTerm(AddressOf GetA7, 3, -1)
-		  AddTerm(AddressOf GetA8, 3, -3)
-		  AddTerm(AddressOf GetA9, 0, 3)
-		  AddTerm(AddressOf GetA10,2, 1)
-		  AddTerm(AddressOf GetA11, 2, 3)
-		  AddTerm(AddressOf GetA12, 2, -1)
-		  AddTerm(AddressOf GetA13, 2, -3)
-		  AddTerm(AddressOf GetA14, 0, 1)
+		  AddTerm(AddressOf GetA1, 3, 3, False)
+		  AddTerm(AddressOf GetA2, 1, 1, False)
+		  AddTerm(AddressOf GetA3, 1, -1, False)
+		  AddTerm(AddressOf GetA4, 3,1, False)
+		  AddTerm(AddressOf GetA5, 1, 3, False)
+		  AddTerm(AddressOf GetA6, 1, -3, False)
+		  AddTerm(AddressOf GetA7, 3, -1, False)
+		  AddTerm(AddressOf GetA8, 3, -3, False)
+		  AddTerm(AddressOf GetA9, 0, 3, False)
+		  AddTerm(AddressOf GetA10,2, 1, False)
+		  AddTerm(AddressOf GetA11, 2, 3, False)
+		  AddTerm(AddressOf GetA12, 2, -1, False)
+		  AddTerm(AddressOf GetA13, 2, -3, False)
+		  AddTerm(AddressOf GetA14, 0, 1, False)
 		  
 		End Sub
 	#tag EndEvent
@@ -126,131 +126,63 @@ Inherits HNCalculator
 
 	#tag Method, Flags = &h0
 		Function GetAllTerms(TheValues As CurrentValuesClass, TheDerivatives As CurrentDerivativesClass) As HTermData()
-		  // Provide references to the current values and current derivatives. "CurrentValues" and
-		  // "CurrentDerivatives" are properties of the superclass. These classes contain (as properties)
-		  // all the information needed to calculate the wave and its derivatives.
-		  CurrentValues = TheValues
-		  CurrentDerivatives = TheDerivatives
+		  '// Provide references to the current values and current derivatives. "CurrentValues" and
+		  '// "CurrentDerivatives" are properties of the superclass. These classes contain (as properties)
+		  '// all the information needed to calculate the wave and its derivatives.
+		  'CurrentValues = TheValues
+		  'CurrentDerivatives = TheDerivatives
+		  '
+		  '// Clear the TermData array for this PN polarization term
+		  'TermData.RemoveAll
+		  'Var AP As AmplitudeParameters = new AmplitudeParameters(Parameters)
+		  '// The calculation of all subterms in this polarization term should appear here. Write a method
+		  '// to calculate each subterm, then append the result to the TermData array. Something like
+		  '// TermData.Add(GetTermK), where GetTermK (K = 0, 1, 2, ...) that returns an HTermData instance.
+		  '// The GetTermK method in turn should call a separate method GetAK(AP As AmplitudeParameters)
+		  '// that calculates the amplitude alone (since we will need to call this multiple times to handle side cases)
+		  '// with tweaked values of the the parameters. The rest of the code in GetTermK should create a new
+		  '// instance of HTermData and set its properties appropriately (ignore the derivatives for the moment).
+		  'TermData.Add(GetTerm1(AP))
+		  'TermData.Add(GetTerm2(AP))
+		  'TermData.Add(GetTerm3(AP))
+		  'TermData.Add(GetTerm4(AP))
+		  'TermData.Add(GetTerm5(AP))
+		  'TermData.Add(GetTerm6(AP))
+		  'TermData.Add(GetTerm7(AP))
+		  'TermData.Add(GetTerm8(AP))
+		  'TermData.Add(GetTerm9(AP))
+		  'TermData.Add(GetTerm10(AP))
+		  'TermData.Add(GetTerm11(AP))
+		  'TermData.Add(GetTerm12(AP))
+		  'TermData.Add(GetTerm13(AP))
+		  'TermData.Add(GetTerm14(AP))
+		  '
+		  '// At the end, return the array you have created.
+		  'Return TermData
+		  '
+		  '
 		  
-		  // Clear the TermData array for this PN polarization term
-		  TermData.RemoveAll
-		  Var AP As AmplitudeParameters = new AmplitudeParameters(Parameters)
-		  // The calculation of all subterms in this polarization term should appear here. Write a method
-		  // to calculate each subterm, then append the result to the TermData array. Something like
-		  // TermData.Add(GetTermK), where GetTermK (K = 0, 1, 2, ...) that returns an HTermData instance.
-		  // The GetTermK method in turn should call a separate method GetAK(AP As AmplitudeParameters)
-		  // that calculates the amplitude alone (since we will need to call this multiple times to handle side cases)
-		  // with tweaked values of the the parameters. The rest of the code in GetTermK should create a new
-		  // instance of HTermData and set its properties appropriately (ignore the derivatives for the moment).
-		  TermData.Add(GetTerm1(AP))
-		  TermData.Add(GetTerm2(AP))
-		  TermData.Add(GetTerm3(AP))
-		  TermData.Add(GetTerm4(AP))
-		  TermData.Add(GetTerm5(AP))
-		  TermData.Add(GetTerm6(AP))
-		  TermData.Add(GetTerm7(AP))
-		  TermData.Add(GetTerm8(AP))
-		  TermData.Add(GetTerm9(AP))
-		  TermData.Add(GetTerm10(AP))
-		  TermData.Add(GetTerm11(AP))
-		  TermData.Add(GetTerm12(AP))
-		  TermData.Add(GetTerm13(AP))
-		  TermData.Add(GetTerm14(AP))
-		  
-		  // At the end, return the array you have created.
-		  Return TermData
-		  
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm1(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA1(AP), 3, 3)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm10(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA10(AP), 2, 1)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm11(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA11(AP), 2, 3)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm12(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA12(AP), 2, -1)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm13(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA13(AP), 2, -3)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm14(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA14(AP), 0, 1)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm2(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA2(AP), 1, 1)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm3(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA3(AP), 1, -1)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm4(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA4(AP), 3, 1)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm5(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA5(AP), 1, 3)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm6(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA6(AP), 1, -3)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm7(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA7(AP), 3, -1)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm8(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA8(AP), 3, -3)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTerm9(AP As AmplitudeParameters) As HTermData
-		  return new HTermData(GetA9(AP), 0, 3)
 		End Function
 	#tag EndMethod
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="HAdjusted"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="h"
 			Visible=false

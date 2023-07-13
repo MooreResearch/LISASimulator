@@ -1,51 +1,83 @@
 #tag Class
-Protected Class PhaseValuesClass
+Protected Class UncertaintyValuesClass
 	#tag Property, Flags = &h0
-		DΨrDv0 As Double
+		OfF0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDz As Double
+		OfH0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDδ As Double
+		OfM1 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDΘ As Double
+		OfM2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDΦ As Double
+		OfR As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ10x As Double
+		OfV0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ10y As Double
+		OfZ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ10z As Double
+		Ofβ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ20x As Double
+		Ofδ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ20y As Double
+		OfΘ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ20z As Double
+		Ofλ0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Ψr As Double
+		OfΦ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Ofχ10x As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Ofχ10y As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Ofχ10z As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Ofχ20x As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Ofχ20y As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Ofχ20z As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Ofψ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		OfΩ As Double
 	#tag EndProperty
 
 
@@ -91,7 +123,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Ψr"
+			Name="OfM1"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -99,7 +131,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDΘ"
+			Name="OfF0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -107,7 +139,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDz"
+			Name="OfH0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -115,7 +147,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDv0"
+			Name="OfM2"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -123,7 +155,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ10x"
+			Name="OfR"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -131,7 +163,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ10y"
+			Name="OfV0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -139,7 +171,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ10z"
+			Name="OfZ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -147,7 +179,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ20x"
+			Name="Ofβ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -155,7 +187,7 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ20y"
+			Name="Ofδ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -163,7 +195,79 @@ Protected Class PhaseValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ20z"
+			Name="OfΘ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="OfΦ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Ofχ10x"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Ofχ10y"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Ofχ10z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Ofχ20x"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Ofχ20y"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Ofχ20z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Ofψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="OfΩ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
