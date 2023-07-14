@@ -1,9 +1,9 @@
 #tag Class
 Protected Class UncertaintyCalculatorClass
 	#tag Method, Flags = &h0
-		Function Calculate(ATAMatrix As Matrix) As UncertaintyValuesClass
+		Function Calculate(ATAMatrix As Matrix, Θ As Double) As UncertaintyValuesClass
 		  ATA = ATAMatrix  // Get a local reference to the matrix
-
+		  
 		  InvertY // Invert the matrix
 		  // Now we will complile uncertainty values.
 		  Var k As Integer = 0  // Index to the actual row in the inverted matrix
@@ -35,6 +35,7 @@ Protected Class UncertaintyCalculatorClass
 		  uv.Ofχ20x = uncList(12)
 		  uv.Ofχ20y = uncList(13)
 		  uv.Ofχ20z = uncList(14)
+		  uv.OfΩ = Sin(Θ)*uv.OfΘ*uv.OfΦ/12.566370614359172
 		  Return uv
 		End Function
 	#tag EndMethod

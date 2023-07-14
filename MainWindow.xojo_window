@@ -2175,31 +2175,49 @@ End
 
 
 	#tag Method, Flags = &h0
+		Function ConvertToDegrees(Value As Double) As Double
+		  Var degFromRad As Double = 180.0/3.14159265358979
+		  If Value.IsNotANumber Then
+		    Return Value
+		  Else
+		    Return Value*degFromRad
+		  End If
+		  
+		End Function
+	#tag EndMethod
 
-		Sub DisplayUncertainties(Params As CaseParametersClass, Uncertainties As UncertaintyValuesClass)
-		  ResultsListBox1.CellTextAt(0,0) = Params.H0.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfH0)
-		  ResultsListBox1.CellTextAt(0,1) = Params.δ.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofδ)
-		  ResultsListBox1.CellTextAt(0,2) = Params.V0.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfV0)
-		  ResultsListBox1.CellTextAt(0,3) = Params.Z.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfZ)
-		  ResultsListBox1.CellTextAt(0,4) = Params.β.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofβ)
-		  ResultsListBox1.CellTextAt(0,5) = Params.ψ.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofψ)
-		  ResultsListBox2.CellTextAt(0,0) = Params.λ0.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofλ0)
-		  ResultsListBox2.CellTextAt(0,1) = Params.Θ.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfΘ)
-		  ResultsListBox2.CellTextAt(0,2) = Params.Φ.toString + EndOfLine + GetUncertaintyString(Uncertainties.OfΦ)
-		  ResultsListBox2.CellTextAt(0,4) = Params.χ10x.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ10x)
-		  ResultsListBox2.CellTextAt(0,5) = Params.χ10y.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ10y)
-		  ResultsListBox2.CellTextAt(0,6) = Params.χ10z.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ10z)
-		  ResultsListBox3.CellTextAt(0,0) = Params.χ20x.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ20x)
-		  ResultsListBox3.CellTextAt(0,1) = Params.χ20y.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ20y)
-		  ResultsListBox3.CellTextAt(0,2) = Params.χ20z.toString + EndOfLine + GetUncertaintyString(Uncertainties.Ofχ20z)
-		  ResultsListBox1.Refresh
-		  ResultsListBox2.Refresh
-		  ResultsListBox3.Refresh
+	#tag Method, Flags = &h0
+		Sub DisplayATA(TheATA As Matrix)
+		  For j as Integer = 0 to 14
+		    for k as Integer = 0 to 14
+		      MatrixListBox.CellTextAt(j,k+1) = Format(TheATA.pData(j,k), "+0.00e+00")
+		    Next
+		  Next
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub DisplayUncertainties(Params As CaseParametersClass, UV As UncertaintyValuesClass)
+		  ResultsListBox1.CellTextAt(0,0) = Params.H0.toString + EndOfLine + GetUncertaintyString(UV.OfH0)
+		  ResultsListBox1.CellTextAt(1,0) = Params.δ.toString + EndOfLine + GetUncertaintyString(UV.Ofδ)
+		  ResultsListBox1.CellTextAt(2,0) = Params.V0.toString + EndOfLine + GetUncertaintyString(UV.OfV0)
+		  ResultsListBox1.CellTextAt(3,0) = Params.Z.toString + EndOfLine + GetUncertaintyString(UV.OfZ)
+		  ResultsListBox1.CellTextAt(4,0) = ConvertToDegrees(Params.β).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofβ))
+		  ResultsListBox1.CellTextAt(5,0) = ConvertToDegrees(Params.ψ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofψ))
+		  ResultsListBox2.CellTextAt(0,0) = ConvertToDegrees(Params.λ0).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofλ0))
+		  ResultsListBox2.CellTextAt(1,0) = ConvertToDegrees(Params.Θ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΘ))
+		  ResultsListBox2.CellTextAt(2,0) = ConvertToDegrees(Params.Φ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΦ))
+		  ResultsListBox2.CellTextAt(3,0) = GetUncertaintyString(UV.OfΩ)
+		  ResultsListBox2.CellTextAt(4,0) = Params.χ10x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10x)
+		  ResultsListBox2.CellTextAt(5,0) = Params.χ10y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10y)
+		  ResultsListBox2.CellTextAt(6,0) = Params.χ10z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10z)
+		  ResultsListBox3.CellTextAt(0,0) = Params.χ20x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20x)
+		  ResultsListBox3.CellTextAt(1,0) = Params.χ20y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20y)
+		  ResultsListBox3.CellTextAt(2,0) = Params.χ20z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20z)
+		End Sub
+	#tag EndMethod
 
+	#tag Method, Flags = &h0
 		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass, SpinStuff As SpinEvolverClass) As Double
 		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
 		  Var δ As Double = parameters.δ
@@ -2218,10 +2236,9 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-
 		Function GetUncertaintyString(uc As Double) As String
 		  If uc.IsNotANumber then
-		    Return "Not Solved For"
+		    Return "(Not Solved For)"
 		  Else
 		    Return "± " + uc.ToString
 		  End If
@@ -2229,7 +2246,6 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-
 		Function GetValueAndSolveFlag(ByRef Solve as Boolean, Source as String) As Double
 		  If Source.BeginsWith("x ") Then
 		    Solve = False
@@ -2593,7 +2609,7 @@ End
 	#tag Event
 		Sub Action()
 		  Var TheSuper As CaseSupervisorClass = MainThread.CaseSupervisor  // Get a reference to the supervisor
-		  if MainThread.State = Thread.Running then  // if the thread is running
+		  If MainThread.State = Thread.Running then  // if the thread is running
 		    CaseProgressBar.Value = Round(TheSuper.N*100/TheSuper.NSteps)  // update the progress bar
 		    ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseParameters.GM/TheSuper.Year, "0.0000000")
 		    ValueOfVLabel.Text = Format(TheSuper.Evolver.ValuesN.V,"0.000000")
@@ -2612,18 +2628,17 @@ End
 		      theFactor = 2^theStepPower
 		      ValueOfStepRatioLabel.Text = theFactor.ToString
 		    End if
-		  else // the thread has stopped, meaning that this case is done
+		  Else // the thread has stopped, meaning that this case is done
 		    CaseProgressBar.Value = 0  // set
 		    StartStopButton.Caption = "Run Cases"
 		    me.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped"
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
-
-		    'If TheSuper.TerminationMessage = "Normal Termination" or TheSuper.TerminationMessage = "Coalescence Happened" then
-		    'DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
-		    'end if
-
-		  end if
+		    If TheSuper.Uncertainty <> Nil Then
+		      DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
+		      DisplayATA(TheSuper.ATAMatrix)
+		    End if
+		  End if
 		  
 		End Sub
 	#tag EndEvent
@@ -2726,8 +2741,25 @@ End
 #tag Events ResultsListBox1
 	#tag Event
 		Sub Opening()
+		  // Define cells as TextAreas to allow multiple lines
+		  me.AddRow("")  // Add six rows
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
 		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
+		  
 		End Sub
+	#tag EndEvent
+	#tag Event
+		Function PaintCellText(g as Graphics, row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine) 
+		  For i As Integer = 0 To arr.LastIndex
+		    g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
+		  Next
+		  Return True
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events CasesListBox
@@ -2761,14 +2793,62 @@ End
 #tag Events ResultsListBox2
 	#tag Event
 		Sub Opening()
+		  // Define cells as TextAreas to allow multiple lines
+		  me.AddRow("")  // Add seven rows
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
 		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
 		End Sub
+	#tag EndEvent
+	#tag Event
+		Function PaintCellText(g as Graphics, row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine) 
+		  For i As Integer = 0 To arr.LastIndex
+		    g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
+		  Next
+		  Return True
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events ResultsListBox3
 	#tag Event
 		Sub Opening()
+		  // Define cells as TextAreas to allow multiple lines
+		  me.AddRow("")  // Add seven rows
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
 		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function PaintCellText(g as Graphics, row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine) 
+		  For i As Integer = 0 To arr.LastIndex
+		    g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
+		  Next
+		  Return True
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events ResultsListBox4
+	#tag Event
+		Sub Opening()
+		  // Define cells as TextAreas to allow multiple lines
+		  me.AddRow("")  // Add five rows
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.AddRow("")
+		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents

@@ -31,7 +31,7 @@ Protected Class EvolverClass
 		Sub Constructor(CaseParameters As CaseParametersClass, MyDτr As Double)
 		  // This method sets up the main cases and side cases and initializes them
 		  Parameters = CaseParameters  // save a reference to the parameters
-		  ε = 1.0e-6 // initialize our epsilon for calculating derivatives
+		  ε = 1.0e-5 // initialize our epsilon for calculating derivatives
 		  InverseOnePlusZ = 1.0/(1.0 + Parameters.Z)
 		  Dτr = MyDτr // record the main time step
 		  Var Dτ0 As Double = MyDτr*InverseOnePlusZ // define a first step in the source frame
@@ -184,8 +184,7 @@ Protected Class EvolverClass
 
 	#tag Method, Flags = &h0
 		Sub DoPhaseStep()
-		  
-		  Var inverseTwoε As Double = 1.0/2*ε
+		  Var inverseTwoε As Double = 1.0/(2*ε)
 		  PhaseEvolver.V = VEvolver.VN
 		  PhaseEvolver.VDot = VEvolver.VDotN
 		  Var SpinEvolver As SpinEvolverClass = VEvolver.SpinEvolver
