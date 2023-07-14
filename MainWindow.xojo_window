@@ -1802,7 +1802,7 @@ Begin DesktopWindow MainWindow
          Height          =   304
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Parameter\nχ20x\nχ20y\nχ20z\nM1\nM2\nF0 (mHz)\nR (ly)"
+         InitialValue    =   "Parameter\nχ20x\nχ20y\nχ20z\nM1 (sols)\nM2 (sols)\nF0 (mHz)\nR (ly)"
          Italic          =   False
          Left            =   493
          LockBottom      =   False
@@ -2187,10 +2187,10 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DisplayATA(TheATA As Matrix)
+		Sub DisplayMatrix(TheMatrix As Matrix)
 		  For j as Integer = 0 to 14
 		    for k as Integer = 0 to 14
-		      MatrixListBox.CellTextAt(j,k+1) = Format(TheATA.pData(j,k), "+0.00e+00")
+		      MatrixListBox.CellTextAt(j,k+1) = Format(TheMatrix.pData(j,k), "+0.00e+00")
 		    Next
 		  Next
 		End Sub
@@ -2207,13 +2207,35 @@ End
 		  ResultsListBox2.CellTextAt(0,0) = ConvertToDegrees(Params.λ0).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofλ0))
 		  ResultsListBox2.CellTextAt(1,0) = ConvertToDegrees(Params.Θ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΘ))
 		  ResultsListBox2.CellTextAt(2,0) = ConvertToDegrees(Params.Φ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΦ))
-		  ResultsListBox2.CellTextAt(3,0) = GetUncertaintyString(UV.OfΩ)
+		  ResultsListBox2.CellTextAt(3,0) = UV.OfΩ.ToString
 		  ResultsListBox2.CellTextAt(4,0) = Params.χ10x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10x)
 		  ResultsListBox2.CellTextAt(5,0) = Params.χ10y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10y)
 		  ResultsListBox2.CellTextAt(6,0) = Params.χ10z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10z)
 		  ResultsListBox3.CellTextAt(0,0) = Params.χ20x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20x)
 		  ResultsListBox3.CellTextAt(1,0) = Params.χ20y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20y)
 		  ResultsListBox3.CellTextAt(2,0) = Params.χ20z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20z)
+		  ResultsListBox3.CellTextAt(3,0) = Params.M1.ToString
+		  ResultsListBox3.CellTextAt(4,0) = Params.M2.ToString
+		  ResultsListBox3.CellTextAt(5,0) = Params.F0.ToString
+		  ResultsListBox3.CellTextAt(6,0) = Params.R.ToString
+		  ResultsListBox4.CellTextAt(0,0) = Params.ρ0.ToString
+		  ResultsListBox4.CellTextAt(1,0) = Params.PNOrder.ToString
+		  ResultsListBox4.CellTextAt(2,0) = Params.Detectors.ToString
+		  ResultsListBox4.CellTextAt(3,0) = Params.ΔT.ToString
+		  ResultsListBox4.CellTextAt(4,0) = ValueOfSimTimeLabel.Text
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DisplayY(Y As Matrix)
+		  Var expandedY As New Matrix(15)
+		  Var n As Integer = Y.pDim - 1
+		  For j As Integer = 0 to n
+		    For k As Integer = 0 to n
+		      expandedY.pData(j,k) = Y.pData(j,k)
+		    Next
+		  Next
+		  DisplayMatrix(expandedY)
 		End Sub
 	#tag EndMethod
 
@@ -2589,19 +2611,6 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub oldSetUpMainLB()
-		  'For i As Integer = 0 to 18
-		  'MainListBox.CellTypeAt(i,1) = DesktopListBox.CellTypes.CheckBox
-		  'if (i <9 or i >14) then
-		  'MainListBox.CellCheckBoxStateAt(i, 1) = DesktopCheckbox.VisualStates.Checked
-		  'end
-		  'Next
-		  'MainListBox.ColumnTypeAt(2) = DesktopListBox.CellTypes.TextField
-		  
-		End Sub
-	#tag EndMethod
-
 
 #tag EndWindowCode
 
@@ -2636,7 +2645,8 @@ End
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
 		    If TheSuper.Uncertainty <> Nil Then
 		      DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
-		      DisplayATA(TheSuper.ATAMatrix)
+		      MatrixChoicePopupMenu.SelectedRowIndex = 0
+		      DisplayMatrix(TheSuper.ATAMatrix)
 		    End if
 		  End if
 		  
@@ -2754,10 +2764,14 @@ End
 	#tag EndEvent
 	#tag Event
 		Function PaintCellText(g as Graphics, row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine) 
-		  For i As Integer = 0 To arr.LastIndex
-		    g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
-		  Next
+		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine)
+		  If arr.LastIndex = 0 Then
+		    g.DrawString(arr(0), x, y)
+		  Else
+		    For i As Integer = 0 To arr.LastIndex
+		      g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
+		    Next
+		  End If
 		  Return True
 		End Function
 	#tag EndEvent
@@ -2806,10 +2820,14 @@ End
 	#tag EndEvent
 	#tag Event
 		Function PaintCellText(g as Graphics, row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine) 
-		  For i As Integer = 0 To arr.LastIndex
-		    g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
-		  Next
+		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine)
+		  If arr.LastIndex = 0 Then
+		    g.DrawString(arr(0), x, y)
+		  Else
+		    For i As Integer = 0 To arr.LastIndex
+		      g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
+		    Next
+		  End If
 		  Return True
 		End Function
 	#tag EndEvent
@@ -2830,12 +2848,29 @@ End
 	#tag EndEvent
 	#tag Event
 		Function PaintCellText(g as Graphics, row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine) 
-		  For i As Integer = 0 To arr.LastIndex
-		    g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
-		  Next
+		  Var arr() As String = Me.CellTextAt(row, column).Split(EndOfLine)
+		  If arr.LastIndex = 0 Then
+		    g.DrawString(arr(0), x, y)
+		  Else
+		    For i As Integer = 0 To arr.LastIndex
+		      g.DrawString(arr(i), x, y - 0.5*g.TextHeight + i * g.TextHeight)
+		    Next
+		  End If
 		  Return True
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events MatrixChoicePopupMenu
+	#tag Event
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  Var theATA As Matrix = MainThread.CaseSupervisor.ATAMatrix
+		  Var theY As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.Y
+		  If me.SelectedRowValue = "ATA" Then
+		    DisplayMatrix(theATA)
+		  Else
+		    DisplayY(theY)
+		  End If
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events ResultsListBox4
