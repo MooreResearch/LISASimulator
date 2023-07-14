@@ -15,7 +15,9 @@ Protected Class UncertaintyCalculatorClass
 		      uncList(j) = Sqrt(Y.pData(k,k))
 		      k = k + 1   // and update the row number in the actual matrix
 		    Else
+
 		      uncList(j) = nan  // otherwise, the uncertainty is "not a number"
+
 		    End If
 		  Next
 		  Var uv As New UncertaintyValuesClass // Get a new instance of the uncertainty values class
