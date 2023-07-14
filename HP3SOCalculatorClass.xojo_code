@@ -3,6 +3,50 @@ Protected Class HP3SOCalculatorClass
 Inherits HNCalculator
 	#tag Event
 		Sub GetTerms()
+		  AddTerm(AddressOf GetA1, 0, 0, False)
+		  AddTerm(AddressOf GetA2, 2, 2, False)
+		  AddTerm(AddressOf GetA3, 3, 2, False)
+		  AddTerm(AddressOf GetA4, 3, -2, False)
+		  AddTerm(AddressOf GetA5, 1, 2, False)
+		  AddTerm(AddressOf GetA6, 1, -2, False)
+		  AddTerm(AddressOf GetA7, 2, -2, False)
+		  AddTerm(AddressOf GetA8, 0, 0, False)
+		  AddTerm(AddressOf GetA9, 3, 0, False)
+		  AddTerm(AddressOf GetA10, 0, 2, False)
+		  AddTerm(AddressOf GetA11, 2, 0, False)
+		  AddTerm(AddressOf GetA12, 1, 0, False)
+		  AddTerm(AddressOf GetA13, 1, 0, True)
+		  AddTerm(AddressOf GetA14, 2, 0, True)
+		  AddTerm(AddressOf GetA15, 3, 0, True)
+		  AddTerm(AddressOf GetA16, 1, -2, True)
+		  AddTerm(AddressOf GetA17, 2, -2, True)
+		  AddTerm(AddressOf GetA18, 3, -2, True)
+		  AddTerm(AddressOf GetA19, 0, 2, True)
+		  AddTerm(AddressOf GetA20, 1, 2, True)
+		  AddTerm(AddressOf GetA21, 2, 2, True)
+		  AddTerm(AddressOf GetA22, 3, 2, True)
+		  AddTerm(AddressOf GetA23, 0, 0, False)
+		  AddTerm(AddressOf GetA24, 2, 2, False)
+		  AddTerm(AddressOf GetA25, 3, 2, False)
+		  AddTerm(AddressOf GetA26, 3, -2, False)
+		  AddTerm(AddressOf GetA27, 1, 2, False)
+		  AddTerm(AddressOf GetA28, 1, -2, False)
+		  AddTerm(AddressOf GetA29, 2, -2, False)
+		  AddTerm(AddressOf GetA30, 0, 0, False)
+		  AddTerm(AddressOf GetA31, 3, 0, False)
+		  AddTerm(AddressOf GetA32, 0, 2, False)
+		  AddTerm(AddressOf GetA33, 2, 0, False)
+		  AddTerm(AddressOf GetA34, 1, 0, False)
+		  AddTerm(AddressOf GetA35, 1, 0, True)
+		  AddTerm(AddressOf GetA36, 2, 0, True)
+		  AddTerm(AddressOf GetA37, 3, 0, True)
+		  AddTerm(AddressOf GetA38, 1, -2, True)
+		  AddTerm(AddressOf GetA39, 2, -2, True)
+		  AddTerm(AddressOf GetA40, 3, -2, True)
+		  AddTerm(AddressOf GetA41, 0, 2, True)
+		  AddTerm(AddressOf GetA42, 1, 2, True)
+		  AddTerm(AddressOf GetA43, 2, 2, True)
+		  AddTerm(AddressOf GetA44, 3, 2, True)
 		  
 		End Sub
 	#tag EndEvent
@@ -21,6 +65,22 @@ Inherits HNCalculator
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="HAdjusted"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="h"
 			Visible=false

@@ -3,6 +3,16 @@ Protected Class HP2SOCalculatorClass
 Inherits HNCalculator
 	#tag Event
 		Sub GetTerms()
+		  AddTerm(AddressOf GetA1, 1, 1, False)
+		  AddTerm(AddressOf GetA2, 1, -1, False)
+		  AddTerm(AddressOf GetA3, 1, -1, True)
+		  AddTerm(AddressOf GetA4, 0,1, True)
+		  AddTerm(AddressOf GetA5, 1, 1, True)
+		  AddTerm(AddressOf GetA6, 1, 1, False)
+		  AddTerm(AddressOf GetA7, 1, -1, False)
+		  AddTerm(AddressOf GetA8, 1, -1, True)
+		  AddTerm(AddressOf GetA9, 0, 1, True)
+		  AddTerm(AddressOf GetA10,1, 1, True)
 		  
 		End Sub
 	#tag EndEvent
@@ -19,8 +29,94 @@ Inherits HNCalculator
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetA1(AP As AmplitudeParameters) As Double
+		  Return AP.χax*AP.Cβ*AP.C1^2-AP.χaz*AP.C1^2*AP.Sβ
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA10(AP As AmplitudeParameters) As Double
+		  Return -Parameters.δ*(AP.χsy*AP.Cβ*AP.S1^2)
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA2(AP As AmplitudeParameters) As Double
+		  Return AP.χax*(AP.Cβ/2-AP.Cβ*AP.C2/2)-AP.χaz*AP.Sβ*AP.S1^2
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA3(AP As AmplitudeParameters) As Double
+		  Return -AP.χay*AP.Cβ*AP.S1^2
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA4(AP As AmplitudeParameters) As Double
+		  Return -AP.χay*AP.Sβ*AP.S2
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA5(AP As AmplitudeParameters) As Double
+		  Return -AP.χay*AP.Cβ*AP.C1^2
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA6(AP As AmplitudeParameters) As Double
+		  Return Parameters.δ*(AP.χsx*AP.Cβ*AP.C1^2-AP.χsz*AP.C1^2*AP.Sβ)
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA7(AP As AmplitudeParameters) As Double
+		  Return Parameters.δ*(AP.χxs*(AP.Cβ/2-AP.Cβ*AP.C2/2)-AP.χsz*AP.Sβ*AP.S1^2)
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA8(AP As AmplitudeParameters) As Double
+		  Return -Parameters.δ*(AP.χsy*AP.Cβ*AP.S1^2)
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetA9(AP As AmplitudeParameters) As Double
+		  Return Parameters.δ*(AP.χsy*AP.Sβ*AP.S2)
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="HAdjusted"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="h"
 			Visible=false
