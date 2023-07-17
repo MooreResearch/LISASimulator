@@ -91,7 +91,7 @@ Inherits HNCalculator
 		Function GetA12(AP As AmplitudeParameters) As Double
 		  
 		  
-		  Return AP.χsx*((-3*AP.Cβ/2-1/2*AP.Cβ*AP.C4)*AP.S2+AP.η*(3*AP.Cβ+1/4*AP.Cβ*AP.C4)*AP.S2)+χsz*(-2*AP.C4*AP.Sβ*AP.S2+AP.η*AP.C4*AP.Sβ*AP.S2)
+		  Return AP.χsx*((-3*AP.Cβ/2-1/2*AP.Cβ*AP.C4)*AP.S2+AP.η*(3*AP.Cβ+1/4*AP.Cβ*AP.C4)*AP.S2)+AP.χsz*(-2*AP.C4*AP.Sβ*AP.S2+AP.η*AP.C4*AP.Sβ*AP.S2)
 		  
 		End Function
 	#tag EndMethod
@@ -127,7 +127,7 @@ Inherits HNCalculator
 		Function GetA16(AP As AmplitudeParameters) As Double
 		  
 		  
-		  Return AP.χsz*(AP.η*(5*AP.Cβ+AP.C3β+2*AP.Cβ*AP.C2/3)*AP.S1^4+(4*AP.Cβ+20*Cβ*AP.C2/3)*AP.S1^4)+AP.χsx*((-14*AP.Sβ/3-20*AP.C2*AP.Sβ/3)*AP.S1^4+AP.η*(10*AP.Sβ/3-2*AP.C2*AP.Sβ/3+AP.S3β)*AP.S1^4)
+		  Return AP.χsz*(AP.η*(5*AP.Cβ+AP.C3β+2*AP.Cβ*AP.C2/3)*AP.S1^4+(4*AP.Cβ+20*AP.Cβ*AP.C2/3)*AP.S1^4)+AP.χsx*((-14*AP.Sβ/3-20*AP.C2*AP.Sβ/3)*AP.S1^4+AP.η*(10*AP.Sβ/3-2*AP.C2*AP.Sβ/3+AP.S3β)*AP.S1^4)
 		  
 		End Function
 	#tag EndMethod
@@ -154,7 +154,7 @@ Inherits HNCalculator
 		Function GetA19(AP As AmplitudeParameters) As Double
 		  
 		  
-		  Return χsx*(AP.η*AP.C1^3*(-5*AP.Cβ/3+4*AP.C3β+AP.Cβ*AP.C2/3)*AP.S1+AP.C1^3*(-2*AP.Cβ/3+10*AP.Cβ*AP.C2/3)*AP.S1)+χsz*(AP.C1^3*(-4*AP.Sβ+40*AP.C2*AP.Sβ/3)*AP.S1+AP.η*AP.C1^3*(-2*AP.Sβ+4*AP.C2*AP.Sβ/3-4*AP.S3β)*AP.S1)
+		  Return AP.χsx*(AP.η*AP.C1^3*(-5*AP.Cβ/3+4*AP.C3β+AP.Cβ*AP.C2/3)*AP.S1+AP.C1^3*(-2*AP.Cβ/3+10*AP.Cβ*AP.C2/3)*AP.S1)+AP.χsz*(AP.C1^3*(-4*AP.Sβ+40*AP.C2*AP.Sβ/3)*AP.S1+AP.η*AP.C1^3*(-2*AP.Sβ+4*AP.C2*AP.Sβ/3-4*AP.S3β)*AP.S1)
 		  
 		End Function
 	#tag EndMethod
@@ -393,7 +393,7 @@ Inherits HNCalculator
 
 	#tag Method, Flags = &h0
 		Function GetA5(AP As AmplitudeParameters) As Double
-		  Return AP.χsy*(AP,η*AP.C1*(7*AP.Cβ/3 - AP.Cβ*AP.C2/3)*AP.S1^3 + AP.C1*(-2*AP.Cβ/3-10*AP.Cβ*AP.C2/3)*AP.S1^3)
+		  Return AP.χsy*(AP.η*AP.C1*(7*AP.Cβ/3 - AP.Cβ*AP.C2/3)*AP.S1^3 + AP.C1*(-2*AP.Cβ/3-10*AP.Cβ*AP.C2/3)*AP.S1^3)
 		  
 		  
 		  

@@ -80,7 +80,7 @@ Inherits HNCalculator
 
 	#tag Method, Flags = &h0
 		Function GetA7(AP As AmplitudeParameters) As Double
-		  Return Parameters.δ*(AP.χxs*(AP.Cβ/2-AP.Cβ*AP.C2/2)-AP.χsz*AP.Sβ*AP.S1^2)
+		  Return Parameters.δ*(AP.χsx*(AP.Cβ/2-AP.Cβ*AP.C2/2)-AP.χsz*AP.Sβ*AP.S1^2)
 		  
 		End Function
 	#tag EndMethod
