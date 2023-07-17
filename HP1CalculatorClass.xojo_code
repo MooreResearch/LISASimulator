@@ -17,7 +17,7 @@ Inherits HNCalculator
 		  AddTerm(AddressOf GetA12, 2, -1, False)
 		  AddTerm(AddressOf GetA13, 2, -3, False)
 		  AddTerm(AddressOf GetA14, 0, 1, False)
-
+		  
 		  
 		End Sub
 	#tag EndEvent
@@ -25,14 +25,14 @@ Inherits HNCalculator
 
 	#tag Method, Flags = &h0
 		Sub Constructor(MyParameters As CaseParametersClass)
-
+		  
 		  Super.Constructor(MyParameters) // Call the superclass
 		  Cross = False  // This class is plus polarization
 		  PNOrder = 1 // and for zeroth order
 		  // This part of the constructor should set up any constants that the class might need
 		  // to calculate the wave and its derivatives. Be sure to define the constants as
 		  // properties of this particular subclass.
-
+		  
 		  // This part of the constructor should set up any constants that the class might need
 		  // to calculate the wave and its derivatives. Be sure to define the constants as
 		  // properties of this particular subclass.
@@ -126,47 +126,6 @@ Inherits HNCalculator
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function GetAllTerms(TheValues As CurrentValuesClass, TheDerivatives As CurrentDerivativesClass) As HTermData()
-		  '// Provide references to the current values and current derivatives. "CurrentValues" and
-		  '// "CurrentDerivatives" are properties of the superclass. These classes contain (as properties)
-		  '// all the information needed to calculate the wave and its derivatives.
-		  'CurrentValues = TheValues
-		  'CurrentDerivatives = TheDerivatives
-		  '
-		  '// Clear the TermData array for this PN polarization term
-		  'TermData.RemoveAll
-		  'Var AP As AmplitudeParameters = new AmplitudeParameters(Parameters)
-		  '// The calculation of all subterms in this polarization term should appear here. Write a method
-		  '// to calculate each subterm, then append the result to the TermData array. Something like
-		  '// TermData.Add(GetTermK), where GetTermK (K = 0, 1, 2, ...) that returns an HTermData instance.
-		  '// The GetTermK method in turn should call a separate method GetAK(AP As AmplitudeParameters)
-		  '// that calculates the amplitude alone (since we will need to call this multiple times to handle side cases)
-		  '// with tweaked values of the the parameters. The rest of the code in GetTermK should create a new
-		  '// instance of HTermData and set its properties appropriately (ignore the derivatives for the moment).
-		  'TermData.Add(GetTerm1(AP))
-		  'TermData.Add(GetTerm2(AP))
-		  'TermData.Add(GetTerm3(AP))
-		  'TermData.Add(GetTerm4(AP))
-		  'TermData.Add(GetTerm5(AP))
-		  'TermData.Add(GetTerm6(AP))
-		  'TermData.Add(GetTerm7(AP))
-		  'TermData.Add(GetTerm8(AP))
-		  'TermData.Add(GetTerm9(AP))
-		  'TermData.Add(GetTerm10(AP))
-		  'TermData.Add(GetTerm11(AP))
-		  'TermData.Add(GetTerm12(AP))
-		  'TermData.Add(GetTerm13(AP))
-		  'TermData.Add(GetTerm14(AP))
-		  '
-		  '// At the end, return the array you have created.
-		  'Return TermData
-		  '
-		  '
-		  
-		End Function
-	#tag EndMethod
-
 
 	#tag ViewBehavior
 		#tag ViewProperty
@@ -186,7 +145,6 @@ Inherits HNCalculator
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="h"
 			Visible=false
 			Group="Behavior"

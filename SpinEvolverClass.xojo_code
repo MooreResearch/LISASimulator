@@ -163,6 +163,7 @@ Protected Class SpinEvolverClass
 		    // Evolve the orbital angular momentum
 		    Var LDotN As Vector = -VN*(1-CL3*vN2-CL4*vN4)*(CL1*χ1HatDotN + CL2*χ2HatDotN)
 		    LF = LP + 2*DτF*LDotN
+		    If LF.GetMagnitude > 1.0 Then LF = LF/LF.GetMagnitude
 		    
 		    // Calculate the future angles and ideal future time step
 		    ComputeAngles(DτF)

@@ -139,38 +139,38 @@ Protected Class HCalculatorClass
 	#tag Method, Flags = &h0
 		Sub CalculateCross()
 		  // Calculate the total value of hx and its non-spin derivatives
-		  HX = H0V2*(HX0Calculator.h + V*(HX1Calculator.h + HX1SOCalculator.h) _
+		  HX = H0V2*(HX0Calculator.h + V*HX1Calculator.h _
 		  + V2*(HX2Calculator.h + HX2SOCalculator.h) _
 		  + V3*(HX3Calculator.h + HX3SOCalculator.h))
-		  HXAdjusted = H0V2*(HX0Calculator.HAdjusted + V*(HX1Calculator.HAdjusted + HX1SOCalculator.HAdjusted) _
+		  HXAdjusted = H0V2*(HX0Calculator.HAdjusted + V*HX1Calculator.HAdjusted _
 		  + V2*(HX2Calculator.HAdjusted + HX2SOCalculator.HAdjusted) _
 		  + V3*(HX3Calculator.HAdjusted + HX3SOCalculator.HAdjusted))
 		  DhxDV0 = H0V2*(HX0Calculator.DhDV0 _
-		  + V*(HX1Calculator.DhDV0 + HX1SOCalculator.DhDV0) _
+		  + V*HX1Calculator.DhDV0 _
 		  + V2*(HX2Calculator.DhDV0 + HX2SOCalculator.DhDV0) _
 		  + V3*(HX3Calculator.DhDV0 + HX3SOCalculator.DhDV0))
 		  DhxDZ = H0V2*(HX0Calculator.DhDZ _
-		  + V*(HX1Calculator.DhDZ + HX1SOCalculator.DhDZ) _
+		  + V*HX1Calculator.DhDZ _
 		  + V2*(HX2Calculator.DhDZ + HX2SOCalculator.DhDZ) _
 		  + V3*(HX3Calculator.DhDZ + HX3SOCalculator.DhDZ))
 		  DhxDβ = H0V2*(HX0Calculator.DhDβ _
-		  + V*(HX1Calculator.DhDβ + HX1SOCalculator.DhDβ) _
+		  + V*HX1Calculator.DhDβ  _
 		  + V2*(HX2Calculator.DhDβ + HX2SOCalculator.DhDβ) _
 		  + V3*(HX3Calculator.DhDβ + HX3SOCalculator.DhDβ))
 		  DhxDδ = H0V2*(HX0Calculator.DhDδ _
-		  + V*(HX1Calculator.DhDδ + HX1SOCalculator.DhDδ) _
+		  + V*HX1Calculator.DhDδ _
 		  + V2*(HX2Calculator.DhDδ + HX2SOCalculator.DhDδ) _
 		  + V3*(HX3Calculator.DhDδ + HX3SOCalculator.DhDδ))
 		  DhxDΘ = H0V2*(HX0Calculator.DhDΘ _
-		  + V*(HX1Calculator.DhDΘ + HX1SOCalculator.DhDΘ) _
+		  + V*HX1Calculator.DhDΘ _
 		  + V2*(HX2Calculator.DhDΘ + HX2SOCalculator.DhDΘ) _
 		  + V3*(HX3Calculator.DhDΘ + HX3SOCalculator.DhDΘ))
 		  DhxDλ0 = H0V2*(HX0Calculator.DhDλ0 _
-		  + V*(HX1Calculator.DhDλ0 + HX1SOCalculator.DhDλ0) _
+		  + V*HX1Calculator.DhDλ0 _
 		  + V2*(HX2Calculator.DhDλ0 + HX2SOCalculator.DhDλ0) _
 		  + V3*(HX3Calculator.DhDλ0 + HX3SOCalculator.DhDλ0))
 		  DHXDΦ = H0V2*(HX0Calculator.DhDΦ _
-		  + V*(HX1Calculator.DhDΦ + HX1SOCalculator.DhDΦ) _
+		  + V*HX1Calculator.DhDΦ _
 		  + V2*(HX2Calculator.DhDΦ + HX2SOCalculator.DhDΦ) _
 		  + V3*(HX3Calculator.DhDΦ + HX3SOCalculator.DhDΦ))
 		End Sub
@@ -180,27 +180,27 @@ Protected Class HCalculatorClass
 		Sub CalculateDhpDχ()
 		  // Calculate the spin derivatives for hp
 		  DhpDχ10x = H0V2*(HP0Calculator.DhDχ10x _
-		  + V*(HP1Calculator.DhDχ10x + HP1SOCalculator.DhDχ10x) _
+		  + V*HP1Calculator.DhDχ10x _
 		  + V2*(HP2Calculator.DhDχ10x + HP2SOCalculator.DhDχ10x) _
 		  + V3*(HP3Calculator.DhDχ10x + HP3SOCalculator.DhDχ10x))
 		  DhpDχ10y = H0V2*(HP0Calculator.DhDχ10y _
-		  + V*(HP1Calculator.DhDχ10y + HP1SOCalculator.DhDχ10y) _
+		  + V*HP1Calculator.DhDχ10y _
 		  + V2*(HP2Calculator.DhDχ10y + HP2SOCalculator.DhDχ10y) _
 		  + V3*(HP3Calculator.DhDχ10y + HP3SOCalculator.DhDχ10y))
 		  DhpDχ10z = H0V2*(HP0Calculator.DhDχ10z _
-		  + V*(HP1Calculator.DhDχ10z + HP1SOCalculator.DhDχ10z) _
+		  + V*HP1Calculator.DhDχ10z _
 		  + V2*(HP2Calculator.DhDχ10z + HP2SOCalculator.DhDχ10z) _
 		  + V3*(HP3Calculator.DhDχ10z + HP3SOCalculator.DhDχ10z))
 		  DhpDχ20x = H0V2*(HP0Calculator.DhDχ20x _
-		  + V*(HP1Calculator.DhDχ20x + HP1SOCalculator.DhDχ20x) _
+		  + V*HP1Calculator.DhDχ20x _
 		  + V2*(HP2Calculator.DhDχ20x + HP2SOCalculator.DhDχ20x) _
 		  + V3*(HP3Calculator.DhDχ20x + HP3SOCalculator.DhDχ20x))
 		  DhpDχ20y = H0V2*(HP0Calculator.DhDχ20y _
-		  + V*(HP1Calculator.DhDχ20y + HP1SOCalculator.DhDχ20y) _
+		  + V*HP1Calculator.DhDχ20y _
 		  + V2*(HP2Calculator.DhDχ20y + HP2SOCalculator.DhDχ20y) _
 		  + V3*(HP3Calculator.DhDχ20y + HP3SOCalculator.DhDχ20y))
 		  DhpDχ20z = H0V2*(HP0Calculator.DhDχ20z _
-		  + V*(HP1Calculator.DhDχ20z + HP1SOCalculator.DhDχ20z) _
+		  + V*HP1Calculator.DhDχ20z _
 		  + V2*(HP2Calculator.DhDχ20z + HP2SOCalculator.DhDχ20z) _
 		  + V3*(HP3Calculator.DhDχ20z + HP3SOCalculator.DhDχ20z))
 		End Sub
@@ -210,27 +210,27 @@ Protected Class HCalculatorClass
 		Sub CalculateDhxDχ()
 		  // Calculate the spin derivatives for hx
 		  DhxDχ10x = H0V2*(HX0Calculator.DhDχ10x _
-		  + V*(HX1Calculator.DhDχ10x + HX1SOCalculator.DhDχ10x) _
+		  + V*HX1Calculator.DhDχ10x _
 		  + V2*(HX2Calculator.DhDχ10x + HX2SOCalculator.DhDχ10x) _
 		  + V3*(HX3Calculator.DhDχ10x + HX3SOCalculator.DhDχ10x))
 		  DhxDχ10y = H0V2*(HX0Calculator.DhDχ10y _
-		  + V*(HX1Calculator.DhDχ10y + HX1SOCalculator.DhDχ10y) _
+		  + V*HX1Calculator.DhDχ10y _
 		  + V2*(HX2Calculator.DhDχ10y + HX2SOCalculator.DhDχ10y) _
 		  + V3*(HX3Calculator.DhDχ10y + HX3SOCalculator.DhDχ10y))
 		  DhxDχ10z = H0V2*(HX0Calculator.DhDχ10z _
-		  + V*(HX1Calculator.DhDχ10z + HX1SOCalculator.DhDχ10z) _
+		  + V*HX1Calculator.DhDχ10z _
 		  + V2*(HX2Calculator.DhDχ10z + HX2SOCalculator.DhDχ10z) _
 		  + V3*(HX3Calculator.DhDχ10z + HX3SOCalculator.DhDχ10z))
 		  DhxDχ20x = H0V2*(HX0Calculator.DhDχ20x _
-		  + V*(HX1Calculator.DhDχ20x + HX1SOCalculator.DhDχ20x) _
+		  + V*HX1Calculator.DhDχ20x _
 		  + V2*(HX2Calculator.DhDχ20x + HX2SOCalculator.DhDχ20x) _
 		  + V3*(HX3Calculator.DhDχ20x + HX3SOCalculator.DhDχ20x))
 		  DhxDχ20y = H0V2*(HX0Calculator.DhDχ20y _
-		  + V*(HX1Calculator.DhDχ20y + HX1SOCalculator.DhDχ20y) _
+		  + V*HX1Calculator.DhDχ20y _
 		  + V2*(HX2Calculator.DhDχ20y + HX2SOCalculator.DhDχ20y) _
 		  + V3*(HX3Calculator.DhDχ20y + HX3SOCalculator.DhDχ20y))
 		  DhxDχ20z = H0V2*(HX0Calculator.DhDχ20z _
-		  + V*(HX1Calculator.DhDχ20z + HX1SOCalculator.DhDχ20z) _
+		  + V*HX1Calculator.DhDχ20z _
 		  + V2*(HX2Calculator.DhDχ20z + HX2SOCalculator.DhDχ20z) _
 		  + V3*(HX2Calculator.DhDχ20z + HX2SOCalculator.DhDχ20z))
 		End Sub
@@ -269,38 +269,38 @@ Protected Class HCalculatorClass
 	#tag Method, Flags = &h0
 		Sub CalculatePlus()
 		  // Calculate hp and its non-spin derivatives
-		  HP = H0V2*(HP0Calculator.h + V*(HP1Calculator.h + HP1SOCalculator.h) _
+		  HP = H0V2*(HP0Calculator.h + V*HP1Calculator.h _
 		  + V2*(HP2Calculator.h + HP2SOCalculator.h) _
 		  + V3*(HP3Calculator.h + HP3SOCalculator.h))
-		  HPAdjusted = H0V2*(HP0Calculator.HAdjusted+ V*(HP1Calculator.HAdjusted + HP1SOCalculator.HAdjusted) _
+		  HPAdjusted = H0V2*(HP0Calculator.HAdjusted+ V*HP1Calculator.HAdjusted _
 		  + V2*(HP2Calculator.HAdjusted + HP2SOCalculator.HAdjusted) _
 		  + V3*(HP3Calculator.HAdjusted + HP3SOCalculator.HAdjusted))
 		  DhpDV0 = H0V2*(HP0Calculator.DhDV0 _
-		  + V*(HP1Calculator.DhDV0 + HP1SOCalculator.DhDV0) _
+		  + V*HP1Calculator.DhDV0 _
 		  + V2*(HP2Calculator.DhDV0 + HP2SOCalculator.DhDV0) _
 		  + V3*(HP3Calculator.DhDV0 + HP3SOCalculator.DhDV0))
 		  DhpDZ = H0V2*(HP0Calculator.DhDZ _
-		  + V*(HP1Calculator.DhDZ + HP1SOCalculator.DhDZ) _
+		  + V*HP1Calculator.DhDZ _
 		  + V2*(HP2Calculator.DhDZ + HP2SOCalculator.DhDZ) _
 		  + V3*(HP3Calculator.DhDZ + HP3SOCalculator.DhDZ))
 		  DhpDβ = H0V2*(HP0Calculator.DhDβ _
-		  + V*(HP1Calculator.DhDβ + HP1SOCalculator.DhDβ) _
+		  + V*HP1Calculator.DhDβ _
 		  + V2*(HP2Calculator.DhDβ + HP2SOCalculator.DhDβ) _
 		  + V3*(HP3Calculator.DhDβ + HP3SOCalculator.DhDβ))
 		  DhpDδ = H0V2*(HP0Calculator.DhDδ _
-		  + V*(HP1Calculator.DhDδ + HP1SOCalculator.DhDδ) _
+		  + V*HP1Calculator.DhDδ _
 		  + V2*(HP2Calculator.DhDδ + HP2SOCalculator.DhDδ) _
 		  + V3*(HP3Calculator.DhDδ + HP3SOCalculator.DhDδ))
 		  DhpDΘ = H0V2*(HP0Calculator.DhDΘ _
-		  + V*(HP1Calculator.DhDΘ + HP1SOCalculator.DhDΘ) _
+		  + V*HP1Calculator.DhDΘ _
 		  + V2*(HP2Calculator.DhDΘ + HP2SOCalculator.DhDΘ) _
 		  + V3*(HP3Calculator.DhDΘ + HP3SOCalculator.DhDΘ))
 		  DhpDλ0 = H0V2*(HP0Calculator.DhDλ0 _
-		  + V*(HP1Calculator.DhDλ0 + HP1SOCalculator.DhDλ0) _
+		  + V*HP1Calculator.DhDλ0 _
 		  + V2*(HP2Calculator.DhDλ0 + HP2SOCalculator.DhDλ0) _
 		  + V3*(HP3Calculator.DhDλ0 + HP3SOCalculator.DhDλ0))
 		  DhpDΦ = H0V2*(HP0Calculator.DhDΦ _
-		  + V*(HP1Calculator.DhDΦ + HP1SOCalculator.DhDΦ) _
+		  + V*HP1Calculator.DhDΦ _
 		  + V2*(HP2Calculator.DhDΦ + HP2SOCalculator.DhDΦ) _
 		  + V3*(HP3Calculator.DhDΦ + HP3SOCalculator.DhDΦ))
 		End Sub
@@ -312,14 +312,12 @@ Protected Class HCalculatorClass
 		  // Initialize the term calculators
 		  HP0Calculator = New HP0CalculatorClass(Parameters)
 		  HP1Calculator = New HP1CalculatorClass(Parameters)
-		  HP1SOCalculator = New HP1SOCalculatorClass(Parameters)
 		  HP2Calculator = New HP2CalculatorClass(Parameters)
 		  HP2SOCalculator = New HP2SOCalculatorClass(Parameters)
 		  HP3Calculator = New HP3CalculatorClass(Parameters)
 		  HP3SOCalculator = New HP3SOCalculatorClass(Parameters)
 		  HX0Calculator = New HX0CalculatorClass(Parameters)
 		  HX1Calculator = New HP1CalculatorClass(Parameters)
-		  HX1SOCalculator = New HP1SOCalculatorClass(Parameters)
 		  HX2Calculator = New HP2CalculatorClass(Parameters)
 		  HX2SOCalculator = New HP2SOCalculatorClass(Parameters)
 		  HX3Calculator = New HP3CalculatorClass(Parameters)
@@ -348,14 +346,12 @@ Protected Class HCalculatorClass
 		Sub GetSubclassTerms()
 		  HP0Calculator.Calculate(Values, Derivs)
 		  HP1Calculator.Calculate(Values, Derivs)
-		  HP1SOCalculator.Calculate(Values, Derivs)
 		  HP2Calculator.Calculate(Values, Derivs)
 		  HP2SOCalculator.Calculate(Values, Derivs)
 		  HP3Calculator.Calculate(Values, Derivs)
 		  HP3SOCalculator.Calculate(Values, Derivs)
 		  HX0Calculator.Calculate(Values, Derivs)
 		  HX1Calculator.Calculate(Values, Derivs)
-		  HX1SOCalculator.Calculate(Values, Derivs)
 		  HX2Calculator.Calculate(Values, Derivs)
 		  HX2SOCalculator.Calculate(Values, Derivs)
 		  HX3Calculator.Calculate(Values, Derivs)
@@ -641,10 +637,6 @@ Protected Class HCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		HP1SOCalculator As HNCalculator
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		HP2Calculator As HNCalculator
 	#tag EndProperty
 
@@ -674,10 +666,6 @@ Protected Class HCalculatorClass
 
 	#tag Property, Flags = &h0
 		HX1Calculator As HNCalculator
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		HX1SOCalculator As HNCalculator
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1386,7 +1374,6 @@ Protected Class HCalculatorClass
 			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
-
 		#tag ViewProperty
 			Name="HPAdjusted"
 			Visible=false
@@ -1403,7 +1390,6 @@ Protected Class HCalculatorClass
 			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
-
 	#tag EndViewBehavior
 End Class
 #tag EndClass
