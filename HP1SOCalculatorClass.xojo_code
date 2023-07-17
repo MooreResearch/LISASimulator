@@ -22,6 +22,22 @@ Inherits HNCalculator
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="HAdjusted"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="h"
 			Visible=false
 			Group="Behavior"

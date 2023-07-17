@@ -17,7 +17,7 @@ Inherits HNCalculator
 		  AddTerm(AddressOf GetA12, 2, -1, False)
 		  AddTerm(AddressOf GetA13, 2, -3, False)
 		  AddTerm(AddressOf GetA14, 0, 1, False)
-
+		  
 		  
 		End Sub
 	#tag EndEvent
@@ -25,14 +25,14 @@ Inherits HNCalculator
 
 	#tag Method, Flags = &h0
 		Sub Constructor(MyParameters As CaseParametersClass)
-
+		  
 		  Super.Constructor(MyParameters) // Call the superclass
 		  Cross = False  // This class is plus polarization
 		  PNOrder = 1 // and for zeroth order
 		  // This part of the constructor should set up any constants that the class might need
 		  // to calculate the wave and its derivatives. Be sure to define the constants as
 		  // properties of this particular subclass.
-
+		  
 		  // This part of the constructor should set up any constants that the class might need
 		  // to calculate the wave and its derivatives. Be sure to define the constants as
 		  // properties of this particular subclass.
@@ -186,7 +186,6 @@ Inherits HNCalculator
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="h"
 			Visible=false
 			Group="Behavior"
