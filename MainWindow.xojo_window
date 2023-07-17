@@ -2270,18 +2270,6 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-
-		Function GetUncertaintyString(uc As Double) As String
-		  If uc.IsNotANumber then
-		    Return "Not Solved For"
-		  Else
-		    Return "± " + uc.ToString
-		  End If
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-
 		Function GetValueAndSolveFlag(ByRef Solve as Boolean, Source as String) As Double
 		  If Source.BeginsWith("x ") Then
 		    Solve = False
