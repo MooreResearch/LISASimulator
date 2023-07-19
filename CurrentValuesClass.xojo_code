@@ -1,37 +1,46 @@
 #tag Class
 Protected Class CurrentValuesClass
 	#tag Method, Flags = &h0
-		Function Operator_Add(RHS As CurrentValuesClass) As CurrentValuesClass
-		  Var Result As New CurrentValuesClass  // Create an empty version of the class
-		  Var info As Introspection.TypeInfo = Introspection.GetType(self) // Get information about this class
-		  Var childProperties() As Introspection.PropertyInfo = info.GetProperties
-		  For Each p As Introspection.PropertyInfo In childProperties // iterate through the array
-		    // add each value in this instance to the value in the right instance to get the result value
-		    p.Value(Result) = p.Value(self).DoubleValue + p.Value(RHS).DoubleValue
-		  Next
-		  Return Result // Return the result
-		End Function
+		Sub Set2Interpolation(VN as CurrentValuesClass, VP as CurrentValuesClass, FracFromP as Double)
+		  Var FracFromN As Double = 1.0 - FracFromP
+		  me.V = VN.V*FracFromN + VP.V*FracFromP
+		  me.ι = VN.ι*FracFromN + VP.ι*FracFromP
+		  me.α = VN.α*FracFromN + VP.α*FracFromP
+		  me.τr = VN.τr*FracFromN + VP.τr*FracFromP
+		  me.Ψr = VN.Ψr*FracFromN + VP.Ψr*FracFromP
+		  me.χa.X = VN.χa.X*FracFromN + VP.χa.X*FracFromP
+		  me.χa.Y = VN.χa.Y*FracFromN + VP.χa.Y*FracFromP
+		  me.χa.Z = VN.χa.Z*FracFromN + VP.χa.Z*FracFromP
+		  me.χs.X = VN.χs.X*FracFromN + VP.χs.X*FracFromP
+		  me.χs.Y = VN.χs.Y*FracFromN + VP.χs.Y*FracFromP
+		  me.χs.Z = VN.χs.Z*FracFromN + VP.χs.Z*FracFromP
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_MultiplyRight(LHS As Double) As CurrentValuesClass
-		  Var Result As New CurrentValuesClass  // Create a new empty version of the class
-		  Var info As Introspection.TypeInfo = Introspection.GetType(self)  // Get the information about this class
-		  Var childProperties() As Introspection.PropertyInfo = info.GetProperties  // Get an array of information about the properties
-		  For Each p As Introspection.PropertyInfo In childProperties // Iterate over all the properties
-		    p.Value(Result) = LHS*p.Value(self).DoubleValue // multiply each value in self by the scalar and put it in the result
-		  Next
-		  Return Result // Return the result
-		End Function
+		Sub SetAsCopyOf(VN as CurrentValuesClass)
+		  // This just copies all the values from the source
+		  me.V = VN.V
+		  me.ι = VN.ι
+		  me.α = VN.α
+		  me.τr = VN.τr
+		  me.Ψr = VN.Ψr
+		  me.χa.X = VN.χa.X
+		  me.χa.Y = VN.χa.Y
+		  me.χa.Z = VN.χa.Z
+		  me.χs.X = VN.χs.X
+		  me.χs.Y = VN.χs.Y
+		  me.χs.Z = VN.χs.Z
+		End Sub
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		Cosι As Double
+		V As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		V As Double
+		ι As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -43,27 +52,11 @@ Protected Class CurrentValuesClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χax As Double
+		χa As Vector
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χay As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χaz As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χsx As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χsy As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χsz As Double
+		χs As Vector
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -129,7 +122,7 @@ Protected Class CurrentValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="cosι"
+			Name="ι"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -145,47 +138,7 @@ Protected Class CurrentValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="χax"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χay"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χaz"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χsx"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χsy"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χsz"
+			Name="τr"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

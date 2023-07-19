@@ -1,33 +1,6 @@
 #tag Class
 Protected Class EvolverClass
 	#tag Method, Flags = &h0
-		Sub ChooseDτF()
-		  // This chooses the next time step to be a multiple or fraction of a power of 2
-		  // times the main program time step (as seen in the source frame)
-		  // First, get the ideal time step from the various evolvers
-		  Var DτIdeal As Double = Min(VEvolver.DτIdeal, VEvolver.SpinEvolver.DτIdeal)
-		  // The ratio of the real future step will be some power of two of the main step.
-		  // Compute that power of two
-		  Var NewStepPower as Integer = Floor(Log(DτIdeal*(1.0+Parameters.Z)/Dτr)/Log(2))
-		  If MainStep = 0 Then  // If this is the first step
-		    StepPowerFF = NewStepPower // initalize the CurrentStepPower
-		    StepPowerF = NewStepPower
-		    DτFF = Dτr*InverseOnePlusZ*2^StepPowerF // and initialize DτFF
-		    DτF = DτFF // and set DτF
-		    DτP = DτF  // and DτP to be the same
-		  Else
-		    If NewStepPower > StepPowerF Then NewStepPower = StepPowerF // This power should never increase
-		    If NewStepPower < StepPowerF Then // if the new step is smaller
-		      StepPowerFF = NewStepPower // this will be the step power for the next step
-		      DτFF = Dτr*InverseOnePlusZ*2^NewStepPower // change the value of DτF
-		    End If
-		    // note that if the power is NOT smaller, everything will remain the same
-		  End If
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Constructor(CaseParameters As CaseParametersClass, MyDτr As Double)
 		  // This method sets up the main cases and side cases and initializes them
 		  Parameters = CaseParameters  // save a reference to the parameters
@@ -64,20 +37,63 @@ Protected Class EvolverClass
 		  
 		  // Create instances of the CurrentValuesClass and CurrentDerivativesClass and initialize those values
 		  ValuesN = New CurrentValuesClass
-		  UpdateValues
-		  ValuesP = ValuesN
 		  DerivativesN = New CurrentDerivativesClass
-		  UpdateDerivatives
+		  UpdateValsAndDerivs
+		  ValuesP = ValuesN
 		  DerivativesP = DerivativesN
+		  ValuesMN = New CurrentValuesClass   // Will hold the values at the current main step
+		  DerivativesMN = New CurrentDerivativesClass   // Will hold the derivatives at the current main step
 		  LastSourceStep = 0 // We have not yet begun to step
 		  MainStep = 0
 		  WhereInSourceStep = 0 // we will look at the current step for values
 		  
 		  //Determine the actual step size we want (rather than the trial step taken during initialization)
-		  ChooseDτF
-		  DτF = 0.5*DτF
+		  // This chooses the next time step to be a multiple or fraction of a power of 2
+		  // times the main program time step (as seen in the source frame)
+		  // First, get the ideal time step from the various evolvers
+		  Var DτIdeal As Double = Min(VEvolver.DτIdeal, VEvolver.SpinEvolver.DτIdeal)
+		  // The ratio of the real future step will be some power of two of the main step.
+		  // Compute that power of two
+		  Var NewStepPower as Integer = Floor(Log(DτIdeal*(1.0+Parameters.Z)/Dτr)/Log(2))
+		  If MainStep = 0 Then  // If this is the first step
+		    StepPowerFF = NewStepPower // initalize the CurrentStepPower
+		    StepPowerF = NewStepPower
+		    DτFF = Dτr*InverseOnePlusZ*2^StepPowerF // and initialize DτFF
+		    DτF = DτFF // and set DτF
+		    DτP = DτF  // and DτP to be the same
+		  Else
+		    If NewStepPower > StepPowerF Then NewStepPower = StepPowerF // This power should never increase
+		    If NewStepPower < StepPowerF Then // if the new step is smaller
+		      StepPowerFF = NewStepPower // this will be the step power for the next step
+		      DτFF = Dτr*InverseOnePlusZ*2^NewStepPower // change the value of DτF
+		    End If
+		    // note that if the power is NOT smaller, everything will remain the same
+		  End If
+		  DτF = 0.5*DτF   // This will make this an Euler step
 		  DτP = 0.5*DτP
-		  DoStepAll // Do an Euler step for main and all the side cases
+		  
+		  // Now perform the actual first (Euler) step
+		  // Step the main case and all side cases
+		  VEvolver.DoStep(DτF, DτP)
+		  VEvolverForV0Minus.DoStep(DτF, DτP)
+		  VEvolverForV0Plus.DoStep(DτF, DτP)
+		  VEvolverForδMinus.DoStep(DτF, DτP)
+		  VEvolverForδPlus.DoStep(DτF, DτP)
+		  VEvolverForχ10xMinus.DoStep(DτF, DτP)
+		  VEvolverForχ10xPlus.DoStep(DτF, DτP)
+		  VEvolverForχ10yMinus.DoStep(DτF, DτP)
+		  VEvolverForχ10yPlus.DoStep(DτF, DτP)
+		  VEvolverForχ10zMinus.DoStep(DτF, DτP)
+		  VEvolverForχ10zPlus.DoStep(DτF, DτP)
+		  VEvolverForχ20xMinus.DoStep(DτF, DτP)
+		  VEvolverForχ20xPlus.DoStep(DτF, DτP)
+		  VEvolverForχ20yMinus.DoStep(DτF, DτP)
+		  VEvolverForχ20yPlus.DoStep(DτF, DτP)
+		  VEvolverForχ20zMinus.DoStep(DτF, DτP)
+		  VEvolverForχ20zPlus.DoStep(DτF, DτP)
+		  DoPhaseStep // We have to do a phase step last
+		  
+		  // Restore the original values of these steps
 		  DτF = 2*DτF
 		  DτP = 2*DτP
 		  
@@ -97,20 +113,18 @@ Protected Class EvolverClass
 		  Var OKToContinue As Boolean = True
 		  MainStep = TheMainStep  // Record the current main step number
 		  If MainStep = 0 Then // If this is the first step
-		    UpdateValues  // Get the new values and store them in the present values property
-		    UpdateDerivatives  // and the same with the derivatives
+		    UpdateValsAndDerivs  // Get the new values and derivatives and store them in the present values property
 		    WhereInSourceStep = 0 // and we will report the present values
 		  ElseIf StepPowerF > 0 Then  // If the step that will be taken is bigger than the main step
 		    If LastSourceStep > MainStep Then // and the last source step (which might have been bigger) is still ahead
 		      WhereInSourceStep = WhereInSourceStep + 1   // Update the "WhereInSourceStep" counter and we are done
 		    ElseIf LastSourceStep = MainStep Then  // if we have caught up with the source
-		      ValuesP = ValuesN  // values at present become past values
-		      DerivativesP = DerivativesN  // Same for derivatives
+		      ValuesP.SetAsCopyOf(ValuesN)   // values at present become past values
+		      DerivativesP.SetAsCopyOf(DerivativesN)  // Same for derivatives
 		      WhereInSourceStep = 0  // and we are back at the beginning of the current window
 		    Else  // main program is now ahead of the source
 		      DoSourceStep  // Take a new source step
-		      UpdateValues  // Get the new values and store them in the present values property
-		      UpdateDerivatives  // and the same with the derivatives
+		      UpdateValsAndDerivs  // Get the new values and derivatives and store them in the present values property
 		      MainStepsInSourceStep = 2^StepPowerP // This is the number of main steps within the source step just taken
 		      // update the source step counter in units of the main step
 		      LastSourceStep = LastSourceStep + MainStepsInSourceStep
@@ -119,8 +133,8 @@ Protected Class EvolverClass
 		  ElseIf StepPowerF = 0 Then // If the next source step will be equal to the main program step
 		    If LastSourceStep < MainStep Then // If source is behind the main step
 		      DoSourceStep
-		      UpdateValues  // Get the new values and store them in the present values property
-		      UpdateDerivatives  // and the same with the derivatives
+		      UpdateValsAndDerivs // Get the new values and derivatives and store them in the present values property
+		      // (Note that the past values are no longer relevant)
 		      LastSourceStep = LastSourceStep + 1   // update the source step counter
 		      WhereInSourceStep = 0  // and we will report the present values
 		    ElseIf LastSourceStep = MainStep Then   // I don't think this should happen, but if it does
@@ -144,8 +158,7 @@ Protected Class EvolverClass
 		      End If
 		    Loop Until StepsDone = StepsToDo
 		    If OKToContinue Then // if we haven't exited becase we are too close to coalescence
-		      UpdateValues  // Get the new values and store them in the present values property
-		      UpdateDerivatives  // and the same with the derivatives
+		      UpdateValsAndDerivs  // Get the new values and store them in the present values property
 		      WhereInSourceStep = 0 // and we will report the present values
 		    End If
 		  End If
@@ -154,7 +167,56 @@ Protected Class EvolverClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DoMakeFuturePresent()
+		Sub DoPhaseStep()
+		  Var inverseTwoε As Double = 1.0/(2*ε)
+		  PhaseEvolver.V = VEvolver.VN
+		  PhaseEvolver.VDot = VEvolver.VDotN
+		  Var SpinEvolver As SpinEvolverClass = VEvolver.SpinEvolver
+		  PhaseEvolver.Cosι = Cos(SpinEvolver.ιN)
+		  PhaseEvolver.Sinι = Sin(SpinEvolver.ιN)
+		  PhaseEvolver.αDot = SpinEvolver.αDotN
+		  PhaseEvolver.DιDV0 = (VEvolverForV0Plus.SpinEvolver.ιN - VEvolverForV0Minus.SpinEvolver.ιN)*inverseTwoε
+		  PhaseEvolver.DvDV0 = (VEvolverForV0Plus.VN - VEvolverForV0Minus.VN)*inverseTwoε
+		  PhaseEvolver.DvDotDV0 = (VEvolverForV0Plus.VDotN - VEvolverForV0Minus.VDotN)*inverseTwoε
+		  PhaseEvolver.DαDotDV0 = (VEvolverForV0Plus.αDotN - VEvolverForV0Minus.αDotN)*inverseTwoε
+		  PhaseEvolver.DιDδ = (VEvolverForδPlus.SpinEvolver.ιN - VEvolverForδMinus.SpinEvolver.ιN)*inverseTwoε
+		  PhaseEvolver.DvDδ = (VEvolverForδPlus.VN - VEvolverForδMinus.VN)*inverseTwoε
+		  PhaseEvolver.DvDotDδ = (VEvolverForδPlus.VDotN - VEvolverForδMinus.VDotN)*inverseTwoε
+		  PhaseEvolver.DαDotDδ = (VEvolverForδPlus.αDotN - VEvolverForδMinus.αDotN)*inverseTwoε
+		  PhaseEvolver.DιDχ10x = (VEvolverForχ10xPlus.SpinEvolver.ιN - VEvolverForχ10xMinus.SpinEvolver.ιN)*inverseTwoε
+		  PhaseEvolver.DvDχ10x = (VEvolverForχ10xPlus.VN - VEvolverForχ10xMinus.VN)*inverseTwoε
+		  PhaseEvolver.DvDotDχ10x = (VEvolverForχ10xPlus.VDotN - VEvolverForχ10xMinus.VDotN)*inverseTwoε
+		  PhaseEvolver.DαDotDχ10x = (VEvolverForχ10xPlus.αDotN - VEvolverForχ10xMinus.αDotN)*inverseTwoε
+		  PhaseEvolver.DιDχ10y = (VEvolverForχ10yPlus.SpinEvolver.ιN - VEvolverForχ10yMinus.SpinEvolver.ιN)*inverseTwoε
+		  PhaseEvolver.DvDχ10y = (VEvolverForχ10yPlus.VN - VEvolverForχ10yMinus.VN)*inverseTwoε
+		  PhaseEvolver.DvDotDχ10y = (VEvolverForχ10yPlus.VDotN - VEvolverForχ10yMinus.VDotN)*inverseTwoε
+		  PhaseEvolver.DαDotDχ10y = (VEvolverForχ10yPlus.αDotN - VEvolverForχ10yMinus.αDotN)*inverseTwoε
+		  PhaseEvolver.DιDχ10z = (VEvolverForχ10zPlus.SpinEvolver.ιN - VEvolverForχ10zMinus.SpinEvolver.ιN)*inverseTwoε
+		  PhaseEvolver.DvDχ10z = (VEvolverForχ10zPlus.VN - VEvolverForχ10zMinus.VN)*inverseTwoε
+		  PhaseEvolver.DvDotDχ10z = (VEvolverForχ10zPlus.VDotN - VEvolverForχ10zMinus.VDotN)*inverseTwoε
+		  PhaseEvolver.DαDotDχ10z = (VEvolverForχ10zPlus.αDotN - VEvolverForχ10zMinus.αDotN)*inverseTwoε
+		  PhaseEvolver.DιDχ20x = (VEvolverForχ20xPlus.SpinEvolver.ιN - VEvolverForχ20xMinus.SpinEvolver.ιN)*inverseTwoε
+		  PhaseEvolver.DvDχ20x = (VEvolverForχ20xPlus.VN - VEvolverForχ20xMinus.VN)*inverseTwoε
+		  PhaseEvolver.DvDotDχ20x = (VEvolverForχ20xPlus.VDotN - VEvolverForχ20xMinus.VDotN)*inverseTwoε
+		  PhaseEvolver.DαDotDχ20x = (VEvolverForχ20xPlus.αDotN - VEvolverForχ20xMinus.αDotN)*inverseTwoε
+		  PhaseEvolver.DιDχ20y = (VEvolverForχ20yPlus.SpinEvolver.ιN - VEvolverForχ20yMinus.SpinEvolver.ιN)*inverseTwoε
+		  PhaseEvolver.DvDχ20y = (VEvolverForχ20yPlus.VN - VEvolverForχ20yMinus.VN)*inverseTwoε
+		  PhaseEvolver.DvDotDχ20y = (VEvolverForχ20yPlus.VDotN - VEvolverForχ20yMinus.VDotN)*inverseTwoε
+		  PhaseEvolver.DαDotDχ20y = (VEvolverForχ20yPlus.αDotN - VEvolverForχ20yMinus.αDotN)*inverseTwoε
+		  PhaseEvolver.DιDχ20z = (VEvolverForχ20zPlus.SpinEvolver.ιN - VEvolverForχ20zMinus.SpinEvolver.ιN)*inverseTwoε
+		  PhaseEvolver.DvDχ20z = (VEvolverForχ20zPlus.VN - VEvolverForχ20zMinus.VN)*inverseTwoε
+		  PhaseEvolver.DvDotDχ20z = (VEvolverForχ20zPlus.VDotN - VEvolverForχ20zMinus.VDotN)*inverseTwoε
+		  PhaseEvolver.DαDotDχ20z = (VEvolverForχ20zPlus.αDotN - VEvolverForχ20zMinus.αDotN)*inverseTwoε
+		  Var τr As Double = τ*(1.0 + Parameters.Z)
+		  PhaseEvolver.DoStep(DτF, DτP, τr)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DoSourceStep()
+		  // This method performs a source step
+		  
+		  // First, make the future the present in  the main 
 		  VEvolver.MakeFuturePresent
 		  VEvolverForV0Minus.MakeFuturePresent
 		  VEvolverForV0Plus.MakeFuturePresent
@@ -178,61 +240,8 @@ Protected Class EvolverClass
 		  DτP = DτF
 		  DτF = DτFF
 		  
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub DoPhaseStep()
-		  Var inverseTwoε As Double = 1.0/(2*ε)
-		  PhaseEvolver.V = VEvolver.VN
-		  PhaseEvolver.VDot = VEvolver.VDotN
-		  Var SpinEvolver As SpinEvolverClass = VEvolver.SpinEvolver
-		  PhaseEvolver.Cosι = SpinEvolver.CosιN
-		  PhaseEvolver.αDot = SpinEvolver.αDotN
-		  PhaseEvolver.DvDV0 = (VEvolverForV0Plus.VN - VEvolverForV0Minus.VN)*inverseTwoε
-		  PhaseEvolver.DvDotDV0 = (VEvolverForV0Plus.VDotN - VEvolverForV0Minus.VDotN)*inverseTwoε
-		  PhaseEvolver.DαDotDV0 = (VEvolverForV0Plus.αDotN - VEvolverForV0Minus.αDotN)*inverseTwoε
-		  PhaseEvolver.DvDδ = (VEvolverForδPlus.VN - VEvolverForδMinus.VN)*inverseTwoε
-		  PhaseEvolver.DvDotDδ = (VEvolverForδPlus.VDotN - VEvolverForδMinus.VDotN)*inverseTwoε
-		  PhaseEvolver.DαDotDδ = (VEvolverForδPlus.αDotN - VEvolverForδMinus.αDotN)*inverseTwoε
-		  PhaseEvolver.DvDχ10x = (VEvolverForχ10xPlus.VN - VEvolverForχ10xMinus.VN)*inverseTwoε
-		  PhaseEvolver.DvDotDχ10x = (VEvolverForχ10xPlus.VDotN - VEvolverForχ10xMinus.VDotN)*inverseTwoε
-		  PhaseEvolver.DαDotDχ10x = (VEvolverForχ10xPlus.αDotN - VEvolverForχ10xMinus.αDotN)*inverseTwoε
-		  PhaseEvolver.DvDχ10y = (VEvolverForχ10yPlus.VN - VEvolverForχ10yMinus.VN)*inverseTwoε
-		  PhaseEvolver.DvDotDχ10y = (VEvolverForχ10yPlus.VDotN - VEvolverForχ10yMinus.VDotN)*inverseTwoε
-		  PhaseEvolver.DαDotDχ10y = (VEvolverForχ10yPlus.αDotN - VEvolverForχ10yMinus.αDotN)*inverseTwoε
-		  PhaseEvolver.DvDχ10z = (VEvolverForχ10zPlus.VN - VEvolverForχ10zMinus.VN)*inverseTwoε
-		  PhaseEvolver.DvDotDχ10z = (VEvolverForχ10zPlus.VDotN - VEvolverForχ10zMinus.VDotN)*inverseTwoε
-		  PhaseEvolver.DαDotDχ10z = (VEvolverForχ10zPlus.αDotN - VEvolverForχ10zMinus.αDotN)*inverseTwoε
-		  PhaseEvolver.DvDχ20x = (VEvolverForχ20xPlus.VN - VEvolverForχ20xMinus.VN)*inverseTwoε
-		  PhaseEvolver.DvDotDχ20x = (VEvolverForχ20xPlus.VDotN - VEvolverForχ20xMinus.VDotN)*inverseTwoε
-		  PhaseEvolver.DαDotDχ20x = (VEvolverForχ20xPlus.αDotN - VEvolverForχ20xMinus.αDotN)*inverseTwoε
-		  PhaseEvolver.DvDχ20y = (VEvolverForχ20yPlus.VN - VEvolverForχ20yMinus.VN)*inverseTwoε
-		  PhaseEvolver.DvDotDχ20y = (VEvolverForχ20yPlus.VDotN - VEvolverForχ20yMinus.VDotN)*inverseTwoε
-		  PhaseEvolver.DαDotDχ20y = (VEvolverForχ20yPlus.αDotN - VEvolverForχ20yMinus.αDotN)*inverseTwoε
-		  PhaseEvolver.DvDχ20z = (VEvolverForχ20zPlus.VN - VEvolverForχ20zMinus.VN)*inverseTwoε
-		  PhaseEvolver.DvDotDχ20z = (VEvolverForχ20zPlus.VDotN - VEvolverForχ20zMinus.VDotN)*inverseTwoε
-		  PhaseEvolver.DαDotDχ20z = (VEvolverForχ20zPlus.αDotN - VEvolverForχ20zMinus.αDotN)*inverseTwoε
-		  Var τr As Double = τ*(1.0 + Parameters.Z)
-		  PhaseEvolver.DoStep(DτF, DτP, τr)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub DoSourceStep()
-		  // This method performs a source step
-		  DoMakeFuturePresent // Make the future step the present step for all cases
-		  DoStepAll // Do the next step
-		  τ = τ + DτP  // The current time at Now is equal to the previous time times the magnitude of the past time step
-		  ChooseDτF  // Set the size of the still next step
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub DoStepAll()
-		  // Step all main and side cases
+		  // Now perform the step
+		  // Step the main case and all side cases
 		  VEvolver.DoStep(DτF, DτP)
 		  VEvolverForV0Minus.DoStep(DτF, DτP)
 		  VEvolverForV0Plus.DoStep(DτF, DτP)
@@ -252,42 +261,88 @@ Protected Class EvolverClass
 		  VEvolverForχ20zPlus.DoStep(DτF, DτP)
 		  DoPhaseStep // We have to do a phase step last
 		  
+		  // The current time at Now is equal to the previous time times the magnitude of the past time step
+		  τ = τ + DτP
+		  
+		  // This chooses the next time step to be a multiple or fraction of a power of 2
+		  // times the main program time step (as seen in the source frame)
+		  // First, get the ideal time step from the various evolvers
+		  Var DτIdeal As Double = Min(VEvolver.DτIdeal, VEvolver.SpinEvolver.DτIdeal)
+		  // The ratio of the real future step will be some power of two of the main step.
+		  // Compute that power of two
+		  Var NewStepPower as Integer = Floor(Log(DτIdeal*(1.0+Parameters.Z)/Dτr)/Log(2))
+		  If MainStep = 0 Then  // If this is the first step
+		    StepPowerFF = NewStepPower // initalize the CurrentStepPower
+		    StepPowerF = NewStepPower
+		    DτFF = Dτr*InverseOnePlusZ*2^StepPowerF // and initialize DτFF
+		    DτF = DτFF // and set DτF
+		    DτP = DτF  // and DτP to be the same
+		  Else
+		    If NewStepPower > StepPowerF Then NewStepPower = StepPowerF // This power should never increase
+		    If NewStepPower < StepPowerF Then // if the new step is smaller
+		      StepPowerFF = NewStepPower // this will be the step power for the next step
+		      DτFF = Dτr*InverseOnePlusZ*2^NewStepPower // change the value of DτF
+		    End If
+		    // note that if the power is NOT smaller, everything will remain the same
+		  End If
+		  
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetDerivativesAtMainNow() As CurrentDerivativesClass
+		Sub GetValsAndDerivsAtMainNow()
 		  // This is how the HCalculator class gets information about derivatives
 		  If WhereInSourceStep = 0 Then // if we are getting information about the current step,
-		    Return DerivativesN // just return the values corresponding to the current step.
+		    ValuesMN.SetAsCopyOf(ValuesN) // just return the values at the current step
+		    DerivativesMN.SetAsCopyOf(DerivativesN)  // and the derivatives the current step.
 		  Else // if we are interpolating between the current step and a future step,
 		    // calculate the fraction the current step represents of the total step.
 		    Var StepRatio As Double = WhereInSourceStep/MainStepsInSourceStep
 		    // Get the interpolated values and return them
-		    Return (1.0-StepRatio)*DerivativesP + StepRatio*DerivativesN
+		    ValuesMN.Set2Interpolation(ValuesN, ValuesP, StepRatio)
+		    DerivativesMN.Set2Interpolation(DerivativesN, DerivativesP, StepRatio)
 		  End If
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetValuesAtMainNow() As CurrentValuesClass
-		  // This is how the HCalculator gets information about the current values
-		  If WhereInSourceStep = 0 Then // if we are getting information about the current step,
-		    Return ValuesN // just return the values corresponding to the current step.
-		  Else // if we are interpolating between the current step and a future step,
-		    // calculate the fraction the current step represents of the total step.
-		    Var StepRatio As Double = WhereInSourceStep/MainStepsInSourceStep
-		    // Get the interpolated values and return them
-		    Return (1.0-StepRatio)*ValuesP + StepRatio*ValuesN
-		  End If
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateAlphaDerivatives()
-		  DerivativesN.DαDZ = VEvolver.SpinEvolver.DαDZ
+		Sub UpdateValsAndDerivs()
+		  // This method updates all the derivatives that we are passing to the wave calculator
+		  Var SpinEvolver As SpinEvolverClass = VEvolver.SpinEvolver
+		  ValuesN.ι = SpinEvolver.ιN
+		  ValuesN.V = VEvolver.VN
+		  ValuesN.α = SpinEvolver.αN
+		  ValuesN.χa = SpinEvolver.χaN
+		  ValuesN.χs = SpinEvolver.χsN
+		  ValuesN.Ψr = ΨrN
+		  ValuesN.τr = τ*(1.0 + Parameters.Z)
+		  
+		  // Update Dv derivatives
+		  DerivativesN.DvDV0 = PhaseEvolver.DvDV0
+		  DerivativesN.DvDδ = PhaseEvolver.DvDδ
+		  DerivativesN.DvDχ10x = PhaseEvolver.DvDχ10x
+		  DerivativesN.DvDχ10y = PhaseEvolver.DvDχ10y
+		  DerivativesN.DvDχ10z = PhaseEvolver.DvDχ10z
+		  DerivativesN.DvDχ20x = PhaseEvolver.DvDχ20x
+		  DerivativesN.DvDχ20y = PhaseEvolver.DvDχ20y
+		  DerivativesN.DvDχ20z = PhaseEvolver.DvDχ20z
+		  
+		  // Update Dι derivatives
+		  DerivativesN.DιDZ = SpinEvolver.DιDZ
+		  DerivativesN.DιDV0 = PhaseEvolver.DιDV0
+		  DerivativesN.DιDδ = PhaseEvolver.DιDδ
+		  DerivativesN.DιDχ10x = PhaseEvolver.DιDχ10x
+		  DerivativesN.DιDχ10y = PhaseEvolver.DιDχ10y
+		  DerivativesN.DιDχ10z = PhaseEvolver.DιDχ10z
+		  DerivativesN.DιDχ20x = PhaseEvolver.DιDχ20x
+		  DerivativesN.DιDχ20y = PhaseEvolver.DιDχ20y
+		  DerivativesN.DιDχ20z = PhaseEvolver.DιDχ20z
+		  
+		  // Update Dα derivatives
+		  DerivativesN.DαDZ = SpinEvolver.DαDZ
 		  Var inverse2ε As Double = 1/(2*ε)
-		  DerivativesN.DαDZ = VEvolver.SpinEvolver.DαDZ
+		  DerivativesN.DαDZ = SpinEvolver.DαDZ
 		  DerivativesN.DαDV0 = (VEvolverForV0Plus.SpinEvolver.αN - VEvolverForV0Minus.SpinEvolver.αN)*inverse2ε
 		  DerivativesN.DαDδ = (VEvolverForδPlus.SpinEvolver.αN - VEvolverForδMinus.SpinEvolver.αN)*inverse2ε
 		  DerivativesN.DαDχ10x = (VEvolverForχ10xPlus.SpinEvolver.αN - VEvolverForχ10xMinus.SpinEvolver.αN)*inverse2ε
@@ -297,155 +352,101 @@ Protected Class EvolverClass
 		  DerivativesN.DαDχ20y = (VEvolverForχ20yPlus.SpinEvolver.αN - VEvolverForχ20yMinus.SpinEvolver.αN)*inverse2ε
 		  DerivativesN.DαDχ20z = (VEvolverForχ20zPlus.SpinEvolver.αN - VEvolverForχ20zMinus.SpinEvolver.αN)*inverse2ε
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateCosιDerivatives()
-		  DerivativesN.DCosιDZ = VEvolver.SpinEvolver.DCosιDZ
-		  DerivativesN.DCosιDV0 = PhaseEvolver.DCosιDV0
-		  DerivativesN.DCosιDδ = PhaseEvolver.DCosιDδ
-		  DerivativesN.DCosιDχ10x = PhaseEvolver.DCosιDχ10x
-		  DerivativesN.DCosιDχ10y = PhaseEvolver.DCosιDχ10y
-		  DerivativesN.DCosιDχ10z = PhaseEvolver.DCosιDχ10z
-		  DerivativesN.DCosιDχ20x = PhaseEvolver.DCosιDχ20x
-		  DerivativesN.DCosιDχ20y = PhaseEvolver.DCosιDχ20y
-		  DerivativesN.DCosιDχ20z = PhaseEvolver.DCosιDχ20z
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateDerivatives()
-		  UpdateCosιDerivatives
-		  UpdateVDerivatives
-		  UpdateAlphaDerivatives
-		  UpdateχaDerivatives
-		  UpdateχsDerivatives
-		  UpdateΨrDerivatives
+		  // Update χa derivatives
+		  Var χaU As Vector = SpinEvolver.χaN   // Local reference for "Up" vector
+		  Var χaD As Vector = SpinEvolver.χa0   // Local reference for "Down" vector
+		  DerivativesN.DχaxDZ = -(χaU.X - χaD.X)*InverseOnePlusZ
+		  DerivativesN.DχayDZ = -(χaU.Y - χaD.Y)*InverseOnePlusZ
+		  DerivativesN.DχazDZ = -(χaU.Z - χaD.Z)*InverseOnePlusZ
+		  χaU = VEvolverForV0Plus.SpinEvolver.χaN
+		  χaD = VEvolverForV0Minus.SpinEvolver.χaN
+		  DerivativesN.DχaxDV0 = (χaU.X - χaD.X)*inverse2ε
+		  DerivativesN.DχayDV0 = (χaU.Y - χaD.Y)*inverse2ε
+		  DerivativesN.DχazDV0 = (χaU.Z - χaD.Z)*inverse2ε
+		  χaU = VEvolverForδPlus.SpinEvolver.χaN 
+		  χaD = VEvolverForδMinus.SpinEvolver.χaN
+		  DerivativesN.DχaxDδ = (χaU.X - χaD.X)*inverse2ε
+		  DerivativesN.DχayDδ = (χaU.Y - χaD.Y)*inverse2ε
+		  DerivativesN.DχazDδ = (χaU.Z - χaD.Z)*inverse2ε
+		  χaU = VEvolverForχ10xPlus.SpinEvolver.χaN
+		  χaD = VEvolverForχ10xMinus.SpinEvolver.χaN
+		  DerivativesN.DχaxDχ10x = (χaU.X - χaD.X)*inverse2ε
+		  DerivativesN.DχayDχ10x = (χaU.Y - χaD.Y)*inverse2ε
+		  DerivativesN.DχazDχ10x = (χaU.Z - χaD.Z)*inverse2ε
+		  χaU = VEvolverForχ10yPlus.SpinEvolver.χaN 
+		  χaD =VEvolverForχ10yMinus.SpinEvolver.χaN
+		  DerivativesN.DχaxDχ10y = (χaU.X - χaD.X)*inverse2ε
+		  DerivativesN.DχayDχ10y = (χaU.Y - χaD.Y)*inverse2ε
+		  DerivativesN.DχazDχ10y = (χaU.Z - χaD.Z)*inverse2ε
+		  χaU = VEvolverForχ10zPlus.SpinEvolver.χaN
+		  χaD = VEvolverForχ10zMinus.SpinEvolver.χaN
+		  DerivativesN.DχaxDχ10z = (χaU.X - χaD.X)*inverse2ε
+		  DerivativesN.DχayDχ10z = (χaU.Y - χaD.Y)*inverse2ε
+		  DerivativesN.DχazDχ10z = (χaU.Z - χaD.Z)*inverse2ε
+		  χaU = VEvolverForχ20xPlus.SpinEvolver.χaN
+		  χaD = VEvolverForχ20xMinus.SpinEvolver.χaN
+		  DerivativesN.DχaxDχ20x = (χaU.X - χaD.X)*inverse2ε
+		  DerivativesN.DχayDχ20x = (χaU.Y - χaD.Y)*inverse2ε
+		  DerivativesN.DχazDχ20x = (χaU.Z - χaD.Z)*inverse2ε
+		  χaU = VEvolverForχ20yPlus.SpinEvolver.χaN
+		  χaD = VEvolverForχ20yMinus.SpinEvolver.χaN
+		  DerivativesN.DχaxDχ20y = (χaU.X - χaD.X)*inverse2ε
+		  DerivativesN.DχayDχ20y = (χaU.Y - χaD.Y)*inverse2ε
+		  DerivativesN.DχazDχ20y = (χaU.Z - χaD.Z)*inverse2ε
+		  χaU = VEvolverForχ20zPlus.SpinEvolver.χaN
+		  χaD = VEvolverForχ20zMinus.SpinEvolver.χaN
+		  DerivativesN.DχaxDχ20z = (χaU.X - χaD.X)*inverse2ε
+		  DerivativesN.DχayDχ20z = (χaU.Y - χaD.Y)*inverse2ε
+		  DerivativesN.DχazDχ20z = (χaU.Z - χaD.Z)*inverse2ε
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateValues()
-		  Var SpinEvolver As SpinEvolverClass = VEvolver.SpinEvolver
-		  Var Xa As Vector = SpinEvolver.χaN
-		  Var Xs As Vector = SpinEvolver.χsN
-		  ValuesN.Cosι = SpinEvolver.CosιN
-		  ValuesN.V = VEvolver.VN
-		  ValuesN.α = SpinEvolver.αN
-		  ValuesN.χax = Xa.X
-		  ValuesN.χay = Xa.Y
-		  ValuesN.χaz = Xa.Z
-		  ValuesN.χsx = Xs.X
-		  ValuesN.χsy = Xs.Y
-		  ValuesN.χsz = Xs.Z
-		  ValuesN.Ψr = ΨrN
-		  ValuesN.τr = τ*(1.0 + Parameters.Z)
+		  // Update χs derivatives
+		  Var χsU As Vector = SpinEvolver.χsN   // Local reference for "Up" vector
+		  Var χsD As Vector = SpinEvolver.χs0   // Local reference for "Down" vector
+		  DerivativesN.DχsxDZ = -(χsU.X - χsD.X)*InverseOnePlusZ
+		  DerivativesN.DχsyDZ = -(χsU.Y - χsD.Y)*InverseOnePlusZ
+		  DerivativesN.DχszDZ = -(χsU.Z - χsD.Z)*InverseOnePlusZ
+		  χsU = VEvolverForV0Plus.SpinEvolver.χsN 
+		  χsD = VEvolverForV0Minus.SpinEvolver.χsN
+		  DerivativesN.DχsxDV0 = (χsU.X - χsD.X)*inverse2ε
+		  DerivativesN.DχsyDV0 = (χsU.Y - χsD.Y)*inverse2ε
+		  DerivativesN.DχszDV0 = (χsU.Z - χsD.Z)*inverse2ε
+		  χsU = VEvolverForδPlus.SpinEvolver.χsN
+		  χsD = VEvolverForδMinus.SpinEvolver.χsN
+		  DerivativesN.DχsxDδ = (χsU.X - χsD.X)*inverse2ε
+		  DerivativesN.DχsyDδ = (χsU.Y - χsD.Y)*inverse2ε
+		  DerivativesN.DχszDδ = (χsU.Z - χsD.Z)*inverse2ε
+		  χsU = VEvolverForχ10xPlus.SpinEvolver.χsN
+		  χsD = VEvolverForχ10xMinus.SpinEvolver.χsN
+		  DerivativesN.DχsxDχ10x= (χsU.X - χsD.X)*inverse2ε
+		  DerivativesN.DχsyDχ10x = (χsU.Y - χsD.Y)*inverse2ε
+		  DerivativesN.DχszDχ10x= (χsU.Z - χsD.Z)*inverse2ε
+		  χsU = VEvolverForχ10yPlus.SpinEvolver.χsN
+		  χsD = VEvolverForχ10yMinus.SpinEvolver.χsN
+		  DerivativesN.DχsxDχ10y= (χsU.X - χsD.X)*inverse2ε
+		  DerivativesN.DχsyDχ10y = (χsU.Y - χsD.Y)*inverse2ε
+		  DerivativesN.DχszDχ10y= (χsU.Z - χsD.Z)*inverse2ε
+		  χsU = VEvolverForχ10zPlus.SpinEvolver.χaN 
+		  χsD = VEvolverForχ10zMinus.SpinEvolver.χsN
+		  DerivativesN.DχsxDχ10z= (χsU.X - χsD.X)*inverse2ε
+		  DerivativesN.DχsyDχ10z =(χsU.Y - χsD.Y)*inverse2ε
+		  DerivativesN.DχszDχ10z= (χsU.Z - χsD.Z)*inverse2ε
+		  χsU = VEvolverForχ20xPlus.SpinEvolver.χaN
+		  χsD = VEvolverForχ20xMinus.SpinEvolver.χsN
+		  DerivativesN.DχsxDχ20x= (χsU.X - χsD.X)*inverse2ε
+		  DerivativesN.DχsyDχ20x = (χsU.Y - χsD.Y)*inverse2ε
+		  DerivativesN.DχszDχ20x= (χsU.Z - χsD.Z)*inverse2ε
+		  χsU = VEvolverForχ20yPlus.SpinEvolver.χsN
+		  χsD = VEvolverForχ20yMinus.SpinEvolver.χsN
+		  DerivativesN.DχsxDχ20y= (χsU.X - χsD.X)*inverse2ε
+		  DerivativesN.DχsyDχ20y = (χsU.Y - χsD.Y)*inverse2ε
+		  DerivativesN.DχszDχ20y= (χsU.Z - χsD.Z)*inverse2ε
+		  χsU = VEvolverForχ20zPlus.SpinEvolver.χsN
+		  χsD = VEvolverForχ20zMinus.SpinEvolver.χsN
+		  DerivativesN.DχsxDχ20z= (χsU.X - χsD.X)*inverse2ε
+		  DerivativesN.DχsyDχ20z = (χsU.Y - χsD.Y)*inverse2ε
+		  DerivativesN.DχszDχ20z= (χsU.Z - χsD.Z)*inverse2ε
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateVDerivatives()
-		  DerivativesN.DvDV0 = PhaseEvolver.DvDV0
-		  DerivativesN.DvDδ = PhaseEvolver.DvDδ
-		  DerivativesN.DvDχ10x = PhaseEvolver.DvDχ10x
-		  DerivativesN.DvDχ10y = PhaseEvolver.DvDχ10y
-		  DerivativesN.DvDχ10z = PhaseEvolver.DvDχ10z
-		  DerivativesN.DvDχ20x = PhaseEvolver.DvDχ20x
-		  DerivativesN.DvDχ20y = PhaseEvolver.DvDχ20y
-		  DerivativesN.DvDχ20z = PhaseEvolver.DvDχ20z
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateχaDerivatives()
-		  Var inverse2ε As Double = 1.0/(2*ε)
-		  Var Dχa As Vector = VEvolver.SpinEvolver.χaN - VEvolver.SpinEvolver.χa0
-		  DerivativesN.DχaxDZ = -Dχa.X*InverseOnePlusZ
-		  DerivativesN.DχayDZ = -Dχa.Y*InverseOnePlusZ
-		  DerivativesN.DχazDZ = -Dχa.Z*InverseOnePlusZ
-		  Dχa = VEvolverForV0Plus.SpinEvolver.χaN -  VEvolverForV0Minus.SpinEvolver.χaN
-		  DerivativesN.DχaxDV0 = Dχa.X*inverse2ε
-		  DerivativesN.DχayDV0 = Dχa.Y*inverse2ε
-		  DerivativesN.DχazDV0 = Dχa.Z*inverse2ε
-		  Dχa = VEvolverForδPlus.SpinEvolver.χaN -  VEvolverForδMinus.SpinEvolver.χaN
-		  DerivativesN.DχaxDδ = Dχa.X*inverse2ε
-		  DerivativesN.DχayDδ = Dχa.Y*inverse2ε
-		  DerivativesN.DχazDδ = Dχa.Z*inverse2ε
-		  Dχa = VEvolverForχ10xPlus.SpinEvolver.χaN -  VEvolverForχ10xMinus.SpinEvolver.χaN
-		  DerivativesN.DχaxDχ10x = Dχa.X*inverse2ε
-		  DerivativesN.DχayDχ10x = Dχa.Y*inverse2ε
-		  DerivativesN.DχazDχ10x = Dχa.Z*inverse2ε
-		  Dχa = VEvolverForχ10yPlus.SpinEvolver.χaN -  VEvolverForχ10yMinus.SpinEvolver.χaN
-		  DerivativesN.DχaxDχ10y = Dχa.X*inverse2ε
-		  DerivativesN.DχayDχ10y = Dχa.Y*inverse2ε
-		  DerivativesN.DχazDχ10y = Dχa.Z*inverse2ε
-		  Dχa = VEvolverForχ10zPlus.SpinEvolver.χaN -  VEvolverForχ10zMinus.SpinEvolver.χaN
-		  DerivativesN.DχaxDχ10z = Dχa.X*inverse2ε
-		  DerivativesN.DχayDχ10z = Dχa.Y*inverse2ε
-		  DerivativesN.DχazDχ10z = Dχa.Z*inverse2ε
-		  Dχa = VEvolverForχ20xPlus.SpinEvolver.χaN -  VEvolverForχ20xMinus.SpinEvolver.χaN
-		  DerivativesN.DχaxDχ20x = Dχa.X*inverse2ε
-		  DerivativesN.DχayDχ20x = Dχa.Y*inverse2ε
-		  DerivativesN.DχazDχ20x = Dχa.Z*inverse2ε
-		  Dχa = VEvolverForχ20yPlus.SpinEvolver.χaN -  VEvolverForχ20yMinus.SpinEvolver.χaN
-		  DerivativesN.DχaxDχ20y = Dχa.X*inverse2ε
-		  DerivativesN.DχayDχ20y = Dχa.Y*inverse2ε
-		  DerivativesN.DχazDχ20y = Dχa.Z*inverse2ε
-		  Dχa = VEvolverForχ20zPlus.SpinEvolver.χaN -  VEvolverForχ20zMinus.SpinEvolver.χaN
-		  DerivativesN.DχaxDχ20z = Dχa.X*inverse2ε
-		  DerivativesN.DχayDχ20z = Dχa.Y*inverse2ε
-		  DerivativesN.DχazDχ20z = Dχa.Z*inverse2ε
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateχsDerivatives()
-		  Var Dχs As Vector = VEvolver.SpinEvolver.χaN - VEvolver.SpinEvolver.χa0
-		  DerivativesN.DχsxDZ = -Dχs.X*InverseOnePlusZ
-		  DerivativesN.DχsyDZ = -Dχs.Y*InverseOnePlusZ
-		  DerivativesN.DχszDZ = -Dχs.Z*InverseOnePlusZ
-		  Var inverse2ε As Double = 1.0/(2*ε)
-		  Dχs = VEvolverForV0Plus.SpinEvolver.χaN -  VEvolverForV0Minus.SpinEvolver.χaN
-		  DerivativesN.DχsxDV0 = Dχs.X*inverse2ε
-		  DerivativesN.DχsyDV0 = Dχs.Y*inverse2ε
-		  DerivativesN.DχszDV0 = Dχs.Z*inverse2ε
-		  Dχs = VEvolverForδPlus.SpinEvolver.χaN -  VEvolverForδMinus.SpinEvolver.χaN
-		  DerivativesN.DχsxDδ = Dχs.X*inverse2ε
-		  DerivativesN.DχsyDδ = Dχs.Y*inverse2ε
-		  DerivativesN.DχszDδ = Dχs.Z*inverse2ε
-		  Dχs = VEvolverForχ10xPlus.SpinEvolver.χaN -  VEvolverForχ10xMinus.SpinEvolver.χaN
-		  DerivativesN.DχsxDχ10x= Dχs.X*inverse2ε
-		  DerivativesN.DχsyDχ10x = Dχs.Y*inverse2ε
-		  DerivativesN.DχszDχ10x= Dχs.Z*inverse2ε
-		  Dχs = VEvolverForχ10yPlus.SpinEvolver.χaN -  VEvolverForχ10yMinus.SpinEvolver.χaN
-		  DerivativesN.DχsxDχ10y= Dχs.X*inverse2ε
-		  DerivativesN.DχsyDχ10y = Dχs.Y*inverse2ε
-		  DerivativesN.DχszDχ10y= Dχs.Z*inverse2ε
-		  Dχs = VEvolverForχ10zPlus.SpinEvolver.χaN -  VEvolverForχ10zMinus.SpinEvolver.χaN
-		  DerivativesN.DχsxDχ10z= Dχs.X*inverse2ε
-		  DerivativesN.DχsyDχ10z = Dχs.Y*inverse2ε
-		  DerivativesN.DχszDχ10z= Dχs.Z*inverse2ε
-		  Dχs = VEvolverForχ20xPlus.SpinEvolver.χaN -  VEvolverForχ20xMinus.SpinEvolver.χaN
-		  DerivativesN.DχsxDχ20x= Dχs.X*inverse2ε
-		  DerivativesN.DχsyDχ20x = Dχs.Y*inverse2ε
-		  DerivativesN.DχszDχ20x= Dχs.Z*inverse2ε
-		  Dχs = VEvolverForχ20yPlus.SpinEvolver.χaN -  VEvolverForχ20yMinus.SpinEvolver.χaN
-		  DerivativesN.DχsxDχ20y= Dχs.X*inverse2ε
-		  DerivativesN.DχsyDχ20y = Dχs.Y*inverse2ε
-		  DerivativesN.DχszDχ20y= Dχs.Z*inverse2ε
-		  Dχs = VEvolverForχ20zPlus.SpinEvolver.χaN -  VEvolverForχ20zMinus.SpinEvolver.χaN
-		  DerivativesN.DχsxDχ20z= Dχs.X*inverse2ε
-		  DerivativesN.DχsyDχ20z = Dχs.Y*inverse2ε
-		  DerivativesN.DχszDχ20z= Dχs.Z*inverse2ε
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UpdateΨrDerivatives()
+		  // Update Ψr derivatives
 		  DerivativesN.DΨrDZ = PhaseEvolver.DΨrDZN
 		  DerivativesN.DΨrDV0 = PhaseEvolver.DΨrDV0N
 		  DerivativesN.DΨrDδ = PhaseEvolver.DΨrDδN
@@ -457,9 +458,14 @@ Protected Class EvolverClass
 		  DerivativesN.DΨrDχ20x = PhaseEvolver.DΨrDχ20xN
 		  DerivativesN.DΨrDχ20y = PhaseEvolver.DΨrDχ20yN
 		  DerivativesN.DΨrDχ20z = PhaseEvolver.DΨrDχ20zN
+		  
 		End Sub
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		DerivativesMN As CurrentDerivativesClass
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		DerivativesN As CurrentDerivativesClass
@@ -519,6 +525,10 @@ Protected Class EvolverClass
 
 	#tag Property, Flags = &h0
 		StepPowerP As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		ValuesMN As CurrentValuesClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
