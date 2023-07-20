@@ -34,7 +34,7 @@ Protected Class CaseSupervisorClass
 		        Exit  // Abort the loop
 		      End If
 		    Next
-		    Uncertainty = UncertaintyCalculator.Calculate(ATAMatrix) // solve for the uncertainties
+		    Uncertainty = UncertaintyCalculator.Calculate(ATAMatrix, CaseParameters.Θ) // solve for the uncertainties
 		  Catch err As RuntimeException
 		    TerminationMessage = err.Message + " at step " + N.ToString
 		  End Try

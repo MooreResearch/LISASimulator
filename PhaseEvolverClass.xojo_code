@@ -25,7 +25,7 @@ Protected Class PhaseEvolverClass
 		  // the properties V, VDot, Cosι, αDot, and all the derivatives dv/dq, daDot/dq, and dvDot/dq,
 		  // where q = V0, δ, and the initial six spin variables.
 		  // Calculate some useful stuff so that we don't have to do the calculations multiple times
-		  Var DτRatio As Double = DτF/DτP
+		  Var dτRatio As Double = DτF/DτP
 		  Var OneMinusRatio As Double = 1.0 - DτRatio
 		  Var GMΩeτr As Double = Parameters.GMΩe*τr
 		  Var SinOrbit As Double = Sin(GMΩeτr - Φ)
@@ -36,34 +36,33 @@ Protected Class PhaseEvolverClass
 		  Var ΨrDot As Double = V - Cosι*αDot - LF2*VDot
 		  Var StepFactor As Double = 2*DτF*(1.0 + VeSinΘ*SinOrbit)
 		  
-		  
 		  // Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
 		  // but it is probably faster just to do the calculation
 		  ΨrP = OneMinusRatio*ΨrN + DτRatio*ΨrP
-		  DΨrDV0P = OneMinusRatio*DΨrDV0N + DτRatio*DΨrDV0P
-		  DΨrDδP = OneMinusRatio*DΨrDδN + DτRatio*DΨrDδP
-		  DΨrDΘP = OneMinusRatio*DΨrDΘN + DτRatio*DΨrDΘP
-		  DΨrDΦP = OneMinusRatio*DΨrDΦN + DτRatio*DΨrDΦP
-		  DΨrDχ10xP = OneMinusRatio*DΨrDχ10xN + DτRatio*DΨrDχ10xP
-		  DΨrDχ10yP = OneMinusRatio*DΨrDχ10yN + DτRatio*DΨrDχ10yP
-		  DΨrDχ10zP = OneMinusRatio*DΨrDχ10zN + DτRatio*DΨrDχ10zP
-		  DΨrDχ20xP = OneMinusRatio*DΨrDχ20xN + DτRatio*DΨrDχ20xP
-		  DΨrDχ20yP = OneMinusRatio*DΨrDχ20yN + DτRatio*DΨrDχ20yP
-		  DΨrDχ20zP = OneMinusRatio*DΨrDχ20zN + DτRatio*DΨrDχ20zP
+		  DΨrDV0P = OneMinusRatio*DΨrDV0N + dτRatio*DΨrDV0P
+		  DΨrDδP = OneMinusRatio*DΨrDδN + dτRatio*DΨrDδP
+		  DΨrDΘP = OneMinusRatio*DΨrDΘN + dτRatio*DΨrDΘP
+		  DΨrDΦP = OneMinusRatio*DΨrDΦN + dτRatio*DΨrDΦP
+		  DΨrDχ10xP = OneMinusRatio*DΨrDχ10xN + dτRatio*DΨrDχ10xP
+		  DΨrDχ10yP = OneMinusRatio*DΨrDχ10yN + dτRatio*DΨrDχ10yP
+		  DΨrDχ10zP = OneMinusRatio*DΨrDχ10zN + dτRatio*DΨrDχ10zP
+		  DΨrDχ20xP = OneMinusRatio*DΨrDχ20xN + dτRatio*DΨrDχ20xP
+		  DΨrDχ20yP = OneMinusRatio*DΨrDχ20yN + dτRatio*DΨrDχ20yP
+		  DΨrDχ20zP = OneMinusRatio*DΨrDχ20zN + dτRatio*DΨrDχ20zP
 		  
 		  // Now update the evolving phase value and its derivatives
 		  ΨrF = ΨrP + StepFactor*ΨrDot
 		  DΨrDZN = -InverseOnePlusZ*(ΨrN - Ψr0)
 		  DΨrDΘF = DΨrDΘP + 2*DτF*VeCosΘ*SinOrbit*ΨrDot
 		  DΨrDΦF = DΨrDΦP + 2*DτF*VeSinΘ*CosOrbit*ΨrDot
-		  DΨrDV0F = DΨrDV0P + StepFactor*(DvDV0 - DCosιDV0*αDot - Cosι*DαDotDV0 - LF1*DvDV0 - LF2*DvDotDV0)
-		  DΨrDδF = DΨrDδP + StepFactor*(DvDδ - DCosιDδ*αDot - Cosι*DαDotDδ - LF1*DvDδ - LF2*DvDotDδ)
-		  DΨrDχ10xF = DΨrDχ10xP + StepFactor*(DvDχ10x - DCosιDχ10x*αDot - Cosι*DαDotDχ10x - LF1*DvDχ10x - LF2*DvDotDχ10x)
-		  DΨrDχ10yF = DΨrDχ10yP + StepFactor*(DvDχ10y - DCosιDχ10y*αDot - Cosι*DαDotDχ10y - LF1*DvDχ10y - LF2*DvDotDχ10y)
-		  DΨrDχ10zF = DΨrDχ10zP + StepFactor*(DvDχ10z - DCosιDχ10z*αDot - Cosι*DαDotDχ10z - LF1*DvDχ10z - LF2*DvDotDχ10z)
-		  DΨrDχ20xF = DΨrDχ20xP + StepFactor*(DvDχ20x - DCosιDχ20x*αDot - Cosι*DαDotDχ20x - LF1*DvDχ20x - LF2*DvDotDχ20x)
-		  DΨrDχ20yF = DΨrDχ20yP + StepFactor*(DvDχ20y - DCosιDχ20y*αDot - Cosι*DαDotDχ20y - LF1*DvDχ20y - LF2*DvDotDχ20y)
-		  DΨrDχ20zF = DΨrDχ20zP + StepFactor*(DvDχ20z - DCosιDχ20z*αDot - Cosι*DαDotDχ20z - LF1*DvDχ20z - LF2*DvDotDχ20z)
+		  DΨrDV0F = DΨrDV0P + StepFactor*(DvDV0 + Sinι*DιDV0*αDot - Cosι*DαDotDV0 - LF1*DvDV0 - LF2*DvDotDV0)
+		  DΨrDδF = DΨrDδP + StepFactor*(DvDδ + Sinι*DιDδ*αDot - Cosι*DαDotDδ - LF1*DvDδ - LF2*DvDotDδ)
+		  DΨrDχ10xF = DΨrDχ10xP + StepFactor*(DvDχ10x + Sinι*DιDχ10x*αDot - Cosι*DαDotDχ10x - LF1*DvDχ10x - LF2*DvDotDχ10x)
+		  DΨrDχ10yF = DΨrDχ10yP + StepFactor*(DvDχ10y + Sinι*DιDχ10y*αDot - Cosι*DαDotDχ10y - LF1*DvDχ10y - LF2*DvDotDχ10y)
+		  DΨrDχ10zF = DΨrDχ10zP + StepFactor*(DvDχ10z + Sinι*DιDχ10z*αDot - Cosι*DαDotDχ10z - LF1*DvDχ10z - LF2*DvDotDχ10z)
+		  DΨrDχ20xF = DΨrDχ20xP + StepFactor*(DvDχ20x + Sinι*DιDχ20x*αDot - Cosι*DαDotDχ20x - LF1*DvDχ20x - LF2*DvDotDχ20x)
+		  DΨrDχ20yF = DΨrDχ20yP + StepFactor*(DvDχ20y + Sinι*DιDχ20y*αDot - Cosι*DαDotDχ20y - LF1*DvDχ20y - LF2*DvDotDχ20y)
+		  DΨrDχ20zF = DΨrDχ20zP + StepFactor*(DvDχ20z + Sinι*DιDχ20z*αDot - Cosι*DαDotDχ20z - LF1*DvDχ20z - LF2*DvDotDχ20z)
 		End Sub
 	#tag EndMethod
 
@@ -86,38 +85,6 @@ Protected Class PhaseEvolverClass
 
 	#tag Property, Flags = &h0
 		Cosι As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DCosιDV0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DCosιDδ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DCosιDχ10x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DCosιDχ10y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DCosιDχ10z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DCosιDχ20x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DCosιDχ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DCosιDχ20z As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -182,6 +149,38 @@ Protected Class PhaseEvolverClass
 
 	#tag Property, Flags = &h0
 		DvDχ20z As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DιDV0 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DιDδ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DιDχ10x As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DιDχ10y As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DιDχ10z As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DιDχ20x As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DιDχ20y As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DιDχ20z As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -353,6 +352,10 @@ Protected Class PhaseEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Sinι As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		V As Double
 	#tag EndProperty
 
@@ -467,7 +470,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DCosιDV0"
+			Name="DιDV0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -475,7 +478,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DCosιDδ"
+			Name="DιDδ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -483,7 +486,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DCosιDχ10x"
+			Name="DιDχ10x"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -491,7 +494,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DCosιDχ10y"
+			Name="DιDχ10y"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -499,7 +502,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DCosιDχ10z"
+			Name="DιDχ10z"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -507,7 +510,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DCosιDχ20x"
+			Name="DιDχ20x"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -515,7 +518,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DCosιDχ20y"
+			Name="DιDχ20y"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -523,7 +526,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DCosιDχ20z"
+			Name="DιDχ20z"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

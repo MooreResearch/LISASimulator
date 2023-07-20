@@ -15,8 +15,8 @@ Protected Class AmplitudeParameters
 		  Case Item.β
 		    β = β + Myε
 		    εβ = Myε
-		  Case Item.Cosι
-		    εCosι = Myε
+		  Case Item.ι
+		    ει = Myε
 		  Case Item.χax
 		    εχax = Myε
 		  Case Item.χay
@@ -45,40 +45,31 @@ Protected Class AmplitudeParameters
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Update(Cosι As Double, χs As Vector, χa As Vector)
+		Sub Update(ι As Double, α As Double, Ψr As Double, χa As Vector, χs As Vector)
 		  // Use this to update the amplitude parameters after every time step
-		  // Add tweaking if there is any
+		  // Add tweaking if there is any.
 		  χsx = χs.X + εχsx
 		  χsy = χs.Y + εχsy
 		  χsz = χs.Z + εχsz
 		  χax = χa.X + εχax
 		  χay = χa.Y + εχsy
 		  χaz = χa.Z + εχsz
-
-		  // If we are very close to having Cosι = 1, then the difference
-		  // scheme fails, because Sinι is undefined.
-		  If εCosι <> 0.0 And Cosι + Abs(1.1*εCosι) > 1.0 Then
-		    C2 = 1.0  // This should make the Cosι derivative strictly zero
-		    S1 = 0.0  // as the derivative of a parameter maximum should be
-		  Else // Otherwise, we are safely far from this maximum
-		    C2 = Cosι + εCosι
-		    S1 = Sqrt(0.5*(1-C2))
-		  End If
-		  // Fill in the rest of the values
-
-		  C1 = Sqrt(0.5*(1+C2))
+		  
+		  // Calculate trig functions based on iota
+		  C2 =  Cos(ι+ει)
+		  S1 = Sin(0.5*(ι+ει))
+		  C1 = Cos(0.5*(ι+ει))
 		  Var C13 As Double = C1*C1*C1
 		  Var C15 As Double = C13*C1*C1
 		  Var C17 As Double = C13*C13*C1
 		  C3 = -3*C1 + 4*C13
-		  C4 = 2*C2*C2-1
+		  C4 = 2*C2*C2-1.0
 		  C5 = 5*C1 - 20*C13 + 16*C15
-		  C6 = 2*C3*C3-1
+		  C6 = 2*C3*C3-1.0
 		  C7 = 64*C17 - 112*C15 + 56*C13 - 7*C1
-		  C8 = 2*C4*C4 - 1
+		  C8 = 2*C4*C4 - 1.0
 		  C9 = -3*C3 + 4*C3*C3*C3
 		  C10 = 2*C5*C5-1
-
 		  Var S13 As Double = S1*S1*S1
 		  Var S15 As Double = S13*S1*S1
 		  Var S17 As Double = S13*S13*S1
@@ -91,6 +82,29 @@ Protected Class AmplitudeParameters
 		  S8 = 2*C4*S4
 		  S9 = 3*S3 - 4*S3*S3*S3
 		  S10 = 2*C5*S5
+		  
+		  // Calculate trig functions based on alpha and Ψr
+		  Cα = Cos(α)
+		  C2α = 2*Cα*Cα-1.0
+		  C3α = 4*Cα*Cα*Cα - 3*Cα
+		  C4α = 2*C2α*C2α - 1.0
+		  C5α = 16*Cα*Cα*Cα*Cα*Cα - 20*Cα*Cα*Cα + 5*Cα
+		  Sα = Sin(α)
+		  S2α = 2*Sα*Cα
+		  S3α = 3*Sα - 4*Sα*Sα*Sα
+		  S4α = 2*S2α*C2α
+		  S5α = 5*Sα - 20*Sα*Sα*Sα + 16*Sα*Sα*Sα*Sα*Sα
+		  CΨ = Cos(Ψr)
+		  C2Ψ = 2*CΨ*CΨ-1.0
+		  C3Ψ = 4*CΨ*CΨ*CΨ - 3*CΨ
+		  C4Ψ = 2*C2Ψ*C2Ψ - 1.0
+		  C5Ψ = 16*CΨ*CΨ*CΨ*CΨ*CΨ - 20*CΨ*CΨ*CΨ + 5*CΨ
+		  SΨ = Sin(Ψr)
+		  S2Ψ = 2*SΨ*CΨ
+		  S3Ψ = 3*SΨ - 4*SΨ*SΨ*SΨ
+		  S4Ψ = 2*S2Ψ*C2Ψ
+		  S5α = 5*SΨ - 20*SΨ*SΨ*SΨ + 16*SΨ*SΨ*SΨ*SΨ*SΨ
+		  
 		  
 		  
 		  
@@ -111,7 +125,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		C2α As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		C2β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		C2Ψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -119,7 +141,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		C3α As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		C3β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		C3Ψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -127,7 +157,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		C4α As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		C4β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		C4Ψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -135,7 +173,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		C5α As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		C5β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		C5Ψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -155,7 +201,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Cα As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Cβ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		CΨ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -171,7 +225,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		S2α As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		S2β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S2Ψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -179,7 +241,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		S3α As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		S3β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S3Ψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -187,7 +257,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		S4α As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		S4β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S4Ψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -195,7 +273,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		S5α As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		S5β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S5Ψ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -215,11 +301,15 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Sα As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Sβ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		β As Double
+		SΨ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -227,7 +317,7 @@ Protected Class AmplitudeParameters
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		εCosι As Double
+		ει As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -294,7 +384,7 @@ Protected Class AmplitudeParameters
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
 		None
 		  δ
-		  Cosι
+		  ι
 		  β
 		  χax
 		  χay
@@ -436,14 +526,6 @@ Protected Class AmplitudeParameters
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Sβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="β"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -595,79 +677,6 @@ Protected Class AmplitudeParameters
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εχax"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εCosι"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εχay"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εχaz"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εχsx"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εχsy"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εχsz"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εδ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-
-		#tag ViewProperty
 			Name="C10"
 			Visible=false
 			Group="Behavior"
@@ -725,6 +734,134 @@ Protected Class AmplitudeParameters
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="S9"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sα"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S2α"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S3α"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S4α"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S5α"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Cα"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C2α"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C3α"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C4α"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C5α"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CΨ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C2Ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C3Ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C4Ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C5Ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SΨ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
