@@ -2715,32 +2715,34 @@ End
 	#tag Event
 		Sub Action()
 		  Var TheSuper As CaseSupervisorClass = MainThread.CaseSupervisor  // Get a reference to the supervisor
+		  // Whether the thread is running or not, update these values
+		  ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseParameters.GM/TheSuper.Year, "0.0000000")
+		  ValueOfVLabel.Text = Format(TheSuper.Evolver.ValuesN.V,"0.000000")
+		  ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
+		  ValueOfStepNumberLabel.Text = TheSuper.N.ToString
+		  If ValueOfTcLabel.Text = "" Then
+		    Var TheSpinEvolver As SpinEvolverClass = MainThread.CaseSupervisor.Evolver.VEvolver.SpinEvolver
+		    ValueOfTcLabel.Text = GetTimeToCoalescence(TheSuper, TheSpinEvolver).ToString
+		  end if
+		  Var theStepPower As Integer = TheSuper.Evolver.StepPowerP
+		  Var theFactor as Integer
+		  If theStepPower < 0 Then
+		    theFactor = 2^(-theStepPower)
+		    ValueOfStepRatioLabel.Text = "1/" + theFactor.ToString
+		  Else
+		    theFactor = 2^theStepPower
+		    ValueOfStepRatioLabel.Text = theFactor.ToString
+		  End if
+		  Var SNR As Double = 0.5*TheSuper.HCalculator.H0V2/TheSuper.HCalculator.Sn2
+		  ValueOfSNRLabel.Text = Format(SNR, "0.000e+00")
 		  If MainThread.State = Thread.Running then  // if the thread is running
 		    CaseProgressBar.Value = Round(TheSuper.N*100/TheSuper.NSteps)  // update the progress bar
-		    ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseParameters.GM/TheSuper.Year, "0.0000000")
-		    ValueOfVLabel.Text = Format(TheSuper.Evolver.ValuesN.V,"0.000000")
-		    ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
-		    ValueOfStepNumberLabel.Text = TheSuper.N.ToString
-		    If ValueOfTcLabel.Text = "" Then
-		      Var TheSpinEvolver As SpinEvolverClass = MainThread.CaseSupervisor.Evolver.VEvolver.SpinEvolver
-		      ValueOfTcLabel.Text = GetTimeToCoalescence(TheSuper, TheSpinEvolver).ToString
-		    end if
-		    Var theStepPower As Integer = TheSuper.Evolver.StepPowerP
-		    Var theFactor as Integer
-		    If theStepPower < 0 Then
-		      theFactor = 2^(-theStepPower)
-		      ValueOfStepRatioLabel.Text = "1/" + theFactor.ToString
-		    Else
-		      theFactor = 2^theStepPower
-		      ValueOfStepRatioLabel.Text = theFactor.ToString
-		    End if
 		  Else // the thread has stopped, meaning that this case is done
 		    CaseProgressBar.Value = 0  // set
 		    StartStopButton.Caption = "Run Cases"
 		    me.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped"
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
-		    
 		    If TheSuper.Uncertainty <> Nil Then
 		      DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
 		      MatrixChoicePopupMenu.SelectedRowIndex = 0

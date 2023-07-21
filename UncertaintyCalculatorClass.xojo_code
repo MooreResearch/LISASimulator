@@ -17,7 +17,7 @@ Protected Class UncertaintyCalculatorClass
 		      If diagonalElement < 0 Then
 		        uncList(j) = nan
 		      Else
-		        uncList(j) = Sqrt(Y.pData(k,k))
+		        uncList(j) = Sqrt(diagonalElement)
 		      End If
 		      k = k + 1   // and update the row number in the actual matrix
 		    Else
@@ -29,7 +29,9 @@ Protected Class UncertaintyCalculatorClass
 		  uv.OfH0 = uncList(0)*Sn2F0*Parameters.H0
 		  uv.Ofδ = uncList(1)*Sn2F0
 		  uv.OfV0 = uncList(2)*Sn2F0*(Parameters.V0^4)/3
+		  //uv.OfV0 = uncList(2)*Sn2F0*Parameters.V0
 		  uv.OfZ = uncList(3)*Sn2F0*Parameters.Z
+		  //uv.OfZ = uncList(3)*Sn2F0*(1 + Parameters.Z)
 		  uv.Ofβ = uncList(4)*Sn2F0
 		  uv.Ofψ = uncList(5)*Sn2F0
 		  uv.Ofλ0 = uncList(6)*Sn2F0

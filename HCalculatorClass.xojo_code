@@ -255,7 +255,9 @@ Protected Class HCalculatorClass
 		  DArray(0) = DH.Dh0*NoiseRatio*Parameters.H0
 		  DArray(1) = DH.Dδ*NoiseRatio
 		  DArray(2) = -DH.DV0*NoiseRatio*(Parameters.V0^4)/3
+		  //DArray(2) = -DH.DV0*NoiseRatio*Parameters.V0
 		  DArray(3) = DH.Dz*NoiseRatio*Parameters.Z
+		  //DArray(3) = DH.Dz*NoiseRatio*(1+Parameters.Z)
 		  DArray(4) = DH.Dβ*NoiseRatio
 		  DArray(5) = DH.Dψ*NoiseRatio
 		  DArray(6) = DH.Dλ0*NoiseRatio

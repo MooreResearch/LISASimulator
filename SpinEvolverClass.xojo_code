@@ -329,7 +329,7 @@ Protected Class SpinEvolverClass
 		  InitializeSpins(P.GetTweaked(Which, ε), χs𝓁Plus, χa𝓁Plus, d, d, d)
 		  Var χs𝓁Minus As Double
 		  Var χa𝓁Minus As Double
-		  InitializeSpins(P.GetTweaked(Which, ε), χs𝓁Minus, χa𝓁Minus, d, d, d)
+		  InitializeSpins(P.GetTweaked(Which, -ε), χs𝓁Minus, χa𝓁Minus, d, d, d)
 		  Dχs𝓁 = 0.5*(χs𝓁Plus - χs𝓁Minus)/ε
 		  Dχa𝓁 = 0.5*(χa𝓁Plus - χa𝓁Minus)/ε
 		End Sub
