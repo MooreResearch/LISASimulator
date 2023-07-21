@@ -515,6 +515,102 @@ Protected Class HCalculatorClass
 		  '12 return Parameters.δ*((-85/256*AP.Cβ+AP.Cβ*AP.C2β*1/256)*AP.S2+(11/64*AP.Cβ+1/64*AP.Cβ*AP.C2β)*AP.S4-(1/256*AP.Cβ+3/256*AP.Cβ*AP.C2β)*AP.S6)
 		  '13 return Parameters.δ*((45/256*AP.Cβ+AP.Cβ*AP.C2β*135/256)*AP.S2-(9/64*AP.Cβ+27/64*AP.Cβ*AP.C2β)*AP.S4+(9/256*AP.Cβ+27/256*AP.Cβ*AP.C2β)*AP.S6)
 		  '14 return Parameters.δ*(1/64*AP.Cβ*AP.Sβ^2*AP.S2+5/64*AP.Cβ*AP.Sβ*AP.S6)
+
+		  
+		  Var AP As AmplitudeParameters = APSet(NCase)
+		  
+		  
+		  // Set up the amplitude array
+		  A(NCase,1) = AP.δ*(AP.C1^6)*(-45/32*AP.Sβ-9/32*AP.S3β)
+		  
+		  A(NCase,2) = AP.δ*(AP.C1^2)*(-175/256*AP.Sβ+AP.C2*_
+		  (87/64*AP.Sβ-5/64*AP.S3β)+AP.C4*(-5/256*AP.Sβ+15/256*AP.S3β)+13/256*AP.S3β)
+		  
+		  A(NCase,3) =  AP.δ*(AP.S1^2)*(175/256*AP.Sβ+AP.C2*_
+		  (87/64*AP.Sβ-5/64*AP.S3β)+AP.C4*(5/256*AP.Sβ-15/256*AP.S3β)-13/256*AP.S3β)
+		  
+		  A(NCase,4) = AP.δ*(AP.C1^4)*(AP.S1^2)*(-5/32*AP.Sβ-AP.S3β/32)
+		  
+		  A(NCase,5) = AP.δ*(AP.C1^4)*(AP.S1^2)*(-45/32*AP.Sβ+AP.S3β*135/32)
+		  
+		  A(NCase,6) = AP.δ*(AP.C1^2)*(AP.S1^4)*(45/32*AP.Sβ-AP.S3β*135/32)
+		  
+		  A(NCase,7) = AP.δ*(AP.C1^2)*(AP.S1^4)*(5/32*AP.Sβ+AP.S3β/32)
+		  
+		  A(NCase,8) = AP.δ*(AP.S1^6)*AP.Sβ*(27/16+9/16*AP.C2β)
+		  
+		  A(NCase,9) = AP.δ*(45/16)*(AP.S2^3)*(AP.Cβ)*(AP.Sβ^2)
+		  
+		  A(NCase,10) = AP.δ*((-85/256*AP.Cβ-AP.Cβ*AP.C2β/128-_
+		  AP.Cβ*AP.C2β*AP.C2/32-3/128*AP.Cβ*AP.C2β*AP.C4)_
+		  *AP.S2-11/64*AP.Cβ*AP.S4-AP.Cβ*AP.S6/256)
+		  
+		  A(NCase,11) = AP.δ*((45/256*AP.Cβ+AP.Cβ*AP.C2β*81/128+_
+		  AP.Cβ*AP.C2β*AP.C2*27/32+27/128*AP.Cβ*AP.C2β*AP.C4)_
+		  *AP.S2+9/64*AP.Cβ*AP.S4+AP.Cβ*AP.S6*9/256)
+		  
+		  A(NCase,12) = AP.δ*((-85/256*AP.Cβ+AP.Cβ*AP.C2β*1/256)_
+		  *AP.S2+(11/64*AP.Cβ+1/64*AP.Cβ*AP.C2β)*AP.S4-_
+		  (1/256*AP.Cβ+3/256*AP.Cβ*AP.C2β)*AP.S6)
+		  
+		  A(NCase,13) = AP.δ*((45/256*AP.Cβ+AP.Cβ*AP.C2β*135/256)_
+		  *AP.S2-(9/64*AP.Cβ+27/64*AP.Cβ*AP.C2β)_
+		  *AP.S4+(9/256*AP.Cβ+27/256*AP.Cβ*AP.C2β)*AP.S6)
+		  
+		  A(NCase,14) = AP.δ*(1/64*AP.Cβ*AP.Sβ^2*AP.S2+5/64*AP.Cβ*AP.Sβ*AP.S6)
+		  NTerms = 14 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 3
+		    Nα(2) = 1
+		    Nα(3) = 1
+		    Nα(4) = 3
+		    Nα(5) = 1
+		    Nα(6) = 1
+		    Nα(7) = 3
+		    Nα(8) = 3
+		    Nα(9) = 0
+		    Nα(10) = 2
+		    Nα(11) = 2
+		    Nα(12) = 2
+		    Nα(13) = 2
+		    Nα(14)= 0
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = 3
+		    NΨ(2) = 1
+		    NΨ(3) = -1
+		    NΨ(4) = 1
+		    NΨ(5) = 3
+		    NΨ(6) = -3
+		    NΨ(7) = -1
+		    NΨ(8) = -3
+		    NΨ(9) = 3
+		    NΨ(10) = 1
+		    NΨ(11) = 3
+		    NΨ(12) = -1
+		    NΨ(13) = -3
+		    NΨ(14) = 3
+		    
+		    // Set up the Cosine Versus Sine Array
+		    // (All wave terms here are cosine)
+		    NCvS(1) = 0
+		    NCvS(2) = 0
+		    NCvS(3) = 0
+		    NCvS(4) = 0
+		    NCvS(5) = 0
+		    NCvS(6) = 0
+		    NCvS(7) = 0
+		    NCvS(8) = 0
+		    NCvS(9) = 0
+		    NCvS(10) = 0
+		    NCvS(11) = 0
+		    NCvS(12) = 0
+		    NCvS(13) = 0
+		    NCvS(14) = 0
+		  End If
+
 		End Sub
 	#tag EndMethod
 
@@ -558,6 +654,113 @@ Protected Class HCalculatorClass
 		  '16 return 1/32*(1/3*(349-25*AP.C2β)*AP.Sβ^2-(25+35*AP.C2β)*AP.C4*AP.Sβ^2)+AP.η*((25*AP.C2β-45)*AP.Sβ^2+(25+35*AP.C2β)*AP.C4*AP.Sβ^2)*AP.S2^2
 		  '17 return 1/4*(AP.η*(25+35*AP.C2β)-1/3*(25-35*AP.C2β))*AP.Sβ^2*AP.S2^4
 		  '18 return AP.C1^3*(6*AP.S2β-31/12*AP.C2*AP.S2β+1/12*AP.C4*AP.S2β-19/48*AP.S4β)*AP.S1+7/24*AP.C1^3*AP.S4β*AP.S3-7/48*AP.C1^3*AP.S4β*AP.S5+AP.η*(AP.C1^3*(-16/3*AP.S2β+31/4*AP.C2*AP.S2β-1/4*AP.C4*AP.S2β+19/16*AP.S4β)*AP.S1-7/8*AP.C1^3*AP.S4β*AP.S3+7/16*AP.C1^3*AP.S4β*AP.S5)
+
+		  
+		  // Set up the amplitude array
+		  A(NCase,1) = (59/16+5/2*AP.C2β-3/16*AP.C4β+(5/24-11/6*AP.C2β+7/24*AP.C4β)*AP.C2-(5/48+1/12*AP.C2β+7/48*AP.C4β)*AP.C4)*AP.C1^4+(-25/16-13/3*AP.C2β+9/16*AP.C4β+(-5/8+11/2*AP.C2β-7/8*AP.C4β)*AP.C2+(5/16+1/4*AP.C2β+7/16*AP.C4β)*AP.C4)*AP.η*AP.C1^4
+		  
+		  A(NCase,2) =(6+2*AP.C2β)*AP.η*AP.C1^8*AP.Sβ^2-(2+2/3*AP.C2β)*AP.C1^8*AP.Sβ^2
+		  
+		  A(NCase,3) = 32*(1/3-AP.η)*AP.Cβ^3*AP.C1^7*AP.Sβ*AP.S1
+		  
+		  A(NCase,4) = ((1/6*AP.C2β-5/6)*AP.S2β-2/3*AP.Cβ^2*AP.C2*AP.S2β+AP.η*((5/2-1/2*AP.C2β)*AP.S2β+2*AP.Cβ^2*AP.C2*AP.S2β))*AP.C1^5*AP.S1
+		  
+		  A(NCase,5) =(-(10/3+8/3*AP.C2β+14/3*AP.C4β)+AP.η*(10+8*AP.C2β+14*AP.C4β))*AP.C1^6*AP.S1^2
+		  
+		  A(NCase,6) = 1/2*(-(1+1/3*AP.C2β)+AP.η*(3+AP.C2β))*AP.C1^6*AP.Sβ^2*AP.S1^2
+		  
+		  A(NCase,7) =  (8/3-56/3*AP.C2β+AP.η*(56*AP.C2β-8))*AP.C1^5*AP.S2β*AP.S1^3
+		  
+		  A(NCase,8) = AP.η*(AP.C1*(16/3*AP.S2β+31/4*AP.C2*AP.S2β+1/4*AP.C4*AP.S2β-19/16*AP.S4β)-7/8*AP.C3*AP.S4β-7/16*AP.C5*AP.S4β)*AP.S1^3+(AP.C1*(-6*AP.S2β-31/12*AP.C2*AP.S2β-1/12*AP.C4*AP.S2β+19/48*AP.S4β)+7/24*AP.C3*AP.S4β+7/48*AP.C5*AP.S4β)*AP.S1^3
+		  
+		  A(NCase,9) = (59/16+5/2*AP.C2β-3/16*AP.C4β-(5/24-11/6*AP.C2β+7/24*AP.C4β)*AP.C2-(5/48+1/12*AP.C2β+7/48*AP.C4β)*AP.C4)*AP.S1^4+AP.η*(-25/16-13/3*AP.C2β+9/16*AP.C4β+(5/8-11/2*AP.C2β+7/8*AP.C4β)*AP.C2+(5/16+1/4*AP.C2β+7/16*AP.C4β)*AP.C4)*AP.S1^4
+		  
+		  A(NCase,10) = (56/3*AP.C2β-8/3+AP.η*(8-56*AP.C2β))*AP.C1^3*AP.S2β*AP.S1^5
+		  
+		  A(NCase,11) = ((5/6-1/6*AP.C2β)*AP.S2β-2/3*AP.Cβ^2*AP.C2*AP.S2β+AP.η*((-5/2+1/2*AP.C2β)*AP.S2β+2*AP.Cβ^2*AP.C2*AP.S2β))*AP.C1*AP.S1^5
+		  
+		  A(NCase,12) = (-(10/3+8/3*AP.C2β+14/3*AP.C4β)+AP.η*(10+8*AP.C2β+14*AP.C4β))*AP.C1^2*AP.S1^6
+		  
+		  A(NCase,13) = (-(1/2+1/6*AP.C2β)+AP.η*(3/2+1/2*AP.C2β))*AP.C1^2*AP.Sβ^2*AP.S1^6
+		  
+		  A(NCase,14) = 32*(AP.η-1/3)*AP.Cβ^3*AP.C1*AP.Sβ*AP.S1^7
+		  
+		  A(NCase,15) =  (AP.η*(6+2*AP.C2β)-(2+2/3*AP.C2β))*AP.Sβ^2*AP.S1^8
+		  
+		  A(NCase,16) = 1/32*(1/3*(349-25*AP.C2β)*AP.Sβ^2-(25+35*AP.C2β)*AP.C4*AP.Sβ^2)+AP.η*((25*AP.C2β-45)*AP.Sβ^2+(25+35*AP.C2β)*AP.C4*AP.Sβ^2)*AP.S2^2
+		  
+		  A(NCase,17) = 1/4*(AP.η*(25+35*AP.C2β)-1/3*(25-35*AP.C2β))*AP.Sβ^2*AP.S2^4
+		  
+		  A(NCase,18) =  AP.C1^3*(6*AP.S2β-31/12*AP.C2*AP.S2β+1/12*AP.C4*AP.S2β-19/48*AP.S4β)*AP.S1+7/24*AP.C1^3*AP.S4β*AP.S3-7/48*AP.C1^3*AP.S4β*AP.S5+AP.η*(AP.C1^3*(-16/3*AP.S2β+31/4*AP.C2*AP.S2β-1/4*AP.C4*AP.S2β+19/16*AP.S4β)*AP.S1-7/8*AP.C1^3*AP.S4β*AP.S3+7/16*AP.C1^3*AP.S4β*AP.S5)
+		  
+		  
+		  
+		  NTerms = 18 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 2
+		    Nα(2) = 4
+		    Nα(3) = 4
+		    Nα(4) = 3
+		    Nα(5) = 2
+		    Nα(6) = 4
+		    Nα(7) = 1
+		    Nα(8) = 1
+		    Nα(9) = 2
+		    Nα(10) = 1
+		    Nα(11) = 3
+		    Nα(12) = 2
+		    Nα(13) = 4
+		    Nα(14) = 3
+		    Nα(15) = 4
+		    Nα(16) = 0
+		    Nα(17) = 0
+		    Nα(18) = 1
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = 2
+		    NΨ(2) = 4
+		    NΨ(3) = 4
+		    NΨ(4) = 2
+		    NΨ(5) = 4
+		    NΨ(6) = 2
+		    NΨ(7) = 4
+		    NΨ(8) = -2
+		    NΨ(9) = -2
+		    NΨ(10) = -4
+		    NΨ(11) = -2
+		    NΨ(12) = -4
+		    NΨ(13) = -2
+		    NΨ(14) = -4
+		    NΨ(15) = -4
+		    NΨ(16) = 2
+		    NΨ(17) = 4
+		    NΨ(18) = 2
+		    
+		    // Set up the Cosine Versus Sine Array
+		    // (All wave terms here are cosine)
+		    NCvS(1) = 0
+		    NCvS(2) = 0
+		    NCvS(3) = 0
+		    NCvS(4) = 0
+		    NCvS(5) = 0
+		    NCvS(6) = 0
+		    NCvS(7) = 0
+		    NCvS(8) = 0
+		    NCvS(9) = 0
+		    NCvS(10) =0
+		    NCvS(11) = 0
+		    NCvS(12) =0
+		    NCvS(13) = 0
+		    NCvS(14) = 0
+		    NCvS(15) = 0
+		    NCvS(16) = 0
+		    NCvS(17) = 0
+		    NCvS(18) = 0
+		  End If
+
 		End Sub
 	#tag EndMethod
 
@@ -585,6 +788,70 @@ Protected Class HCalculatorClass
 		  '9 Return Parameters.δ*(AP.χsy*AP.Sβ*AP.S2)
 		  '10 Return -Parameters.δ*(AP.χsy*AP.Cβ*AP.S1^2)
 		  
+
+		  // Set up the amplitude array
+		  
+		  A(NCase,1) = AP.χax*AP.Cβ*AP.C1^2-AP.χaz*AP.C1^2*AP.Sβ
+		  
+		  A(NCase,2) = AP.χax*(AP.Cβ/2-AP.Cβ*AP.C2/2)-AP.χaz*AP.Sβ*AP.S1^2
+		  
+		  A(NCase,3) = -AP.χay*AP.Cβ*AP.S1^2
+		  
+		  A(NCase,4) = -AP.χay*AP.Sβ*AP.S2
+		  
+		  A(NCase,5) = -AP.χay*AP.Cβ*AP.C1^2
+		  
+		  A(NCase,6) = AP.δ*(AP.χsx*AP.Cβ*AP.C1^2-AP.χsz*AP.C1^2*AP.Sβ)
+		  
+		  A(NCase,7) = AP.δ*(AP.χsx*(AP.Cβ/2-AP.Cβ*AP.C2/2)-AP.χsz*AP.Sβ*AP.S1^2)
+		  
+		  A(NCase,8) = -AP.δ*(AP.χsy*AP.Cβ*AP.S1^2)
+		  
+		  A(NCase,9) = AP.δ*(AP.χsy*AP.Sβ*AP.S2)
+		  
+		  A(NCase,10) =-AP.δ*(AP.χsy*AP.Cβ*AP.S1^2)
+		  
+		  NTerms = 10 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 1
+		    Nα(2) = 1
+		    Nα(3) = 1
+		    Nα(4) = 0
+		    Nα(5) = 1
+		    Nα(6) = 1
+		    Nα(7) = 1
+		    Nα(8) = 1
+		    Nα(9) = 0
+		    Nα(10) = 1
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = 1
+		    NΨ(2) = -1
+		    NΨ(3) = -1
+		    NΨ(4) = 1
+		    NΨ(5) = 1
+		    NΨ(6) = 1
+		    NΨ(7) = -1
+		    NΨ(8) = -1
+		    NΨ(9) = 1
+		    NΨ(10) = 1
+		    
+		    // Set up the Cosine Versus Sine Array
+		    NCvS(1) = 0
+		    NCvS(2) = 0
+		    NCvS(3) = 1
+		    NCvS(4) = 1
+		    NCvS(5) = 1
+		    NCvS(6) = 0
+		    NCvS(7) = 0
+		    NCvS(8) = 1
+		    NCvS(9) = 1
+		    NCvS(10) = 1
+		  End If
+
 		End Sub
 	#tag EndMethod
 
@@ -668,6 +935,180 @@ Protected Class HCalculatorClass
 		  '36 Return Parameters.δ*((319/24576*AP.Cβ*AP.C2β+AP.Cβ*(871/4096+AP.C4β/49152)+(933/4096*AP.Cβ+133/1536*AP.Cβ*AP.C2β)*AP.C2+(625/24576*AP.Cβ+211/4096*AP.Cβ*AP.C2β)*AP.C4-11/12288*AP.Cβ*AP.C6-7/49152*AP.Cβ*AP.C8)*AP.S2-AP.Cβ*AP.C4β*AP.S4/12288+AP.Cβ*AP.C4β*AP.S6/32768-(45/16384*AP.C3β+AP.C5β/16384)*AP.S8-(AP.C3β/65536+5*AP.C5β/65536)*AP.S10+AP.η*((257/12288*AP.Cβ*AP.C2β-AP.Cβ*(1493/6144+AP.C4β/24576)+(-1391/6144+11/768*AP.Cβ*AP.C2β)*AP.C2+(-49/12288*AP.Cβ+77/2048*AP.Cβ*AP.C2β)*AP.C4+11/6144*AP.Cβ*AP.C6+7/24576*AP.Cβ*AP.C8)*AP.S2+AP.Cβ*AP.C4β*AP.S4/6144-AP.Cβ*AP.C4β*AP.S6/16384+(45/8192*AP.C3β+AP.C5β/8192)*AP.S8+(AP.C3β/32768+5/32768*AP.C5β)*AP.S10))
 		  '37 Return Parameters.δ*((-157/12288*AP.Cβ*AP.C2β+AP.Cβ*(9287/49152+AP.C4β/49152))*AP.S2+(-133/3072*AP.Cβ*AP.C2β+AP.Cβ*(-1405/12288+AP.C4β/12288))*AP.S4+(211/8192*AP.Cβ*AP.C2β+AP.Cβ*(419/32768+AP.C4β/32768))*AP.S6+(11/24576*AP.Cβ+45/16384*AP.C3β+AP.C5β/16384)*AP.S8-(7/98304*AP.Cβ+AP.C3β/65536+5*AP.C5β/65536)*AP.S10+AP.η*((13/6144*AP.Cβ*AP.C2β-AP.Cβ*(5923/24576+AP.C4β/24576))*AP.S2+(-11/1536*AP.Cβ*AP.C2β+AP.Cβ*(701/6144-AP.C4β/6144))*AP.S4+(77/4096*AP.Cβ*AP.C2β-AP.Cβ*(35/16384+AP.C4β/16384))*AP.S6-(11/12288*AP.Cβ+45/8192*AP.C3β+AP.C5β/8192)*AP.S8+(7/49152*AP.Cβ+AP.C3β/32768+5/32768*AP.C5β)*AP.S10))
 		  '38 Return Parameters.δ*((-341/8192*AP.Cβ+AP.Cβ*AP.C2β/8192)*AP.Sβ^2*AP.S2+(-3411/16384*AP.Cβ+7/16384*AP.Cβ*AP.C2β)*AP.Sβ^2*AP.S6+(35/32768*AP.Cβ+21/32768*AP.C3β)*AP.Sβ^2*AP.S10+AP.η*((-43/4096*AP.Cβ-AP.Cβ*AP.C2β/4096)*AP.Sβ^2*AP.S2+(-429/8192*AP.Cβ+7/8192*AP.Cβ*AP.C2β)*AP.Sβ^2*AP.S6+(-35/16384*AP.Cβ-21/16384*AP.C3β)*AP.Sβ^2*AP.S10))
+
+		  
+		  
+		  
+		  // Set up the amplitude array
+		  A(NCase,1) = -(3*π+π*AP.C2β)*AP.C1^4
+		  A(NCase,2) = -4*π*AP.C1^3*AP.S2β*AP.S1
+		  A(NCase,3) = 4*π*AP.C1*AP.S2β*AP.S1^3
+		  A(NCase,4) = -(3*π+π*AP.C2β)*AP.S1^4
+		  A(NCase,5) = -3*π*AP.Sβ^2*AP.S2^2
+		  A(NCase,6) = AP.δ*(AP.η*(625/128+625/384*AP.C2β)-(625/256+625/768*AP.C2β))*AP.C1^10*AP.Sβ^3
+		  A(NCase,7) = AP.δ*(AP.η*AP.C1^2*(-7449/16384*AP.Sβ-331/32768*AP.S3β+AP.C4*(337/12288*AP.Sβ-47/8192*AP.S3β-21/8192*AP.S5β)+AP.C8*(7/49152*AP.Sβ+7/32768*AP.S3β-35/32768*AP.S5β)+AP.C6*(-59/6144*AP.Cβ-91/4096*AP.S3β+7/4096*AP.S5β)+AP.C2*(1873/2048*AP.Sβ+19/4096*AP.S3β+35/12288*AP.S5β)-155/98304*AP.S5β)+AP.C1^2*(43723/98304*AP.Sβ-9653/65536*AP.S3β+AP.C2*(-10675/12288*AP.Sβ+1901/8192*AP.S3β-35/24576*AP.S5β)+AP.C6*(59/12288*AP.Sβ+91/8192*AP.S3β-7/8192*AP.S5β)+AP.C8*(-7/98304*AP.Sβ-7/65536*AP.S3β+35/65536*AP.S5β)+AP.C4*(1103/24576*AP.Sβ-2833/16384*AP.S3β+21/16384*AP.S5β)+155/196608*AP.S5β))
+		  A(NCase,8) = AP.δ*(AP.C1^6*(39249/8192*AP.Sβ+38331/16384*AP.S3β-AP.C4*(1701/8192*AP.Sβ+3159/16384*AP.S3β+3645/16384*AP.S5β)+AP.C2*(2403/2048*AP.Sβ-6399/4096*AP.S3β+2187/4096*AP.S5β)-5751/16384*AP.S5β)+AP.η*AP.C1^6*(-4689/4096*AP.Sβ-24507/8192*AP.S3β+AP.C2*(-2403/1024*AP.Sβ+6399/2048*AP.S3β-2187/2048*AP.S5β)+AP.C4*(1701/4096*AP.Sβ+3159/8192*AP.S3β+3645/8192*AP.S5β)+5751/8192*AP.S5β))
+		  A(NCase,9) = AP.δ*((11875/768*AP.Cβ+3125/768*AP.C3β-AP.η*(11875/384*AP.Cβ+3125/384*AP.C3β))*AP.C1^9*AP.Sβ^2*AP.S1)
+		  A(NCase,10) = AP.δ*(((-351/256*AP.Cβ+243/256*AP.Cβ*AP.C2β)*AP.Sβ^2-(567/256*AP.Cβ+405/256*AP.Cβ*AP.C2β)*AP.C2*AP.Sβ^2+AP.η*((351/128*AP.Cβ-243/128*AP.Cβ*AP.C2β)*AP.Sβ^2+(567/128*AP.Cβ+405/128*AP.Cβ*AP.C2β)*AP.C2*AP.Sβ^2))*AP.C1^7*AP.S1)
+		  A(NCase,11) = AP.δ*((AP.η*(243/128+81/128*AP.C2β)-(243/256+81/256*AP.C2β))*AP.C1^8*AP.Sβ^3*AP.S1^2)
+		  A(NCase,12) = AP.δ*((-43723/98304*AP.Sβ+9653/65536*AP.S3β+AP.C2*(-10675/12288*AP.Sβ+1901/8192*AP.S3β-35/24576*AP.S5β)+AP.C4*(-1103/24576*AP.Sβ+2833/16384*AP.S3β-21/16384*AP.S5β)+AP.C6*(59/12288*AP.Sβ+91/8192*AP.S3β-7/8192*AP.S5β)+AP.C8*(7/98304*AP.Sβ+7/65536*AP.S3β-35/65536*AP.S5β)-155/196608*AP.S5β)*AP.S1^2+AP.η*(7449/16384*AP.Sβ+331/32768*AP.S3β+AP.C8*(-7/49152*AP.Sβ-7/32768*AP.S3β+35/32768*AP.S5β)+AP.C6*(-59/6144*AP.Sβ-91/4096*AP.S3β+7/4096*AP.S5β)+AP.C4*(-337/12288*AP.Sβ+47/8192*AP.S3β+21/8192*AP.S5β)+AP.C2*(1873/2048*AP.Sβ+19/4096*AP.S3β+35/12288*AP.S5β)+155/98304*AP.S5β)*AP.S1^2)
+		  A(NCase,13) = AP.δ*(AP.C1^4*(1675/4096*AP.Sβ+825/8192*AP.S3β-AP.C4*(7/4096*AP.Sβ+13/8192*AP.S3β+15/8192*AP.S5β)+AP.C2*(27/1024*AP.Sβ-151/2048*AP.S3β+3/2048*AP.S5β)-13/8192*AP.S5β)*AP.S1^2+AP.η*AP.C1^4*(245/2048*AP.Sβ-57/4096*AP.S3β+AP.C2*(-27/512*AP.Sβ+151/1024*AP.S3β-3/1024*AP.S5β)+AP.C4*(7/2048*AP.Sβ+13/4096*AP.S3β+15/4096*AP.S5β)+13/4096*AP.S5β)*AP.S1^2)
+		  A(NCase,14) = AP.δ*((AP.η*(4375/512*AP.Sβ+8125/1024*AP.S3β+9375/1024*AP.S5β)-(4375/1024*AP.Sβ+8125/2048*AP.S3β+9375/2048*AP.S5β))*AP.C1^8*AP.S1^2)
+		  A(NCase,15) = AP.δ*(AP.C1^4*(20475/4096*AP.Sβ-149391/8192*AP.S3β+AP.C2*(2187/1024*AP.Sβ+10017/2048*AP.S3β-1701/2048*AP.S5β)+7371/8192*AP.S5β+AP.C4*(-567/4096*AP.Sβ-1701/8192*AP.S3β+8505/8192*AP.S5β))*AP.S1^2+AP.η*AP.C1^4*(-3195/2048*AP.Sβ+45711/4096*AP.S3β+AP.C4*(567/2048*AP.Sβ+1701/4096*AP.S3β-8505/4096*AP.S5β)-7371/4096*Ap.S5β+AP.C2*(-2187/512*AP.Sβ-10017/1024*AP.S3β+1701/1024*AP.S5β))*AP.S1^2)
+		  A(NCase,16) = AP.δ*((4375/384*AP.Cβ+625/256*AP.C3β+3125/256*AP.C5β-AP.η*(4375/192*AP.Cβ+625/128*AP.C3β+3125/128*AP.C5β))*AP.C1^7*AP.S1^3)
+		  A(NCase,17) =AP.δ*(AP.C1^5*((-37/384*AP.Cβ+1/384*AP.Cβ*AP.C2β)*AP.Sβ^2-(7/384*AP.Cβ+5/384*AP.Cβ*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^3+AP.η*AP.C1^5*((37/192*AP.Cβ-1/192*AP.Cβ*AP.C2β)*AP.Sβ^2+(7/192*AP.Cβ+5/192*AP.Cβ*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^3)
+		  A(NCase,18) = AP.δ*((AP.η*(1/64+1/192*AP.C2β)-(1/128+1/384*AP.C2β))*AP.C1^6*AP.Sβ^3*AP.S1^4)
+		  A(NCase,19) = AP.δ*(AP.η*AP.C1^2*(-245/2048*AP.Sβ+57/4096*AP.S3β-AP.C4*(7/2048*AP.Sβ+13/4096*AP.S3β+15/4096*AP.S5β)+AP.C2*(-27/512*AP.Sβ+151/1024*AP.S3β-3/1024*AP.S5β)-13/4096*AP.S5β)*AP.S1^4+AP.C1^2*(-1675/4096*AP.Sβ-825/8192*AP.S3β+AP.C2*(27/1024*AP.Sβ-151/2048*AP.S3β+3/2048*AP.S5β)+AP.C4/4096*(7*AP.Sβ+13*AP.S3β+15*AP.S5β)*AP.S1^4))
+		  A(NCase,20) = AP.δ*(4375*AP.η*AP.C1^6*(1/768*AP.Sβ+1/512*AP.S3β-5/512*AP.S5β)*AP.S1^4+4375*AP.C1^6*(-1/1536*AP.Sβ-1/1024*AP.S3β+5/1024*AP.S5β)*AP.S1^4)
+		  A(NCase,21) = AP.δ*(AP.C1^2*(-20475/4096*AP.Sβ+149391/8192*AP.S3β+AP.C4/4096*(567*AP.Sβ+1701/2*AP.S3β-8505/2*AP.S5β)+AP.C2/2048*(4374*AP.Sβ+10017*AP.S3β-1701*AP.S5β)-7371/8192*AP.S5β)*AP.S1^4+AP.η*AP.C1^2*(3195/2048*AP.Sβ-45711/4096*AP.S3β+7371/4096*AP.S5β+AP.C2*(-2187/512*AP.Sβ-10017/1024*AP.S3β+1701/1024*AP.S5β)+AP.C4*(-567/2048*AP.Sβ-1701/4096*AP.S3β+8505/4096*AP.S5β))*AP.S1^4)
+		  A(NCase,22) = AP.δ*(AP.η*AP.C1^3*((37/192*AP.Cβ-AP.Cβ*AP.C2β/192)*AP.Sβ^2-(7/192+5/192*AP.Cβ*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^5+AP.C1^3*((-37/384*AP.Cβ+AP.Cβ*AP.C2β/384)*AP.Sβ^2+(7/384*AP.Cβ+5/384*AP.Cβ*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^5)
+		  A(NCase,23) = AP.δ*((1/128+1/384*AP.C2β-AP.η*(1/64+1/192*AP.C2β))*AP.C1^4*AP.Sβ^3*AP.S1^6)
+		  A(NCase,24) = AP.δ*(AP.η*((14067/4096+4689/1024*AP.C2β-5751/4096*AP.C4β)*AP.Sβ+(-297/1024+1053/256*AP.C2β-2187/1024*AP.C4β)*AP.C2*AP.Sβ-(5103/4096+1701/1024*AP.C2β+3645/4096*AP.C4β)*AP.C4*AP.Sβ)*AP.S1^6+((-55539/8192-8145/2048*AP.C2β+5751/8192*AP.C4β)*AP.Sβ+(297/2048-1053/512*AP.C2β+2187/2048*AP.C4β)*AP.C2*AP.Sβ+(5103/8192+1701/2048*AP.C2β+3645/8192*AP.C4β)*AP.C4*AP.Sβ)*AP.S1^6)
+		  A(NCase,25) = AP.δ*(AP.C1^4*(4375/1536*AP.Sβ+4375/1024*AP.S3β-21875/1024*AP.S5β)*AP.S1^6+AP.η*AP.C1^4*(-4375/768*AP.Sβ-4375/512*AP.S3β+21875/512*AP.S5β)*AP.S1^6)
+		  A(NCase,26) = AP.δ*((4375/384*AP.Cβ+625/256*AP.C3β+3125/256*AP.C5β-AP.η*(4375/192*AP.Cβ+625/128*AP.C3β+3125/128*AP.C5β))*AP.C1^3*AP.S1^7)
+		  A(NCase,27) = AP.δ*(AP.η*AP.C1*((351/128*AP.Cβ-243/128*AP.Cβ*AP.C2β)*AP.Sβ^2-(567/128*AP.Cβ+405/128*AP.Cβ*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^7+AP.C1*((-351/256*AP.Cβ+243/256*AP.Cβ*AP.C2β)*AP.Sβ^2+(567/256*AP.Cβ+405/256*AP.Cβ*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^7)
+		  A(NCase,28) = AP.δ*((243/256-81/256*AP.C2β-AP.η*(243/128+81/128*AP.C2β))*AP.C1^2*AP.Sβ^3*AP.S1^8)
+		  A(NCase,29) = AP.δ*((4375/1024*AP.Sβ+8125/2048*AP.S3β+9375/2048*AP.S5β-AP.η*(4375/512*AP.Sβ+8125/1024*AP.S3β+9375/1024*AP.S5β))*AP.C1^2*AP.S1^8)
+		  A(NCase,30) = AP.δ*((11875/768*AP.Cβ+3125/768*AP.C3β-AP.η*(11875/384*AP.Cβ+3125/384*AP.C3β))*AP.C1*AP.Sβ^2*AP.S1^9)
+		  A(NCase,31) = AP.δ*((625/256+625/768*AP.C2β-AP.η*(625/128+625/384*AP.C2β))*AP.Sβ^3*AP.S1^10)
+		  A(NCase,32) = AP.δ*(AP.η*((10197/2048*AP.Cβ-3969/2048*AP.Cβ*AP.C2β)*AP.Sβ^2-(1701/2048*AP.Cβ+5103/2048*AP.Cβ*AP.C2β)*AP.C4*AP.Sβ^2)*AP.S2^3+((-44757/4096*AP.Cβ+3969/4096*AP.Cβ*AP.C2β)*AP.Sβ^2+(1701/4096*AP.Cβ+5103/4096*AP.Cβ*AP.C2β)*AP.C4*AP.Sβ^2)*AP.S2^3)
+		  A(NCase,33) = AP.δ*((21875/4096*AP.Cβ+13125/4096*AP.C3β-AP.η*(21875/2048*AP.Cβ+13125/2048*AP.C3β))*AP.Sβ^2*AP.S2^5)
+		  A(NCase,34)= AP.δ*((-37071/16384*AP.Cβ*AP.C2β+AP.Cβ*(-7641/8192+567/32768*AP.C4β)-(10917/8192*AP.Cβ+2835/1024*AP.Cβ*AP.C2β)*AP.C2+(-10089/16384*AP.Cβ+135/8192*AP.Cβ*AP.C2β)*AP.C4+513/8192*AP.Cβ*AP.C6+5167/32768*AP.Cβ*AP.C8)*AP.S2-81/8192*AP.Cβ*AP.C4β*AP.S4+1053/65536*AP.Cβ*AP.C4β*AP.S6+(2565/32768*AP.C3β+729/32768*AP.C5β)*AP.S8+(243/131072*AP.C3β+1215/131072*AP.C5β)*AP.S10+AP.η*((5967/8192*AP.Cβ*AP.C2β+AP.Cβ*(2457/4096-567/16384*AP.C4β)+(4005/4096*AP.Cβ+243/512*AP.Cβ*AP.C2β)*AP.C2+(6633/8192*AP.Cβ-5319/4096*AP.Cβ*AP.C2β)*AP.C4-513/4096*AP.Cβ*AP.C6-567/16384*AP.Cβ*AP.C8)*AP.S2+81/4096*AP.Cβ*AP.C4β*AP.S4-1053/32768*AP.Cβ*AP.C4β*AP.S6-(2565/16384*AP.C3β+729/16384*AP.C5β)*AP.S8-(243/65536*AP.C3β+1215/65536*AP.C5β)*AP.S10))
+		  A(NCase,35) = AP.δ*((-18603/8192*AP.Cβ*AP.C2β+AP.Cβ*(-20475/32768+567/32768*AP.C4β))*AP.S2+(2835/2048*AP.Cβ*AP.C2β+AP.Cβ*(5715/8192+81/8192*AP.C4β))*AP.S4+(135/16384*AP.Cβ*AP.C2β+AP.Cβ*(-20745/65536+1053/65536*AP.C4β))*AP.S6-(513/16384*AP.Cβ+2565/32768*AP.C3β+729/32768*AP.C5β)*AP.S8+(567/65536*AP.Cβ+243/131072*AP.C3β+1215/131072*AP.C5β)*AP.S10+AP.η*((5643/4096*AP.Cβ*AP.C2β+AP.Cβ*(3195/16384-567/16384*AP.C4β))*AP.S6+(513/8192*AP.Cβ+2565/16384*AP.C3β+729/16384*AP.C5β)*AP.S8-(567/32768*AP.Cβ+243/65536*AP.C3β+1215/65536*AP.C5β)*AP.S10))
+		  A(NCase,36) = AP.δ*((319/24576*AP.Cβ*AP.C2β+AP.Cβ*(871/4096+AP.C4β/49152)+(933/4096*AP.Cβ+133/1536*AP.Cβ*AP.C2β)*AP.C2+(625/24576*AP.Cβ+211/4096*AP.Cβ*AP.C2β)*AP.C4-11/12288*AP.Cβ*AP.C6-7/49152*AP.Cβ*AP.C8)*AP.S2-AP.Cβ*AP.C4β*AP.S4/12288+AP.Cβ*AP.C4β*AP.S6/32768-(45/16384*AP.C3β+AP.C5β/16384)*AP.S8-(AP.C3β/65536+5*AP.C5β/65536)*AP.S10+AP.η*((257/12288*AP.Cβ*AP.C2β-AP.Cβ*(1493/6144+AP.C4β/24576)+(-1391/6144+11/768*AP.Cβ*AP.C2β)*AP.C2+(-49/12288*AP.Cβ+77/2048*AP.Cβ*AP.C2β)*AP.C4+11/6144*AP.Cβ*AP.C6+7/24576*AP.Cβ*AP.C8)*AP.S2+AP.Cβ*AP.C4β*AP.S4/6144-AP.Cβ*AP.C4β*AP.S6/16384+(45/8192*AP.C3β+AP.C5β/8192)*AP.S8+(AP.C3β/32768+5/32768*AP.C5β)*AP.S10))
+		  A(NCase,37) = AP.δ*((-157/12288*AP.Cβ*AP.C2β+AP.Cβ*(9287/49152+AP.C4β/49152))*AP.S2+(-133/3072*AP.Cβ*AP.C2β+AP.Cβ*(-1405/12288+AP.C4β/12288))*AP.S4+(211/8192*AP.Cβ*AP.C2β+AP.Cβ*(419/32768+AP.C4β/32768))*AP.S6+(11/24576*AP.Cβ+45/16384*AP.C3β+AP.C5β/16384)*AP.S8-(7/98304*AP.Cβ+AP.C3β/65536+5*AP.C5β/65536)*AP.S10+AP.η*((13/6144*AP.Cβ*AP.C2β-AP.Cβ*(5923/24576+AP.C4β/24576))*AP.S2+(-11/1536*AP.Cβ*AP.C2β+AP.Cβ*(701/6144-AP.C4β/6144))*AP.S4+(77/4096*AP.Cβ*AP.C2β-AP.Cβ*(35/16384+AP.C4β/16384))*AP.S6-(11/12288*AP.Cβ+45/8192*AP.C3β+AP.C5β/8192)*AP.S8+(7/49152*AP.Cβ+AP.C3β/32768+5/32768*AP.C5β)*AP.S10))
+		  A(NCase,38 ) = AP.δ*((-341/8192*AP.Cβ+AP.Cβ*AP.C2β/8192)*AP.Sβ^2*AP.S2+(-3411/16384*AP.Cβ+7/16384*AP.Cβ*AP.C2β)*AP.Sβ^2*AP.S6+(35/32768*AP.Cβ+21/32768*AP.C3β)*AP.Sβ^2*AP.S10+AP.η*((-43/4096*AP.Cβ-AP.Cβ*AP.C2β/4096)*AP.Sβ^2*AP.S2+(-429/8192*AP.Cβ+7/8192*AP.Cβ*AP.C2β)*AP.Sβ^2*AP.S6+(-35/16384*AP.Cβ-21/16384*AP.C3β)*AP.Sβ^2*AP.S10))
+		  
+		  NTerms = 38 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 2
+		    Nα(2) = 1
+		    Nα(3) = 1
+		    Nα(4) = 2
+		    Nα(5) = 0
+		    Nα(6) = 5
+		    Nα(7) = 1
+		    Nα(8) = 3
+		    Nα(9) = 4
+		    Nα(10) = 4
+		    Nα(11) = 5
+		    Nα(12) = 1
+		    Nα(13) = 3
+		    Nα(14) = 3
+		    Nα(15) = 1
+		    Nα(16) = 2
+		    Nα(17) = 4
+		    Nα(18) = 5
+		    Nα(19) = 3
+		    Nα(20) = 1
+		    Nα(21) = 1
+		    Nα(22) = 4
+		    Nα(23) = 5
+		    Nα(24) = 3
+		    Nα(25) = 1
+		    Nα(26) = 2
+		    Nα(27) = 4
+		    Nα(28) = 5
+		    Nα(29) = 3
+		    Nα(30) = 4
+		    Nα(31) = 5
+		    Nα(32) = 0
+		    Nα(33) = 0
+		    Nα(34) = 2
+		    Nα(35) = 2
+		    Nα(36) = 2
+		    Nα(37) = 2
+		    Nα(38) = 0
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = 2
+		    NΨ(2) = 2
+		    NΨ(3) = -2
+		    NΨ(4) = -2
+		    NΨ(5) = 2
+		    NΨ(6) = 5
+		    NΨ(7) = 1
+		    NΨ(8) = 3
+		    NΨ(9) = 5
+		    NΨ(10) = 3
+		    NΨ(11) = 3
+		    NΨ(12) = -1
+		    NΨ(13) = 1
+		    NΨ(14) = 5
+		    NΨ(15) = 3
+		    NΨ(16) = 5
+		    NΨ(17) = 1
+		    NΨ(18) = 1
+		    NΨ(19) = -1
+		    NΨ(20) = 5
+		    NΨ(21) = -3
+		    NΨ(22) = -1
+		    NΨ(23) = -1
+		    NΨ(24) = -3
+		    NΨ(25) = -5
+		    NΨ(26) = -5
+		    NΨ(27) = -3
+		    NΨ(28) = -3
+		    NΨ(29) = -5
+		    NΨ(30) = -5
+		    NΨ(31) = -5
+		    NΨ(32) = 3
+		    NΨ(33) = 5
+		    NΨ(34) = 3
+		    NΨ(35) = -3
+		    NΨ(36) = 1
+		    NΨ(37) = -1
+		    NΨ(38) = 1
+		    
+		    
+		    // Set up the Cosine Versus Sine Array
+		    // (All wave terms here are cosine)
+		    NCvS(1) = 0
+		    NCvS(2) = 0
+		    NCvS(3) = 0
+		    NCvS(4) = 0
+		    NCvS(5) = 0
+		    NCvS(6) = 0
+		    NCvS(7) = 0
+		    NCvS(8) = 0
+		    NCvS(9) = 0
+		    NCvS(10) =0
+		    NCvS(11) = 0
+		    NCvS(12) =0
+		    NCvS(13) = 0
+		    NCvS(14) = 0
+		    NCvS(15) = 0
+		    NCvS(16) = 0
+		    NCvS(17) = 0
+		    NCvS(18) = 0
+		    NCvS(19) = 0
+		    NCvS(20) = 0
+		    NCvS(21) = 0
+		    NCvS(22) = 0
+		    NCvS(23) = 0
+		    NCvS(24) = 0
+		    NCvS(25) = 0
+		    NCvS(26) = 0
+		    NCvS(27) = 0
+		    NCvS(28) = 0
+		    NCvS(29) = 0
+		    NCvS(30) = 0
+		    NCvS(31) = 0
+		    NCvS(32) = 0
+		    NCvS(33) = 0
+		    NCvS(34) = 0
+		    NCvS(35) = 0
+		    NCvS(36) = 0
+		    NCvS(37) = 0
+		    NCvS(38) = 0
+		    
+		    
+		    
+		  End If
+
 		End Sub
 	#tag EndMethod
 
@@ -763,6 +1204,205 @@ Protected Class HCalculatorClass
 		  '43 Return Parameters.δ*AP.χay*AP.C1^4*(7/3*AP.S2β-10/3*AP.C2*AP.S2β)
 		  '44 Return Parameters.δ*AP.χay*(5+5/3*AP.C2β)*AP.C1^5*AP.S1
 		  
+
+		  
+		  // Set up the amplitude array
+		  
+		  A(NCase,1) = AP.χsx*(2*AP.Cβ*AP.C2^2*AP.Sβ-AP.η*AP.Cβ*AP.C2^3*AP.Sβ)
+		  A(NCase,2) = AP.χsz*(AP.η*AP.C1^4*(-5/2-7/2*AP.C2β+(1/2+AP.C2β/6)*AP.C2)+AP.C1^4*(-3-AP.C2β+(5+5/3*AP.C2β)*AP.C4))+AP.χsx*(AP.C1^4*(7/3*AP.S2β-10/3*AP.C2*AP.S2β)-AP.η*AP.C1^4*(19/6*AP.S2β+1/3*AP.C2*AP.S2β))
+		  A(NCase,3) = AP.χsx*(AP.η*(1/2+AP.C2β/6)*AP.C1^5*AP.S1+(5+5/3*AP.C2β)*AP.C1^5*AP.S1)
+		  A(NCase,4) = AP.χsx*(AP.η*(1/2+AP.C2β/6)*AP.C1*AP.S1^5+(5+5/3*AP.C2β)*AP.C1*AP.S1^5)
+		  A(NCase,5) = AP.χsx*(AP.η*AP.C1^3*(-17/4+79/12*AP.C2β+(-1/4+7/12*AP.C2β)*AP.C2)*AP.S1+AP.C1^3*(3/2-13/6*AP.C2β+(-5/2+35/6*AP.C2β)*AP.C2)*AP.S1)+AP.χsz*(AP.η*AP.C1^3*(-7*AP.S2β+2/3*AP.C2*AP.S2β)*AP.S1+AP.C1^3*(-2*AP.S2β+20/3*AP.C2*AP.S2β)*AP.S1)
+		  A(NCase,6) = AP.χsx*(AP.C1*(3/2-13/6*AP.C2β+(5/2-35/6*AP.C2β)*AP.C2)*AP.S1^3+AP.η*AP.C1*(-17/4+79/12*AP.C2β+(1/4-7/12*AP.C2β)*AP.C2)*AP.S1^3)+AP.χsz*(-AP.C1*(2*AP.S2β+20/3*AP.C2*AP.S2β)*AP.S1^3-AP.η*AP.C1*(7*AP.S2β+2/3*AP.C2*AP.S2β)*AP.S1^3)
+		  A(NCase,7) = AP.χsz*(AP.η*(5/2+7/2*AP.C2β+(1/2+AP.C2β/6)*AP.C2)*AP.S1^4+(3+AP.C2β+(5+5/3*AP.C2β)*AP.C2)*AP.S1^4)+AP.χsx*(-(7/3*AP.S2β+10/3*AP.C2*AP.S2β)*AP.S1^4+AP.η*(19/6*AP.S2β-1/3*AP.C2*AP.S2β)*AP.S1^4)
+		  A(NCase,8) = AP.χsz*(-3+3/2*AP.η)*AP.C2*AP.Sβ^2*AP.S2^2
+		  A(NCase,9) = AP.χsx*(3/4+AP.C2β/4-AP.η*(3/8+AP.C2β/8))*AP.S2^3
+		  A(NCase,10) = AP.χsx*(10/3+1/3*AP.η)*AP.Cβ*AP.C2*AP.Sβ*AP.S2^2+AP.χsz*(5+AP.η/2)*AP.C2*AP.Sβ^2*AP.S2^2
+		  A(NCase,11) = AP.χsz*(3/2+AP.C2β/2-AP.η*(3/4+AP.C2β/4))*AP.C2*AP.S2^2+AP.χsx*(AP.η/2-1)*AP.C2*AP.S2β*AP.S2^2
+		  A(NCase,12) = AP.χsx*(-11/16*AP.C2β*AP.S2-3/4*AP.S2^3-7/16*AP.C2β*AP.S6+AP.η*(11/32*AP.C2β*AP.S2+3/8*AP.S2^3+7/32*AP.C2β*AP.S6))+AP.χsz*(AP.S2β*AP.S2/2-AP.S2β*AP.S6/2+AP.η*(-1/4*AP.S2β*AP.S2+1/4*AP.S2β*AP.S6))
+		  A(NCase,13) = AP.χsy*((15/8-3/8*AP.C2β+(9/8-5/8*AP.C2β)*AP.C4)*AP.S2+AP.η*(-15/16+3/16*AP.C2β+(-9/16+5/16*AP.C2β)*AP.C4)*AP.S2)
+		  A(NCase,14) = AP.χsy*(AP.η-2)*AP.Cβ*AP.C2*AP.Sβ*AP.S2^2
+		  A(NCase,15) = AP.χsy*(3/4+AP.C2β/4-AP.η*(3/8+AP.C2β/8))*AP.S2^3
+		  A(NCase,16) = AP.χsy*(AP.C1*(5/2-11/6*AP.C2β+(15/2-25/6*AP.C2β)*AP.C2)*AP.S1^3+AP.η*AP.C1*(1/4-31/12*AP.C2β+(3/4-5/12*AP.C2β)*AP.C2)*AP.S1^3)
+		  A(NCase,17) = AP.χsy*(-(7/3*AP.S2β+10/3*AP.C2*AP.S2β)*AP.S1^4-AP.η*(5/6*AP.S2β+1/3*AP.C2*AP.S2β)*AP.S1^4)
+		  A(NCase,18) = AP.χsy*(5+5/3*AP.C2β+AP.η*(1/2+AP.C2β/6))*AP.C1*AP.S1^5
+		  A(NCase,19) = -AP.χsy*(1/3+11/6*AP.η)*AP.Cβ*AP.Sβ*AP.S2^2
+		  A(NCase,20) = AP.χsy*(AP.η*AP.C1^3*(1/4-31/12*AP.C2β)+(-3/4+5/12*AP.C2β)*AP.C2)*AP.S1+AP.C1^3*(5/2-11/6*AP.C2β+(-15/2+25/6*AP.C2β)*AP.C2*AP.S1)
+		  A(NCase,21) = AP.χsy*(AP.C1^4*(7/3*AP.S2β-10/3*AP.C2*AP.S2β)+AP.η*AP.C1^4*(5/6*AP.S2β-1/3*AP.C2*AP.S2β))
+		  A(NCase,22) = AP.χsy*(AP.η*(1/2+AP.C2β/6)+5+5/3*AP.C2β)*AP.C1^5*AP.S1
+		  A(NCase,23) = 2*AP.δ*AP.χax*AP.Cβ*AP.C2^3*AP.Sβ
+		  A(NCase,24) = AP.δ*(AP.χaz*AP.C1^4*(-3-AP.C2β+(5+5/3*AP.C2β)*AP.C2)+AP.χax*AP.C1^4*(7/3*AP.S2β-10/3*AP.C2*AP.S2β))
+		  A(NCase,25) = AP.δ*AP.χax*(5+5/3*AP.C2β)*AP.C1^5*AP.S1
+		  A(NCase,26) = AP.δ*AP.χax*(5+5/3*AP.C2β)*AP.C1*AP.S1^5
+		  A(NCase,27) = AP.δ*(AP.χax*(3/2-13/6*AP.C2β+(-5/2+35/6*AP.C2β)*AP.C2)+AP.χaz*(-2*AP.S2β+20/3*AP.C2*AP.S2β))*AP.C1^3*AP.S1
+		  A(NCase,28) = AP.δ*(AP.χax*(3/2-13/6*AP.C2β+(5/2-35/6*AP.C2β)*AP.C2)+AP.χaz*(-2*AP.S2β-20/3*AP.C2*AP.S2β))*AP.C1*AP.S1^3
+		  A(NCase,29) = AP.δ*(AP.χaz*(3+AP.C2β+(5+5/3*AP.C2β)*AP.C2)*AP.S1^4-AP.χax*(7/2*AP.S2β+10/3*AP.C2*AP.S2β)*AP.S1^4)
+		  A(NCase,30) = -3*AP.δ*AP.χaz*AP.C2*AP.Sβ^2*AP.S2^2
+		  A(NCase,31) = AP.δ*AP.χax*(3/4+AP.C2β/4)*AP.S2^3
+		  A(NCase,32) = AP.δ*(10/3*AP.χax*AP.Cβ*AP.C2*AP.Sβ*AP.S2^2+5*AP.χaz*AP.C2*AP.Sβ^2*AP.S2^2)
+		  A(NCase,33) = AP.δ*AP.χaz*(3/2*AP.C2β/2)*AP.C2*AP.S2^2-AP.χax*AP.C2*AP.S2β*AP.S2^2
+		  A(NCase,34) = AP.δ*(AP.χax*(-11/16*AP.C2β*AP.S2-3/4*AP.S2^3-7/16*AP.C2β*AP.S6)+AP.χaz*(AP.S2β*AP.S2/2-AP.S2β*AP.S6/2))
+		  A(NCase,35) = AP.δ*(AP.χay*(15/8-3/8*AP.C2β+(9/8-5/8*AP.C2β)*AP.C4)*AP.S2)
+		  A(NCase,36) = -2*AP.δ*AP.χay*AP.Cβ*AP.C2*AP.Sβ*AP.S2^2
+		  A(NCase,37) = AP.δ*AP.χay*(3/4+AP.C2β/4)*AP.S2^3
+		  A(NCase,38) = AP.δ*AP.χay*AP.C1*(5/2-11/6*AP.C2β+(15/2-25/6*AP.C2β)*AP.C2)*AP.S1^3
+		  A(NCase,39) = AP.δ*AP.χay*(-7/3*AP.S2β-10/3*AP.C2*AP.S2β)*AP.S1^4
+		  A(NCase,40) = AP.δ*AP.χay*(5+5/3*AP.C2β)*AP.C1*AP.S1^5
+		  A(NCase,41) = -1/3*AP.δ*AP.χay*AP.Cβ*AP.Sβ*AP.S2^2
+		  A(NCase,42) = AP.δ*AP.χay*AP.C1^3*(5/2-11/6*AP.C2β+(-15/2+25/6*AP.C2β)*AP.C2)*AP.S1
+		  A(NCase,43) = AP.δ*AP.χay*AP.C1^4*(7/3*AP.S2β-10/3*AP.C2*AP.S2β)
+		  A(NCase,44) = AP.δ*AP.χay*(5+5/3*AP.C2β)*AP.C1^5*AP.S1
+		  
+		  NTerms = 44 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 0
+		    Nα(2) = 2
+		    Nα(3) = 3
+		    Nα(4) = 3
+		    Nα(5) = 1
+		    Nα(6) = 1
+		    Nα(7) = 2
+		    Nα(8) = 0
+		    Nα(9) = 3
+		    Nα(10) =0
+		    Nα(11) = 2
+		    Nα(12) = 1
+		    Nα(13) = 1
+		    Nα(14) = 2
+		    Nα(15) = 3
+		    Nα(16) = 1
+		    Nα(17) = 2
+		    Nα(18) = 3
+		    Nα(19) = 0
+		    Nα(20) = 1
+		    Nα(21) = 2
+		    Nα(22) = 3
+		    Nα(23) = 0
+		    Nα(24) = 2
+		    Nα(25) = 3
+		    Nα(26) = 3
+		    Nα(27) = 1
+		    Nα(28) = 1
+		    Nα(29) = 2
+		    Nα(30) = 0
+		    Nα(31) = 3
+		    Nα(32) = 0
+		    Nα(33) = 2
+		    Nα(34) = 1
+		    Nα(35) = 1
+		    Nα(36) = 2
+		    Nα(37) = 3
+		    Nα(38) = 1
+		    Nα(38) = 2
+		    Nα(40) = 3
+		    Nα(41) = 0
+		    Nα(42) = 1
+		    Nα(43) = 2
+		    Nα(44) = 3
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = 0
+		    NΨ(2) = 2
+		    NΨ(3) = 2
+		    NΨ(4) = -2
+		    NΨ(5) = 2
+		    NΨ(6) = -2
+		    NΨ(7) = -2
+		    NΨ(8) = 0
+		    NΨ(9) = 0
+		    NΨ(10) = 2
+		    NΨ(11) = 0
+		    NΨ(12) = 0
+		    NΨ(13) = 0
+		    NΨ(14) = 0
+		    NΨ(15) = 0
+		    NΨ(16) = -2
+		    NΨ(17) = -2
+		    NΨ(18) = -2
+		    NΨ(19) = 2
+		    NΨ(20) = 2
+		    NΨ(21) = 2
+		    NΨ(22) = 2
+		    NΨ(23) = 0
+		    NΨ(24) = 2
+		    NΨ(25) = 2
+		    NΨ(26) = -2
+		    NΨ(27) = 2
+		    NΨ(28) = -2
+		    NΨ(29) = -2
+		    NΨ(30) = 0
+		    NΨ(31) = 0
+		    NΨ(32) = 2
+		    NΨ(33) = 0
+		    NΨ(34) = 0
+		    NΨ(35) = 0
+		    NΨ(36) = 0
+		    NΨ(37) = 0
+		    NΨ(38) = -2
+		    NΨ(39) = -2
+		    NΨ(40) = -2
+		    NΨ(41) = 2
+		    NΨ(42) = 2
+		    NΨ(43) = 2
+		    NΨ(44) = 2
+		    
+		    
+		    // Set up the Cosine Versus Sine Array
+		    //0 = cos 1 = sin
+		    NCvS(1) = 0
+		    NCvS(2) = 0
+		    NCvS(3) = 0
+		    NCvS(4) = 0
+		    NCvS(5) = 0
+		    NCvS(6) = 0
+		    NCvS(7) = 0
+		    NCvS(8) = 0
+		    NCvS(9) = 0
+		    NCvS(10) =0
+		    NCvS(11) = 0
+		    NCvS(12) =0
+		    NCvS(13) = 1
+		    NCvS(14) = 1
+		    NCvS(15) = 1
+		    NCvS(16) = 1
+		    NCvS(17) = 1
+		    NCvS(18) = 1
+		    NCvS(19) = 1
+		    NCvS(20) = 1
+		    NCvS(21) = 1
+		    NCvS(22) = 1
+		    NCvS(23) = 0
+		    NCvS(24) = 0
+		    NCvS(25) = 0
+		    NCvS(26) = 0
+		    NCvS(27) = 0
+		    NCvS(28) = 0
+		    NCvS(29) = 0
+		    NCvS(30) = 0
+		    NCvS(31) = 0
+		    NCvS(32) = 0
+		    NCvS(33) = 0
+		    NCvS(34) = 0
+		    NCvS(35) = 1
+		    NCvS(36) = 1
+		    NCvS(37) = 1
+		    NCvS(38) = 1
+		    NCvS(39) = 1
+		    NCvS(40) = 1
+		    NCvS(41) = 1
+		    NCvS(42) = 1
+		    NCvS(43) = 1
+		    NCvS(44) = 1
+		    
+		    
+		    
+		    
+		  End If
+		  
+
 		End Sub
 	#tag EndMethod
 
@@ -808,6 +1448,7 @@ Protected Class HCalculatorClass
 		End Sub
 	#tag EndMethod
 
+
 	#tag Method, Flags = &h0
 		Sub HX1DoCase(NCase As Integer)
 		  'AddTerm(AddressOf GetA1, 1, -3, True)
@@ -838,6 +1479,84 @@ Protected Class HCalculatorClass
 		  '12 return Parameters.δ*(9/2)*AP.C2β*AP.C1^5*AP.S1
 		  '13 return Parameters.δ*(-9/8)*AP.C1^6*AP.S2β
 		  
+		  // Set up the amplitude array
+		  A(NCase,1) = AP.δ*(-45/8)*AP.C1^2*AP.S2β*AP.S1^4
+		  
+		  A(NCase,2) = AP.δ*(9/2)*AP.C2β*AP.C1*AP.S1^5
+		  
+		  A(NCase,3) =  AP.δ*(9/8)*AP.S2β*AP.S1^6
+		  
+		  A(NCase,4) = AP.δ*(-1/64*AP.Cβ*AP.Sβ+43/128*AP.Cβ*AP.C2*AP.Sβ-23/128*AP.C4*AP.S2β+5/256*Ap.C6*AP.S2β)
+		  
+		  A(NCase,5) = AP.δ*((-1-AP.C2β/4)*AP.C1+1/4*AP.C2β*AP.C1*AP.C2)*AP.S1^3 
+		  
+		  A(NCase,6) = AP.δ*(1/8)*AP.C1^2*AP.S2β*AP.S1^4
+		  
+		  A(NCase,7) = AP.δ*(1/2)*AP.Sβ^2*AP.S4
+		  
+		  A(NCase,8) = AP.δ*(AP.Cβ*AP.Sβ/64+43/128*AP.Cβ*AP.C2*AP.Sβ+23/128*AP.C4*AP.S2β+5/256*AP.C6*AP.S2β)
+		  
+		  A(NCase,9) = AP.δ*AP.S1*((-1-AP.C2β/4)*AP.C1^3-1/4*AP.C2β*AP.C1^3*AP.C2)
+		  
+		  A(NCase,10) = AP.δ*(-1/8)*(AP.C1^4*AP.S2β*AP.S1^2)
+		  
+		  A(NCase,11) = AP.δ*(45/8)*(AP.C1^4)*(AP.S2β)*(AP.S1^2)
+		  
+		  A(NCase,12) = AP.δ*(9/2)*AP.C2β*AP.C1^5*AP.S1
+		  
+		  A(NCase,13) = AP.δ*(-9/8)*AP.C1^6*AP.S2β
+		  
+		  
+		  NTerms = 13 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 1
+		    Nα(2) = 2
+		    Nα(3) = 3
+		    Nα(4) = 1
+		    Nα(5) = 2
+		    Nα(6) = 3
+		    Nα(7) = 0
+		    Nα(8) = 1
+		    Nα(9) = 2
+		    Nα(10) = 3
+		    Nα(11) = 1
+		    Nα(12) = 2
+		    Nα(13) = 3
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = -3
+		    NΨ(2) = -3
+		    NΨ(3) = -3
+		    NΨ(4) = -1
+		    NΨ(5) = -1
+		    NΨ(6) = -1
+		    NΨ(7) = 1
+		    NΨ(8) = 1
+		    NΨ(9) = 1
+		    NΨ(10) = 1
+		    NΨ(11) = 3
+		    NΨ(12) = 3
+		    NΨ(13) = 3
+		    
+		    // Set up the Cosine Versus Sine Array
+		    // (All wave terms here are cosine)
+		    NCvS(1) = 1
+		    NCvS(2) = 1
+		    NCvS(3) = 1
+		    NCvS(4) = 1
+		    NCvS(5) = 1
+		    NCvS(6) = 1
+		    NCvS(7) = 1
+		    NCvS(8) = 1
+		    NCvS(9) = 1
+		    NCvS(10) = 1
+		    NCvS(11) = 1
+		    NCvS(12) = 1
+		    NCvS(13) = 1
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -879,6 +1598,106 @@ Protected Class HCalculatorClass
 		  '15 Return (AP.η*(4*AP.Cβ+28*AP.C3β)-(4/3*AP.Cβ+28/3*AP.C3β))*AP.C1^6*AP.S1^2
 		  '16 Return (8/3+8*AP.C2β-AP.η*(8+24*AP.C2β))*AP.C1^7*AP.Sβ*AP.S1
 		  '17 Return (8*AP.η-8/3)*AP.Cβ*AP.C1^8*AP.Sβ^2
+		  
+		  // Set up the amplitude array
+		  A(NCase,1) = (4*AP.Sβ+28/3*AP.S3β-AP.η*(12*AP.Sβ+28*AP.S3β))*AP.C1^3*AP.S1^5
+		  
+		  A(NCase,2) =(AP.η*(4*AP.Cβ+28*AP.C3β-(4/3*AP.Cβ+28/3*AP.C3β)))*AP.C1^2*AP.S1^6
+		  
+		  A(NCase,3) =  ((4/3*AP.Sβ-4*AP.S3β)+AP.η*(-4*AP.Sβ+12*AP.S3β))*AP.C1*AP.S1^7
+		  
+		  A(NCase,4) = (8*AP.η-8/3)*AP.Cβ*AP.Sβ*AP.S1^8
+		  
+		  A(NCase,5) = AP.C1*(-79/8*AP.Sβ+AP.C2*(3/4*AP.Sβ-19/12*AP.S3β)+AP.C4*(AP.Sβ/8+7/24*AP.S3β)-3/8*AP.S3β)*AP.S1^3+AP.η*AP.C1*(103/24*AP.Sβ-AP.C4*(3/8*AP.Sβ+7/8*AP.S3β)+9/8*AP.S3β+AP.C2*(-9/4*AP.Sβ+19/4*AP.S3β))*AP.S1^3
+		  
+		  A(NCase,6) = (47/8*AP.Cβ+AP.C3β/8+(7/6*AP.Cβ+AP.C3β/6)*AP.C2-(AP.Cβ/24+7/24*AP.C3β)*AP.C4+AP.η*(-119/24*AP.Cβ-3/8*AP.C3β-(7/2*AP.Cβ+AP.C3β/2)*AP.C2+(AP.Cβ/8+7/8*AP.C3β)*AP.C4))*AP.S1^4
+		  
+		  A(NCase,7) =(4/3*AP.Sβ-(1/3+AP.C2β)*AP.C2*AP.Sβ+AP.η*(-4*AP.Sβ+(1+3*AP.C2β)*AP.C2*AP.Sβ))*AP.C1*AP.S1^5
+		  
+		  A(NCase,8) = (2*AP.η-2/3)*AP.Cβ*AP.C1^2*AP.Sβ^2*AP.S1^6
+		  
+		  A(NCase,9) =  (15/2*AP.η-5/2)*AP.Cβ*AP.C2*AP.Sβ^2*AP.S2^2
+		  
+		  A(NCase,10) = AP.C1^3*(79/8*AP.Sβ+AP.C2*(3/4*AP.Sβ-19/12*AP.S3β)-AP.C4*(AP.Sβ/8+7/24*AP.S3β)+3/8*AP.S3β)*AP.S1+AP.η*AP.C1^3*(-103/24*AP.Sβ+AP.C4*(3/8*AP.Sβ+7/8*AP.S3β)-9/8*AP.S3β+AP.C2*(-9/4*AP.Sβ+19/4*AP.S3β))*AP.S1
+		  
+		  A(NCase,11) = AP.C1^4*(47/8*AP.Cβ+AP.C3β/8-(7/6*AP.Cβ+AP.C3β/6)*AP.C2-(AP.Cβ/24+7/24*AP.C3β)*AP.C4)+AP.η*AP.C1^4*(-119/24*AP.Cβ-3/8*AP.C3β+(7/2*AP.Cβ+AP.C3β/2)*AP.C2+(AP.Cβ/8+7/8*AP.C3β)*AP.C4)
+		  
+		  A(NCase,12) =  (-4/3*AP.Sβ-(1/3+AP.C2β)*AP.C2*AP.Sβ+AP.η*(4*AP.Sβ+(1+3*AP.C2β)*AP.C2*AP.Sβ))*AP.C1^5*AP.S1
+		  
+		  A(NCase,13) = (2*AP.η-2/3)*AP.Cβ*AP.C1^6*AP.Sβ^2*AP.S1^2
+		  
+		  A(NCase,14) = (AP.η*(12*AP.Sβ+28*AP.S3β)-(4*AP.Sβ+28/3*AP.S3β))*AP.C1^5*AP.S1^3
+		  
+		  A(NCase,15) = (AP.η*(4*AP.Cβ+28*AP.C3β)-(4/3*AP.Cβ+28/3*AP.C3β))*AP.C1^6*AP.S1^2
+		  
+		  A(NCase,16) = (8/3+8*AP.C2β-AP.η*(8+24*AP.C2β))*AP.C1^7*AP.Sβ*AP.S1
+		  
+		  A(NCase,17) = (8*AP.η-8/3)*AP.Cβ*AP.C1^8*AP.Sβ^2
+		  
+		  
+		  NTerms = 17 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 2
+		    Nα(2) = 4
+		    Nα(3) = 3
+		    Nα(4) = 3
+		    Nα(5) = 2
+		    Nα(6) = 4
+		    Nα(7) = 1
+		    Nα(8) = 1
+		    Nα(9) = 2
+		    Nα(10) = 1
+		    Nα(11) = 3
+		    Nα(12) = 2
+		    Nα(13) = 4
+		    Nα(14) = 3
+		    Nα(15) = 4
+		    Nα(16) = 0
+		    Nα(17) = 0
+		    
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = 2
+		    NΨ(2) = 4
+		    NΨ(3) = 4
+		    NΨ(4) = 2
+		    NΨ(5) = 4
+		    NΨ(6) = 2
+		    NΨ(7) = 4
+		    NΨ(8) = -2
+		    NΨ(9) = -2
+		    NΨ(10) = -4
+		    NΨ(11) = -2
+		    NΨ(12) = -4
+		    NΨ(13) = -2
+		    NΨ(14) = -4
+		    NΨ(15) = -4
+		    NΨ(16) = 2
+		    NΨ(17) = 4
+		    
+		    // Set up the Cosine Versus Sine Array
+		    // (All wave terms here are cosine)
+		    NCvS(1) = 1
+		    NCvS(2) = 1
+		    NCvS(3) = 1
+		    NCvS(4) = 1
+		    NCvS(5) = 1
+		    NCvS(6) = 1
+		    NCvS(7) = 1
+		    NCvS(8) = 1
+		    NCvS(9) = 1
+		    NCvS(10) = 1
+		    NCvS(11) = 1
+		    NCvS(12) = 1
+		    NCvS(13) = 1
+		    NCvS(14) = 1
+		    NCvS(15) = 1
+		    NCvS(16) = 1
+		    NCvS(17) = 1
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -905,6 +1724,60 @@ Protected Class HCalculatorClass
 		  '8 Return Parameters.δ*(AP.χsx*(AP.Cβ^2/2-AP.Cβ^2*AP.C2/2)+AP.χsz*(-AP.Cβ*AP.Sβ/2+AP.Cβ*AP.C2*AP.Sβ/2))
 		  '9 Return Parameters.δ*(AP.χsx*AP.Cβ*AP.Sβ*AP.S2-AP.χsz*AP.Sβ^2*AP.S2)
 		  '10 Return Parameters.δ*(AP.χsx*(AP.Cβ^2/2+AP.Cβ^2*AP.C2/2)+AP.χsz*(-AP.Cβ*AP.Sβ/2-AP.Cβ*AP.C2*AP.Sβ/2))
+		  
+		  // Set up the amplitude array
+		  
+		  A(NCase,1) = AP.χay*(1/2+AP.C2/2)
+		  A(NCase,2) = AP.χay*AP.S1^2
+		  A(NCase,3) =  AP.χax*(AP.Cβ^2/2-AP.Cβ^2*AP.C2/2)+AP.χaz*(-AP.Cβ*AP.Sβ/2+AP.Cβ*AP.C2*AP.Sβ/2)
+		  A(NCase,4) =  AP.χax*AP.Cβ*AP.Sβ*AP.S2-AP.χaz*AP.Sβ^2*AP.S2
+		  A(NCase,5) =  AP.χax*(AP.Cβ^2/2+AP.Cβ^2*AP.C2/2)+AP.χaz*(-AP.Cβ*AP.Sβ/2-AP.Cβ*AP.C2*AP.Sβ/2)
+		  A(NCase,6) =  AP.δ*(AP.χsy*(1/2+AP.C2/2))
+		  A(NCase,7) =  AP.δ*(AP.χsy*AP.S1^2)
+		  A(NCase,8) =  AP.δ*(AP.χsx*(AP.Cβ^2/2-AP.Cβ^2*AP.C2/2)+AP.χsz*(-AP.Cβ*AP.Sβ/2+AP.Cβ*AP.C2*AP.Sβ/2))
+		  A(NCase,9) =  AP.δ*(AP.χsx*AP.Cβ*AP.Sβ*AP.S2-AP.χsz*AP.Sβ^2*AP.S2)
+		  A(NCase,10) =  AP.δ*(AP.χsx*(AP.Cβ^2/2+AP.Cβ^2*AP.C2/2)+AP.χsz*(-AP.Cβ*AP.Sβ/2-AP.Cβ*AP.C2*AP.Sβ/2))
+		  
+		  NTerms = 10 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 1
+		    Nα(2) = 1
+		    Nα(3) = 1
+		    Nα(4) = 0
+		    Nα(5) = 1
+		    Nα(6) = 1
+		    Nα(7) = 1
+		    Nα(8) = 1
+		    Nα(9) = 0
+		    Nα(10) = 1
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = 1
+		    NΨ(2) = -1
+		    NΨ(3) = -1
+		    NΨ(4) = 1
+		    NΨ(5) = 1
+		    NΨ(6) = 1
+		    NΨ(7) = -1
+		    NΨ(8) = -1
+		    NΨ(9) = 1
+		    NΨ(10) = 1
+		    
+		    // Set up the Cosine Versus Sine Array
+		    NCvS(1) = 0
+		    NCvS(2) = 0
+		    NCvS(3) = 1
+		    NCvS(4) = 1
+		    NCvS(5) = 1
+		    NCvS(6) = 0
+		    NCvS(7) = 0
+		    NCvS(8) = 1
+		    NCvS(9) = 1
+		    NCvS(10) = 1
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -978,6 +1851,154 @@ Protected Class HCalculatorClass
 		  '31 Return Parameters.δ*(625/256*AP.S2β-5625/512*AP.S4β+AP.η*(-625/128*AP.S2β+5625/256*AP.S4β))*AP.C1^8*AP.S1^2
 		  '32 Return Parameters.δ*(625/96+625/48*AP.C2β-AP.η*(625/48+625/24*AP.C2β))*AP.C1^9*AP.Sβ^2*AP.S1
 		  '33 Return Parameters.δ*(625/96*AP.η-625/192)*AP.Cβ*AP.C1^10*AP.Sβ^3
+		  
+		  // Set up the amplitude array
+		  A(NCase,1) = 8*π*AP.C1*AP.Sβ*AP.S1^3
+		  A(NCase,2) = -4*π*AP.Cβ*AP.S1^4
+		  A(NCase,3) = -8*π*AP.C1^3*AP.Sβ*AP.S1
+		  A(NCase,4) = -4*π*AP.Cβ*AP.C1^4
+		  A(NCase,5) = AP.δ*(AP.C1^4*(-4375/384*AP.S2β-4375/256*AP.S4β)*AP.S1^6+AP.η*AP.C1^4*(4375/192*AP.S2β+4375/128*AP.S4β)*AP.S1^6)
+		  A(NCase,6) = AP.δ*(625/96*AP.C2β+625/32*AP.C4β-AP.η*(625/48*AP.C2β+625/16*AP.C4β))*AP.C1^3*AP.S1^7
+		  A(NCase,7) = AP.δ*(-625/256*AP.S2β+5625/512*AP.S4β+AP.η*(625/48*AP.S2β-5625/256*AP.S4β))*AP.C1^2*AP.S1^8
+		  A(NCase,8) = AP.δ*(625/96+625/48*AP.C2β-AP.η*(625/48+625/24*AP.C2β))*AP.C1*AP.Sβ^2*AP.S1^9
+		  A(NCase,9) = AP.δ*(625/192-625/96*AP.η)*AP.Cβ*AP.Sβ^3*AP.S1^10
+		  A(NCase,10) = AP.δ*(AP.η*AP.C1^2*(-4923/512*AP.S2β+AP.C2*(459/128*AP.S2β-2079/256*AP.S4β)-945/1024*AP.S4β+AP.C4*(567/512*AP.S2β+1701/1024*AP.S4β))*AP.S1^4+AP.C1^2*(22203/1024*AP.S2β-AP.C4*(567/1024*AP.S2β+1701/2048*AP.S4β)+945/2048*AP.S4β+AP.C2*(-459/256*AP.S2β+2079/512*AP.S4β))*AP.S1^4)
+		  A(NCase,11) = AP.δ*(AP.η*AP.C1*(27/16+1233/128*AP.C2β+27/128*AP.C4β+(27/8+27/16*AP.C2β+27/16*AP.C4β)*AP.C2-(81/128*AP.C2β+243/128*AP.C4β)*AP.C4)*AP.S1^5+AP.C1*(-27/32-4689/256*AP.C2β-27/256*AP.C4β-(27/16+27/32*AP.C2β+27/32*AP.C4β)*AP.C2+(81/256*AP.C2β+243/256*AP.C4β)*AP.C4)*AP.S1^5)
+		  A(NCase,12) = AP.δ*(AP.η*((4761/1024-1377/1024*AP.C2β)*AP.S2β+(837/256-621/256*AP.C2β)*AP.C2*AP.S2β+(243/1024-2187/1024*AP.C2β)*AP.C4*AP.S2β)*AP.S1^6+((-11673/2048+1377/2048*AP.C2β)*AP.S2β+(-837/512+621/512*AP.C2β)*AP.C2*AP.S2β+(-243/2048+2187/2048*AP.C2β)*AP.C4*AP.S2β)*AP.S1^6)
+		  A(NCase,13) = AP.δ*(AP.η*AP.C1*((81/32-27/16*AP.C2β)*AP.Sβ^2-(81/32+81/16*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^7+AP.C1*((-81/64+27/32*AP.C2β)*AP.Sβ^2+(81/64+81/32*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^7)
+		  A(NCase,14) = AP.δ*(81/64-81/32*AP.η)*AP.Cβ*AP.C1^2*AP.Sβ^3*AP.S1^8
+		  A(NCase,15) = AP.δ*(683/16384*AP.Cβ*AP.Sβ+(557/4096-11/12288*AP.C2β)*AP.C4*AP.S2β+(-1719/32768+91/32768*AP.C2β)*AP.C6*AP.S2β-1/16384*AP.Cβ*AP.S3β+AP.C2*(-10511/49152*AP.Cβ*AP.Sβ+173/49152*AP.Cβ*AP.S3β)+AP.η*(85/8192*AP.Cβ*AP.Sβ+(-679/6144+11/6144*AP.C2β)*AP.C4*AP.S2β-(201/16384+91/16384*AP.C2β)*AP.C6*AP.S2β+1/8192*AP.Cβ*AP.S3β+AP.C2*(6031/24576*AP.Cβ*AP.Sβ-173/24576*AP.Cβ*AP.S3β)-AP.C10*(7/49152*AP.S2β+7/32768*AP.S4β)+AP.C8*(-37/24576*AP.S2β+91/16384*AP.S4β))+AP.C8*(37/49152*AP.S2β-91/32768*AP.S4β)+AP.C10*(7/98304*AP.S2β+7/65536*AP.S4β))
+		  A(NCase,16) = AP.δ*(AP.η*(19/512*AP.C4β*AP.C3+9/512*AP.C4β*AP.C5+AP.C1*(-11/16-35/128*AP.C2β+79/1536*AP.C4β+(1/32-37/256*AP.C2β)*AP.C2+(1/32+3/128*AP.C2β)*AP.C4-1/768*AP.C2β*AP.C6)-1/512*AP.C4β*AP.C7)*AP.S1^3+(-19/1024*AP.C4β*AP.C3-9/1024*AP.C4β*AP.C5+AP.C1*(19/32-23/768*AP.C2β-79/3072*AP.C4β-(1/64+347/512*AP.C2β)*AP.C2-(1/64+3/256*AP.C2β)*AP.C4+1/1536*AP.C2β*AP.C6)+1/1024*AP.C4β*AP.C7)*AP.S1^3)
+		  A(NCase,17) = AP.δ*(AP.C1^2*(-355/1024*AP.S2β-AP.C2*(13/256*AP.S2β+11/512*AP.S4β)+AP.C4*(-1/1024*AP.S2β+9/2048*AP.S4β)-5/2048*AP.S4β)*AP.S1^4+AP.η*AP.C1^2*(-29/512*AP.S2β+AP.C4*(1/512*AP.S2β-9/1024*AP.S4β)+AP.C2*(13/128*AP.S2β+11/256*AP.S4β)+5/1024*AP.S4β)*AP.S1^4)
+		  A(NCase,18) = AP.δ*(AP.η*AP.C1^3*((7/48+1/24*AP.C2β)*AP.Sβ^2-(1/48+1/24*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^5+AP.C1^3*(-(7/96+1/48*AP.C2β)*AP.Sβ^2+(1/96+1/48*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1^5)
+		  A(NCase,19) = AP.δ*(1/96-1/48*AP.η)*AP.Cβ*AP.C1^4*AP.Sβ^3*AP.S1^6
+		  A(NCase,20) = AP.δ*((-77/256+1/256*AP.Cβ)*AP.Sβ^2*AP.S4+(5/512+7/512*AP.C2β)*AP.Sβ^2*AP.S8+AP.η*((45/128-1/128*AP.C2β)*AP.Sβ^2*AP.S4-(5/256-7/256*AP.C2β)*AP.Sβ^2*AP.S8))
+		  A(NCase,21) = AP.δ*(135/64+189/64*AP.C2β-AP.η*(135/32+189/32*AP.C2β))*AP.C2*AP.Sβ^2*AP.S2^3
+		  A(NCase,22) = AP.δ* (-683/16384*AP.Cβ*AP.Sβ+(-557/4096+11/12288*AP.C2β)*AP.C4*AP.S2β+(-1719/32768+91/32768*AP.C2β)*AP.C6*AP.S2β+AP.Cβ*AP.Sβ/16384+AP.C2*(-10511/49152*AP.Cβ*AP.Sβ+173/49152*AP.Cβ*AP.S3β)+AP.η*(-85/8192*(AP.Cβ)*AP.Sβ+(679/6144-11/6144*AP.C2β)*AP.C4*AP.S2β-(201/16384+91/16384*AP.C2β)*AP.C6*AP.S2β-AP.Cβ*AP.S3β/8192+AP.C2*(6031/24576*AP.Cβ*AP.Sβ-173/24576*AP.Cβ*AP.S3β)+AP.C8*(37/24576*AP.S2β-91/16384*AP.S4β)-AP.C10*(7/49152*AP.S2β+7/32768*AP.S4β))+AP.C10*(7/98304*AP.S2β+7/65536*AP.S4β)+AP.C8*(-37/49152*AP.S2β+91/32768*AP.S4β))
+		  A(NCase,23) = AP.δ*(AP.C1^3*(19/32-23/768*AP.C2β-79/3072*AP.C4β+(1/64+347/512*AP.C2β)*AP.C2-(1/64+3/256*AP.C2β)*AP.C4-AP.C2β*AP.C6/1536)*AP.S1+19*AP.C4β*AP.C1^3*AP.S3/1024-9*AP.C4β*AP.C1^3*AP.S5/1024-AP.C4β*AP.C1^3*AP.S7/1024+AP.η*(AP.C1^3*(-11/16-35/128*AP.C2β+79/1536*AP.C4β+(-1/32+37/256*AP.C2β)*AP.C2+(1/32+3/128*AP.C2β)*AP.C4+1/768*AP.C2β*AP.C6)*AP.S1-19/512*AP.C4β*AP.C1^3*AP.S3+9/512*AP.C4β*AP.C1^3*AP.S5+1/512*AP.C4β*AP.C1^3*AP.S7))
+		  A(NCase,24) = AP.δ*(AP.η*AP.C1^4*(4923/512*AP.S2β+AP.C4*(567/1024*AP.S2β+1701/2048*AP.S4β)-945/2048*AP.S4β+AP.C2*(-459/256*AP.S2β+2079/512*AP.S4β))*AP.S1^2)
+		  A(NCase,25) = AP.δ*(AP.η*AP.C1^5*(27/16+1233/128*AP.C2β+27/128*AP.C4β-(27/8+27/16*AP.C2β+27/16*AP.C4β)*AP.C2-(81/128*AP.C2β+243/128*AP.C4β)*AP.C4)*AP.S1+AP.C1^5*(-27/32-4689/256*AP.C2β-27/256*AP.C4β+(27/16+27/32*AP.C2β+27/32*AP.C4β)*AP.C2+(81/256*AP.C2β+243/256*AP.C4β)*AP.C4)*AP.S1)
+		  A(NCase,26) = AP.δ*(AP.C1^6*(11673/2048*AP.S2β+AP.C4*(243/2048*AP.S2β-2187/4096*AP.S4β)+AP.C2*(-837/512*AP.S2β+621/1024*AP.S4β)-1377/4096*AP.S4β)+AP.η*AP.C1^6*(-4761/1024*AP.S2β+AP.C2*(837/256*AP.S2β-621/512*AP.S4β)+1377/2048*AP.S4β+AP.C4*(-243/1024*AP.S2β+2187/2048*AP.S4β)))
+		  A(NCase,27) = AP.δ*(AP.C1^7*((-81/64+27/32*AP.C2β)*AP.Sβ^2-(81/64+81/32*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1+AP.η*AP.C1^7*((81/32-27/16*AP.C2β)*AP.Sβ^2+(81/32+81/16*AP.C2β)*AP.C2*AP.Sβ^2)*AP.S1)
+		  A(NCase,28) = AP.δ*(81/32*AP.η-81/64)*AP.Cβ*AP.C1^8*AP.Sβ^3*AP.S1^2
+		  A(NCase,29) = AP.δ*(4375/384*AP.S2β+4375/256*AP.S4β-AP.η*(4375/192*AP.S2β+4375/128*AP.S4β))*AP.C1^6*AP.S1^4
+		  A(NCase,30) = AP.δ*(625/96*AP.C2β+625/32*AP.C4β-AP.η*(625/48*AP.C2β+625/16*AP.C4β))*AP.C1^7*AP.S1^3
+		  A(NCase,31) = AP.δ*(625/256*AP.S2β-5625/512*AP.S4β+AP.η*(-625/128*AP.S2β+5625/256*AP.S4β))*AP.C1^8*AP.S1^2
+		  A(NCase,32) = AP.δ*(625/96+625/48*AP.C2β-AP.η*(625/48+625/24*AP.C2β))*AP.C1^9*AP.Sβ^2*AP.S1
+		  A(NCase,33) = AP.δ*(625/96*AP.η-625/192)*AP.Cβ*AP.C1^10*AP.Sβ^3
+		  NTerms = 33 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 1
+		    Nα(2) = 2
+		    Nα(3) = 1
+		    Nα(4) = 2
+		    Nα(5) = 1
+		    Nα(6) = 2
+		    Nα(7) = 3
+		    Nα(8) = 4
+		    Nα(9) = 5
+		    Nα(10) = 1
+		    Nα(11) = 2
+		    Nα(12) = 3
+		    Nα(13) = 4
+		    Nα(14) = 5
+		    Nα(15) = 1
+		    Nα(16) = 2
+		    Nα(17) = 3
+		    Nα(18) = 4
+		    Nα(19) = 5
+		    Nα(20) = 0
+		    Nα(21) = 0
+		    Nα(22) = 1
+		    Nα(23) = 2
+		    Nα(24) = 1
+		    Nα(25) = 2
+		    Nα(26) = 3
+		    Nα(27) = 4
+		    Nα(28) = 5
+		    Nα(29) = 1
+		    Nα(30) = 2
+		    Nα(31) = 3
+		    Nα(32) = 4
+		    Nα(33) = 5
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = -2
+		    NΨ(2) = -2
+		    NΨ(3) = 2
+		    NΨ(4) = 2
+		    NΨ(5) = -5
+		    NΨ(6) = -5
+		    NΨ(7) = -5
+		    NΨ(8) = -5
+		    NΨ(9) = -5
+		    NΨ(10) = -3
+		    NΨ(11) = -3
+		    NΨ(12) = -3
+		    NΨ(13) = -3
+		    NΨ(14) = -3
+		    NΨ(15) = -1
+		    NΨ(16) = -1
+		    NΨ(17) = -1
+		    NΨ(18) = -1
+		    NΨ(19) = -1
+		    NΨ(20) = 1
+		    NΨ(21) = 3
+		    NΨ(22) = 1
+		    NΨ(23) = 1
+		    NΨ(24) = 3
+		    NΨ(25) = 3
+		    NΨ(26) = 3
+		    NΨ(27) = 3
+		    NΨ(28) = 3
+		    NΨ(29) = 5
+		    NΨ(30) = 5
+		    NΨ(31) = 5
+		    NΨ(32) = 5
+		    NΨ(33) = 5
+		    
+		    
+		    
+		    // Set up the Cosine Versus Sine Array
+		    // (All wave terms here are sine)
+		    NCvS(1) = 1
+		    NCvS(2) = 1
+		    NCvS(3) = 1
+		    NCvS(4) = 1
+		    NCvS(5) = 1
+		    NCvS(6) = 1
+		    NCvS(7) = 1
+		    NCvS(8) = 1
+		    NCvS(9) = 1
+		    NCvS(10) =1
+		    NCvS(11) = 1
+		    NCvS(12) =1
+		    NCvS(13) = 1
+		    NCvS(14) = 1
+		    NCvS(15) = 1
+		    NCvS(16) = 1
+		    NCvS(17) = 1
+		    NCvS(18) = 1
+		    NCvS(19) = 1
+		    NCvS(20) = 1
+		    NCvS(21) = 1
+		    NCvS(22) = 1
+		    NCvS(23) = 1
+		    NCvS(24) = 1
+		    NCvS(25) = 1
+		    NCvS(26) = 1
+		    NCvS(27) = 1
+		    NCvS(28) = 1
+		    NCvS(29) = 1
+		    NCvS(30) = 1
+		    NCvS(31) = 1
+		    NCvS(32) = 1
+		    NCvS(33) = 1
+		    
+		  End If
 		  
 		End Sub
 	#tag EndMethod
@@ -1054,6 +2075,7 @@ Protected Class HCalculatorClass
 		  '25 Return Parameters.δ*(-20/3*AP.χay*AP.Cβ*AP.C1^5*AP.S1)
 		  '26 Return Parameters.δ*(AP.χay*AP.C1*(-2/3*AP.Cβ-10/3*AP.Cβ*AP.C2)*AP.S1^3)
 		  '27 Return Parameters.δ*(AP.χay*(14/3*AP.Sβ+20/3*AP.C2*AP.Sβ)*AP.S1^4)
+		  '28 Return AP.δ*(-20/3*AP.χay*AP.Cβ*AP.C1*AP.S1*AP.S1*AP.S1*AP.S1*AP.S1)
 		  '29 Return Parameters.δ*(2*AP.χay*AP.C2*AP.Sβ*AP.S2^2)
 		  '30 Return Parameters.δ*(10/3*AP.χay*AP.C2*AP.Sβ*AP.S2^2)
 		  '31 Return Parameters.δ*(-AP.χay*AP.Cβ*AP.S1^3)
@@ -1068,6 +2090,200 @@ Protected Class HCalculatorClass
 		  '40 Return Parameters.δ*(AP.χax*AP.C1^3*(-2/3*AP.Cβ+10/3*AP.Cβ*AP.C2)*AP.S1+AP.χaz*AP.C1^3*(-4*AP.Sβ+40/3*AP.C2*AP.Sβ)*AP.S1)
 		  '41 Return Parameters.δ*(AP.χaz*AP.C1^4*(-4*AP.Cβ+20/3*AP.Cβ*AP.C2)+AP.χax*AP.C1^4*(14/3*AP.Sβ-20/3*AP.C2*AP.Sβ))
 		  '42 Return Parameters.δ*(20/3*AP.χax*AP.Cβ*AP.C1^5*AP.S1)
+		  
+		  // Set up the amplitude array
+		  
+		
+		 
+		  A(NCase, 1) =AP.χsy*(2*AP.C2^3*AP.Sβ-AP.η*AP.C2^3*AP.Sβ)
+		  A(NCase, 2) =AP.χsy*(AP.η*AP.C1^4*(-5*AP.Sβ/3 + 2*AP.C2*AP.Sβ/3)+AP.C1^4*(-14*AP.Sβ/3+20*AP.C2*AP.Sβ/3))
+		  A(NCase, 3) =AP.χsy*(-20/3*AP.Cβ*AP.C1^5*AP.S1-2/3*AP.η*AP.Cβ*AP.C1^5*AP.S1)
+		  A(NCase, 4) =AP.χsy*(AP.η*AP.C1^3*(7*AP.Cβ/3+AP.Cβ*AP.C2/3)*AP.S1+AP.C1^3*(-2*AP.Cβ/3+10*AP.Cβ*AP.C2/3)*AP.S1)
+		  A(NCase, 5) =AP.χsy*(AP.η*AP.C1*(7*AP.Cβ/3 - AP.Cβ*AP.C2/3)*AP.S1^3 + AP.C1*(-2*AP.Cβ/3-10*AP.Cβ*AP.C2/3)*AP.S1^3)
+		  A(NCase, 6) =AP.χsy*(AP.η*(5*AP.Sβ/3+2*AP.C2*AP.Sβ/3)*AP.S1^4+(14*AP.Sβ/3+20*AP.C2*AP.Sβ/3)*AP.S1^4)
+		  A(NCase, 7) =AP.χsy*(-20/3*AP.Cβ*AP.C1*AP.S1^5-2/3*AP.η*AP.Cβ*AP.C1*AP.S1^5)
+		  A(NCase, 8)= AP.χsy*(2*AP.C2*AP.Sβ*AP.S2^2-AP.η*AP.C2*AP.Sβ*AP.S2^2)
+		  A(NCase, 9)= AP.χsy*(10/3*AP.C2*AP.Sβ*AP.S2^2+1/3*AP.η*AP.C2*AP.Sβ*AP.S2^2)
+		  A(NCase, 10)= AP.χsy*(-AP.Cβ*AP.S2^3+1/2*AP.η*AP.Cβ*AP.S2^3)
+		  A(NCase, 11) =AP.χsy*(-5/4*AP.Cβ*AP.S2-1/4*AP.Cβ*AP.S6+AP.η*(5*AP.Cβ*AP.S2/8+1/8*AP.Cβ*AP.S6))
+		  A(NCase, 12)= AP.χsx*((-3*AP.Cβ/2-1/2*AP.Cβ*AP.C4)*AP.S2+AP.η*(3*AP.Cβ+1/4*AP.Cβ*AP.C4)*AP.S2)+AP.χsz*(-2*AP.C4*AP.Sβ*AP.S2+AP.η*AP.C4*AP.Sβ*AP.S2)
+		  A(NCase, 13) =AP.χsz*(2*AP.Cβ*AP.C2*AP.S2^2-AP.η*AP.Cβ*AP.C2*AP.S2^2)+AP.χsx*(-2*AP.C2*AP.Sβ*AP.S2^2+AP.η*AP.C2*AP.Sβ*AP.S2^2)
+		  A(NCase, 14) =AP.χsx*(AP.Cβ*AP.S2^3-1/2*AP.η*AP.Cβ*AP.S2^3)
+		  A(NCase, 15) =AP.χsx*(AP.C1*(-2*AP.Cβ/3-10*AP.Cβ*AP.C2/3)*AP.S1^3+AP.η*AP.C1*(-5/3*AP.Cβ+4*AP.C3β-AP.Cβ*AP.C2/3)*AP.S1^3)+AP.χsz*(AP.C1*(-4*AP.Sβ-40*AP.C2*AP.Sβ/3)*AP.S1^3+AP.η*AP.C1*(-2*AP.Sβ-4*AP.C2*AP.Sβ/3-4*AP.S3β)*AP.S1^3)
+		  A(NCase, 16) =AP.χsz*(AP.η*(5*AP.Cβ+AP.C3β+2*AP.Cβ*AP.C2/3)*AP.S1^4+(4*AP.Cβ+20*AP.Cβ*AP.C2/3)*AP.S1^4)+AP.χsx*((-14*AP.Sβ/3-20*AP.C2*AP.Sβ/3)*AP.S1^4+AP.η*(10*AP.Sβ/3-2*AP.C2*AP.Sβ/3+AP.S3β)*AP.S1^4)
+		  A(NCase, 17) =AP.χsx*(20/3*AP.Cβ*AP.C1*AP.S1^5+2/3*AP.η*AP.Cβ*AP.C1*AP.S1^5)
+		  A(NCase, 18) =-6*AP.β*AP.χsz*AP.Cβ*AP.Sβ^2*AP.S2^2 + AP.χsx*(1/3*AP.Sβ*AP.S2^2+AP.η*(-7/6+3*AP.C2β)*AP.Sβ*AP.S2^2)
+		  A(NCase, 19) =AP.χsx*(AP.η*AP.C1^3*(-5*AP.Cβ/3+4*AP.C3β+AP.Cβ*AP.C2/3)*AP.S1+AP.C1^3*(-2*AP.Cβ/3+10*AP.Cβ*AP.C2/3)*AP.S1)+AP.χsz*(AP.C1^3*(-4*AP.Sβ+40*AP.C2*AP.Sβ/3)*AP.S1+AP.η*AP.C1^3*(-2*AP.Sβ+4*AP.C2*AP.Sβ/3-4*AP.S3β)*AP.S1)
+		  A(NCase, 20)= AP.χsz*(AP.η*AP.C1^4*(-5*AP.Cβ-AP.C3β+2*AP.Cβ*AP.C2/3)+AP.C1^4*(-4*AP.Cβ+20*AP.Cβ*AP.C2/3))+AP.χsx*(AP.C1^4*(14*AP.Sβ/3-20*AP.C2*AP.Sβ/3)+AP.η*AP.C1^4*(-10*AP.Sβ/3-2*AP.C2*AP.Sβ/3-AP.S3β))
+		  A(NCase, 21) =AP.χsx*(20/3*AP.Cβ*AP.C1^5*AP.S1+2/3*AP.η*AP.Cβ*AP.C1^5*AP.S1)
+		  A(NCase, 22) =AP.δ*(2*AP.χay*AP.C2^3*AP.Sβ)
+		  A(NCase, 23) =AP.δ*(AP.χay*AP.C1^4*(-14/3*AP.Sβ+20/3*AP.C2*AP.Sβ))
+		  A(NCase, 24)= AP.δ*(AP.χay*AP.C1^3*(-2/3*AP.Cβ+10/3*AP.Cβ*AP.C2)*AP.S1)
+		  A(NCase, 25) =AP.δ*(-20/3*AP.χay*AP.Cβ*AP.C1^5*AP.S1)
+		  A(NCase, 26)= AP.δ*(AP.χay*AP.C1*(-2/3*AP.Cβ-10/3*AP.Cβ*AP.C2)*AP.S1^3)
+		  A(NCase, 27) =AP.δ*(AP.χay*(14/3*AP.Sβ+20/3*AP.C2*AP.Sβ)*AP.S1^4)
+		  A(NCase, 28) = AP.δ*(-20/3*AP.χay*AP.Cβ*AP.C1*AP.S1*AP.S1*AP.S1*AP.S1*AP.S1)
+		  A(NCase, 29) =AP.δ*(2*AP.χay*AP.C2*AP.Sβ*AP.S2^2)
+		  A(NCase, 30) =AP.δ*(10/3*AP.χay*AP.C2*AP.Sβ*AP.S2^2)
+		  A(NCase, 31) =AP.δ*(-AP.χay*AP.Cβ*AP.S1^3)
+		  A(NCase, 32) =AP.δ*(AP.χay*(-5/4*AP.Cβ*AP.S2-1/4*AP.Cβ*AP.S6))
+		  A(NCase, 33) =AP.δ*(AP.χax*(-3/2*AP.Cβ-AP.Cβ*AP.C4/2)*AP.S2-2*AP.χaz*AP.C4*AP.Sβ*AP.S2)
+		  A(NCase, 34) =AP.δ*(2*AP.χaz*AP.Cβ*AP.C2*AP.S2^2-2*AP.χax*AP.C2*AP.Sβ*AP.S2^2)
+		  A(NCase, 35) =AP.δ*(AP.χax*AP.Cβ*AP.S2^3)
+		  A(NCase, 36) =AP.δ*(AP.χax*AP.C1*(-2/3*AP.Cβ-10/3*AP.Cβ*AP.C2)*AP.S1^3+AP.χaz*AP.C1*(-4*AP.Sβ-40/3*AP.C2*AP.Sβ)*AP.S1^3)
+		  A(NCase, 37) =AP.δ*(AP.χaz*(4*AP.Cβ+20/3*AP.Cβ*AP.C2)*AP.S1^4-AP.χax*(14/3*AP.Sβ+20/3*AP.C2*AP.Sβ)*AP.S1^4)
+		  A(NCase, 38) =AP.δ*(20/3*AP.χax*AP.Cβ*AP.C1*AP.S1^5)
+		  A(NCase, 39) =AP.δ*(1/3*AP.χax*AP.Sβ*AP.S2^2)
+		  A(NCase, 40) =AP.δ*(AP.χax*AP.C1^3*(-2/3*AP.Cβ+10/3*AP.Cβ*AP.C2)*AP.S1+AP.χaz*AP.C1^3*(-4*AP.Sβ+40/3*AP.C2*AP.Sβ)*AP.S1)
+		  A(NCase, 41) =AP.δ*(AP.χaz*AP.C1^4*(-4*AP.Cβ+20/3*AP.Cβ*AP.C2)+AP.χax*AP.C1^4*(14/3*AP.Sβ-20/3*AP.C2*AP.Sβ))
+		  A(NCase, 42) =AP.δ*(20/3*AP.χax*AP.Cβ*AP.C1^5*AP.S1)
+		  
+		  
+		  NTerms = 42 // this is how many terms we have
+		  
+		  If NCase = 0 Then // if we are doing the center case
+		    // Set up the α array
+		    Nα(1) = 0
+		    Nα(2) = 2
+		    Nα(3) = 3
+		    Nα(4) = 1
+		    Nα(5) = 1
+		    Nα(6) = 2
+		    Nα(7) = 3
+		    Nα(8) = 2
+		    Nα(9) = 0
+		    Nα(10) =3
+		    Nα(11) = 1
+		    Nα(12) = 1
+		    Nα(13) = 2
+		    Nα(14) = 3
+		    Nα(15) = 1
+		    Nα(16) = 2
+		    Nα(17) = 3
+		    Nα(18) = 0
+		    Nα(19) = 1
+		    Nα(20) =2
+		    Nα(21) = 3
+		    Nα(22) = 0
+		    Nα(23) = 2
+		    Nα(24) = 1
+		    Nα(25) = 3
+		    Nα(26) = 1
+		    Nα(27) = 2
+		    Nα(28) = 3
+		    Nα(29) = 2
+		    Nα(30) = 0
+		    Nα(31) = 3
+		    Nα(32) = 1
+		    Nα(33) = 1
+		    Nα(34) = 2
+		    Nα(35) = 3
+		    Nα(36) = 1
+		    Nα(37) = 2
+		    Nα(38) = 3
+		    Nα(38) = 0
+		    Nα(40) = 1
+		    Nα(41) = 2
+		    Nα(42) = 3
+		    
+		    
+		    
+		    // Set up the Ψr array
+		    NΨ(1) = 0
+		    NΨ(2) = 2
+		    NΨ(3) = 2
+		    NΨ(4) = 2
+		    NΨ(5) = -2
+		    NΨ(6) = -2
+		    NΨ(7) = -2
+		    NΨ(8) = 0
+		    NΨ(9) = 2
+		    NΨ(10) = 0
+		    NΨ(11) = 0
+		    NΨ(12) = 0
+		    NΨ(13) = 0
+		    NΨ(14) = 0
+		    NΨ(15) = -2
+		    NΨ(16) = -2
+		    NΨ(17) = -2
+		    NΨ(18) = 2
+		    NΨ(19) = 2
+		    NΨ(20) = 2
+		    NΨ(21) = 2
+		    NΨ(22) = 0
+		    NΨ(23) = 2
+		    NΨ(24) = 2
+		    NΨ(25) = 2
+		    NΨ(26) = -2
+		    NΨ(27) = -2
+		    NΨ(28) = -2
+		    NΨ(29) = 0
+		    NΨ(30) = 2
+		    NΨ(31) = 0
+		    NΨ(32) = 0
+		    NΨ(33) = 0
+		    NΨ(34) = 0
+		    NΨ(35) = 0
+		    NΨ(36) = -2
+		    NΨ(37) = -2
+		    NΨ(38) = -2
+		    NΨ(39) = 2
+		    NΨ(40) = 2
+		    NΨ(41) = 2
+		    NΨ(42) = 2
+		    
+		    
+		    
+		    // Set up the Cosine Versus Sine Array
+		    //0 = cos 1 = sin
+		    NCvS(1) = 0
+		    NCvS(2) = 0
+		    NCvS(3) = 0
+		    NCvS(4) = 0
+		    NCvS(5) = 0
+		    NCvS(6) = 0
+		    NCvS(7) = 0
+		    NCvS(8) = 0
+		    NCvS(9) = 0
+		    NCvS(10) =0
+		    NCvS(11) = 0
+		    NCvS(12) =1
+		    NCvS(13) = 1
+		    NCvS(14) = 1
+		    NCvS(15) = 1
+		    NCvS(16) = 1
+		    NCvS(17) = 1
+		    NCvS(18) = 1
+		    NCvS(19) = 1
+		    NCvS(20) = 1
+		    NCvS(21) = 1
+		    NCvS(22) = 0
+		    NCvS(23) = 0
+		    NCvS(24) = 0
+		    NCvS(25) = 0
+		    NCvS(26) = 0
+		    NCvS(27) = 0
+		    NCvS(28) = 0
+		    NCvS(29) = 0
+		    NCvS(30) = 0
+		    NCvS(31) = 0
+		    NCvS(32) = 0
+		    NCvS(33) = 1
+		    NCvS(34) = 1
+		    NCvS(35) = 1
+		    NCvS(36) = 1
+		    NCvS(37) = 1
+		    NCvS(38) = 1
+		    NCvS(39) = 1
+		    NCvS(40) = 1
+		    NCvS(41) = 1
+		    NCvS(42) = 1
+		    
+		    
+		    
+		    
+		  End If
+		  
 		End Sub
 	#tag EndMethod
 
@@ -1280,6 +2496,7 @@ Protected Class HCalculatorClass
 
 	#tag Property, Flags = &h0
 		DCCosσ1x9 As Double
+
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1287,6 +2504,7 @@ Protected Class HCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+
 		DCHalfCos2ψ As Double
 	#tag EndProperty
 
@@ -1319,6 +2537,7 @@ Protected Class HCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+
 		DHP As DerivativeSet
 	#tag EndProperty
 
@@ -1553,7 +2772,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DC2σ2"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1561,7 +2782,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCSinσ1x9"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1569,7 +2792,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCSinσ2x9"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1577,7 +2802,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCHalfSin2ψ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1585,7 +2812,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCHalfCos2ψ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1593,7 +2822,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DC3"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1601,7 +2832,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DC1"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1609,7 +2842,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DC2"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1617,7 +2852,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCSinΘ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1625,7 +2862,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCSin2Θ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1633,7 +2872,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCCos2Θ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1641,7 +2882,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCCosΘ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1649,7 +2892,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCCosσ2x9"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1657,7 +2902,9 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DCCosσ1x9"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1665,11 +2912,13 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+
 			Name="DC2Φ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Double"
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -1698,6 +2947,7 @@ Protected Class HCalculatorClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IndexForβ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1706,6 +2956,7 @@ Protected Class HCalculatorClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IndexForδ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1765,7 +3016,7 @@ Protected Class HCalculatorClass
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Double"
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
