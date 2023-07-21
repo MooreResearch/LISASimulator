@@ -9,7 +9,11 @@ Protected Class Matrix
 		  
 		  pDim = n + 1              // since Xojo is 0-indexed, dimension is 1 more than highest entry index
 		  pData.ResizeTo(n, n)
-		  pData = entries           // stores entries as pData
+		  For i As Integer = 0 to n
+		    For j as Integer = 0 to n
+		      pData(i,j) = entries(i,j)          // stores entries as pData
+		    Next
+		  Next
 		End Sub
 	#tag EndMethod
 
@@ -64,6 +68,34 @@ Protected Class Matrix
 		  pData = a   // Self matrix entries replaced by normalized entries
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function EuclideanNorm() As Double
+		  Var n As Integer = pDim-1
+		  Var sum As Double
+		  For i As Integer = 0 to n
+		    For j As Integer = 0 to n
+		      sum = sum + pData(i,j)*pData(i,j)
+		    Next
+		  Next
+		  Return Sqrt(sum)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetCopyOfArray() As Double(,)
+		  Var n As Integer = pDim - 1
+		  Var a(-1,1) As Double
+		  a.ResizeTo(n,n)
+		  For i As Integer = 0 to n
+		    For j As Integer = 0 to n
+		      a(i,j) = pData(i,j)
+		    Next
+		  Next
+		  Return a
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -132,6 +164,35 @@ Protected Class Matrix
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub InverseTest()
+		  Var a1 As Double = 1.0
+		  Var a2 As Double = -2.0
+		  Var b1 As Double = 3.0
+		  Var b2 As Double = 4.0
+		  Var m(1,1) As Double
+		  m(0,0) = a1*a1 + a2*a2
+		  m(0,1) = a1*b1 + a2*b2
+		  m(1,0) = b1*a1 + b2*a2
+		  m(1,1) = b1*b1 + b2*b2
+		  Var A as New Matrix(m)
+		  Var B as New Matrix(A.GetCopyOfArray)
+		  Var br as Integer = A.LUInvert(2)
+		  If br <> 0 Then
+		    MessageBox("Unit Test on matrix inversion failed")
+		  End If
+		  Var C as Matrix = A*B
+		  Var e As Double = 1.0e-6
+		  If Abs(C.PData(0,0)-1.0) > e Or Abs(C.PData(0,1)) > e Or Abs(C.PData(1,0)) > e Or Abs(C.PData(1,1)-1.0) > e Then
+		    MessageBox("Unit Test on matrix inversion failed")
+		  End If
+		  
+		  
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function IsDiagDom() As Boolean
 		  // Returns true if the matrix is strictly diagonally dominant -- i.e., if in each row, the absolute value of the diagonal entry
 		  // is greater than the sums of the absolute values of all the other entries -- and false otherwise.
@@ -156,7 +217,7 @@ Protected Class Matrix
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub LUBackSub(n As Integer, indx() As Integer, soln() As Double)
+		Sub LUBackSub(n As Integer, indx() As Integer, ByRef soln() As Double)
 		  // This is a "backsubstitution method." Given an LU-decomposed matrix, or a matrix with an LU-decomposed upper-left
 		  // submatrix, the method solves the matrix equation LU*x = b for x.
 		  // Parameters: n is the dimension of the decomposed submatrix
@@ -212,7 +273,7 @@ Protected Class Matrix
 		  
 		  Var a(-1, -1) As Double   // initializes array for storing and updating matrix entries
 		  a.resizeTo(pDim - 1, pDim - 1)  // resizes as appropriate
-		  a = pData                 // fills with original matrix data
+		  a = GetCopyOfArray  // fills with original matrix data
 		  
 		  Var nm1 As Integer = n - 1  // "n minus 1," largest index of submatrix to be decomposed
 		  
@@ -278,7 +339,7 @@ Protected Class Matrix
 		      next
 		    end if
 		  next
-		  pData = a
+		  pData = a   // return the data
 		  return 0   
 		End Function
 	#tag EndMethod

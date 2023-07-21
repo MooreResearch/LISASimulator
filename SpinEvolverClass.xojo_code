@@ -140,35 +140,45 @@ Protected Class SpinEvolverClass
 		    LF.X = LP.X + ellNDotx
 		    LF.Y = LP.Y + ellNDoty
 		    LF.Z = LP.Z + ellNDotz
+		    // The magnitude of L MUST be one, so ensure this
+		    Var invMagLF As Double = 1.0/LF.GetMagnitude
+		    LF.X = LF.X*invMagLF
+		    LF.Y = LF.Y*invMagLF
+		    LF.Z = LF.Z*invMagLF
 		    
 		    // Calculate the future angles
 		    Var ellFx As Double = LF.X
 		    Var ellFy As Double = LF.Y
 		    Var ellNx As Double = LN.X
 		    Var ellNy As Double = LN.Y
-		    // The future L vector points at least some angle away from the vertical,
-		    // so α is well-defined and we can calculate it normally
-		    αF = ATan2(ellFy, ellFx)
-		    // To keep α from jumping in value when the L vector crosses the x axis,
-		    // we need to adjust its value from what the ATan2 function gives us
-		    If ellFy < 0.0 and ellNy > 0.0 Then // If we are crossing the x axis downward
-		      // and if the intercept with the x axis is negative, meaning we are going
-		      // from the second quadrant to the third, then ATan jumps from π to -π,
-		      // so we add 2π to compensate
-		      If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF + 2*P.π
-		    Elseif ellFy > 0.0 and ellNy < 0.0 Then // If we are crossing the x axis upward
-		      // and if the intercept with the x axis is negative, meaning we are going
-		      // from the third quadrant to the second, then ATan jumps from -π to π,
-		      // so we subtract2π to compensate
-		      If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF - 2*P.π
+		    If ellFx*ellFx + ellFy*ellFy > 1.0e-10 Then
+		      // The future L vector points at least some angle away from the vertical,
+		      // so α is well-defined and we can calculate it normally
+		      αF = ATan2(ellFy, ellFx)
+		      // To keep α from jumping in value when the L vector crosses the x axis,
+		      // we need to adjust its value from what the ATan2 function gives us
+		      If ellFy < 0.0 and ellNy > 0.0 Then // If we are crossing the x axis downward
+		        // and if the intercept with the x axis is negative, meaning we are going
+		        // from the second quadrant to the third, then ATan jumps from π to -π,
+		        // so we add 2π to compensate
+		        If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF + 2*P.π
+		      Elseif ellFy > 0.0 and ellNy < 0.0 Then // If we are crossing the x axis upward
+		        // and if the intercept with the x axis is negative, meaning we are going
+		        // from the third quadrant to the second, then ATan jumps from -π to π,
+		        // so we subtract2π to compensate
+		        If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF - 2*P.π
+		      End If
+		      ιF = ACos(LF.Z)  // This is the future value of iota
+		    Else
+		      ιF = 0.0 // we are going through vertical
+		      αF = 2*αN - αP // Guess that we are going in a reasonably straight line
 		    End If
-		    ιF = ACos(LF.Z)  // This is the future value of iota
 		    αDotN = (αF - αP)/(2*DτF)   // Calculate the present value of αDot
 		    DαDZ = -(αN-α0)*InverseOnePlusZ  // and the present values of these derivatives
 		    DιDZ = -(ιN-ι0)*InverseOnePlusZ
 		    
 		    // This section chooses a time step such that the change in any of the unit
-		    // vectors is less than 1/100 of its magnitude (which is 1).
+		    // vectors is less than 1/1000 of its magnitude (which is 1).
 		    Var ε As Double = 1.0e-3
 		    Var Dτχ1 As Double = Infinity
 		    Var Dτχ2 As Double = Infinity
