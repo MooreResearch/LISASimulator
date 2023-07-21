@@ -2198,22 +2198,39 @@ End
 
 	#tag Method, Flags = &h0
 		Sub DisplayUncertainties(Params As CaseParametersClass, UV As UncertaintyValuesClass)
-		  ResultsListBox1.CellTextAt(0,0) = Params.H0.toString + EndOfLine + GetUncertaintyString(UV.OfH0)
-		  ResultsListBox1.CellTextAt(1,0) = Params.δ.toString + EndOfLine + GetUncertaintyString(UV.Ofδ)
-		  ResultsListBox1.CellTextAt(2,0) = Params.V0.toString + EndOfLine + GetUncertaintyString(UV.OfV0)
-		  ResultsListBox1.CellTextAt(3,0) = Params.Z.toString + EndOfLine + GetUncertaintyString(UV.OfZ)
-		  ResultsListBox1.CellTextAt(4,0) = ConvertToDegrees(Params.β).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofβ))
-		  ResultsListBox1.CellTextAt(5,0) = ConvertToDegrees(Params.ψ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofψ))
-		  ResultsListBox2.CellTextAt(0,0) = ConvertToDegrees(Params.λ0).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofλ0))
-		  ResultsListBox2.CellTextAt(1,0) = ConvertToDegrees(Params.Θ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΘ))
-		  ResultsListBox2.CellTextAt(2,0) = ConvertToDegrees(Params.Φ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΦ))
+		  ResultsListBox1.CellTextAt(0,0) = SultanUncertainty(Params.H0, UV.OfH0)
+		  //Params.H0.toString + EndOfLine + GetUncertaintyString(UV.OfH0)
+		  ResultsListBox1.CellTextAt(1,0) = SultanUncertainty(Params.δ, UV.Ofδ)
+		  //Params.δ.toString + EndOfLine + GetUncertaintyString(UV.Ofδ)
+		  ResultsListBox1.CellTextAt(2,0) = SultanUncertainty(Params.V0, UV.OfV0)
+		  //Params.V0.toString + EndOfLine + GetUncertaintyString(UV.OfV0)
+		  ResultsListBox1.CellTextAt(3,0) = SultanUncertainty(Params.Z, UV.OfZ)
+		  //Params.Z.toString + EndOfLine + GetUncertaintyString(UV.OfZ)
+		  
+		  ResultsListBox1.CellTextAt(4,0) =  SultanUncertainty(ConvertToDegrees(Params.β), ConvertToDegrees(UV.Ofβ))
+		  
+		  //ResultsListBox1.CellTextAt(4,0) = ConvertToDegrees(Params.β).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofβ))
+		  
+		  ResultsListBox1.CellTextAt(5,0) = SultanUncertainty(ConvertToDegrees(Params.ψ), ConvertToDegrees(UV.Ofψ))
+		  
+		  
+		  //ConvertToDegrees(Params.ψ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofψ))
+		  
+		  ResultsListBox2.CellTextAt(0,0) = SultanUncertainty(ConvertToDegrees(Params.λ0), ConvertToDegrees(UV.Ofλ0))
+		  
+		  //ConvertToDegrees(Params.λ0).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofλ0))
+		  ResultsListBox2.CellTextAt(1,0) = SultanUncertainty(ConvertToDegrees(Params.Θ), ConvertToDegrees(UV.OfΘ))
+		  //ConvertToDegrees(Params.Θ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΘ))
+		  ResultsListBox2.CellTextAt(2,0) = SultanUncertainty(ConvertToDegrees(Params.Φ), ConvertToDegrees(UV.OfΦ))
+		  //ConvertToDegrees(Params.Φ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΦ))
 		  ResultsListBox2.CellTextAt(3,0) = UV.OfΩ.ToString
-		  ResultsListBox2.CellTextAt(4,0) = Params.χ10x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10x)
-		  ResultsListBox2.CellTextAt(5,0) = Params.χ10y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10y)
-		  ResultsListBox2.CellTextAt(6,0) = Params.χ10z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10z)
-		  ResultsListBox3.CellTextAt(0,0) = Params.χ20x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20x)
-		  ResultsListBox3.CellTextAt(1,0) = Params.χ20y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20y)
-		  ResultsListBox3.CellTextAt(2,0) = Params.χ20z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20z)
+		  ResultsListBox2.CellTextAt(4,0) = SultanUncertainty(Params.χ10x, UV.Ofχ10x)
+		  //Params.χ10x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10x)
+		  ResultsListBox2.CellTextAt(5,0) = SultanUncertainty(Params.χ10y, UV.Ofχ10y)
+		  ResultsListBox2.CellTextAt(6,0) = SultanUncertainty(Params.χ10z, UV.Ofχ10z)
+		  ResultsListBox3.CellTextAt(0,0) = SultanUncertainty(Params.χ20x, UV.Ofχ20x)
+		  ResultsListBox3.CellTextAt(1,0) = SultanUncertainty(Params.χ20y, UV.Ofχ20y)
+		  ResultsListBox3.CellTextAt(2,0) = SultanUncertainty(Params.χ20z, UV.Ofχ20z)
 		  ResultsListBox3.CellTextAt(3,0) = Params.M1.ToString
 		  ResultsListBox3.CellTextAt(4,0) = Params.M2.ToString
 		  ResultsListBox3.CellTextAt(5,0) = Params.F0.ToString
@@ -2614,6 +2631,175 @@ End
 		  
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SultanUncertainty(value As Double, uncertainty As Double) As String
+		  'Number Formatting:
+		  
+		  'Start the program.
+		  'In the first input field or prompt, enter the value that you want to measure the uncertainty for. This can be done via a pop-up window, a slider, a number picker, or any other user interface element depending on your website design.
+		  'This should be a numerical value. If any non-numeric characters are entered, a message box will appear saying "Invalid value entered!".
+		  'In the second input field or prompt, enter the associated uncertainty of the value you have just entered. This can also be done via a pop-up window, a slider, a number picker, or any other user interface element.
+		  'This should be a positive numerical value. The program considers uncertainty as a positive value. If you enter a negative number or zero for uncertainty, you will get a message box saying "Uncertainty must be greater than zero!".
+		  'After you've entered the value and its uncertainty, submit your data. This can be done by clicking the 'Submit' button, pressing the 'Enter' key, or another action based on your website design.
+		  
+		  'Calculation Process:
+		  
+		  'Once the values are inputted correctly, the program will calculate the base-10 logarithm for both the value and uncertainty. It will then round the value and uncertainty according to the computed exponents.
+		  'The program will display a message box with the computed exponents and rounded uncertainty.
+		  
+		  'Result Output:
+		  
+		  'The program will finally adjust the rounded uncertainty for the final display and determine the number of spaces needed for proper alignment.
+		  'It checks whether the number is negative, and accordingly adds spaces or a minus sign before the number for proper formatting.
+		  'Depending on the exponent of the value, the program will generate the final output in two formats: normal and scientific notation.
+		  'If the exponent of the value is within the range from -3 to 6, both the value and the uncertainty will be displayed in normal notation.
+		  'Otherwise, both will be displayed in scientific notation.
+		  
+		  'Special Case:
+		  
+		  'There is a special case where the exponent of the value is greater than 0 and the exponent of the uncertainty is less than 0. In this case, the program will prepare the value with all decimal places (0 to valueExponent) and uncertainty to 8 decimal places.
+		  'Remember, this program is designed to handle and display uncertainty values correctly, but it is your responsibility to ensure the accuracy and correctness of the input data.
+		  
+		  If uncertainty.IsNotANumber Then
+		    Return value.ToString + EndOfLine + "(Not Solved For)"
+		  Elseif uncertainty.IsInfinite Then
+		    Return value.ToString + EndOfLine + "(Imaginary)"
+		  End If
+		  
+		  ' Ensure the uncertainty is a positive value. If it's not, raise an exception and display a message box
+		  Try
+		    If uncertainty <= 0 Then
+		      Raise New RuntimeException("Uncertainty must be greater than zero!")
+		    End If
+		  Catch e As RuntimeException
+		    MsgBox(e.Message)
+		    Return ""
+		  End Try
+		  
+		  ' Calculate the exponent of the value and uncertainty, which is the integer part of their base-10 logarithm
+		  Var valueExponent As Integer = Floor(Log(Abs(value)) / Log(10))
+		  Var uncertaintyExponent As Integer = Floor(Log(uncertainty) / Log(10))
+		  
+		  ' Compute the rounded value mantissa, which is the absolute value divided by 10 raised to its exponent, then rounded to 3 decimal places
+		  Var valueMantissa As Double = abs(value / (10 ^ valueExponent))
+		  Var roundedValueMantissa As Double = Round(valueMantissa * 1000) / 1000
+		  
+		  ' Compute the rounded uncertainty in a similar way, but round to the nearest integer
+		  Var uncertaintyMantissa As Double = uncertainty / (10 ^ uncertaintyExponent)
+		  Var roundedUncertainty As Double = Round(uncertaintyMantissa * 10)
+		  
+		  
+		  ' Adjust the rounded uncertainty for final display by multiplying by 10^-3 and rounding to 3 decimal places
+		  Var uncertaintyForDisplay As Double = roundedUncertainty * 10 ^ (-3)
+		  
+		  ' Determine whether a space or a minus sign is needed before the value
+		  Var BeforeValue As String = "  "
+		  if value < 0 then BeforeValue = "- "
+		  
+		  ' Determine the number of spaces needed for proper alignment in the final display
+		  Var spacesNeeded As Integer
+		  Var spaceString As String = ""
+		  
+		  ' Set the format string
+		  Dim formattedValue, formattedUncertainty As String 
+		  formattedValue = Format(value, "0.00000000") 
+		  
+		  ' If uncertainty exceeds e-7, add an asterisk after the uncertainty value
+		  if uncertaintyExponent < -7 Then
+		    formattedUncertainty = "0.00000000*"
+		  else
+		    formattedUncertainty = Format(uncertainty, "0.00000000")
+		  End If
+		  
+		  ' Determine the number of spaces needed to align the uncertainty under the last digit of the value
+		  spacesNeeded = Len(formattedValue) - Len(formattedUncertainty)
+		  
+		  ' Generate the string of spaces needed for alignment
+		  For i As Integer = 1 To spacesNeeded
+		    spaceString = spaceString + " "
+		  Next
+		  
+		  
+		  
+		  ' Check for the special case where the exponent of the value is greater than 0 and the exponent of the uncertainty is less than 0.
+		  If valueExponent > 0 And uncertaintyExponent < 0 Then
+		    ' Prepare the value with all decimal places (0 to valueExponent) and uncertainty to 8 decimal places
+		    Var formatStr As String = "0."
+		    For i As Integer = 1 To valueExponent
+		      formatStr = formatStr + "0"
+		    Next
+		    
+		    Var valueStr As String = Format(value, formatStr)
+		    Var uncertaintyStr As String
+		    ' If uncertainty exceeds e-7, add an asterisk after the uncertainty value
+		    if uncertaintyExponent < -7 Then
+		      uncertaintyStr = "0.00000000*"
+		    else
+		      uncertaintyStr = Format(uncertainty, "0.00000000")
+		    End If
+		    
+		    ' Determine the number of spaces needed to align the uncertainty under the last digit of the value
+		    spacesNeeded = valueStr.Length - uncertaintyStr.Length + 2  ' add two more for the space and "±"
+		    
+		    ' Generate the string of spaces needed for alignment
+		    spaceString = ""
+		    For i As Integer = 1 To spacesNeeded
+		      spaceString = spaceString + " "
+		    Next
+		    
+		    ' Return the final formatted string
+		    Return BeforeValue + valueStr + EndOfLine + "±" + spaceString + uncertaintyStr
+		  End If
+		  
+		  ' Check if the value exponent is within the range -3 to 6. If it is, format the value and uncertainty accordingly
+		  If valueExponent >= -3 And valueExponent <= 6 Then
+		    ' Format value and uncertainty
+		    Var valueStr As String
+		    Var uncertaintyStr As String
+		    
+		    ' Find number of decimal places in uncertainty
+		    Var numDecimalPlacesUncertainty As Integer = Len(Uncertainty.ToString) - InStr(Uncertainty.ToString, ".")
+		    
+		    ' Select correct format based on number of decimal places in uncertainty
+		    If numDecimalPlacesUncertainty = 1 Then
+		      valueStr = Format(value, "0.0")
+		      uncertaintyStr = Format(uncertainty, "0.0")
+		    Else
+		      valueStr = Format(value, "0.00")
+		      If valueExponent > -4 Then
+		        uncertaintyStr = Format(uncertainty, "0.0") ' Round uncertainty to one decimal place
+		      Else
+		        uncertaintyStr = Format(uncertainty, "0.00")
+		      End If
+		    End If
+		    
+		    ' Determine the number of spaces needed to align the uncertainty under the value
+		    spacesNeeded = valueStr.Length - uncertaintyStr.Length
+		    
+		    ' Generate the string of spaces needed for alignment
+		    spaceString = ""
+		    For i As Integer = 1 To spacesNeeded
+		      spaceString = spaceString + " "
+		    Next
+		    
+		    ' Return the final formatted string
+		    Return BeforeValue + valueStr + EndOfLine + spaceString + "± " + uncertaintyStr
+		  Else
+		    ' If the value exponent is outside the range -3 to 6, use scientific notation for the value and uncertainty
+		    Var plusMinusLine As String
+		    ' If uncertainty exceeds e-7, add an asterisk after the uncertainty value
+		    if uncertaintyExponent < -7 Then
+		      plusMinusLine = spaceString + "± 0.00000000* e" + Str(valueExponent)
+		    else
+		      plusMinusLine = spaceString + "± " + Str(uncertaintyForDisplay) + "e" + Str(valueExponent)
+		    End If
+		    Return BeforeValue + Str(roundedValueMantissa) + "e" + Str(valueExponent) + EndOfLine + plusMinusLine
+		  End If
+		  
+		  
+		End Function
 	#tag EndMethod
 
 
