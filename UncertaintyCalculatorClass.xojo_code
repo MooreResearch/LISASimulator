@@ -3,39 +3,46 @@ Protected Class UncertaintyCalculatorClass
 	#tag Method, Flags = &h0
 		Function Calculate(ATAMatrix As Matrix, Θ As Double) As UncertaintyValuesClass
 		  ATA = ATAMatrix  // Get a local reference to the matrix
-
-		  
-		  InvertY // Invert the matrix
+		  FindBestInvertible // Find the version of the matrix that is invertible
 		  // Now we will complile uncertainty values.
 		  Var k As Integer = 0  // Index to the actual row in the inverted matrix
-		  Var s As String = "NAN"  
-		  Var nan As Double = s.ToDouble  // This "not a number" will indicate an uncertainty not calculated
+		  Var s As String = "Inf"  
+		  Var inf As Double = s.ToDouble  // This "infinity" will indicate an uncertainty not calculated
+		  s = "NAN"
+		  Var nan As Double = s.ToDouble // This "nan" will indicate an uncertainy that is imaginary
 		  Var uncList(14) As Double  // create an uncertainty list
 		  For j As Integer = 0 to 14
 		    If SolveList(j) Then  // if we solved for this, get its value
-		      uncList(j) = Sqrt(Y.pData(k,k))
+		      Var diagonalElement As Double = Y.pData(k,k)
+		      If diagonalElement < 0 Then
+		        uncList(j) = nan
+		      Else
+		        uncList(j) = Sqrt(diagonalElement)
+		      End If
 		      k = k + 1   // and update the row number in the actual matrix
 		    Else
-		      uncList(j) = nan  // otherwise, the uncertainty is "not a number"
+		      uncList(j) = inf  // otherwise, the uncertainty is "infinity"
 		    End If
 		  Next
 		  Var uv As New UncertaintyValuesClass // Get a new instance of the uncertainty values class
 		  // Note that the order here is assumed to be that specified by the enumeration "Item"
-		  uv.OfH0 = uncList(0)
-		  uv.Ofδ = uncList(1)
-		  uv.OfV0 = uncList(2)
-		  uv.OfZ = uncList(3)
-		  uv.Ofβ = uncList(4)
-		  uv.Ofψ = uncList(5)
-		  uv.Ofλ0 = uncList(6)
-		  uv.OfΘ = uncList(7)
-		  uv.OfΦ = uncList(8)
-		  uv.Ofχ10x = uncList(9)
-		  uv.Ofχ10y = uncList(10)
-		  uv.Ofχ10z = uncList(11)
-		  uv.Ofχ20x = uncList(12)
-		  uv.Ofχ20y = uncList(13)
-		  uv.Ofχ20z = uncList(14)
+		  uv.OfH0 = uncList(0)*Sn2F0*Parameters.H0
+		  uv.Ofδ = uncList(1)*Sn2F0
+		  uv.OfV0 = uncList(2)*Sn2F0*(Parameters.V0^4)/3
+		  //uv.OfV0 = uncList(2)*Sn2F0*Parameters.V0
+		  uv.OfZ = uncList(3)*Sn2F0*Parameters.Z
+		  //uv.OfZ = uncList(3)*Sn2F0*(1 + Parameters.Z)
+		  uv.Ofβ = uncList(4)*Sn2F0
+		  uv.Ofψ = uncList(5)*Sn2F0
+		  uv.Ofλ0 = uncList(6)*Sn2F0
+		  uv.OfΘ = uncList(7)*Sn2F0
+		  uv.OfΦ = uncList(8)*Sn2F0
+		  uv.Ofχ10x = uncList(9)*Sn2F0
+		  uv.Ofχ10y = uncList(10)*Sn2F0
+		  uv.Ofχ10z = uncList(11)*Sn2F0
+		  uv.Ofχ20x = uncList(12)*Sn2F0
+		  uv.Ofχ20y = uncList(13)*Sn2F0
+		  uv.Ofχ20z = uncList(14)*Sn2F0
 		  uv.OfΩ = Sin(Θ)*uv.OfΘ*uv.OfΦ/12.566370614359172
 		  Return uv
 		End Function
@@ -45,6 +52,67 @@ Protected Class UncertaintyCalculatorClass
 		Sub Constructor(MyParameters As CaseParametersClass)
 		  Parameters = MyParameters
 		  InitSolveList
+		  Var V0 As Double = Parameters.V0
+		  Var f0 As Double =  V0*V0*V0/(2*Parameters.π*Parameters.GM*(1.0 + Parameters.Z))
+		  Var Noise As New NoiseClass(Parameters.ΔT)
+		  //  get the noise at various frequencies
+		  // This is the noise at th initiale fundamental gravitational wave frequency
+		  Sn2F0 = Sqrt(Noise.GetNoise(2*f0))
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub FindBestInvertible()
+		  InvertY   // Try a first inversion
+		  Var LowestCondition As Double = Condition
+		  Var RowToOmit As Integer = -1
+		  If Condition > 1.0e12 Then
+		    For i As Integer = 0 to 14
+		      If SolveList(i) Then
+		        SolveList(i) = False   // Try not solving for this row
+		        InvertY
+		        If Condition < LowestCondition Then
+		          LowestCondition = Condition
+		          RowToOmit = i
+		        End If
+		        SolveList(i) = True   // Restore SolveList
+		      End If
+		    Next
+		    If RowToOmit > -1 Then
+		      SolveList(RowToOmit) = False
+		      InvertY
+		    End If
+		  End If
+		  If Condition > 1.0e12 Then
+		    If RowToOmit > -1 Then SolveList(RowToOmit) = True
+		    LowestCondition = Condition
+		    Var RowsToOmit(1) As Integer
+		    RowsToOmit(0) = -1
+		    For i As Integer = 0 to 14
+		      If SolveList(i) Then
+		        SolveList(i) = False
+		        For j As Integer = 0 to 14
+		          If j <> i And SolveList(j) Then
+		            SolveList(j) = False
+		            InvertY
+		            If Condition < LowestCondition Then
+		              LowestCondition = Condition
+		              RowsToOmit(0) = i
+		              RowsToOmit(1) = j
+		            End If
+		            SolveList(j) = True
+		          End If
+		        Next
+		        SolveList(i) = True
+		      End If
+		    Next
+		    If RowsToOmit(0) <> -1 Then
+		      SolveList(RowsToOmit(0)) = False
+		      SolveList(RowsToOmit(1)) = False
+		      InvertY
+		    End If
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -73,6 +141,7 @@ Protected Class UncertaintyCalculatorClass
 		    End If
 		  Next
 		  Y = New Matrix(M)
+		  Y0 = New Matrix(M)
 		End Sub
 	#tag EndMethod
 
@@ -122,7 +191,9 @@ Protected Class UncertaintyCalculatorClass
 		    End If
 		    // Note that if we ever get to a matrix with zero size, a runtime exception will happen
 		  Loop Until badRow = -1
-		  // When we get here, the Y matrix should be inverted
+		  // When we get here, the Y matrix should be inverted. Do a check:
+		  YInvXY = Y*Y0
+		  Condition = Y.EuclideanNorm*Y0.EuclideanNorm
 		  
 		End Sub
 	#tag EndMethod
@@ -133,7 +204,15 @@ Protected Class UncertaintyCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Condition As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Parameters As CaseParametersClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Sn2F0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -142,6 +221,14 @@ Protected Class UncertaintyCalculatorClass
 
 	#tag Property, Flags = &h0
 		Y As Matrix
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Y0 As Matrix
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		YInvXY As Matrix
 	#tag EndProperty
 
 
@@ -203,6 +290,22 @@ Protected Class UncertaintyCalculatorClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn2F0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Condition"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

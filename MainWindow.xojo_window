@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -1719,7 +1719,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   416
+         Top             =   400
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1835,9 +1835,9 @@ Begin DesktopWindow MainWindow
          Height          =   24
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "ATA\nInverted"
+         InitialValue    =   "ATA\nY Original\nY Inverted\nY^-1 x Y"
          Italic          =   False
-         Left            =   844
+         Left            =   747
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1853,7 +1853,7 @@ Begin DesktopWindow MainWindow
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   136
+         Width           =   96
       End
       Begin DesktopLabel CaptionForMatrixLabel
          AllowAutoDeactivate=   True
@@ -1866,7 +1866,7 @@ Begin DesktopWindow MainWindow
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   844
+         Left            =   747
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -2151,6 +2151,104 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   114
       End
+      Begin DesktopButton CopyMatrixButton
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Cancel          =   False
+         Caption         =   "Copy Matrix"
+         Default         =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   878
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         MacButtonStyle  =   0
+         Scope           =   0
+         TabIndex        =   33
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   364
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   97
+      End
+      Begin DesktopLabel CaptionForConditionLabel
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   20
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   34
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   "Condition Number:"
+         TextAlignment   =   0
+         TextColor       =   &c000000
+         Tooltip         =   ""
+         Top             =   760
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   123
+      End
+      Begin DesktopLabel ValueOfConditionLabel
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   155
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   35
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   "Untitled"
+         TextAlignment   =   0
+         TextColor       =   &c000000
+         Tooltip         =   ""
+         Top             =   760
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   151
+      End
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
@@ -2188,9 +2286,14 @@ End
 
 	#tag Method, Flags = &h0
 		Sub DisplayMatrix(TheMatrix As Matrix)
+		  Var n As Integer = TheMatrix.pDim-1
 		  For j as Integer = 0 to 14
 		    for k as Integer = 0 to 14
-		      MatrixListBox.CellTextAt(j,k+1) = Format(TheMatrix.pData(j,k), "+0.00e+00")
+		      If j > n or k > n Then
+		        MatrixListBox.CellTextAt(j,k+1) = ""
+		      Else
+		        MatrixListBox.CellTextAt(j,k+1) = Format(TheMatrix.pData(j,k), "+0.00e+00")
+		      End If
 		    Next
 		  Next
 		End Sub
@@ -2227,19 +2330,6 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DisplayY(Y As Matrix)
-		  Var expandedY As New Matrix(15)
-		  Var n As Integer = Y.pDim - 1
-		  For j As Integer = 0 to n
-		    For k As Integer = 0 to n
-		      expandedY.pData(j,k) = Y.pData(j,k)
-		    Next
-		  Next
-		  DisplayMatrix(expandedY)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass, SpinStuff As SpinEvolverClass) As Double
 		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
 		  Var δ As Double = parameters.δ
@@ -2261,6 +2351,8 @@ End
 	#tag Method, Flags = &h0
 		Function GetUncertaintyString(uc As Double) As String
 		  If uc.IsNotANumber then
+		    Return "(Imaginary)"
+		  ElseIf uc.IsInfinite Then
 		    Return "(Not Solved For)"
 		  Else
 		    Return "± " + uc.ToString
@@ -2623,36 +2715,39 @@ End
 	#tag Event
 		Sub Action()
 		  Var TheSuper As CaseSupervisorClass = MainThread.CaseSupervisor  // Get a reference to the supervisor
+		  // Whether the thread is running or not, update these values
+		  ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseParameters.GM/TheSuper.Year, "0.0000000")
+		  ValueOfVLabel.Text = Format(TheSuper.Evolver.ValuesN.V,"0.000000")
+		  ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
+		  ValueOfStepNumberLabel.Text = TheSuper.N.ToString
+		  If ValueOfTcLabel.Text = "" Then
+		    Var TheSpinEvolver As SpinEvolverClass = MainThread.CaseSupervisor.Evolver.VEvolver.SpinEvolver
+		    ValueOfTcLabel.Text = GetTimeToCoalescence(TheSuper, TheSpinEvolver).ToString
+		  end if
+		  Var theStepPower As Integer = TheSuper.Evolver.StepPowerP
+		  Var theFactor as Integer
+		  If theStepPower < 0 Then
+		    theFactor = 2^(-theStepPower)
+		    ValueOfStepRatioLabel.Text = "1/" + theFactor.ToString
+		  Else
+		    theFactor = 2^theStepPower
+		    ValueOfStepRatioLabel.Text = theFactor.ToString
+		  End if
+		  Var SNR As Double = 0.5*TheSuper.HCalculator.H0V2/TheSuper.HCalculator.Sn2
+		  ValueOfSNRLabel.Text = Format(SNR, "0.000e+00")
 		  If MainThread.State = Thread.Running then  // if the thread is running
 		    CaseProgressBar.Value = Round(TheSuper.N*100/TheSuper.NSteps)  // update the progress bar
-		    ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseParameters.GM/TheSuper.Year, "0.0000000")
-		    ValueOfVLabel.Text = Format(TheSuper.Evolver.ValuesN.V,"0.000000")
-		    ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
-		    ValueOfStepNumberLabel.Text = TheSuper.N.ToString
-		    If ValueOfTcLabel.Text = "" Then
-		      Var TheSpinEvolver As SpinEvolverClass = MainThread.CaseSupervisor.Evolver.VEvolver.SpinEvolver
-		      ValueOfTcLabel.Text = GetTimeToCoalescence(TheSuper, TheSpinEvolver).ToString
-		    end if
-		    Var theStepPower As Integer = TheSuper.Evolver.StepPowerP
-		    Var theFactor as Integer
-		    If theStepPower < 0 Then
-		      theFactor = 2^(-theStepPower)
-		      ValueOfStepRatioLabel.Text = "1/" + theFactor.ToString
-		    Else
-		      theFactor = 2^theStepPower
-		      ValueOfStepRatioLabel.Text = theFactor.ToString
-		    End if
 		  Else // the thread has stopped, meaning that this case is done
 		    CaseProgressBar.Value = 0  // set
 		    StartStopButton.Caption = "Run Cases"
 		    me.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped"
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
-		    
 		    If TheSuper.Uncertainty <> Nil Then
 		      DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
 		      MatrixChoicePopupMenu.SelectedRowIndex = 0
 		      DisplayMatrix(TheSuper.ATAMatrix)
+		      ValueOfConditionLabel.Text = Format(TheSuper.UncertaintyCalculator.Condition, "0.000e-0##")
 		    End if
 		  End if		  
 		End Sub
@@ -2870,10 +2965,16 @@ End
 		Sub SelectionChanged(item As DesktopMenuItem)
 		  Var theATA As Matrix = MainThread.CaseSupervisor.ATAMatrix
 		  Var theY As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.Y
+		  Var theY0 As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.Y0
+		  Var theProd As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.YInvXY
 		  If me.SelectedRowValue = "ATA" Then
 		    DisplayMatrix(theATA)
+		  ElseIf me.SelectedRowValue = "Y Original" Then
+		    DisplayMatrix(theY0)
+		  ElseIf me.SelectedRowValue = "Y Inverted" Then
+		    DisplayMatrix(theY)
 		  Else
-		    DisplayY(theY)
+		    DisplayMatrix(theProd)
 		  End If
 		End Sub
 	#tag EndEvent
@@ -2889,6 +2990,23 @@ End
 		  me.AddRow("")
 		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextArea
 		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CopyMatrixButton
+	#tag Event
+		Sub Pressed()
+		  Var c As New Clipboard
+		  Var s As String
+		  Var delim As String
+		  For j As Integer = 0 to MatrixListBox.LastRowIndex
+		    For k As Integer = 1 to MatrixListBox.LastColumnIndex
+		      s = s+ delim + MatrixListBox.CellTextAt(j,k)
+		      delim = ", "
+		    Next
+		    delim = EndOfLine 
+		  Next
+		  c.Text = s
 		End Sub
 	#tag EndEvent
 #tag EndEvents

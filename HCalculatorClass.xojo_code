@@ -37,7 +37,7 @@ Protected Class HCalculatorClass
 		    Var amp As Double = VTerm*A(0,k)
 		    h = h + amp*wave
 		    
-		    // from now on, we modify terms by this ratio, because
+		    // from now on, we modify terms by the root noise ratio, because
 		    // we may be able to hear some terms better than others above the noise
 		    amp = amp*snratio 
 		    ha = ha + amp*wave
@@ -53,8 +53,8 @@ Protected Class HCalculatorClass
 		    Else
 		      dWave = WaveFor(0, Nα(k), NΨ(k)+5)
 		    End If
-		    Var dhkDα As Double = amp*DWave*Nα(k)
-		    Var dhkDΨr As Double = amp*DWave*NΨ(k)
+		    Var dhkDα As Double = amp*dWave*Nα(k)
+		    Var dhkDΨr As Double = amp*dWave*NΨ(k)
 		    
 		    // Θ, Φ, and λ0 derivatives
 		    DhDΘ = DhDΘ + dhkDΨr*Derivs.DΨrDΘ
@@ -161,8 +161,8 @@ Protected Class HCalculatorClass
 		  Var cos121 As Double = Cos(arg121)
 		  
 		  // Calculate the D+ factor and its derivative with respect to Θ
-		  Var term1 As Double = DC3*(-6.0*sin22 + DCSinσ1x9- sin422)
-		  Var term2 As Double = DC1*(18.0*sin22 + DCSinσ1x9+ sin422)
+		  Var term1 As Double = DC3*(-6.0*sin22 + DCSinσ1x9 - sin422)
+		  Var term2 As Double = DC1*(18.0*sin22 + DCSinσ1x9 - sin422)
 		  Var term3 As Double = -DC2*(sin321 - 3.0*sin121)
 		  Var dPlus1 As Double = term1 + DCCos2Θ*term2 + DCSin2Θ*term3
 		  Var dDp1DΘ As Double = 2*(-DCSin2Θ*term2 + DCCos2Θ*term3)
@@ -173,12 +173,12 @@ Protected Class HCalculatorClass
 		  Var dDp1DΦ As Double = term1 + DCCos2Θ*term2 + DCSin2Θ*term3
 		  // Calculate the Dx factor and its derivative with respect to Θ
 		  term1 = 4*DC1*(DCCosσ1x9 - cos422)
-		  term2 = DC2*(cos321 - 3*cos121)
+		  term2 = -DC2*(cos321 - 3*cos121)
 		  Var dCross1 As Double = DCCosΘ*term1 + DCSinΘ*term2
 		  Var dDx1DΘ As Double = -DCSinΘ*term1 + DCCosΘ*term2
 		  // Calculate the derivative of Dx with respect to Φ
-		  term1 = -8*DC1*(DCSinσ1x9- sin422)
-		  term2 = -DC2*(sin321 + 3*sin121)
+		  term1 = 8*DC1*(DCSinσ1x9 - sin422)
+		  term2 = -DC2*(sin321 - 3*sin121)
 		  Var dDx1DΦ As Double = DCCosΘ*term1 + DCSinΘ*term2
 		  // Finally, Calculate the F+ and Fx factors for Detector 1
 		  Var fPlus1 As Double = DCHalfCos2ψ*DPlus1 - DCHalfSin2ψ*DCross1
@@ -199,7 +199,7 @@ Protected Class HCalculatorClass
 		  cos121 = Cos(arg121)
 		  // Calculate the D+ factor and its derivative with respect to Θ
 		  term1 = DC3*(-6.0*sin22 + DCSinσ2x9 - sin422)
-		  term2 = DC1*(18.0*sin22 + DCSinσ2x9 + sin422)
+		  term2 = DC1*(18.0*sin22 + DCSinσ2x9 - sin422)
 		  term3 = -DC2*(sin321 - 3.0*sin121)
 		  Var dPlus2 As Double = term1 + DCCos2Θ*term2 + DCSin2Θ*term3
 		  Var dDp2DΘ As Double = 2*(-DCSin2Θ*term2 + DCCos2Θ*term3)
@@ -210,12 +210,12 @@ Protected Class HCalculatorClass
 		  Var dDp2DΦ As Double = term1 + DCCos2Θ*Term2 + DCSin2Θ*term3
 		  // Calculate the Dx factor and its derivative with respect to Θ
 		  term1 = 4*DC1*(DCCosσ2x9 - cos422)
-		  term2 = DC2*(cos321 - 3*cos121)
+		  term2 = -DC2*(cos321 - 3*cos121)
 		  Var dCross2 As Double = DCCosΘ*term1 + DCSinΘ*term2
 		  Var dDx2DΘ As Double = -DCSinΘ*term1 + DCCosΘ*term2
 		  // Calculate the derivative of Dx with respect to Φ
 		  term1 = -8*DC1*(DCSinσ2x9 - sin422)
-		  term2 = -DC2*(sin321 + 3*sin121)
+		  term2 = -DC2*(sin321 - 3*sin121)
 		  Var  dDx2DΦ As Double = DCCosΘ*term1 + DCSinΘ*term2
 		  // Finally, Calculate the F+ and Fx factors for Detector 1
 		  Var fPlus2 As Double = DCHalfCos2ψ*dPlus2 - DCHalfSin2ψ*dCross2
@@ -230,7 +230,7 @@ Protected Class HCalculatorClass
 		  Var hxa As Double = DHP.Dh0*H0
 		  DH.Value = fPlus*hp + fCross*hx
 		  DH.Dh0 = fPlus*DHP.Dh0 + fCross*DHX.Dh0
-		  DH.Dψ = 2*(-fCross*hpa + fPlus*hpa)
+		  DH.Dψ = 2*(-fCross*hpa + fPlus*hxa)
 		  Var dFpDq As Double = DCHalfCos2ψ*(dDp1DΘ + dDp2DΘ) - DCHalfSin2ψ*(dDx1DΘ + dDx2DΘ)
 		  Var dFxDq As Double = DCHalfSin2ψ*(dDp1DΘ + dDp2DΘ) + DCHalfCos2ψ*(dDx1DΘ + dDx2DΘ)
 		  DH.DΘ = dFpDq*hpa + dFxDq*hxa + fPlus*DHP.DΘ + fCross*DHX.DΘ
@@ -250,23 +250,25 @@ Protected Class HCalculatorClass
 		  DH.Dχ20z = fPlus*DHP.Dχ20z+ fCross*DHX.Dχ20z
 		  
 		  // Load Derivatives into the ATAMatrix
-		  Var InverseNoise As Double = 1.0/Sn2
+		  Var NoiseRatio As Double = Sn20/Sn2
 		  // Load the derivatives into an array
-		  DArray(0) = DH.Dh0*InverseNoise
-		  DArray(1) = DH.Dδ*InverseNoise
-		  DArray(2) = DH.DV0*InverseNoise
-		  DArray(3) = DH.Dz*InverseNoise
-		  DArray(4) = DH.Dβ*InverseNoise
-		  DArray(5) = DH.Dψ*InverseNoise
-		  DArray(6) = DH.Dλ0*InverseNoise
-		  DArray(7) = DH.DΘ*InverseNoise
-		  DArray(8) = DH.DΦ*InverseNoise
-		  DArray(9) = DH.Dχ10x*InverseNoise
-		  DArray(10) = DH.Dχ10y*InverseNoise
-		  DArray(11) = DH.Dχ10z*InverseNoise
-		  DArray(12) = DH.Dχ20x*InverseNoise
-		  DArray(13) = DH.Dχ20y*InverseNoise
-		  DArray(14) = DH.Dχ20z*InverseNoise
+		  DArray(0) = DH.Dh0*NoiseRatio*Parameters.H0
+		  DArray(1) = DH.Dδ*NoiseRatio
+		  DArray(2) = -DH.DV0*NoiseRatio*(Parameters.V0^4)/3
+		  //DArray(2) = -DH.DV0*NoiseRatio*Parameters.V0
+		  DArray(3) = DH.Dz*NoiseRatio*Parameters.Z
+		  //DArray(3) = DH.Dz*NoiseRatio*(1+Parameters.Z)
+		  DArray(4) = DH.Dβ*NoiseRatio
+		  DArray(5) = DH.Dψ*NoiseRatio
+		  DArray(6) = DH.Dλ0*NoiseRatio
+		  DArray(7) = DH.DΘ*NoiseRatio
+		  DArray(8) = DH.DΦ*NoiseRatio
+		  DArray(9) = DH.Dχ10x*NoiseRatio
+		  DArray(10) = DH.Dχ10y*NoiseRatio
+		  DArray(11) = DH.Dχ10z*NoiseRatio
+		  DArray(12) = DH.Dχ20x*NoiseRatio
+		  DArray(13) = DH.Dχ20y*NoiseRatio
+		  DArray(14) = DH.Dχ20z*NoiseRatio
 		  // Add all the derivatives into the ATA matrix
 		  For j As Integer = 0 to 14
 		    For k As Integer = 0 to 14
@@ -332,17 +334,22 @@ Protected Class HCalculatorClass
 		  DHP = New DerivativeSet
 		  DHX = New DerivativeSet
 		  Noise = New NoiseClass(Parameters.ΔT)
+		  Var V0 As Double = CaseParameters.V0
+		  Var f0 As Double =  V0*V0*V0/(2*CaseParameters.π*CaseParameters.GM*(1.0 + CaseParameters.Z))
+		  //  get the noise at various frequencies
+		  // This is the square root of the noise at the initial fundamental gravitational wave frequency
+		  Sn20 = Sqrt(Noise.GetNoise(2*f0))
 		  
 		  // Initialize amplitude parameter sets
-		  Var ει As Double = 1.0e-6   // These need not all be the same
-		  Var εβ As Double = 1.0e-6
-		  Var εδ As Double = 1.0e-6
-		  Var εχax As Double = 1.0e-6
-		  Var εχay As Double = 1.0e-6
-		  Var εχaz As Double = 1.0e-6
-		  Var εχsx As Double = 1.0e-6
-		  Var εχsy As Double = 1.0e-6
-		  Var εχsz As Double = 1.0e-6
+		  Var ει As Double = 1.0e-5   // These need not all be the same
+		  Var εβ As Double = 1.0e-5
+		  Var εδ As Double = 1.0e-5
+		  Var εχax As Double = 1.0e-5
+		  Var εχay As Double = 1.0e-5
+		  Var εχaz As Double = 1.0e-5
+		  Var εχsx As Double = 1.0e-5
+		  Var εχsy As Double = 1.0e-5
+		  Var εχsz As Double = 1.0e-5
 		  
 		  // Initialize denominators for derivatives
 		  Inverse2ει = 0.5/ει
@@ -2647,6 +2654,10 @@ Protected Class HCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Sn20 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		SnR(6) As Double
 	#tag EndProperty
 
@@ -2936,6 +2947,7 @@ Protected Class HCalculatorClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IndexForβ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2944,6 +2956,7 @@ Protected Class HCalculatorClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IndexForδ"
+
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -3003,7 +3016,7 @@ Protected Class HCalculatorClass
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Double"
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -3064,6 +3077,14 @@ Protected Class HCalculatorClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Inverse2εχsz"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn20"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

@@ -14,6 +14,7 @@ Protected Class CaseSupervisorClass
 		  HCalculator = New HCalculatorClass(CaseParameters) // create an instance of the HCalculatorClass and initialize it
 		  UncertaintyCalculator = New UncertaintyCalculatorClass(CaseParameters)
 		  ATAMatrix = New Matrix(15) // Initalize an empty 15x15 matrix
+		  ATAMatrix.InverseTest // Check that Matrix code is working
 		End Sub
 	#tag EndMethod
 
@@ -57,10 +58,10 @@ Protected Class CaseSupervisorClass
 		  CaseParameters.δ = localδ // record in parameter list
 		  CaseParameters.η = localη // record in parameter list
 		  Var localR As Double = CaseParameters.R*Year // get R in seconds
-		  CaseParameters.H0 = 2*gm*localη/(2*localR) // Calculate and record H0
+		  CaseParameters.H0 = 2*gm*localη/localR // Calculate and record H0
 		  Var universe As New UniverseClass // Create a universe class to solve the Z(R) problem
 		  Var localZ As Double = universe.GetZFrom(localR) // get the Z value for the given value of R
-		  CaseParameters.Z = localZ // record the value of Z
+		  CaseParameters.Z = localZ // record the value of Z*1000 (this scales the parameter to be closer to 1)
 		  CaseParameters.V0 = Pow(gm*CaseParameters.F0*2*π*(1+localZ)/1000,1/3)  // Initialize V0
 		  CaseParameters.π = π  // record the value of pi so that we only have to define it once
 		  // convert all angles from radians to degrees
