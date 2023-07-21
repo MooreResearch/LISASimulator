@@ -515,7 +515,7 @@ Protected Class HCalculatorClass
 		  '12 return Parameters.δ*((-85/256*AP.Cβ+AP.Cβ*AP.C2β*1/256)*AP.S2+(11/64*AP.Cβ+1/64*AP.Cβ*AP.C2β)*AP.S4-(1/256*AP.Cβ+3/256*AP.Cβ*AP.C2β)*AP.S6)
 		  '13 return Parameters.δ*((45/256*AP.Cβ+AP.Cβ*AP.C2β*135/256)*AP.S2-(9/64*AP.Cβ+27/64*AP.Cβ*AP.C2β)*AP.S4+(9/256*AP.Cβ+27/256*AP.Cβ*AP.C2β)*AP.S6)
 		  '14 return Parameters.δ*(1/64*AP.Cβ*AP.Sβ^2*AP.S2+5/64*AP.Cβ*AP.Sβ*AP.S6)
-
+		  
 		  
 		  Var AP As AmplitudeParameters = APSet(NCase)
 		  
@@ -610,12 +610,13 @@ Protected Class HCalculatorClass
 		    NCvS(13) = 0
 		    NCvS(14) = 0
 		  End If
-
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub HP2DoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
 		  
 		  'AddTerm(AddressOf GetA1, 2, 2, False)
 		  'AddTerm(AddressOf GetA2, 4, 4, False)
@@ -654,7 +655,7 @@ Protected Class HCalculatorClass
 		  '16 return 1/32*(1/3*(349-25*AP.C2β)*AP.Sβ^2-(25+35*AP.C2β)*AP.C4*AP.Sβ^2)+AP.η*((25*AP.C2β-45)*AP.Sβ^2+(25+35*AP.C2β)*AP.C4*AP.Sβ^2)*AP.S2^2
 		  '17 return 1/4*(AP.η*(25+35*AP.C2β)-1/3*(25-35*AP.C2β))*AP.Sβ^2*AP.S2^4
 		  '18 return AP.C1^3*(6*AP.S2β-31/12*AP.C2*AP.S2β+1/12*AP.C4*AP.S2β-19/48*AP.S4β)*AP.S1+7/24*AP.C1^3*AP.S4β*AP.S3-7/48*AP.C1^3*AP.S4β*AP.S5+AP.η*(AP.C1^3*(-16/3*AP.S2β+31/4*AP.C2*AP.S2β-1/4*AP.C4*AP.S2β+19/16*AP.S4β)*AP.S1-7/8*AP.C1^3*AP.S4β*AP.S3+7/16*AP.C1^3*AP.S4β*AP.S5)
-
+		  
 		  
 		  // Set up the amplitude array
 		  A(NCase,1) = (59/16+5/2*AP.C2β-3/16*AP.C4β+(5/24-11/6*AP.C2β+7/24*AP.C4β)*AP.C2-(5/48+1/12*AP.C2β+7/48*AP.C4β)*AP.C4)*AP.C1^4+(-25/16-13/3*AP.C2β+9/16*AP.C4β+(-5/8+11/2*AP.C2β-7/8*AP.C4β)*AP.C2+(5/16+1/4*AP.C2β+7/16*AP.C4β)*AP.C4)*AP.η*AP.C1^4
@@ -760,12 +761,13 @@ Protected Class HCalculatorClass
 		    NCvS(17) = 0
 		    NCvS(18) = 0
 		  End If
-
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub HP2SODoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
 		  'AddTerm(AddressOf GetA1, 1, 1, False)
 		  'AddTerm(AddressOf GetA2, 1, -1, False)
 		  'AddTerm(AddressOf GetA3, 1, -1, True)
@@ -788,7 +790,7 @@ Protected Class HCalculatorClass
 		  '9 Return Parameters.δ*(AP.χsy*AP.Sβ*AP.S2)
 		  '10 Return -Parameters.δ*(AP.χsy*AP.Cβ*AP.S1^2)
 		  
-
+		  
 		  // Set up the amplitude array
 		  
 		  A(NCase,1) = AP.χax*AP.Cβ*AP.C1^2-AP.χaz*AP.C1^2*AP.Sβ
@@ -851,12 +853,14 @@ Protected Class HCalculatorClass
 		    NCvS(9) = 1
 		    NCvS(10) = 1
 		  End If
-
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub HP3DoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
+		  Var π As Double = Parameters.π
 		  '
 		  'AddTerm(AddressOf GetA1, 2, 2, False)
 		  'AddTerm(AddressOf GetA2, 1, 2, False)
@@ -935,7 +939,7 @@ Protected Class HCalculatorClass
 		  '36 Return Parameters.δ*((319/24576*AP.Cβ*AP.C2β+AP.Cβ*(871/4096+AP.C4β/49152)+(933/4096*AP.Cβ+133/1536*AP.Cβ*AP.C2β)*AP.C2+(625/24576*AP.Cβ+211/4096*AP.Cβ*AP.C2β)*AP.C4-11/12288*AP.Cβ*AP.C6-7/49152*AP.Cβ*AP.C8)*AP.S2-AP.Cβ*AP.C4β*AP.S4/12288+AP.Cβ*AP.C4β*AP.S6/32768-(45/16384*AP.C3β+AP.C5β/16384)*AP.S8-(AP.C3β/65536+5*AP.C5β/65536)*AP.S10+AP.η*((257/12288*AP.Cβ*AP.C2β-AP.Cβ*(1493/6144+AP.C4β/24576)+(-1391/6144+11/768*AP.Cβ*AP.C2β)*AP.C2+(-49/12288*AP.Cβ+77/2048*AP.Cβ*AP.C2β)*AP.C4+11/6144*AP.Cβ*AP.C6+7/24576*AP.Cβ*AP.C8)*AP.S2+AP.Cβ*AP.C4β*AP.S4/6144-AP.Cβ*AP.C4β*AP.S6/16384+(45/8192*AP.C3β+AP.C5β/8192)*AP.S8+(AP.C3β/32768+5/32768*AP.C5β)*AP.S10))
 		  '37 Return Parameters.δ*((-157/12288*AP.Cβ*AP.C2β+AP.Cβ*(9287/49152+AP.C4β/49152))*AP.S2+(-133/3072*AP.Cβ*AP.C2β+AP.Cβ*(-1405/12288+AP.C4β/12288))*AP.S4+(211/8192*AP.Cβ*AP.C2β+AP.Cβ*(419/32768+AP.C4β/32768))*AP.S6+(11/24576*AP.Cβ+45/16384*AP.C3β+AP.C5β/16384)*AP.S8-(7/98304*AP.Cβ+AP.C3β/65536+5*AP.C5β/65536)*AP.S10+AP.η*((13/6144*AP.Cβ*AP.C2β-AP.Cβ*(5923/24576+AP.C4β/24576))*AP.S2+(-11/1536*AP.Cβ*AP.C2β+AP.Cβ*(701/6144-AP.C4β/6144))*AP.S4+(77/4096*AP.Cβ*AP.C2β-AP.Cβ*(35/16384+AP.C4β/16384))*AP.S6-(11/12288*AP.Cβ+45/8192*AP.C3β+AP.C5β/8192)*AP.S8+(7/49152*AP.Cβ+AP.C3β/32768+5/32768*AP.C5β)*AP.S10))
 		  '38 Return Parameters.δ*((-341/8192*AP.Cβ+AP.Cβ*AP.C2β/8192)*AP.Sβ^2*AP.S2+(-3411/16384*AP.Cβ+7/16384*AP.Cβ*AP.C2β)*AP.Sβ^2*AP.S6+(35/32768*AP.Cβ+21/32768*AP.C3β)*AP.Sβ^2*AP.S10+AP.η*((-43/4096*AP.Cβ-AP.Cβ*AP.C2β/4096)*AP.Sβ^2*AP.S2+(-429/8192*AP.Cβ+7/8192*AP.Cβ*AP.C2β)*AP.Sβ^2*AP.S6+(-35/16384*AP.Cβ-21/16384*AP.C3β)*AP.Sβ^2*AP.S10))
-
+		  
 		  
 		  
 		  
@@ -1108,12 +1112,14 @@ Protected Class HCalculatorClass
 		    
 		    
 		  End If
-
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub HP3SODoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
+		  
 		  'AddTerm(AddressOf GetA1, 0, 0, False)
 		  'AddTerm(AddressOf GetA2, 2, 2, False)
 		  'AddTerm(AddressOf GetA3, 3, 2, False)
@@ -1204,7 +1210,7 @@ Protected Class HCalculatorClass
 		  '43 Return Parameters.δ*AP.χay*AP.C1^4*(7/3*AP.S2β-10/3*AP.C2*AP.S2β)
 		  '44 Return Parameters.δ*AP.χay*(5+5/3*AP.C2β)*AP.C1^5*AP.S1
 		  
-
+		  
 		  
 		  // Set up the amplitude array
 		  
@@ -1402,7 +1408,7 @@ Protected Class HCalculatorClass
 		    
 		  End If
 		  
-
+		  
 		End Sub
 	#tag EndMethod
 
@@ -1448,9 +1454,10 @@ Protected Class HCalculatorClass
 		End Sub
 	#tag EndMethod
 
-
 	#tag Method, Flags = &h0
 		Sub HX1DoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
+		  
 		  'AddTerm(AddressOf GetA1, 1, -3, True)
 		  'AddTerm(AddressOf GetA2, 2, -3, True)
 		  'AddTerm(AddressOf GetA3, 3, -3, True)
@@ -1562,6 +1569,7 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX2DoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
 		  '
 		  'AddTerm(AddressOf GetA1, 2, 2, True)
 		  'AddTerm(AddressOf GetA2, 4, 4, True)
@@ -1703,6 +1711,8 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX2SODoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
+		  
 		  'AddTerm(AddressOf GetA1, 1, 1, False)
 		  'AddTerm(AddressOf GetA2, 1, -1, False)
 		  'AddTerm(AddressOf GetA3, 1, -1, True)
@@ -1783,6 +1793,8 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX3DoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
+		  Var π As Double = Parameters.π
 		  '
 		  'AddTerm(AddressOf GetA1, 1, -2, True)
 		  'AddTerm(AddressOf GetA2, 2, -2, True)
@@ -2005,6 +2017,8 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX3SODoCase(NCase As Integer)
+		  Var AP As AmplitudeParameters = APSet(NCase)
+		  
 		  'AddTerm(AddressOf GetA1, 0, 0, False)
 		  'AddTerm(AddressOf GetA2, 2, 2, False)
 		  'AddTerm(AddressOf GetA3, 3, 2, False)
@@ -2093,8 +2107,8 @@ Protected Class HCalculatorClass
 		  
 		  // Set up the amplitude array
 		  
-		
-		 
+		  
+		  
 		  A(NCase, 1) =AP.χsy*(2*AP.C2^3*AP.Sβ-AP.η*AP.C2^3*AP.Sβ)
 		  A(NCase, 2) =AP.χsy*(AP.η*AP.C1^4*(-5*AP.Sβ/3 + 2*AP.C2*AP.Sβ/3)+AP.C1^4*(-14*AP.Sβ/3+20*AP.C2*AP.Sβ/3))
 		  A(NCase, 3) =AP.χsy*(-20/3*AP.Cβ*AP.C1^5*AP.S1-2/3*AP.η*AP.Cβ*AP.C1^5*AP.S1)
@@ -2112,7 +2126,7 @@ Protected Class HCalculatorClass
 		  A(NCase, 15) =AP.χsx*(AP.C1*(-2*AP.Cβ/3-10*AP.Cβ*AP.C2/3)*AP.S1^3+AP.η*AP.C1*(-5/3*AP.Cβ+4*AP.C3β-AP.Cβ*AP.C2/3)*AP.S1^3)+AP.χsz*(AP.C1*(-4*AP.Sβ-40*AP.C2*AP.Sβ/3)*AP.S1^3+AP.η*AP.C1*(-2*AP.Sβ-4*AP.C2*AP.Sβ/3-4*AP.S3β)*AP.S1^3)
 		  A(NCase, 16) =AP.χsz*(AP.η*(5*AP.Cβ+AP.C3β+2*AP.Cβ*AP.C2/3)*AP.S1^4+(4*AP.Cβ+20*AP.Cβ*AP.C2/3)*AP.S1^4)+AP.χsx*((-14*AP.Sβ/3-20*AP.C2*AP.Sβ/3)*AP.S1^4+AP.η*(10*AP.Sβ/3-2*AP.C2*AP.Sβ/3+AP.S3β)*AP.S1^4)
 		  A(NCase, 17) =AP.χsx*(20/3*AP.Cβ*AP.C1*AP.S1^5+2/3*AP.η*AP.Cβ*AP.C1*AP.S1^5)
-		  A(NCase, 18) =-6*AP.β*AP.χsz*AP.Cβ*AP.Sβ^2*AP.S2^2 + AP.χsx*(1/3*AP.Sβ*AP.S2^2+AP.η*(-7/6+3*AP.C2β)*AP.Sβ*AP.S2^2)
+		  A(NCase, 18) =-6*AP.η*AP.χsz*AP.Cβ*AP.Sβ^2*AP.S2^2 + AP.χsx*(1/3*AP.Sβ*AP.S2^2+AP.η*(-7/6+3*AP.C2β)*AP.Sβ*AP.S2^2)
 		  A(NCase, 19) =AP.χsx*(AP.η*AP.C1^3*(-5*AP.Cβ/3+4*AP.C3β+AP.Cβ*AP.C2/3)*AP.S1+AP.C1^3*(-2*AP.Cβ/3+10*AP.Cβ*AP.C2/3)*AP.S1)+AP.χsz*(AP.C1^3*(-4*AP.Sβ+40*AP.C2*AP.Sβ/3)*AP.S1+AP.η*AP.C1^3*(-2*AP.Sβ+4*AP.C2*AP.Sβ/3-4*AP.S3β)*AP.S1)
 		  A(NCase, 20)= AP.χsz*(AP.η*AP.C1^4*(-5*AP.Cβ-AP.C3β+2*AP.Cβ*AP.C2/3)+AP.C1^4*(-4*AP.Cβ+20*AP.Cβ*AP.C2/3))+AP.χsx*(AP.C1^4*(14*AP.Sβ/3-20*AP.C2*AP.Sβ/3)+AP.η*AP.C1^4*(-10*AP.Sβ/3-2*AP.C2*AP.Sβ/3-AP.S3β))
 		  A(NCase, 21) =AP.χsx*(20/3*AP.Cβ*AP.C1^5*AP.S1+2/3*AP.η*AP.Cβ*AP.C1^5*AP.S1)
@@ -2496,7 +2510,6 @@ Protected Class HCalculatorClass
 
 	#tag Property, Flags = &h0
 		DCCosσ1x9 As Double
-
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2504,7 +2517,6 @@ Protected Class HCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-
 		DCHalfCos2ψ As Double
 	#tag EndProperty
 
@@ -2537,7 +2549,6 @@ Protected Class HCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-
 		DHP As DerivativeSet
 	#tag EndProperty
 
@@ -2772,9 +2783,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DC2σ2"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2782,9 +2791,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCSinσ1x9"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2792,9 +2799,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCSinσ2x9"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2802,9 +2807,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCHalfSin2ψ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2812,9 +2815,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCHalfCos2ψ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2822,9 +2823,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DC3"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2832,9 +2831,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DC1"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2842,9 +2839,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DC2"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2852,9 +2847,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCSinΘ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2862,9 +2855,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCSin2Θ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2872,9 +2863,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCCos2Θ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2882,9 +2871,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCCosΘ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2892,9 +2879,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCCosσ2x9"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2902,9 +2887,7 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DCCosσ1x9"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2912,13 +2895,11 @@ Protected Class HCalculatorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-
 			Name="DC2Φ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Integer"
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -2947,7 +2928,6 @@ Protected Class HCalculatorClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IndexForβ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2956,7 +2936,6 @@ Protected Class HCalculatorClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IndexForδ"
-
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -3016,7 +2995,7 @@ Protected Class HCalculatorClass
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Integer"
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
