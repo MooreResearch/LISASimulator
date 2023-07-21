@@ -2252,6 +2252,7 @@ Begin DesktopWindow MainWindow
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
+      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
@@ -2755,9 +2756,9 @@ End
 		  'Remember, this program is designed to handle and display uncertainty values correctly, but it is your responsibility to ensure the accuracy and correctness of the input data.
 		  
 		  If uncertainty.IsNotANumber Then
-		    Return value.ToString + EndOfLine + "(Not Solved For)"
-		  Elseif uncertainty.IsInfinite Then
 		    Return value.ToString + EndOfLine + "(Imaginary)"
+		  Elseif uncertainty.IsInfinite Then
+		    Return value.ToString + EndOfLine + "(Not Solved For)"
 		  End If
 		  
 		  ' Ensure the uncertainty is a positive value. If it's not, raise an exception and display a message box
