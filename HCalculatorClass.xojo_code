@@ -431,6 +431,8 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HP0DoCase(NCase As Integer)
+		  //This method initializes all the HP0 Terms and calculates each of the coefficients.
+		  
 		  Var AP As AmplitudeParameters = APSet(NCase)
 		  Var C1 As Double = AP.C1
 		  Var C1p3 As Double = C1*C1*C1
@@ -479,6 +481,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HP1DoCase(NCase As Integer)
+		  //This method initializes all the HP1 Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  'AddTerm(AddressOf GetA1, 3, 3, False)
 		  'AddTerm(AddressOf GetA2, 1, 1, False)
 		  'AddTerm(AddressOf GetA3, 1, -1, False)
@@ -607,7 +613,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HP2DoCase(NCase As Integer)
+		  //This method initializes all the HP2 Terms and calculates each of the coefficients.
 		  
+		  
+		  //these are the old version
 		  'AddTerm(AddressOf GetA1, 2, 2, False)
 		  'AddTerm(AddressOf GetA2, 4, 4, False)
 		  'AddTerm(AddressOf GetA3, 3, 4, False)
@@ -755,6 +764,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HP2SODoCase(NCase As Integer)
+		  //This method initializes all the HP2SO Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  'AddTerm(AddressOf GetA1, 1, 1, False)
 		  'AddTerm(AddressOf GetA2, 1, -1, False)
 		  'AddTerm(AddressOf GetA3, 1, -1, True)
@@ -844,7 +857,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HP3DoCase(NCase As Integer)
-		  '
+		  //This method initializes all the HP3 Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  'AddTerm(AddressOf GetA1, 2, 2, False)
 		  'AddTerm(AddressOf GetA2, 1, 2, False)
 		  'AddTerm(AddressOf GetA3, 1, -2, False)
@@ -1100,6 +1116,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HP3SODoCase(NCase As Integer)
+		  //This method initializes all the HP3SO Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  'AddTerm(AddressOf GetA1, 0, 0, False)
 		  'AddTerm(AddressOf GetA2, 2, 2, False)
 		  'AddTerm(AddressOf GetA3, 3, 2, False)
@@ -1392,6 +1412,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX0DoCase(NCase As Integer)
+		  //This method initializes all the HX0 Terms and calculates each of the coefficients.
+		  
+		  
+		  
 		  Var AP As AmplitudeParameters = APSet(NCase)
 		  Var C1 As Double = AP.C1
 		  Var C1p3 As Double = C1*C1*C1
@@ -1434,6 +1458,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX1DoCase(NCase As Integer)
+		  //This method initializes all the HX1 Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  'AddTerm(AddressOf GetA1, 1, -3, True)
 		  'AddTerm(AddressOf GetA2, 2, -3, True)
 		  'AddTerm(AddressOf GetA3, 3, -3, True)
@@ -1545,6 +1573,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX2DoCase(NCase As Integer)
+		  //This method initializes all the HX2 Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  '
 		  'AddTerm(AddressOf GetA1, 2, 2, True)
 		  'AddTerm(AddressOf GetA2, 4, 4, True)
@@ -1686,6 +1718,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX2SODoCase(NCase As Integer)
+		  //This method initializes all the HX2SO Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  'AddTerm(AddressOf GetA1, 1, 1, False)
 		  'AddTerm(AddressOf GetA2, 1, -1, False)
 		  'AddTerm(AddressOf GetA3, 1, -1, True)
@@ -1766,6 +1802,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX3DoCase(NCase As Integer)
+		  //This method initializes all the HX3 Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  '
 		  'AddTerm(AddressOf GetA1, 1, -2, True)
 		  'AddTerm(AddressOf GetA2, 2, -2, True)
@@ -1988,6 +2028,10 @@ Protected Class HCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub HX3SODoCase(NCase As Integer)
+		  //This method initializes all the HX3SO Terms and calculates each of the coefficients.
+		  
+		  
+		  //these are the old version
 		  'AddTerm(AddressOf GetA1, 0, 0, False)
 		  'AddTerm(AddressOf GetA2, 2, 2, False)
 		  'AddTerm(AddressOf GetA3, 3, 2, False)
