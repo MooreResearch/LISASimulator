@@ -1,24 +1,29 @@
 #tag Class
 Protected Class CaseParametersClass
 	#tag Method, Flags = &h0
-		Function Clone() As CaseParametersClass
-		  // This creates a clone of the current parameter list
+		Function GetTweaked(Which As Item, ε As Double) As CaseParametersClass
+		  // This method creates a parameter list where the specified parameter has
+		  // been tweaked by the value ε to serve as a parameters list for side cases.
+		  // For this method to work properly, the current parameter class must have been
+		  // fleshed out by the CaseSupervisor.
 		  Var CP As New CaseParametersClass
+		  // Copy over parameters. Note that the SolveFor list is
+		  // *not* copied, as that is only relevant to the base case.
 		  CP.Detectors = Detectors
 		  CP.F0 = F0
+		  CP.GM = GM
 		  CP.GMΩe = GMΩe
-		  CP.H0 = H0
 		  CP.M1 = M1
 		  CP.M2 = M2
-		  CP.R = R
+		  CP.PNOrder = PNOrder
 		  CP.RunDuration = RunDuration
-		  CP.V0 = V0
+		  CP.V0
 		  CP.Ve = Ve
 		  CP.Z = Z
 		  CP.β = β
 		  CP.δ = δ
-		  CP.η = η
 		  CP.ΔT = ΔT
+		  CP.η = η
 		  CP.Θ = Θ
 		  CP.λ0 = λ0
 		  CP.π = π
@@ -31,35 +36,51 @@ Protected Class CaseParametersClass
 		  CP.χ20y = χ20y
 		  CP.χ20z = χ20z
 		  CP.ψ = ψ
-		  return CP
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetTweaked(Which As Item, ε As Double) As CaseParametersClass
-		  // This method creates a parameter list where the specified parameter has
-		  // been tweaked by the value ε.
-		  // For this method to work properly, the current parameter class must have been
-		  // fleshed out by the CaseSupervisor.
-		  Var CP As CaseParametersClass = Clone
+		  // Now tweak the appropriate item. Note that this method *assumes*
+		  // that it will be called once with a positive value of ε and once with a
+		  // negative value *of the same magnitude* when calculating InvDε,
+		  // which is one over the value of the denominator for the centered difference
+		  // when calculating derivatives from side cases. Note also that a nonzero
+		  // value for this quantity indicates that it is a side case
 		  Select Case Which
-		  Case Item.δ
-		    CP.δ = δ+ε
-		    CP.η = 0.25*(1.0-(δ+ε)^2)
+		  Case Item.M1
+		    Var M1Tweaked As Double = M1*(1+ε)
+		    Var InverseMTweaked As Double = 1.0/(M1Tweaked + M2)
+		    CP.M1 = M1Tweaked
+		    CP.δ = (M1Tweaked - M2)*InverseMTweaked
+		    CP.η = M1Tweaked*M2*InverseMTweaked
+		    CP.InvDε = 0.5/(M1*Abs(ε))
+		  Case Item.M2
+		    Var M2Tweaked As Double = M2*(1+ε)
+		    Var InverseMTweaked As Double = 1.0/(M2Tweaked + M1)
+		    CP.M2 = M2Tweaked
+		    CP.δ = (M1 - M2Tweaked)*InverseMTweaked
+		    CP.η = M1*M2Tweaked*InverseMTweaked
+		    CP.InvDε = 0.5/(M2*Abs(ε))
 		  Case Item.v0
-		    CP.V0 = V0+V0*ε
+		    CP.V0 = V0*(1+ε)
+		    CP.InvDε = 0.5/(V0*Abs(ε))
+		  Case Item.Z
+		    CP.Z = Z*(1 + ε)
+		    CP.InvDε = 0.5/(Z*Abs(ε))
 		  Case Item.χ10x
 		    CP.χ10x = χ10x+ε
+		    CP.InvDε = 0.5/Abs(ε)
 		  Case Item.χ10y
 		    CP.χ10y = χ10y+ε
+		    CP.InvDε = 0.5/Abs(ε)
 		  Case Item.χ10z
 		    CP.χ10z = χ10z+ε
+		    CP.InvDε = 0.5/Abs(ε)
 		  Case Item.χ20x
 		    CP.χ20x = χ20x+ε
+		    CP.InvDε = 0.5/Abs(ε)
 		  Case Item.χ20y
 		    CP.χ20y = χ20y+ε
+		    CP.InvDε = 0.5/Abs(ε)
 		  Case Item.χ20z
 		    CP.χ20z = χ20z+ε
+		    CP.InvDε = 0.5/Abs(ε)
 		  End Select
 		  Return CP
 		  
@@ -84,7 +105,7 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		H0 As Double
+		InvDε As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -97,10 +118,6 @@ Protected Class CaseParametersClass
 
 	#tag Property, Flags = &h0
 		PNOrder As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		R As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -245,8 +262,10 @@ Protected Class CaseParametersClass
 
 
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
-		v0
-		  δ
+		M1
+		  M2
+		  v0
+		  Z
 		  χ10x
 		  χ10y
 		  χ10z
@@ -295,14 +314,6 @@ Protected Class CaseParametersClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="H0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -482,14 +493,6 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="R"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="RunDuration"
 			Visible=false
 			Group="Behavior"
@@ -647,6 +650,14 @@ Protected Class CaseParametersClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="InvDε"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
