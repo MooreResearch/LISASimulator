@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   0
+      Value           =   1
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -319,7 +319,7 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   264
+         Height          =   184
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          InitialValue    =   "Value ± Uncertainty"
@@ -1153,7 +1153,7 @@ Begin DesktopWindow MainWindow
          Height          =   558
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Case 1\n5000\n5000\n2.00	\n1000\n39\n24\n0\n5\n268.5\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n3\n2\n50\n1.0"
+         InitialValue    =   "Case 1\n5000\n5000\n2.00	\n1000\n39\n24\n0\n5\n268.5\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n2\n50\n1.0"
          Italic          =   False
          Left            =   120
          LockBottom      =   False
@@ -1456,10 +1456,10 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   264
+         Height          =   184
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Parameter\nH0\nδ	\nV0\nZ\nβ (°)	\nψ (°)"
+         InitialValue    =   "Parameter	\nM1 (sols)	\nM2 (sols)	\nF0 (mHz)	\nR (ly)	"
          Italic          =   False
          Left            =   27
          LockBottom      =   False
@@ -1478,7 +1478,7 @@ Begin DesktopWindow MainWindow
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   77
+         Width           =   79
          _ScrollOffset   =   0
          _ScrollWidth    =   -1
       End
@@ -1603,7 +1603,7 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   304
+         Height          =   264
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          InitialValue    =   "Value ± Uncertainty"
@@ -1652,10 +1652,10 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   304
+         Height          =   264
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Parameter\nλ0 (°)\nΘ (°)\nΦ (°)\nΩ (/sky)\nχ10x\nχ10y\nχ10z"
+         InitialValue    =   "Parameter\nβ (°)\nψ (°)\nλ0 (°)\nΘ (°)\nΦ (°)\nΩ (sky)"
          Italic          =   False
          Left            =   260
          LockBottom      =   False
@@ -1750,7 +1750,7 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   304
+         Height          =   263
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          InitialValue    =   "Value ± Uncertainty"
@@ -1799,10 +1799,10 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   304
+         Height          =   264
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Parameter\nχ20x\nχ20y\nχ20z\nM1 (sols)\nM2 (sols)\nF0 (mHz)\nR (ly)"
+         InitialValue    =   "Parameter\nχ10x\nχ10y\nχ10z\nχ20x\nχ20y\nχ20z"
          Italic          =   False
          Left            =   493
          LockBottom      =   False
@@ -1837,7 +1837,7 @@ Begin DesktopWindow MainWindow
          InitialParent   =   "MainTabPanel"
          InitialValue    =   "ATA\nY Original\nY Inverted\nY^-1 x Y"
          Italic          =   False
-         Left            =   747
+         Left            =   27
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1849,7 +1849,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   364
+         Top             =   360
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1866,7 +1866,7 @@ Begin DesktopWindow MainWindow
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   747
+         Left            =   27
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1882,7 +1882,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   339
+         Top             =   335
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -2165,7 +2165,7 @@ Begin DesktopWindow MainWindow
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   878
+         Left            =   135
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -2177,7 +2177,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   364
+         Top             =   360
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -2301,26 +2301,22 @@ End
 
 	#tag Method, Flags = &h0
 		Sub DisplayUncertainties(Params As CaseParametersClass, UV As UncertaintyValuesClass)
-		  ResultsListBox1.CellTextAt(0,0) = Params.H0.toString + EndOfLine + GetUncertaintyString(UV.OfH0)
-		  ResultsListBox1.CellTextAt(1,0) = Params.δ.toString + EndOfLine + GetUncertaintyString(UV.Ofδ)
+		  ResultsListBox1.CellTextAt(0,0) = Params.M1.toString + EndOfLine + GetUncertaintyString(UV.OfM1)
+		  ResultsListBox1.CellTextAt(1,0) = Params.M2.toString + EndOfLine + GetUncertaintyString(UV.OfM2)
 		  ResultsListBox1.CellTextAt(2,0) = Params.V0.toString + EndOfLine + GetUncertaintyString(UV.OfV0)
-		  ResultsListBox1.CellTextAt(3,0) = Params.Z.toString + EndOfLine + GetUncertaintyString(UV.OfZ)
-		  ResultsListBox1.CellTextAt(4,0) = ConvertToDegrees(Params.β).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofβ))
-		  ResultsListBox1.CellTextAt(5,0) = ConvertToDegrees(Params.ψ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofψ))
-		  ResultsListBox2.CellTextAt(0,0) = ConvertToDegrees(Params.λ0).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofλ0))
-		  ResultsListBox2.CellTextAt(1,0) = ConvertToDegrees(Params.Θ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΘ))
-		  ResultsListBox2.CellTextAt(2,0) = ConvertToDegrees(Params.Φ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΦ))
-		  ResultsListBox2.CellTextAt(3,0) = UV.OfΩ.ToString
-		  ResultsListBox2.CellTextAt(4,0) = Params.χ10x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10x)
-		  ResultsListBox2.CellTextAt(5,0) = Params.χ10y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10y)
-		  ResultsListBox2.CellTextAt(6,0) = Params.χ10z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10z)
-		  ResultsListBox3.CellTextAt(0,0) = Params.χ20x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20x)
-		  ResultsListBox3.CellTextAt(1,0) = Params.χ20y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20y)
-		  ResultsListBox3.CellTextAt(2,0) = Params.χ20z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20z)
-		  ResultsListBox3.CellTextAt(3,0) = Params.M1.ToString
-		  ResultsListBox3.CellTextAt(4,0) = Params.M2.ToString
-		  ResultsListBox3.CellTextAt(5,0) = Params.F0.ToString
-		  ResultsListBox3.CellTextAt(6,0) = Params.R.ToString
+		  ResultsListBox1.CellTextAt(3,0) = Params.R.toString + EndOfLine + GetUncertaintyString(UV.OfR)
+		  ResultsListBox2.CellTextAt(0,0) = ConvertToDegrees(Params.β).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofβ))
+		  ResultsListBox2.CellTextAt(1,0) = ConvertToDegrees(Params.ψ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofψ))
+		  ResultsListBox2.CellTextAt(2,0) = ConvertToDegrees(Params.λ0).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofλ0))
+		  ResultsListBox2.CellTextAt(3,0) = ConvertToDegrees(Params.Θ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΘ))
+		  ResultsListBox2.CellTextAt(4,0) = ConvertToDegrees(Params.Φ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.OfΦ))
+		  ResultsListBox2.CellTextAt(5,0) = UV.OfΩ.ToString
+		  ResultsListBox3.CellTextAt(0,0) = Params.χ10x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10x)
+		  ResultsListBox3.CellTextAt(1,0) = Params.χ10y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10y)
+		  ResultsListBox3.CellTextAt(2,0) = Params.χ10z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ10z)
+		  ResultsListBox3.CellTextAt(3,0) = Params.χ20x.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20x)
+		  ResultsListBox3.CellTextAt(4,0) = Params.χ20y.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20y)
+		  ResultsListBox3.CellTextAt(5,0) = Params.χ20z.toString + EndOfLine + GetUncertaintyString(UV.Ofχ20z)
 		  ResultsListBox4.CellTextAt(0,0) = Params.ρ0.ToString
 		  ResultsListBox4.CellTextAt(1,0) = Params.PNOrder.ToString
 		  ResultsListBox4.CellTextAt(2,0) = Params.Detectors.ToString
@@ -2330,12 +2326,12 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass, SpinStuff As SpinEvolverClass) As Double
+		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass) As Double
 		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
 		  Var δ As Double = parameters.δ
 		  Var η As Double = parameters.η
-		  Var χa𝓁 As Double = SpinStuff.χa𝓁
-		  Var χs𝓁 As Double = SpinStuff.χs𝓁
+		  Var χa𝓁 As Double = TheSuper.Evolver.χa𝓁
+		  Var χs𝓁 As Double = TheSuper.Evolver.χs𝓁
 		  Var v0 As Double = parameters.V0
 		  Var Threepi As Double = 3.0*parameters.π
 		  Var c As Double = 743/2688 + (11/32)*η 
@@ -2435,63 +2431,6 @@ End
 		  ''end if 
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function oldGetCurrentCaseValues() As Double()
-		  '// Returns an array with the current case values
-		  '
-		  'Var CurrentValues(19) As Double
-		  '
-		  'CurrentValues(0) = CaseCounter
-		  '
-		  'CurrentValues(1) = M
-		  '
-		  'CurrentValues(2) = δ
-		  '
-		  'CurrentValues(3) = f0
-		  '
-		  'CurrentValues(4) = R
-		  '
-		  'CurrentValues(5) = β
-		  '
-		  'CurrentValues(6) = ψangle
-		  '
-		  'CurrentValues(7) = λ0
-		  '
-		  'CurrentValues(8) = Θ
-		  '
-		  'CurrentValues(9) = Φ
-		  '
-		  'CurrentValues(10) = χ1Initial.x
-		  '
-		  'CurrentValues(11) = χ1Initial.y
-		  '
-		  'CurrentValues(12) = χ1Initial.z
-		  '
-		  'CurrentValues(13) = χ2Initial.x
-		  '
-		  'CurrentValues(14) = χ2Initial.y
-		  '
-		  'CurrentValues(15) = χ2Initial.z
-		  '
-		  'CurrentValues(16) = z0
-		  '
-		  'CurrentValues(17) = PNOrder
-		  '
-		  'CurrentValues(18) = Detectors
-		  '
-		  'CurrentValues(19) = dτ0
-		  '
-		  '
-		  'return CurrentValues
-		  
-		  
-		  
-		  
-		  
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -2615,99 +2554,6 @@ End
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub oldPopulateUncertainties(ATA(, ) As Double)
-		  '// This method takes the ATA matrix and calculates the uncertainties from it before displaying them on the UI.
-		  '
-		  'Var thisUncertaintyCalculator As New UncertaintyCalculator(ATA, solveList)  // set up an uncertainty calculator
-		  '
-		  '// normalize and arrange the matrix
-		  'thisUncertaintyCalculator.DiagNormalize
-		  'thisUncertaintyCalculator.Arrange
-		  '
-		  '// invert the matrix
-		  'Var invertCheck As Integer = thisUncertaintyCalculator.InvertY
-		  '
-		  'While invertCheck <> 0
-		  'thisUncertaintyCalculator.Y.RemoveInds(invertCheck, invertCheck)
-		  'MessageBox("Error in inverting matrix. Row: " + invertCheck.toString + ". Row was removed.")
-		  'thisUncertaintyCalculator.solveList(invertCheck - 1) = False
-		  'invertCheck = thisUncertaintyCalculator.InvertY
-		  'Wend
-		  '
-		  '// if the inversion was successful, unarrange the matrix, then calculate and populate the uncertainties
-		  'thisUncertaintyCalculator.Unarrange
-		  'thisUncertaintyCalculator.CalculateUncertainties
-		  '
-		  '// populate the uncertainties in the main window
-		  'For i As Integer = 0 to 14
-		  'If thisUncertaintyCalculator.σ(i) < 1e-98 Then
-		  'MainListBox.CellTextAt(i,3+2*CaseCounter) = "-"
-		  'Else
-		  'MainListBox.CellTextAt(i, 3+2*CaseCounter) = Format(thisUncertaintyCalculator.σ(i), "#.##e")
-		  'End If
-		  'Next
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub oldSetInitialValues(CaseCounter As Integer)
-		  '//This method takes the inputs from LBInputValues and sets the properties in the main window equal to them
-		  '
-		  'Var π As Double = 3.141592653589793238462
-		  '
-		  '// check if we are solving for the various parameters and create a list of booleans to store this data
-		  'Var values() As Double
-		  'For i As Integer = 0 To 18
-		  'If MainListBox.CellCheckBoxStateAt(i, 1+2*CaseCounter) = DesktopCheckbox.VisualStates.Checked Then
-		  'values.Add(MainListBox.CellTextAt(i, 2+2*CaseCounter).ToDouble)
-		  'solveList.Add(True)
-		  'Else
-		  'values.Add(MainListBox.CellTextAt(i, 2+ 2*CaseCounter).Replace("*", "").ToDouble)
-		  'solveList.Add(False)
-		  'End If
-		  'Next
-		  '
-		  'M = values(0)*(4.927e-6) // total mass of the system (in seconds)
-		  '
-		  'δ = values(1)  // Defined to be (m1 − m2)/M , so characterizes the mass difference
-		  '
-		  'f0 = values(2)  //The initial value of the system’s orbital frequency in the system’s own reference frame 
-		  '
-		  'R = values(3) * 9.454254955488e15 / 2.99792458e8  // The system’s luminosity distance from our solar system (in seconds)
-		  '
-		  'β = values(4)*(π/180)  // angle between initial total angular momentum and line of sight
-		  '
-		  'ψangle = values(5)*(π/180)  // angle of the total angular momentum around line of sight
-		  '
-		  'λ0 = values(6)  // initial angle of the vector that points from the more massive to less massive star and the precessed x-axis
-		  '
-		  'Θ = values(7)*(π/180)  // altitude angle of the source in the sky
-		  '
-		  'Φ = values(8)*(π/180) // azimuth angle of the source around the ecliptic 
-		  '
-		  'χ1Initial = New Vector(values(9), values(10), values(11))  // the spin vector of star 1 (in units of (m1)^2
-		  '
-		  'χ2Initial = New Vector(values(12), values(13), values(14)) // the spin vector of star 2 (in units of (m2)^2
-		  '
-		  'PNOrder = values(15)  // post-Newtonian order
-		  '
-		  'Detectors = values(16)  // number of detectors
-		  '
-		  'dτ0 = values(17)/M  // initial unitless time step
-		  '
-		  'K = values(18)  // initial constant angle value needed for detector functions
-		  '
-		  '
-		  '
-		  'CaseCounter = CaseCounter + 1
-		  
-		  
-		  
-		End Sub
-	#tag EndMethod
-
 
 #tag EndWindowCode
 
@@ -2717,14 +2563,11 @@ End
 		  Var TheSuper As CaseSupervisorClass = MainThread.CaseSupervisor  // Get a reference to the supervisor
 		  // Whether the thread is running or not, update these values
 		  ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseParameters.GM/TheSuper.Year, "0.0000000")
-		  ValueOfVLabel.Text = Format(TheSuper.Evolver.ValuesN.V,"0.000000")
+		  ValueOfVLabel.Text = Format(TheSuper.Evolver.VMN,"0.000000")
 		  ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
 		  ValueOfStepNumberLabel.Text = TheSuper.N.ToString
-		  If ValueOfTcLabel.Text = "" Then
-		    Var TheSpinEvolver As SpinEvolverClass = MainThread.CaseSupervisor.Evolver.VEvolver.SpinEvolver
-		    ValueOfTcLabel.Text = GetTimeToCoalescence(TheSuper, TheSpinEvolver).ToString
-		  end if
-		  Var theStepPower As Integer = TheSuper.Evolver.StepPowerP
+		  If ValueOfTcLabel.Text = "" Then ValueOfTcLabel.Text = GetTimeToCoalescence(TheSuper).ToString
+		  Var theStepPower As Integer = TheSuper.StepPowerP
 		  Var theFactor as Integer
 		  If theStepPower < 0 Then
 		    theFactor = 2^(-theStepPower)
@@ -2733,8 +2576,8 @@ End
 		    theFactor = 2^theStepPower
 		    ValueOfStepRatioLabel.Text = theFactor.ToString
 		  End if
-		  Var SNR As Double = 0.5*TheSuper.HCalculator.H0V2/TheSuper.HCalculator.Sn2
-		  ValueOfSNRLabel.Text = Format(SNR, "0.000e+00")
+		  // Var SNR As Double = 0.5*TheSuper.HCalculator.H0V2/TheSuper.HCalculator.Sn2
+		  // ValueOfSNRLabel.Text = Format(SNR, "0.000e+00")
 		  If MainThread.State = Thread.Running then  // if the thread is running
 		    CaseProgressBar.Value = Round(TheSuper.N*100/TheSuper.NSteps)  // update the progress bar
 		  Else // the thread has stopped, meaning that this case is done

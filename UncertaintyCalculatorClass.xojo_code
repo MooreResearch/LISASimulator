@@ -26,12 +26,10 @@ Protected Class UncertaintyCalculatorClass
 		  Next
 		  Var uv As New UncertaintyValuesClass // Get a new instance of the uncertainty values class
 		  // Note that the order here is assumed to be that specified by the enumeration "Item"
-		  uv.OfH0 = uncList(0)*Sn2F0*Parameters.H0
-		  uv.Ofδ = uncList(1)*Sn2F0
-		  uv.OfV0 = uncList(2)*Sn2F0*(Parameters.V0^4)/3
-		  //uv.OfV0 = uncList(2)*Sn2F0*Parameters.V0
-		  uv.OfZ = uncList(3)*Sn2F0*Parameters.Z
-		  //uv.OfZ = uncList(3)*Sn2F0*(1 + Parameters.Z)
+		  uv.OfM1 = uncList(0)*Sn2F0*Parameters.M1
+		  uv.OfM2 = uncList(1)*Sn2F0*Parameters.M2
+		  uv.OfF0 = uncList(2)*Sn2F0*Parameters.V0
+		  uv.OfR = uncList(3)*Sn2F0*Parameters.R0*Parameters.Λ
 		  uv.Ofβ = uncList(4)*Sn2F0
 		  uv.Ofψ = uncList(5)*Sn2F0
 		  uv.Ofλ0 = uncList(6)*Sn2F0
