@@ -298,7 +298,6 @@ Protected Class CaseSupervisorClass
 		  Var localR As Double = CaseParameters.R*Year // get R in seconds
 		  CaseParameters.R0 = 1.0e7*Year  // Defines the reference for R (10 Mly)
 		  CaseParameters.Λ = localR/CaseParameters.R0  // This is the unitless luminosity distance
-		  CaseParameters.H0 = 2*gm*localη/localR // This is the overall wave amplitude factor
 		  Var universe As New UniverseClass // Create a universe class to solve the Z(R) problem
 		  Var localZ As Double = universe.GetZFrom(localR) // get the Z value for the given value of R
 		  CaseParameters.Z = localZ // record the value of Z
@@ -334,25 +333,25 @@ Protected Class CaseSupervisorClass
 		  dh = EvolverForM1Plus.H - EvolverForM1Minus.H
 		  dΨr = EvolverForM1Plus.ΨrMN - EvolverForM1Minus.ΨrMN
 		  idε = EvolverForM1Plus.Parameters.InvDε
-		  dHDq(0) = dh*idε + dhDΨ*dΨr*idε
+		  dHDq(0) = (dh*idε + dhDΨ*dΨr*idε)/CaseParameters.M1
 		  
 		  // Calculate derivative for M2
 		  dh = EvolverForM2Plus.H - EvolverForM2Minus.H
 		  dΨr = EvolverForM2Plus.ΨrMN - EvolverForM2Minus.ΨrMN
 		  idε = EvolverForM2Plus.Parameters.InvDε
-		  dHDq(1) = dh*idε + dhDΨ*dΨr*idε
+		  dHDq(1) = (dh*idε + dhDΨ*dΨr*idε)/CaseParameters.M2
 		  
 		  // Calculate derivative for V0
 		  dh = EvolverForV0Plus.H - EvolverForV0Minus.H
 		  dΨr = EvolverForV0Plus.ΨrMN - EvolverForV0Minus.ΨrMN
 		  idε = EvolverForV0Plus.Parameters.InvDε
-		  dHDq(2) = dh*idε + dhDΨ*dΨr*idε
+		  dHDq(2) = (dh*idε + dhDΨ*dΨr*idε)/CaseParameters.V0
 		  
 		  // Calculate derivative for Λ = R/R0
 		  dh = EvolverForΛPlus.H - EvolverForΛMinus.H
 		  dΨr = EvolverForΛPlus.ΨrMN - EvolverForΛMinus.ΨrMN
 		  idε = EvolverForΛPlus.Parameters.InvDε
-		  dHDq(3) = dh*idε + dhDΨ*dΨr*idε
+		  dHDq(3) = (dh*idε + dhDΨ*dΨr*idε)/CaseParameters.Λ
 		  
 		  // Calculate derivative for β
 		  // In this case, β does not affect the phase

@@ -143,10 +143,10 @@ Protected Class EvolverClass
 		  // This will calculate the total signal H
 		  Var fPlus As Double = fPlus1 + fPlus2
 		  Var fCross As Double = fCross1 + fCross2
-		  H = Parameters.H0*(fPlus*hp + fCross*hx)
+		  H = h0*(fPlus*hp + fCross*hx)
 		  // If this is the base case, then we will also find the derivative with respect to Ψr
 		  If IsBaseCase Then
-		    DHDΨ = Parameters.H0*(fPlus*dhpDΨ + fCross*dhxDΨ)
+		    DHDΨ = h0*(fPlus*dhpDΨ + fCross*dhxDΨ)
 		  End If
 		  
 		End Sub
@@ -622,16 +622,16 @@ Protected Class EvolverClass
 		  Var snratio5 As Double = sn20/Sqrt(Noise.GetNoise(2*fN))
 		  
 		  // Calculate basic angle multiples for α and Ψr
-		  Var c01 As Double = Cos(ΨrMN)
-		  Var s01 As Double = Sin(ΨrMN)
-		  Var c02 As Double = c01*c01 - s01*s01
-		  Var s02 As Double = 2*c01*s01
-		  Var c03 As Double = c02*c01 - s02*s01
-		  Var s03 As Double = s02*c01 + c02*s01
-		  Var c04 As Double = c03*c01 - s03*s01
-		  Var s04 As Double = s03*c01 + c03*s01
-		  Var c05 As Double = c04*c01 - s04*s01
-		  Var s05 As Double = s04*c01 + c04*s01
+		  Var c01 As Double = Cos(ΨrMN)*snratio1
+		  Var s01 As Double = Sin(ΨrMN)*snratio1
+		  Var c02 As Double = (c01*c01 - s01*s01)*snratio2
+		  Var s02 As Double = (2*c01*s01)*snratio2
+		  Var c03 As Double = (c02*c01 - s02*s01)*snratio3
+		  Var s03 As Double = (s02*c01 + c02*s01)*snratio3
+		  Var c04 As Double = (c03*c01 - s03*s01)*snratio4
+		  Var s04 As Double = (s03*c01 + c03*s01)*snratio4
+		  Var c05 As Double = (c04*c01 - s04*s01)*snratio5
+		  Var s05 As Double = (s04*c01 + c04*s01)*snratio5
 		  
 		  Var c10 As Double = Cos(αMN)
 		  Var s10 As Double = Sin(αMN)
@@ -646,35 +646,43 @@ Protected Class EvolverClass
 		  
 		  // Now calculate all wavy parts
 		  // Factors for H0P
-		  W(0) = (c20*c02 - s20*s02)*snratio2
-		  W(1) = (c10*c02 - s10*s02)*snratio2
-		  W(2) = (c10*c02 + s10*s02)*snratio2
-		  W(3) = (c20*c02 + s20*s02)*snratio2
-		  W(4) = c02*snratio2
-		  
-		  // Factors for H0X
-		  W(5) = (s10*c02 - c10*s02)*snratio2
-		  W(6) = (s20*c02 - c20*s02)*snratio2
-		  W(7) = (s10*c02 + c10*s02)*snratio2
-		  W(8) = (s20*c02 + c20*s02)*snratio2
+		  W(0) = c20*c02 - s20*s02
+		  W(1) = c10*c02 - s10*s02
+		  W(2) = c10*c02 + s10*s02
+		  W(3) = c20*c02 + s20*s02
+		  W(4) = c02
 		  
 		  // Factors for H1P
-		  W(9) = (c30*c03 - s30*s03)*snratio3
-		  W(10) = (c10*c01 - s10*s01)*snratio1
-		  W(11) = (c10*c01 + s10*s01)*snratio1
-		  W(12) = (c30*c01 - s30*s01)*snratio1
-		  W(13) = (c10*c03 - s10*s03)*snratio3
-		  W(14) = (c10*c03 + s10*s03)*snratio3
-		  W(15) = (c30*c01 + s30*s01)*snratio1
-		  W(16) = (c30*c03 + s30*s03)*snratio3
-		  W(17) = c03*snratio3
-		  W(18) = (c20*c01 - s20*s01)*snratio1
-		  W(19) = (c20*c03 - s20*s03)*snratio3
-		  W(20) = (c20*c01 + s20*s01)*snratio1
-		  W(21) = (c20*c03 + s20*s03)*snratio1
-		  W(22) = c01*snratio1
+		  W(5) = c30*c03 - s30*s03
+		  W(6) = c10*c01 - s10*s01
+		  W(7) = c10*c01 + s10*s01
+		  W(8) = c30*c01 - s30*s01
+		  W(9) = c10*c03 - s10*s03
+		  W(10) = c10*c03 + s10*s03
+		  W(11) = c30*c01 + s30*s01
+		  W(12) = c30*c03 + s30*s03
+		  W(13) = c03
+		  W(14) = c20*c01 - s20*s01
+		  W(15) = c20*c03 - s20*s03
+		  W(16) = c20*c01 + s20*s01
+		  W(17) = c20*c03 + s20*s03
+		  W(18) = c01
+		  
+		  // Factors for H2P
+		  
+		  // Factors for H3P
+		  
+		  // Factors for H0X
+		  W(132) = (s10*c02 - c10*s02)*snratio2
+		  W(133) = (s20*c02 - c20*s02)*snratio2
+		  W(134) = (s10*c02 + c10*s02)*snratio2
+		  W(136) = (s20*c02 + c20*s02)*snratio2
 		  
 		  // Factors for H1X
+		  
+		  // Factors for H2X
+		  
+		  // Factors for H3X
 		  
 		  // Calculate derivatives with respect to Ψr
 		  // For H0P
@@ -682,29 +690,40 @@ Protected Class EvolverClass
 		  DWDΨ(1) = -2*(s10*c02+c10*s02)*snratio2
 		  DWDΨ(2) = 2*(s10*c02-c10*s02)*snratio2
 		  DWDΨ(3) = 2*(s20*c02-c20*s02)*snratio2
-		  DWDΨ(4) = -2*s02
-		  
-		  // Factors for H0X
-		  DWDΨ(5) = -2*(c10*c02+s10*s02)*snratio2
-		  DWDΨ(6) = -2*(c20*c02+s20*s02)*snratio2
-		  DWDΨ(7) = 2*(c10*c02-s10*s02)*snratio2
-		  DWDΨ(8) = 2*(c20*c02-s20*s02)*snratio2
+		  DWDΨ(4) = -2*s02*snratio2
 		  
 		  // Factors for H1P
-		  DWDΨ(9) = -2*(s30*c03+c30*s03)*snratio3
-		  DWDΨ(10) = -2*(s10*c01+c10*s01)*snratio1
-		  DWDΨ(11) = (s10*c01-c10*s01)*snratio1
-		  DWDΨ(12) = (-s30*c01-c30*s01)*snratio1
-		  DWDΨ(13) = -3*(s10*c03+c10*s03)*snratio3
-		  DWDΨ(14) = 3*(s10*c03-c10*s03)*snratio3
-		  DWDΨ(15) = (s30*c01-c30*s01)*snratio1
-		  DWDΨ(16) = 3*(s30*c03-c30*s03)*snratio3
-		  DWDΨ(17) = -3*s03*snratio3
-		  DWDΨ(18) = (-s20*c01-c20*s01)*snratio1
-		  DWDΨ(19) = -3*(s20*c03+c20*s03)*snratio3
-		  DWDΨ(20) = (s20*c01-c20*s01)*snratio1
-		  DWDΨ(21) = 3*(s20*c03-c20*s03)*snratio3
-		  DWDΨ(22) = -s01*snratio1
+		  DWDΨ(5) = -2*(s30*c03+c30*s03)*snratio3
+		  DWDΨ(6) = -2*(s10*c01+c10*s01)*snratio1
+		  DWDΨ(7) = (s10*c01-c10*s01)*snratio1
+		  DWDΨ(8) = (-s30*c01-c30*s01)*snratio1
+		  DWDΨ(9) = -3*(s10*c03+c10*s03)*snratio3
+		  DWDΨ(10) = 3*(s10*c03-c10*s03)*snratio3
+		  DWDΨ(11) = (s30*c01-c30*s01)*snratio1
+		  DWDΨ(12) = 3*(s30*c03-c30*s03)*snratio3
+		  DWDΨ(13) = -3*s03*snratio3
+		  DWDΨ(14) = (-s20*c01-c20*s01)*snratio1
+		  DWDΨ(15) = -3*(s20*c03+c20*s03)*snratio3
+		  DWDΨ(16) = (s20*c01-c20*s01)*snratio1
+		  DWDΨ(17) = 3*(s20*c03-c20*s03)*snratio3
+		  DWDΨ(18) = -s01*snratio1
+		  
+		  // Factors for H2P
+		  
+		  // Factors for H3P
+		  
+		  // Factors for H0X
+		  DWDΨ(132) = -2*(c10*c02+s10*s02)*snratio2
+		  DWDΨ(133) = -2*(c20*c02+s20*s02)*snratio2
+		  DWDΨ(134) = 2*(c10*c02-s10*s02)*snratio2
+		  DWDΨ(135) = 2*(c20*c02-s20*s02)*snratio2
+		  
+		  // Factors for H1X
+		  
+		  // Factors for H2X
+		  
+		  // Factors for H3X
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -1038,9 +1057,7 @@ Protected Class EvolverClass
 		    // Now evolve the phase
 		    Var τr As Double = τ*(1.0 + Parameters.Z) // Calculate the received time
 		    Var gMΩeτr As Double = Parameters.GMΩe*τr
-		    Var LF As Double =2.0*(Log(VN/Parameters.V0) + 1.0)
-		    Var LF2 As Double = v2*LF
-		    Var ΨrDot As Double = VN - CosιN*αDotN - LF2*vDotN
+		    Var ΨrDot As Double = v3 - CosιN*αDotN - 6.0*v2*(3.0*Log(VN/Parameters.V0) + 1.0)*vDotN
 		    Var stepFactor As Double = 2*DτF*(1.0 + VeSinΘ*Sin(gMΩeτr - Parameters.Φ))
 		    
 		    // Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,

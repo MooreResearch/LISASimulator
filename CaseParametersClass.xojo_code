@@ -51,20 +51,20 @@ Protected Class CaseParametersClass
 		    Var InverseMTweaked As Double = 1.0/(M1Tweaked + M2)
 		    CP.M1 = M1Tweaked
 		    CP.δ = (M1Tweaked - M2)*InverseMTweaked
-		    CP.η = M1Tweaked*M2*InverseMTweaked
+		    CP.η = M1Tweaked*M2*InverseMTweaked*InverseMTweaked
 		    CP.InvDε = 0.5/(M1*Abs(ε))
 		  Case Item.M2
 		    Var M2Tweaked As Double = M2*(1+ε)
 		    Var InverseMTweaked As Double = 1.0/(M2Tweaked + M1)
 		    CP.M2 = M2Tweaked
 		    CP.δ = (M1 - M2Tweaked)*InverseMTweaked
-		    CP.η = M1*M2Tweaked*InverseMTweaked
+		    CP.η = M1*M2Tweaked*InverseMTweaked*InverseMTweaked
 		    CP.InvDε = 0.5/(M2*Abs(ε))
 		  Case Item.v0
 		    CP.V0 = V0*(1+ε)
 		    CP.InvDε = 0.5/(V0*Abs(ε))
 		  Case Item.Λ
-		    CP.R = Λ*(1 + ε)
+		    CP.Λ = Λ*(1 + ε)
 		    CP.InvDε = 0.5/(Λ*Abs(ε))
 		  Case Item.β
 		    CP.β = β+ε
@@ -122,10 +122,6 @@ Protected Class CaseParametersClass
 
 	#tag Property, Flags = &h0
 		GMΩe As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		H0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -729,7 +725,7 @@ Protected Class CaseParametersClass
 			Name="UseBaseAmplitude"
 			Visible=false
 			Group="Behavior"
-			InitialValue=""
+			InitialValue="False"
 			Type="Boolean"
 			EditorType=""
 		#tag EndViewProperty
@@ -737,20 +733,12 @@ Protected Class CaseParametersClass
 			Name="UseBasePhase"
 			Visible=false
 			Group="Behavior"
-			InitialValue=""
+			InitialValue="False"
 			Type="Boolean"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Λ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="H0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
