@@ -188,7 +188,6 @@ Protected Class EvolverClass
 		  If IsBaseCase Then
 		    CalculateWaveFactors
 		  End If
-		  
 		  AssembleH
 		End Sub
 	#tag EndMethod
@@ -834,25 +833,6 @@ Protected Class EvolverClass
 		    Var Dτ0 As Double = 0.5*Dτr/(1.0 + P.Z)
 		    DoStep(Dτ0,Dτ0)
 		    // Now erase the effects of the step
-		    VF = VN
-		    CosιF = CosιN
-		    LF.X = LN.X
-		    LF.Y = LN.Y
-		    LF.Z = LN.Z
-		    αF = αN
-		    χ1HatF.X = χ1HatN.X
-		    χ1HatF.Y = χ1HatN.Y
-		    χ1HatF.Z = χ1HatN.Z
-		    χ2HatF.X = χ2HatN.X
-		    χ2HatF.Y = χ2HatN.Y
-		    χ2HatF.Z = χ2HatN.Z
-		    χaF.X = χaN.X
-		    χaF.Y = χaN.Y
-		    χaF.Z = χaN.Z
-		    χsF.X = χsN.X
-		    χsF.Y = χsF.Y
-		    χsF.Z = χsF.Z
-		    ΨrF = ΨrN
 		    τ = 0.0
 		  End If
 		  
@@ -861,11 +841,14 @@ Protected Class EvolverClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DoStep(DτF As Double, DτP As Double)
+		Sub DoStep(DτF As Double, DτP As Double, First As Boolean = False)
 		  // This is the main method for doing a time step for the source.
-		  // There is no need to evolve at all if this cases uses the base phase
-		  If Not Parameters.UseBasePhase Then
-		    // We first need to make the future from the past step the present for the current step
+		  
+		  // The current time at Now is equal to the previous time times the magnitude of the past time step
+		  τ = τ + DτP
+		  
+		  // If this is not the first step, make the future present
+		  If Not First Then
 		    VP = VN
 		    VN = VF
 		    CosιP = CosιN
@@ -895,15 +878,19 @@ Protected Class EvolverClass
 		    χaP.Z = χaN.Z
 		    χaN.X = χaF.X
 		    χaN.Y = χaF.Y
-		    χaP.Z = χaN.Z
+		    χaN.Z = χaF.Z
 		    χsP.X = χsN.X
-		    χsN.Y = χsF.Y
-		    χsN.Z = χsF.Z
+		    χsP.Y = χsN.Y
+		    χsP.Z = χsN.Z
+		    χsN.X = χaF.X
+		    χsN.Y = χaF.Y
+		    χsN.Z = χaF.Z
 		    ΨrP = ΨrN
 		    ΨrN = ΨrF
-		    
-		    // The current time at Now is equal to the previous time times the magnitude of the past time step
-		    τ = τ + DτP
+		  End If
+		  
+		  // There is no need to evolve at all if this cases uses the base phase
+		  If Not Parameters.UseBasePhase Then
 		    
 		    // Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
 		    // but it is probably faster just to do the calculation than to do a check and then a calculation
@@ -923,7 +910,9 @@ Protected Class EvolverClass
 		    Var vDotN As Double = CH.V0*v9*(1 + CH.V2*v2 + CH.V3*v3 + CH.V4*v4 + CH.V5*v5 + (CH.V6 + CH.V6L*Log(VN))*v6 + CH.V7*v7)
 		    VF = VP + twoDτF*vDotN
 		    Var ε As Double = 1.0e-3  // define what the maximum allowable change during a step should be
-		    DτIdeal = ε/vDotN  // Calculate the ideal next step (we will only pay attention to the base case value).
+		    If IsBaseCase Then
+		      DτIdeal = ε/vDotN  // Calculate the ideal next step (we will only pay attention to the base case value)
+		    End If
 		    
 		    // Now we will do the spin evolution
 		    If Magχ1 = 0.0 and Magχ2 = 0.0 Then // If spins are both strictly zero, then there is no evolution

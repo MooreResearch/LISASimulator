@@ -96,6 +96,7 @@ Protected Class CaseSupervisorClass
 		  Var OKToContinue As Boolean = True
 		  If N = 0 Then // If this is the first step
 		    DoFirstStep // do the actual first (Euler) step
+		    MainStepsInSourceStep = 2^StepPowerP
 		    WhereInSourceStep = 0 // but we will report the present values
 		  ElseIf StepPowerF > 0 Then  // If the step that will be taken is bigger than the main step
 		    If LastSourceStep > N Then // and the last source step (which might have been bigger) is still ahead
@@ -160,40 +161,35 @@ Protected Class CaseSupervisorClass
 		  // Step the main case and all side cases
 		  // (A half step with past data equal present data will
 		  // amount to an Euler step.)
-		  Evolver.DoStep(halfDτ, halfDτ)
-		  EvolverForM1Minus.DoStep(halfDτ, halfDτ)
-		  EvolverForM1Plus.DoStep(halfDτ, halfDτ)
-		  EvolverForM2Minus.DoStep(halfDτ, halfDτ)
-		  EvolverForM2Plus.DoStep(halfDτ, halfDτ)
-		  EvolverForV0Minus.DoStep(halfDτ, halfDτ)
-		  EvolverForV0Plus.DoStep(halfDτ, halfDτ)
-		  EvolverForΛMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForΛPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForβMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForβPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForψMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForψPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForΘMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForΘPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForΦMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForΦPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ10xMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ10xPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ10yMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ10yPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ10zMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ10zPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ20xMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ20xPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ20yMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ20yPlus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ20zMinus.DoStep(halfDτ, halfDτ)
-		  EvolverForχ20zPlus.DoStep(halfDτ, halfDτ)
-		  
-		  // This chooses the next time step to be a multiple or fraction of a power of 2
-		  // times the main program time step (as seen in the source frame)
-		  // First, get the ideal time step from the various evolvers
-		  
+		  Evolver.DoStep(halfDτ, halfDτ, True)
+		  EvolverForM1Minus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForM1Plus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForM2Minus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForM2Plus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForV0Minus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForV0Plus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForΛMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForΛPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForβMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForβPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForψMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForψPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForΘMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForΘPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForΦMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForΦPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ10xMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ10xPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ10yMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ10yPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ10zMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ10zPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ20xMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ20xPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ20yMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ20yPlus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ20zMinus.DoStep(halfDτ, halfDτ, True)
+		  EvolverForχ20zPlus.DoStep(halfDτ, halfDτ, True)
 		End Sub
 	#tag EndMethod
 

@@ -69,20 +69,20 @@ Protected Class CaseParametersClass
 		  Case Item.β
 		    CP.β = β+ε
 		    CP.InvDε = 0.5/Abs(ε)
-		    UseBasePhase = True
+		    CP.UseBasePhase = True
 		  Case Item.ψ
 		    CP.ψ = ψ+ε
 		    CP.InvDε = 0.5/Abs(ε)
-		    UseBaseAmplitude = True
-		    UseBasePhase = True
+		    CP.UseBaseAmplitude = True
+		    CP.UseBasePhase = True
 		  Case Item.Θ
 		    CP.Θ = Θ+ε
 		    CP.InvDε = 0.5/Abs(ε)
-		    UseBaseAmplitude = True
+		    CP.UseBaseAmplitude = True
 		  Case Item.Φ
 		    CP.Φ = Φ+ε
 		    CP.InvDε = 0.5/Abs(ε)
-		    UseBaseAmplitude = True
+		    CP.UseBaseAmplitude = True
 		  Case Item.χ10x
 		    CP.χ10x = χ10x+ε
 		    CP.InvDε = 0.5/Abs(ε)
@@ -217,11 +217,11 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		UseBaseAmplitude As Boolean
+		UseBaseAmplitude As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		UseBasePhase As Boolean
+		UseBasePhase As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -743,6 +743,14 @@ Protected Class CaseParametersClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Λ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
