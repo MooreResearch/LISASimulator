@@ -137,13 +137,16 @@ Protected Class EvolverClass
 		    fCross2 = CH.DCHalfSin2ψ*dPlus2 + CH.DCHalfCos2ψ*dCross2
 		  End If
 		  
+		  // Calculate the total amplitude
+		  Var h0 As Double = 2*Parameters.GM*Parameters.η/(Parameters.Λ*Parameters.R0)
+		  
 		  // This will calculate the total signal H
 		  Var fPlus As Double = fPlus1 + fPlus2
 		  Var fCross As Double = fCross1 + fCross2
-		  H = fPlus*hp + fCross*hx
+		  H = Parameters.H0*(fPlus*hp + fCross*hx)
 		  // If this is the base case, then we will also find the derivative with respect to Ψr
 		  If IsBaseCase Then
-		    DHDΨ = fPlus*dhpDΨ + fCross*dhxDΨ
+		    DHDΨ = Parameters.H0*(fPlus*dhpDΨ + fCross*dhxDΨ)
 		  End If
 		  
 		End Sub
@@ -711,6 +714,7 @@ Protected Class EvolverClass
 		Sub Constructor(P As CaseParametersClass, BaseCase As EvolverClass = Nil)
 		  Parameters = P
 		  Dτr = P.ΔT/P.GM
+		  Infinity = Double.FromString("INF")
 		  
 		  // This is the base case if there is no base-case parameter
 		  IsBaseCase = (BaseCase = Nil)
@@ -718,10 +722,12 @@ Protected Class EvolverClass
 		  // Initialize the velocity-related properties
 		  VN = P.V0
 		  VP = VN
+		  VF = VN
 		  
 		  // Initialize phase-related properties
 		  ΨrN = P.λ0  // Set the initial phase
 		  ΨrP = ΨrN   // The past phase is initially the same
+		  ΨrF = ΨrN
 		  VeSinΘ = Sin(Parameters.Θ)*Parameters.Ve
 		  
 		  // Initialize the spin-related properties
@@ -740,15 +746,15 @@ Protected Class EvolverClass
 		  Else
 		    χ1HatN = New Vector(0.0, 0.0, 0.0)
 		  end if
-		  χ1HatP = χ1HatN  // initially, the past is the same as the present
-		  χ1HatF = New Vector  // This is just a placeholder so this vector is defined
+		  χ1HatP = χ1HatN.Clone  // initially, the past is the same as the present
+		  χ1HatF = χ1HatN.Clone  // This is just a placeholder so this vector is defined
 		  if Magχ2 > 0.0 Then 
 		    χ2HatN = spin2/Magχ2
 		  Else
 		    χ2HatN = New Vector(0.0, 0.0, 0.0)
 		  End if
-		  χ2HatP = χ2HatN   // Past is the same as present
-		  χ2HatF = New Vector  // Placeholder
+		  χ2HatP = χ2HatN.Clone   // Past is the same as present
+		  χ2HatF = χ2HatN.Clone  // Placeholder
 		  
 		  // get some local variables from the parameters
 		  Var v0 As Double = Parameters.V0
@@ -766,27 +772,37 @@ Protected Class EvolverClass
 		  Var ellx As Double = -B*(plusOverMinus*Parameters.χ10x + minusOverPlus*Parameters.χ20x)
 		  Var elly As Double = -B*(plusOverMinus*Parameters.χ10y + minusOverPlus*Parameters.χ20y)
 		  LN = New Vector(ellx, elly, Sqrt(1.0 - ellx*ellx - elly*elly))  // set the LN vector
-		  LP = LN  // Past is the same as the presnet
-		  LF = New Vector  // Placeholder
+		  LP = LN.Clone  // Past is the same as the present
+		  LF = LN.Clone  // Placeholder
 		  
 		  // Compute the symmetric and antisymmetric spin vectors and set the parameters
 		  χsN = 0.25*(onePlusδ*onePlusδ*spin1 + oneMinusδ*oneMinusδ*spin2)
 		  χaN = 0.5*(oneMinusδ*spin1-Magχ2*onePlusδ*spin2)
+		  χsP = χsN.Clone // past is the same as the present
+		  χaP = χaN.Clone
+		  χaF = χaN.Clone // placeholders for now
+		  χsF = χaN.Clone
+		  χaMN = χaN.Clone // placeholders for now
+		  χsMN = χaN.Clone
 		  
 		  // Compute their projections on the L unit vector and set those parameters
 		  χs𝓁 = χsN*LN
 		  χa𝓁 = χaN*LN
-		  χaF = New Vector
-		  χsF = New Vector
+		  
 		  Var LProj As Double = LN.X*LN.X + LN.Y*LN.Y // squared projection of LHat on xy plane
 		  If LProj > 0.0 then // If we don't have exactly zero total spin
 		    αN = Atan2(LN.Y,LN.X) // we should be able to define alpha
 		    αP = αN  // Past is the same as the present
 		    CosιN = LN.Z // and iota based on the projection of LHat on the z axis
+		    CosιP = CosιN
+		    CosιF = CosιN
 		  Else // otherwise, these are the conventions for no spin evolution
 		    αN = Parameters.π
 		    αP = αN
+		    αF = αN
 		    CosιN = 1.0
+		    CosιP = CosιN
+		    CosιF = CosιN
 		  End If
 		  
 		  // Initialize noise
@@ -805,6 +821,11 @@ Protected Class EvolverClass
 		    // Be sure not to modify A in this case
 		  End If
 		  
+		  If Not IsBaseCase Then  // If this is not the base case, then point the wave arrays to the base case
+		    W = BaseCase.W
+		    DWDΨ = BaseCase.DWDΨ
+		  End If
+		  
 		  // Initialize time-related properties
 		  τ = 0.0  // currently, we are at time step zero
 		  
@@ -812,10 +833,30 @@ Protected Class EvolverClass
 		  If IsBaseCase Then
 		    Var Dτ0 As Double = 0.5*Dτr/(1.0 + P.Z)
 		    DoStep(Dτ0,Dτ0)
-		  Else // otherwise, set up the local W and DWDΨ arrays to point back to the base case
-		    W = BaseCase.W
-		    DWDΨ = BaseCase.DWDΨ
+		    // Now erase the effects of the step
+		    VF = VN
+		    CosιF = CosιN
+		    LF.X = LN.X
+		    LF.Y = LN.Y
+		    LF.Z = LN.Z
+		    αF = αN
+		    χ1HatF.X = χ1HatN.X
+		    χ1HatF.Y = χ1HatN.Y
+		    χ1HatF.Z = χ1HatN.Z
+		    χ2HatF.X = χ2HatN.X
+		    χ2HatF.Y = χ2HatN.Y
+		    χ2HatF.Z = χ2HatN.Z
+		    χaF.X = χaN.X
+		    χaF.Y = χaN.Y
+		    χaF.Z = χaN.Z
+		    χsF.X = χsN.X
+		    χsF.Y = χsF.Y
+		    χsF.Z = χsF.Z
+		    ΨrF = ΨrN
+		    τ = 0.0
 		  End If
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -825,7 +866,41 @@ Protected Class EvolverClass
 		  // There is no need to evolve at all if this cases uses the base phase
 		  If Not Parameters.UseBasePhase Then
 		    // We first need to make the future from the past step the present for the current step
-		    MakeFuturePresent
+		    VP = VN
+		    VN = VF
+		    CosιP = CosιN
+		    CosιN = CosιF
+		    LP.X = LN.X
+		    LP.Y = LN.Y
+		    LP.Z = LN.Z
+		    LN.X = LF.X
+		    LN.Y = LF.Y
+		    LN.Z = LF.Z
+		    αP = αN
+		    αN = αF
+		    χ1HatP.X =χ1HatN.X
+		    χ1HatP.Y =χ1HatN.Y
+		    χ1HatP.Z =χ1HatN.Z
+		    χ1HatN.X = χ1HatF.X
+		    χ1HatN.Y = χ1HatF.Y
+		    χ1HatN.Z = χ1HatF.Z
+		    χ2HatP.X = χ2HatN.X
+		    χ2HatP.Y = χ2HatN.Y
+		    χ2HatP.Z = χ2HatN.Z
+		    χ2HatN.X = χ2HatF.X
+		    χ2HatN.Y = χ2HatF.Y
+		    χ2HatN.Z = χ2HatF.Z
+		    χaP.X = χaN.X
+		    χaP.Y = χaN.Y
+		    χaP.Z = χaN.Z
+		    χaN.X = χaF.X
+		    χaN.Y = χaF.Y
+		    χaP.Z = χaN.Z
+		    χsP.X = χsN.X
+		    χsN.Y = χsF.Y
+		    χsN.Z = χsF.Z
+		    ΨrP = ΨrN
+		    ΨrN = ΨrF
 		    
 		    // The current time at Now is equal to the previous time times the magnitude of the past time step
 		    τ = τ + DτP
@@ -847,6 +922,7 @@ Protected Class EvolverClass
 		    Var v9 As Double = v4*v5
 		    Var vDotN As Double = CH.V0*v9*(1 + CH.V2*v2 + CH.V3*v3 + CH.V4*v4 + CH.V5*v5 + (CH.V6 + CH.V6L*Log(VN))*v6 + CH.V7*v7)
 		    VF = VP + twoDτF*vDotN
+		    Var ε As Double = 1.0e-3  // define what the maximum allowable change during a step should be
 		    DτIdeal = ε/vDotN  // Calculate the ideal next step (we will only pay attention to the base case value).
 		    
 		    // Now we will do the spin evolution
@@ -857,7 +933,6 @@ Protected Class EvolverClass
 		      αF = αN
 		      CosιF = CosιN
 		      αDotN = 0.0
-		      DτIdeal = Infinity
 		      χsF = χsN
 		      χaF = χaN
 		      αF = αN
@@ -955,10 +1030,9 @@ Protected Class EvolverClass
 		        // This section chooses a time step such that the change in any of the unit
 		        // vectors is less than 1/1000 of its magnitude (which is 1).
 		        // We only do this for the base case.
-		        Var ε As Double = 1.0e-3
-		        Var dτχ1 As Double = infinity
-		        Var dτχ2 As Double = infinity
-		        Var dτL As Double = infinity
+		        Var dτχ1 As Double = Infinity
+		        Var dτχ2 As Double = Infinity
+		        Var dτL As Double = Infinity
 		        // If the magnitudes of the change are not strictly zero, then calculate
 		        // what time step would lead to a change of 1/1000
 		        Var χ1HatDotMag As Double = Sqrt(χ1HatDotNx*χ1HatDotNx + χ1HatDotNy*χ1HatDotNy + χ1HatDotNz*χ1HatDotNz)
@@ -987,48 +1061,6 @@ Protected Class EvolverClass
 		    // Now update the evolving phase value and its derivatives
 		    ΨrF = ΨrP + StepFactor*ΨrDot
 		  End If
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub MakeFuturePresent()
-		  // Make the future step the present step, and the present step the past step
-		  VP = VN
-		  VN = VF
-		  CosιP = CosιN
-		  CosιN = CosιF
-		  LP.X = LN.X
-		  LP.Y = LN.Y
-		  LP.Z = LN.Z
-		  LN.X = LF.X
-		  LN.Y = LF.Y
-		  LN.Z = LF.Z
-		  αP = αN
-		  αN = αF
-		  χ1HatP.X =χ1HatN.X
-		  χ1HatP.Y =χ1HatN.Y
-		  χ1HatP.Z =χ1HatN.Z
-		  χ1HatN.X = χ1HatF.X
-		  χ1HatN.Y = χ1HatF.Y
-		  χ1HatN.Z = χ1HatF.Z
-		  χ2HatP.X = χ2HatN.X
-		  χ2HatP.Y = χ2HatN.Y
-		  χ2HatP.Z = χ2HatN.Z
-		  χ2HatN.X = χ2HatF.X
-		  χ2HatN.Y = χ2HatF.Y
-		  χ2HatN.Z = χ2HatF.Z
-		  χaP.X = χaN.X
-		  χaP.Y = χaN.Y
-		  χaP.Z = χaN.Z
-		  χaN.X = χaF.X
-		  χaN.Y = χaF.Y
-		  χaP.Z = χaN.Z
-		  χsP.X = χsN.X
-		  χsN.Y = χsF.Y
-		  χsN.Z = χsF.Z
-		  ΨrP = ΨrN
-		  ΨrN = ΨrF
 		  
 		End Sub
 	#tag EndMethod
@@ -1163,10 +1195,6 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ε As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		τ As Double
 	#tag EndProperty
 
@@ -1294,14 +1322,6 @@ Protected Class EvolverClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ε"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty

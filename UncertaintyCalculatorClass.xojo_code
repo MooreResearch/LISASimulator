@@ -28,7 +28,7 @@ Protected Class UncertaintyCalculatorClass
 		  // Note that the order here is assumed to be that specified by the enumeration "Item"
 		  uv.OfM1 = uncList(0)*Sn2F0*Parameters.M1
 		  uv.OfM2 = uncList(1)*Sn2F0*Parameters.M2
-		  uv.OfF0 = uncList(2)*Sn2F0*Parameters.V0
+		  uv.OfF0 = 2*uncList(2)*Sn2F0*Parameters.F0
 		  uv.OfR = uncList(3)*Sn2F0*Parameters.R0*Parameters.Λ
 		  uv.Ofβ = uncList(4)*Sn2F0
 		  uv.Ofψ = uncList(5)*Sn2F0

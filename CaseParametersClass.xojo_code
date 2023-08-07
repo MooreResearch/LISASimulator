@@ -125,6 +125,10 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		H0 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		InvDε As Double
 	#tag EndProperty
 
@@ -699,6 +703,46 @@ Protected Class CaseParametersClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InvDε"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="R"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="R0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseBaseAmplitude"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseBasePhase"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Λ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

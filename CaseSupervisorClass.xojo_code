@@ -2,7 +2,36 @@
 Protected Class CaseSupervisorClass
 	#tag Method, Flags = &h0
 		Sub CalcDataAtMainStep()
-		  Var StepRatio As Double = 0.0
+		  Var stepRatio As Double = WhereInSourceStep/MainStepsInSourceStep
+		  Evolver.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForM1Minus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForM1Plus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForM2Minus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForM2Plus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForV0Minus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForV0Plus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForΛMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForΛPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForβMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForβPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForψMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForψPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForΘMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForΘPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForΦMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForΦPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ10xMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ10xPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ10yMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ10yPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ10zMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ10zPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ20xMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ20xPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ20yMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ20yPlus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ20zMinus.CalcDataAtMainStep(stepRatio, N)
+		  EvolverForχ20zPlus.CalcDataAtMainStep(stepRatio, N)
 		End Sub
 	#tag EndMethod
 
@@ -54,6 +83,8 @@ Protected Class CaseSupervisorClass
 		  // Create and initialize the ATA matrix
 		  ATAMatrix = New Matrix(15) // Initalize an empty 15x15 matrix
 		  ATAMatrix.InverseTest // Check that Matrix code is working
+		  // Create The Uncertainty Calculator
+		  UncertaintyCalculator = New UncertaintyCalculatorClass(CaseParameters)
 		End Sub
 	#tag EndMethod
 
@@ -64,7 +95,8 @@ Protected Class CaseSupervisorClass
 		  
 		  Var OKToContinue As Boolean = True
 		  If N = 0 Then // If this is the first step
-		    WhereInSourceStep = 0 // and we will report the present values
+		    DoFirstStep // do the actual first (Euler) step
+		    WhereInSourceStep = 0 // but we will report the present values
 		  ElseIf StepPowerF > 0 Then  // If the step that will be taken is bigger than the main step
 		    If LastSourceStep > N Then // and the last source step (which might have been bigger) is still ahead
 		      WhereInSourceStep = WhereInSourceStep + 1   // Update the "WhereInSourceStep" counter and we are done
@@ -109,6 +141,60 @@ Protected Class CaseSupervisorClass
 		  If OKToContinue Then CalcDataAtMainStep  // Calculate H at the main step if we can
 		  Return OKToContinue
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DoFirstStep()
+		  Var DτIdeal As Double = Evolver.DτIdeal
+		  // The ratio of the real future step will be some power of two of the main step.
+		  // Compute that power of two
+		  Var NewStepPower as Integer = Floor(Log(DτIdeal*(1.0+CaseParameters.Z)/Dτr)/Log(2))
+		  StepPowerFF = NewStepPower // initalize the CurrentStepPower
+		  StepPowerF = NewStepPower
+		  DτFF = Dτr*2^StepPowerF/(1.0 + CaseParameters.Z) // and initialize DτFF
+		  DτF = DτFF // and set DτF
+		  DτP = DτF  // and DτP to be the same
+		  
+		  Var halfDτ As Double = 0.5*DτF
+		  // Now perform the first real step
+		  // Step the main case and all side cases
+		  // (A half step with past data equal present data will
+		  // amount to an Euler step.)
+		  Evolver.DoStep(halfDτ, halfDτ)
+		  EvolverForM1Minus.DoStep(halfDτ, halfDτ)
+		  EvolverForM1Plus.DoStep(halfDτ, halfDτ)
+		  EvolverForM2Minus.DoStep(halfDτ, halfDτ)
+		  EvolverForM2Plus.DoStep(halfDτ, halfDτ)
+		  EvolverForV0Minus.DoStep(halfDτ, halfDτ)
+		  EvolverForV0Plus.DoStep(halfDτ, halfDτ)
+		  EvolverForΛMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForΛPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForβMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForβPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForψMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForψPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForΘMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForΘPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForΦMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForΦPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ10xMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ10xPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ10yMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ10yPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ10zMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ10zPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ20xMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ20xPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ20yMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ20yPlus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ20zMinus.DoStep(halfDτ, halfDτ)
+		  EvolverForχ20zPlus.DoStep(halfDτ, halfDτ)
+		  
+		  // This chooses the next time step to be a multiple or fraction of a power of 2
+		  // times the main program time step (as seen in the source frame)
+		  // First, get the ideal time step from the various evolvers
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -191,7 +277,7 @@ Protected Class CaseSupervisorClass
 		        Exit  // Abort the loop
 		      End If
 		    Next
-		    Uncertainty = CalculateUncertainties
+		    Uncertainty = UncertaintyCalculator.Calculate(ATAMatrix, CaseParameters.Θ) // solve for the uncertainties
 		  Catch err As RuntimeException
 		    TerminationMessage = err.Message + " at step " + N.ToString
 		  End Try
@@ -216,6 +302,7 @@ Protected Class CaseSupervisorClass
 		  Var localR As Double = CaseParameters.R*Year // get R in seconds
 		  CaseParameters.R0 = 1.0e7*Year  // Defines the reference for R (10 Mly)
 		  CaseParameters.Λ = localR/CaseParameters.R0  // This is the unitless luminosity distance
+		  CaseParameters.H0 = 2*gm*localη/localR // This is the overall wave amplitude factor
 		  Var universe As New UniverseClass // Create a universe class to solve the Z(R) problem
 		  Var localZ As Double = universe.GetZFrom(localR) // get the Z value for the given value of R
 		  CaseParameters.Z = localZ // record the value of Z
