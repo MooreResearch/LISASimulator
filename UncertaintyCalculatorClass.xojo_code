@@ -24,24 +24,25 @@ Protected Class UncertaintyCalculatorClass
 		      uncList(j) = inf  // otherwise, the uncertainty is "infinity"
 		    End If
 		  Next
+		  Var degFromRad As Double = 180.0/Parameters.π
 		  Var uv As New UncertaintyValuesClass // Get a new instance of the uncertainty values class
 		  // Note that the order here is assumed to be that specified by the enumeration "Item"
 		  uv.OfM1 = uncList(0)*Sn2F0*Parameters.M1
 		  uv.OfM2 = uncList(1)*Sn2F0*Parameters.M2
-		  uv.OfF0 = 2*uncList(2)*Sn2F0*Parameters.F0
+		  uv.OfF0 = 2*uncList(2)*Sn2F0*Parameters.F0*1000
 		  uv.OfR = uncList(3)*Sn2F0*Parameters.R0*Parameters.Λ
-		  uv.Ofβ = uncList(4)*Sn2F0
-		  uv.Ofψ = uncList(5)*Sn2F0
-		  uv.Ofλ0 = uncList(6)*Sn2F0
-		  uv.OfΘ = uncList(7)*Sn2F0
-		  uv.OfΦ = uncList(8)*Sn2F0
-		  uv.Ofχ10x = uncList(9)*Sn2F0
-		  uv.Ofχ10y = uncList(10)*Sn2F0
-		  uv.Ofχ10z = uncList(11)*Sn2F0
-		  uv.Ofχ20x = uncList(12)*Sn2F0
-		  uv.Ofχ20y = uncList(13)*Sn2F0
-		  uv.Ofχ20z = uncList(14)*Sn2F0
-		  uv.OfΩ = Sin(Θ)*uv.OfΘ*uv.OfΦ/12.566370614359172
+		  uv.Ofβ = uncList(4)*Sn2F0*degFromRad
+		  uv.Ofψ = uncList(5)*Sn2F0*degFromRad
+		  uv.Ofλ0 = uncList(6)*Sn2F0*degFromRad
+		  uv.OfΘ = uncList(7)*Sn2F0*degFromRad
+		  uv.OfΦ = uncList(8)*Sn2F0*degFromRad
+		  uv.Ofχ10x = uncList(9)*Sn2F0*degFromRad
+		  uv.Ofχ10y = uncList(10)*Sn2F0*degFromRad
+		  uv.Ofχ10z = uncList(11)*Sn2F0*degFromRad
+		  uv.Ofχ20x = uncList(12)*Sn2F0*degFromRad
+		  uv.Ofχ20y = uncList(13)*Sn2F0*degFromRad
+		  uv.Ofχ20z = uncList(14)*Sn2F0*degFromRad
+		  uv.OfΩ = Sin(Θ)*uv.OfΘ*uv.OfΦ/(12.566370614359172*degFromRad*degFromRad)
 		  Return uv
 		End Function
 	#tag EndMethod

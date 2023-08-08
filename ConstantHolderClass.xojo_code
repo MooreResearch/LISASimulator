@@ -23,12 +23,9 @@ Protected Class ConstantHolderClass
 		  
 		  // Initialize constants for spin evolution
 		  // Set up some constants that will be useful for the spin evolution equations.
-		  Ω0 = 0.75 + η/2.0
-		  Ω1 = -0.75*δ
-		  Ω2 = 9.0/16.0 + 1.25*η + η*η/24.0 + 0.675*δ*η
-		  Ω3 = (-9.0/16.0 + 0.675*η)*δ
-		  Ω4 = 27.0/32.0 + 3.0*η/16.0 - 105.0*η*η/32.0 - η*η*η/48.0
-		  Ω5 = (-27.0/32.0 + 39.0*η/8.0 - 5.0*η*η/32.0)*δ
+		  Ω0 = 0.75 + η/2.0 -0.75*δ
+		  Ω2 = 9.0/16.0 + 1.25*η + η*η/24.0 + 0.675*δ*η +(-9.0/16.0 + 0.675*η)*δ
+		  Ω4 = 27.0/32.0 + 3.0*η/16.0 - 105.0*η*η/32.0 - η*η*η/48.0 + (-27.0/32.0 + 39.0*η/8.0 - 5.0*η*η/32.0)*δ
 		  L1 = (1.0 + δ)/(1.0 - δ)
 		  L2 = (1.0 - δ)/(1.0 + δ)
 		  L3 = 1.5 + η/6.0
@@ -306,23 +303,11 @@ Protected Class ConstantHolderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Ω1 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		Ω2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Ω3 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		Ω4 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Ω5 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -460,14 +445,6 @@ Protected Class ConstantHolderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Ω1"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Ω2"
 			Visible=false
 			Group="Behavior"
@@ -476,23 +453,7 @@ Protected Class ConstantHolderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Ω3"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Ω4"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Ω5"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -613,6 +574,222 @@ Protected Class ConstantHolderClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Cβ2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DC1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DC2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DC2σ1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DC2σ2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DC2Φ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DC3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCCos2Θ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCCosΘ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCCosσ1x9"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCCosσ2x9"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCHalfCos2ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCHalfSin2ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCSin2Θ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCSinΘ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCSinσ1x9"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DCSinσ2x9"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H0PLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H0XLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H1PLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H1XLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H2PLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H2XLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H3PLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H3XLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="L1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="L4"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn20"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

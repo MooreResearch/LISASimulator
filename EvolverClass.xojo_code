@@ -673,10 +673,10 @@ Protected Class EvolverClass
 		  // Factors for H3P
 		  
 		  // Factors for H0X
-		  W(132) = (s10*c02 - c10*s02)*snratio2
-		  W(133) = (s20*c02 - c20*s02)*snratio2
-		  W(134) = (s10*c02 + c10*s02)*snratio2
-		  W(136) = (s20*c02 + c20*s02)*snratio2
+		  W(129) = (s10*c02 - c10*s02)*snratio2
+		  W(130) = (s20*c02 - c20*s02)*snratio2
+		  W(131) = (s10*c02 + c10*s02)*snratio2
+		  W(132) = (s20*c02 + c20*s02)*snratio2
 		  
 		  // Factors for H1X
 		  
@@ -713,10 +713,10 @@ Protected Class EvolverClass
 		  // Factors for H3P
 		  
 		  // Factors for H0X
-		  DWDΨ(132) = -2*(c10*c02+s10*s02)*snratio2
-		  DWDΨ(133) = -2*(c20*c02+s20*s02)*snratio2
-		  DWDΨ(134) = 2*(c10*c02-s10*s02)*snratio2
-		  DWDΨ(135) = 2*(c20*c02-s20*s02)*snratio2
+		  DWDΨ(129) = -2*(c10*c02+s10*s02)*snratio2
+		  DWDΨ(130) = -2*(c20*c02+s20*s02)*snratio2
+		  DWDΨ(131) = 2*(c10*c02-s10*s02)*snratio2
+		  DWDΨ(132) = 2*(c20*c02-s20*s02)*snratio2
 		  
 		  // Factors for H1X
 		  
@@ -755,7 +755,7 @@ Protected Class EvolverClass
 		  
 		  // calculate the magnitudes of the spin vectors
 		  Magχ1 = spin1.GetMagnitude
-		  Magχ1 = spin1.GetMagnitude
+		  Magχ2 = spin2.GetMagnitude
 		  
 		  // If its magnitude is not strictly zero, create a unit vector for each spin
 		  // But if the magnitude is zero, then the unit vector is also zero
@@ -799,9 +799,9 @@ Protected Class EvolverClass
 		  χsP = χsN.Clone // past is the same as the present
 		  χaP = χaN.Clone
 		  χaF = χaN.Clone // placeholders for now
-		  χsF = χaN.Clone
+		  χsF = χsN.Clone
 		  χaMN = χaN.Clone // placeholders for now
-		  χsMN = χaN.Clone
+		  χsMN = χsN.Clone
 		  
 		  // Compute their projections on the L unit vector and set those parameters
 		  χs𝓁 = χsN*LN
@@ -901,9 +901,9 @@ Protected Class EvolverClass
 		    χsP.X = χsN.X
 		    χsP.Y = χsN.Y
 		    χsP.Z = χsN.Z
-		    χsN.X = χaF.X
-		    χsN.Y = χaF.Y
-		    χsN.Z = χaF.Z
+		    χsN.X = χsF.X
+		    χsN.Y = χsF.Y
+		    χsN.Z = χsF.Z
 		    ΨrP = ΨrN
 		    ΨrN = ΨrF
 		  End If
@@ -964,7 +964,7 @@ Protected Class EvolverClass
 		      
 		      // Do the step
 		      // Evolve the two spins using the leapfrog method
-		      Var Factor As Double = v5*(CH.Ω0 + CH.Ω1 + (CH.Ω2 + CH.Ω3)*v2 + (CH.Ω4 + CH.Ω5)*v4)*2*DτF
+		      Var Factor As Double = v5*(CH.Ω0  + CH.Ω2*v2 + CH.Ω4*v4)*2*DτF
 		      Var χ1HatDotNx As Double = Factor*(LN.Y*χ1HatN.Z - LN.Z*χ1HatN.Y)
 		      Var χ1HatDotNy As Double = Factor*(LN.Z*χ1HatN.X - LN.X*χ1HatN.Z)
 		      Var χ1HatDotNz As Double = Factor*(LN.X*χ1HatN.Y - LN.Y*χ1HatN.X)
@@ -980,7 +980,7 @@ Protected Class EvolverClass
 		      
 		      
 		      // Evolve the orbital angular momentum
-		      Factor = -(VN-CH.L4*v3-CH.L4*v4)*2*DτF
+		      Factor = -(VN-CH.L3*v3-CH.L4*v4)*2*DτF
 		      Var Factor1 As Double = Factor*CH.L1*Magχ1
 		      Var Factor2 As Double = Factor*CH.L2*Magχ2
 		      Var ellNDotx As Double = Factor1*χ1HatDotNx + Factor2*χ2HatDotNx
