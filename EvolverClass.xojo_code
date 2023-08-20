@@ -1,209 +1,118 @@
 #tag Class
 Protected Class EvolverClass
 	#tag Method, Flags = &h0
-		Sub AssembleH()
-		  // Assemble the total plus polarization terms
-		  Var jStart As Integer = 0
-		  Var jEnd As Integer = CH.H0PLastIndex
-		  Var hp As Double = 0.0
-		  Var vPower As Double = VMN*VMN
-		  For j As Integer = jStart to jEnd
-		    hp = hp + A(j)*W(j)
-		  Next
-		  hp = hp*vPower
-		  Var dhpDΨ As Double = 0.0
-		  If IsBaseCase Then
-		    For j As Integer = jStart to jEnd
-		      dhpDΨ = dhpDΨ + A(j)*DWDΨ(j)
-		    Next
-		  End If
-		  dhpDΨ = dhpDΨ*vPower
-		  If Parameters.PNOrder > 0 Then
-		    vPower = vPower*VMN
-		    jStart = jEnd + 1
-		    jEnd = CH.H1PLastIndex
-		    // (Process HP1 terms similarly)
-		  End If
-		  If Parameters.PNOrder > 1 Then
-		    vPower = vPower*VMN
-		    jStart = jEnd + 1
-		    jEnd = CH.H2PLastIndex
-		    // (Process HP2 terms similarly)
-		  End If
-		  If Parameters.PNOrder > 2 Then
-		    vPower = vPower*VMN
-		    jStart = jEnd + 1
-		    jEnd = CH.H3PLastIndex
-		    // (Process HP2 terms similarly)
+		Sub AssembleDerivatives(N As Integer)
+		  // These constants help us build the detector functions
+		  Static cos2ψ As Double = Cos(2*Parameters.ψ)
+		  Static sin2ψ As Double = Sin(2*Parameters.ψ)
+		  Static σ1 As Double = 1.5*Parameters.π + Parameters.ρ0
+		  Static σ2 As Double = (4/3)*Parameters.π + σ1
+		  
+		  Static dpc1 As Double = 3.0*Sqrt(3.0)/128.0
+		  Static dpc2 As Double = Sqrt(3.0)*Cos(2.0*Parameters.Θ)/128.0
+		  Static dpc3 As Double = 3.0*Sin(2.0*Parameters.Θ)/32.0
+		  Static dxc1 As Double = Sqrt(3.0)*Cos(Parameters.Θ)/32.0
+		  Static dxc2 As Double = 3.0*Sin(Parameters.Θ)/32.0
+		  Static dpc2dΘ As Double = -Sqrt(3.0)*Sin(2.0*Parameters.Θ)/64.0
+		  Static dpc3dΘ As Double = 3.0*Cos(2.0*Parameters.Θ)/16.0
+		  Static dxc1dΘ As Double = -Sqrt(3.0)*Sin(Parameters.Θ)/32.0
+		  Static dxc2dΘ As Double = 3.0*Cos(Parameters.Θ)/32.0
+		  
+		  Static sΘ As Double = Sin(Parameters.Θ)
+		  Static cΘ As Double = Cos(Parameters.Θ)
+		  Static s2Θ As Double = 2*sΘ*cΘ
+		  Static c2Θ As Double = cΘ*cΘ - sΘ*sΘ
+		  
+		  // Now start calculating detector functions
+		  Var τr As Double = N*Parameters.ΔT/Parameters.GM
+		  Var ρ As Double = Parameters.GMΩe*τr
+		  Var s210 As Double = Sin(2.0*ρ - σ1)
+		  Var s012 As Double = Sin(σ1 - 2.0*Parameters.Φ)
+		  Var s412 As Double = Sin(4.0*ρ - σ1 - 2.0*Parameters.Φ)
+		  Var s311 As Double = Sin(3.0*ρ - σ1 - Parameters.Φ)
+		  Var s111 As Double = Sin(ρ - σ1 - Parameters.Φ)
+		  Var c210 As Double = Cos(2.0*ρ - σ1)
+		  Var c012 As Double = Cos(σ1 - 2.0*Parameters.Φ)
+		  Var c412 As Double = Cos(4.0*ρ - σ1 -2.0*Parameters.Φ)
+		  Var c311 As Double = Cos(3.0*ρ - σ1 - Parameters.Φ)
+		  Var c111 As Double = Cos(ρ - σ1 + Parameters.Φ)
+		  
+		  Var dp As Double = dpc1*(-6.0*s210 + 9.0*s012 - s412) + dpc2*c2Θ*(18.0*s210 + 9.0*s012 - s412) - dpc3*s2Θ*(s311 - 3.0*s111)
+		  Var dx As Double = dxc1*cΘ*(9.0*c012 - c412) - dxc2*sΘ*(s311 - 3.0*s111)
+		  Var ddpdΘ As Double = -2.0*dpc2*s2Θ*(18.0*s210 + 9.0*s012 - s412) - 2.0*dpc3*c2Θ*(s311 - 3.0*s111)
+		  Var ddxdΘ As Double = -dxc1*sΘ*(9.0*c012 - c412) - dxc2*cΘ*(s311 - 3.0*s111)
+		  Var ddpdΦ As Double = dpc1*(-18.0*c012 + 2.0*c412) + dpc2*c2Θ*(-18.0*c012 + 2.0*c412) + dpc3*s2Θ*(c311 - 3.0*c111)
+		  Var ddxdΦ As Double = dxc1*cΘ*(18.0*s012 - 2.0*s412) - dxc2*sΘ*(c311 + 3.0*c111)
+		  Var fp1 As Double = cos2ψ*dp - sin2ψ*dx
+		  Var fx1 As Double = sin2ψ*dp + cos2ψ*dx
+		  Var dfp1dΘ As Double = cos2ψ*ddpdΘ - sin2ψ*ddxdΘ
+		  Var dfx1dΘ As Double = sin2ψ*ddpdΘ + cos2ψ*ddxdΘ
+		  Var dfp1dΦ As Double = cos2ψ*ddpdΦ - sin2ψ*ddxdΦ
+		  Var dfx1dΦ As Double = sin2ψ*ddpdΦ + cos2ψ*ddxdΦ
+		  
+		  
+		  // repeat the whole thing again for detector 2
+		  Var fp2 As Double
+		  Var fx2 As Double
+		  Var dfp2dΘ As Double
+		  Var dfx2dΘ As Double
+		  Var dfp2dΦ As Double
+		  Var dfx2dΦ As Double
+		  If Parameters.Detectors = 2 Then
+		    // Note that if we don't have 2 detectors, then the variables above will be zero.
+		    s210 = Sin(2.0*ρ - σ2)
+		    s012 = Sin(σ2 - 2.0*Parameters.Φ)
+		    s412 = Sin(4.0*ρ - σ2 - 2.0*Parameters.Φ)
+		    s311 = Sin(3.0*ρ - σ2 - Parameters.Φ)
+		    s111 = Sin(ρ - σ2 - Parameters.Φ)
+		    c210 = Cos(2.0*ρ - σ2)
+		    c012 = Cos(σ2 - 2.0*Parameters.Φ)
+		    c412 = Cos(4.0*ρ - σ2 -2.0*Parameters.Φ)
+		    c311 = Cos(3.0*ρ - σ2 - Parameters.Φ)
+		    c111 = Cos(ρ - σ2 + Parameters.Φ)
+		    
+		    dp = dpc1*(-6.0*s210 + 9.0*s012 - s412) + dpc2*c2Θ*(18.0*s210 + 9.0*s012 - s412) - dpc3*s2Θ*(s311 - 3.0*s111)
+		    dx = dxc1*cΘ*(9.0*c012 - c412) - dxc2*sΘ*(s311 - 3.0*s111)
+		    ddpdΘ = -2.0*dpc2*s2Θ*(18.0*s210 + 9.0*s012 - s412) - 2.0*dpc3*c2Θ*(s311 - 3.0*s111)
+		    ddxdΘ = -dxc1*sΘ*(9.0*c012 - c412) - dxc2*cΘ*(s311 - 3.0*s111)
+		    ddpdΦ = dpc1*(-18.0*c012 + 2.0*c412) + dpc2*c2Θ*(-18.0*c012 + 2.0*c412) + dpc3*s2Θ*(c311 - 3.0*c111)
+		    ddxdΦ = dxc1*cΘ*(18.0*s012 - 2.0*s412) - dxc2*sΘ*(c311 + 3.0*c111)
+		    fp2 = cos2ψ*dp - sin2ψ*dx
+		    fx2 = sin2ψ*dp + cos2ψ*dx
+		    dfp2dΘ = cos2ψ*ddpdΘ - sin2ψ*ddxdΘ
+		    dfx2dΘ = sin2ψ*ddpdΘ + cos2ψ*ddxdΘ
+		    dfp2dΦ = cos2ψ*ddpdΦ - sin2ψ*ddxdΦ
+		    dfx2dΦ = sin2ψ*ddpdΦ + cos2ψ*ddxdΦ
 		  End If
 		  
-		  // Now do cross polarization
-		  Var hx As Double = 0.0
-		  vPower = VMN*VMN  // Start over with powers
-		  jStart = CH.H3PLastIndex + 1  // This will ensure a correct start
-		  jEnd = CH.H0XLastIndex
-		  For j As Integer = jStart to jEnd
-		    hx = hx + A(j)*W(j)
-		  Next
-		  hx = hx*VPower
-		  Var dhxDΨ As Double = 0.0
-		  If IsBaseCase Then
-		    For j As Integer = jStart to jEnd
-		      dhxDΨ = dhxDΨ + A(j)*DWDΨ(j)
-		    Next
-		  End If
-		  dhxDΨ = dhxDΨ*vPower
-		  If Parameters.PNOrder > 0 Then
-		    vPower = vPower*VMN
-		    jStart = jEnd + 1
-		    jEnd = CH.H1XLastIndex
-		    // (Process HP1 terms similarly)
-		  End If
-		  If Parameters.PNOrder > 1 Then
-		    vPower = vPower*VMN
-		    jStart = jEnd + 1
-		    jEnd = CH.H2XLastIndex
-		    // (Process H2X terms similarly)
-		  End If
-		  If Parameters.PNOrder > 2 Then
-		    vPower = vPower*VMN
-		    jStart = jEnd + 1
-		    jEnd = CH.H3PLastIndex
-		    // (Process H3X terms similarly)
-		  End If
+		  // Calculate overall wave amplitude constant
+		  Var h0 As Double = 0.5*(1.0 - Parameters.δ*Parameters.δ)/Parameters.Λ
 		  
-		  // Set up some useful local values so that we don't need to
-		  // calculate them multiple times
-		  Var ρ As Double = Parameters.GMΩe*τrMN
-		  Var twoρ As Double = 2*ρ
-		  Var threeρ As Double = 3*ρ
-		  Var fourρ As Double = 4*ρ
-		  Var Φ As Double = Parameters.Φ
+		  // Assemble the base case situation
 		  
-		  // Set up the sine and cosines for functions for detector 1
-		  Var arg22 As Double = twoρ-CH.DC2σ1
-		  Var arg422 As Double = fourρ-CH.DC2σ1-CH.DC2Φ
-		  Var arg321 As Double = threeρ-CH.DC2σ1-Φ
-		  Var arg121 As Double = ρ-CH.DC2σ1+Φ
-		  Var sin22 As Double = Sin(arg22)
-		  Var sin422 As Double = Sin(arg422)
-		  Var sin321 As Double = Sin(arg321)
-		  Var sin121 As Double = Sin(arg121)
-		  Var cos22 As Double = Cos(arg22)
-		  Var cos422 As Double = Cos(arg422)
-		  Var cos321 As Double = Cos(arg321)
-		  Var cos121 As Double = Cos(arg121)
+		  GetDataAtMainStep(PhaseEvolverBase)
+		  CalculateWaveFactors
+		  CalculateAmplitudes(Cosβ, Sinβ, Parameters.δ)
 		  
-		  // Calculate the D+ factor
-		  Var term1 As Double = CH.DC3*(-6.0*sin22 + CH.DCSinσ1x9 - sin422)
-		  Var term2 As Double = CH.DC1*(18.0*sin22 + CH.DCSinσ1x9 - sin422)
-		  Var term3 As Double = -CH.DC2*(sin321 - 3.0*sin121)
-		  Var dPlus1 As Double = term1 + CH.DCCos2Θ*term2 + CH.DCSin2Θ*term3
-		  // Calculate the Dx factor
-		  term1 = 4*CH.DC1*(CH.DCCosσ1x9 - cos422)
-		  term2 = -CH.DC2*(cos321 - 3*cos121)
-		  Var dCross1 As Double = CH.DCCosΘ*term1 + CH.DCSinΘ*term2
-		  // Finally, Calculate the F+ and Fx factors for Detector 1
-		  Var fPlus1 As Double = CH.DCHalfCos2ψ*dPlus1 - CH.DCHalfSin2ψ*dCross1
-		  Var fCross1 As Double = CH.DCHalfSin2ψ*dPlus1 + CH.DCHalfCos2ψ*DCross1
+		  // Calculate the derivative with respect to ψ (this is the easy one!)
+		  DHDq(Item.ψ) = 2.0*h0*(-fx1*HP + fp1*HX - fx2*HP + fp2*HX)
 		  
-		  Var fPlus2 As Double = 0.0
-		  Var fCross2 As Double = 0.0
-		  If Parameters.Detectors = 2 Then // If we are doing two detectors
-		    // Then repeat the whole thing for detector 2
-		    arg22 = twoρ-CH.DC2σ2
-		    arg422 = fourρ-CH.DC2σ2-CH.DC2Φ
-		    arg321 = threeρ-CH.DC2σ2-Φ
-		    arg121 = ρ-CH.DC2σ2+Φ
-		    sin22 = Sin(arg22)
-		    sin422 = Sin(arg422)
-		    sin321 = Sin(arg321)
-		    sin121 = Sin(arg121)
-		    cos22 = Cos(arg22)
-		    cos422 = Cos(arg422)
-		    cos321 = Cos(arg321)
-		    cos121 = Cos(arg121)
-		    // Calculate the D+ factor
-		    term1 = CH.DC3*(-6.0*sin22 + CH.DCSinσ2x9 - sin422)
-		    term2 = CH.DC1*(18.0*sin22 + CH.DCSinσ2x9 - sin422)
-		    term3 = -CH.DC2*(sin321 - 3.0*sin121)
-		    Var dPlus2 As Double = term1 + CH.DCCos2Θ*term2 + CH.DCSin2Θ*term3
-		    // Calculate the Dx factor
-		    term1 = 4*CH.DC1*(CH.DCCosσ2x9 - cos422)
-		    term2 = -CH.DC2*(cos321 - 3*cos121)
-		    Var dCross2 As Double = CH.DCCosΘ*term1 + CH.DCSinΘ*term2
-		    // Finally, Calculate the F+ and Fx factors for Detector 2
-		    fPlus2 = CH.DCHalfCos2ψ*dPlus2 - CH.DCHalfSin2ψ*dCross2
-		    fCross2 = CH.DCHalfSin2ψ*dPlus2 + CH.DCHalfCos2ψ*dCross2
-		  End If
-		  
-		  // Calculate the total amplitude
-		  Var h0 As Double = 2*Parameters.GM*Parameters.η/(Parameters.Λ*Parameters.R0)
-		  
-		  // This will calculate the total signal H
-		  Var fPlus As Double = fPlus1 + fPlus2
-		  Var fCross As Double = fCross1 + fCross2
-		  H = h0*(fPlus*hp + fCross*hx)
-		  // If this is the base case, then we will also find the derivative with respect to Ψr
-		  If IsBaseCase Then
-		    DHDΨ = h0*(fPlus*dhpDΨ + fCross*dhxDΨ)
-		  End If
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub CalcDataAtMainStep(StepRatio As Double, MainStep As Integer)
-		  If StepRatio = 0.0 Then // if we are getting information about the current step,
-		    VMN = VN
-		    CosιMN = CosιN
-		    αMN = αN
-		    ΨrMN = ΨrN
-		    χaMN.X = χaN.X
-		    χaMN.Y = χaN.Y
-		    χaMN.Z = χaN.Z
-		    χsMN.X = χsN.X
-		    χsMN.Y = χsN.Y
-		    χsMN.Z = χsN.Z
-		  Else // if we are interpolating between the current step and a future step,
-		    // Get the interpolated values and return them
-		    Var oneMinusRatio As Double = 1.0 - StepRatio
-		    VMN = oneMinusRatio*VN + StepRatio*VP
-		    CosιMN = oneMinusRatio*CosιN  + StepRatio*CosιP
-		    αMN = oneMinusRatio*αN + StepRatio*αP
-		    ΨrMN = oneMinusRatio*ΨrN  + StepRatio*ΨrP
-		    χaMN.X = oneMinusRatio*χaN.X + StepRatio*χaP.X
-		    χaMN.Y = oneMinusRatio*χaN.Y + StepRatio*χaP.Y
-		    χaMN.Z = oneMinusRatio*χaN.Z + StepRatio*χaP.Z
-		    χsMN.X = oneMinusRatio*χsN.X + StepRatio*χsP.X
-		    χsMN.Y = oneMinusRatio*χsN.Y + StepRatio*χsP.Y
-		    χsMN.Z = oneMinusRatio*χsN.Z + StepRatio*χsP.Z
-		  End If
-		  τrMN = MainStep*Dτr
-		  
-		  If Not Parameters.UseBaseAmplitude Then
-		    CalculateAmplitudes
-		  End If
-		  
-		  If IsBaseCase Then
-		    CalculateWaveFactors
-		  End If
-		  AssembleH
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub CalculateAmplitudes()
+		Sub CalculateAmplitudes(MyCosβ As Double, MySinβ As Double, δ As Double)
 		  // Now calculate all wave amplitudes
 		  
-		  // Calculate some useful quantities related to Cosι
-		  Var c2 As Double = CosιMN
-		  Var s2 As Double = Sqrt(1.0 - CosιMN*CosιMN)
-		  Var c1 As Double = Sqrt(0.5*(1+c2))
-		  Var s1 As Double = Sqrt(0.5*(1-c2))
-		  Var c3 As Double = CosιMN*c1 - s2*s1
-		  Var s3 As Double = s2*c1 + CosιMN*s1
-		  Var c4 As Double = 2*CosιMN*CosιMN-1.0
+		  // Calculate some useful trig functions of angle ι
+		  Var c2 As Double = Cos(ι)
+		  Var s2 As Double = Sin(ι)
+		  Var c1 As Double = Cos(0.5*ι)
+		  Var s1 As Double = Sin(0.5*ι)
+		  Var c3 As Double = c2*c1 - s2*s1
+		  Var s3 As Double = s2*c1 + c2*s1
+		  Var c4 As Double = c2*c2-s2*s2
 		  Var s4 As Double = 2*c2*s2
 		  Var c5 As Double = c4*c1 - s4*s1
 		  Var s5 As Double = s4*c1 + c4*s1
@@ -242,20 +151,37 @@ Protected Class EvolverClass
 		  Var s2p3 As Double = s2p2*s2
 		  Var s2p4 As Double = s2p3*s2
 		  
-		  Var F(-1,-1) As Double = CH.F  // get a local copy of the amplitude constants array
+		  // Define local β trig functions
+		  Var cβ As Double = MyCosβ
+		  Var sβ As Double = MySinβ
+		  Var c2β As Double = cβ*cβ - sβ*sβ
+		  Var s2β As Double = 2*sβ*cβ
+		  Var c3β As Double = c2β*cβ - s2β*sβ
+		  Var s3β As Double = s2β*cβ + c2β*sβ
+		  Var c4β As Double = c3β*cβ - s3β*sβ
+		  Var s4β As Double = s3β*cβ + c3β*sβ
+		  Var c5β As Double = c4β*cβ - s4β*sβ
+		  Var s5β As Double = s4β*cβ + c4β*sβ
+		  Var cβ2 As Double = cβ*cβ
+		  Var cβ3 As Double = c2β*cβ
+		  Var sβ2 As Double = sβ*sβ
+		  Var sβ3 As Double = s2β*sβ
 		  
-		  // Amplitude factors for H0P
-		  A(0) = F(0,0)*c1p3*c1
-		  A(1) = F(1,0)*c1p3*s1
-		  A(2) =  F(2,0)*s1p3*c1
-		  A(3) = F(3,0)*s1p4
-		  A(4) =F(4,0)*s2p2
+		  // Define η
+		  Var η As Double = 0.25*(1.0 - δ*δ)
 		  
-		  // Amplitude factors for H0X
-		  A(132) = F(132,0)*c1*s1p3
-		  A(133) = F(133,0)*s1p4
-		  A(134) =  F(134,0)*c1p3*s1
-		  A(135) = F(135,0)*c1p4
+		  // Amplitudes for H0P
+		  A(0) = (-1.5 - 0.5*c2β)*c1p4
+		  A(1) = -2.0*c1p3*s2β*s1
+		  A(2) =  2.0*s1p3*s2β*c1
+		  A(3) = (-1.5 - 0.5*c2β)*s1p4
+		  A(4) = -1.5*sβ2*s2p2
+		  
+		  // Amplitudes for H0X
+		  A(132) = 4.0*sβ*c1*s1p3
+		  A(133) = -2.0*cβ*s1p4
+		  A(134) =  -4.0*sβ*c1p3*s1
+		  A(135) =  -2.0*cβ*c1p4
 		  
 		  If Parameters.PNOrder > 0 Then
 		    
@@ -612,111 +538,107 @@ Protected Class EvolverClass
 		  // This is the value of the observed orbital frequency in Hz
 		  Var fN As Double =  VMN*VMN*VMN/(2*Parameters.π*Parameters.GM*(1.0 + Parameters.Z))
 		  //  get the noise at various frequencies
-		  Var sn20 As Double = CH.Sn20 // This is the noise at the original fundamental gravitational wave frequency
 		  // The following set of variables contains ratios that we will use to enhance derivatives of harmonics at higher frequencies
 		  // to reflect how they may be better or more poorly received by the detector than the fundamental harmonic
 		  Var snratio1 As Double = sn20/Sqrt(Noise.GetNoise(fN))
 		  Var snratio2 As Double = sn20/Sqrt(Noise.GetNoise(2*fN))
-		  Var snratio3 As Double = sn20/Sqrt(Noise.GetNoise(2*fN))
-		  Var snratio4 As Double = sn20/Sqrt(Noise.GetNoise(2*fN))
-		  Var snratio5 As Double = sn20/Sqrt(Noise.GetNoise(2*fN))
+		  Var snratio3 As Double = sn20/Sqrt(Noise.GetNoise(3*fN))
+		  Var snratio4 As Double = sn20/Sqrt(Noise.GetNoise(4*fN))
+		  Var snratio5 As Double = sn20/Sqrt(Noise.GetNoise(5*fN))
 		  
-		  // Calculate basic angle multiples for α and Ψr
-		  Var c01 As Double = Cos(ΨrMN)*snratio1
-		  Var s01 As Double = Sin(ΨrMN)*snratio1
-		  Var c02 As Double = (c01*c01 - s01*s01)*snratio2
-		  Var s02 As Double = (2*c01*s01)*snratio2
-		  Var c03 As Double = (c02*c01 - s02*s01)*snratio3
-		  Var s03 As Double = (s02*c01 + c02*s01)*snratio3
-		  Var c04 As Double = (c03*c01 - s03*s01)*snratio4
-		  Var s04 As Double = (s03*c01 + c03*s01)*snratio4
-		  Var c05 As Double = (c04*c01 - s04*s01)*snratio5
-		  Var s05 As Double = (s04*c01 + c04*s01)*snratio5
+		  // Calculate the received wave phase
 		  
-		  Var c10 As Double = Cos(αMN)
-		  Var s10 As Double = Sin(αMN)
-		  Var c20 As Double = c10*c10 - s10*s10
-		  Var s20 As Double = 2*s10*c10
-		  Var c30 As Double = c20*c10 - s20*s10
-		  Var s30 As Double = s20*c10 - c20*s10
-		  Var c40 As Double = c30*c10 - s30*s10
-		  Var s40 As Double = s30*c10 - c30*s10
-		  Var c50 As Double = c40*c10 - s40*s10
-		  Var s50 As Double = s40*c10 - c40*s10
+		  // Calculate basic angle multiples for the phase Ψ
+		  // (The noise adjustment assumes that the orbital motion will dominate in the total wave phase,
+		  // which should be an excellent approximation).
+		  CosApΨ(0,1) = Cos(ΨrMN)*snratio1
+		  SinApΨ(0,1) = Sin(ΨrMN)*snratio1
+		  CosApΨ(0,2) = (CosApΨ(0,1)*CosApΨ(0,1) - SinApΨ(0,1)*SinApΨ(0,1))*snratio2
+		  SinApΨ(0,2)  = (2*CosApΨ(0,1)*SinApΨ(0,1))*snratio2
+		  CosApΨ(0,3) = (CosApΨ(0,2)*CosApΨ(0,1) - SinApΨ(0,2)*SinApΨ(0,1))*snratio3
+		  SinApΨ(0,3)  = (SinApΨ(0,2)*CosApΨ(0,1) + CosApΨ(0,2)*SinApΨ(0,1))*snratio3
+		  CosApΨ(0,4) = (CosApΨ(0,3)*CosApΨ(0,1) - SinApΨ(0,3)*SinApΨ(0,1))*snratio4
+		  SinApΨ(0,4)  = (SinApΨ(0,3)*CosApΨ(0,1) + CosApΨ(0,3)*SinApΨ(0,1))*snratio4
+		  CosApΨ(0,5) = (CosApΨ(0,4)*CosApΨ(0,1) - SinApΨ(0,4)*SinApΨ(0,1))*snratio5
+		  SinApΨ(0,5)  = (SinApΨ(0,4)*CosApΨ(0,1) + CosApΨ(0,4)*SinApΨ(0,1))*snratio5
+		  
+		  // Calculate basic angle multiples for the phase α
+		  CosApΨ(1,0) = Cos(αMN)
+		  SinApΨ(1,0) = Sin(αMN)
+		  CosApΨ(2,0) = CosApΨ(1,0)*CosApΨ(1,0) - SinApΨ(1,0)*SinApΨ(1,1)
+		  SinApΨ(2,0)  = 2*CosApΨ(1,0)*SinApΨ(1,0)
+		  CosApΨ(3,0) = CosApΨ(2,0)*CosApΨ(1,0) - SinApΨ(2,0)*SinApΨ(1,0)
+		  SinApΨ(3,0)  = SinApΨ(2,0)*CosApΨ(1,0) + CosApΨ(2,0)*SinApΨ(1,0)
+		  CosApΨ(4,0) = CosApΨ(3,0)*CosApΨ(1,0) - SinApΨ(3,0)*SinApΨ(1,0)
+		  SinApΨ(4,0)  = SinApΨ(3,0)*CosApΨ(1,0) + CosApΨ(3,0)*SinApΨ(1,0)
+		  CosApΨ(5,0) = CosApΨ(4,0)*CosApΨ(1,0) - SinApΨ(4,0)*SinApΨ(1,0)
+		  SinApΨ(5,0)  = SinApΨ(4,0)*CosApΨ(1,0) + CosApΨ(4,0)*SinApΨ(1,0)
+		  
+		  // Now basically calculate all possible combinations
+		  For j As Integer = 1 to 5
+		    For k As Integer 1 to 5
+		      CosApΨ(j,k) = CosApΨ(j,0)*CosApΨ(0,k) - SinApΨ(j,0)*SinApΨ(0,k)
+		      CosAmΨ(j,k) = CosApΨ(j,0)*CosApΨ(0,k) + SinApΨ(j,0)*SinApΨ(0,k)
+		      SinApΨ(j,k)  = SinApΨ(j,0)*CosApΨ(0,k) + CosApΨ(j,0)*SinApΨ(0,k)
+		      SinApΨ(j,k)  = SinApΨ(j,0)*CosApΨ(0,k) - CosApΨ(j,0)*SinApΨ(0,k)
+		    Next
+		  Next
 		  
 		  // Now calculate all wavy parts
 		  // Factors for H0P
-		  W(0) = c20*c02 - s20*s02
-		  W(1) = c10*c02 - s10*s02
-		  W(2) = c10*c02 + s10*s02
-		  W(3) = c20*c02 + s20*s02
-		  W(4) = c02
+		  W(0) = CosApΨ(2,2)  // cos(2α + 2Ψ)
+		  W(1) = CosApΨ(1,2)   // cos(2α + Ψ)
+		  W(2) = CosAmΨ(1,2)  // cos(α - 2Ψ)
+		  W(3) =  CosAmΨ(2,2) // cos(2α - 2Ψ)
+		  W(4) = CosApΨ(0,2)  // cos(2Ψ)
+		  
+		  DWDα(0) = -2.0*SinApΨ(2,2)  // derivative of cos(2α + 2Ψ) with respect to α
+		  DWDα(1) = -2.0*SinApΨ(1,2)   // derivqtive of cos(2α + Ψ)
+		  DWDα(2) = -SinAmΨ(1,2)  // derivative of cos(α - 2Ψ)
+		  DWDα(3) =  -2.0*SinAmΨ(2,2) // derivative of cos(2α - 2Ψ)
+		  DWDα(4) = 0.0  // derivative of cos(2Ψ)
+		  
+		  DWDΨ(0) = -2.0*SinApΨ(2,2)  // derivative of cos(2α + 2Ψ) with respect to Ψ
+		  DWDΨ(1) = -SinApΨ(1,2)   // derivqtive of cos(2α + Ψ)
+		  DWDΨ(2) = 2.0*SinAmΨ(1,2)  // derivative of cos(α - 2Ψ)
+		  DWDΨ(3) =  2.0*SinAmΨ(2,2) // derivative of cos(2α - 2Ψ)
+		  DWDΨ(4) = -SinAmΨ(0,2) // derivative of cos(2Ψ)
 		  
 		  // Factors for H1P
-		  W(5) = c30*c03 - s30*s03
-		  W(6) = c10*c01 - s10*s01
-		  W(7) = c10*c01 + s10*s01
-		  W(8) = c30*c01 - s30*s01
-		  W(9) = c10*c03 - s10*s03
-		  W(10) = c10*c03 + s10*s03
-		  W(11) = c30*c01 + s30*s01
-		  W(12) = c30*c03 + s30*s03
-		  W(13) = c03
-		  W(14) = c20*c01 - s20*s01
-		  W(15) = c20*c03 - s20*s03
-		  W(16) = c20*c01 + s20*s01
-		  W(17) = c20*c03 + s20*s03
-		  W(18) = c01
+		  W(5) = CosApΨ(3,3)  // cos(3α + 3Ψ)
+		  W(6) = CosApΨ(1,1)  // cos(α + Ψ)
+		  W(7) = CosAmΨ(1,2)   // cos(α - 2Ψ)
+		  W(8) = CosApΨ(3,1)   // cos(3α + Ψ)
+		  W(9) = CosApΨ(2,2)   // cos(2α + 2Ψ)
+		  W(10) = CosAmΨ(1,3)   // cos(α - 3Ψ)
+		  W(11) = CosAmΨ(3,1)   // cos(3α - Ψ)
+		  W(12) = CosAmΨ(3,3)  // cos(3α - 3Ψ)
+		  W(13) = CosAmΨ(0,3)   // cos(3Ψ)
+		  W(14) = CosApΨ(2,1)   // cos(2α + Ψ)
+		  W(15) = CosApΨ(2,3)   // cos(2α + 3Ψ)
+		  W(16) = CosAmΨ(2,1)   // cos(2α  - Ψ)
+		  W(17) = CosAmΨ(2,3)   // cos(2α - 3Ψ)
+		  W(18) = CosApΨ(0,1)  // cos(Ψ)
 		  
 		  // Factors for H2P
 		  
 		  // Factors for H3P
 		  
 		  // Factors for H0X
-		  W(129) = (s10*c02 - c10*s02)*snratio2
-		  W(130) = (s20*c02 - c20*s02)*snratio2
-		  W(131) = (s10*c02 + c10*s02)*snratio2
-		  W(132) = (s20*c02 + c20*s02)*snratio2
+		  W(129) = SinApΨ(1,2)
+		  W(130) = SinApΨ(2,2)
+		  W(131) = SinAmΨ(1,2)
+		  W(132) = SinAmΨ(2,2)
 		  
-		  // Factors for H1X
+		  DWDα(129) = CosApΨ(1,2)
+		  DWDα(130) = 2.0*CosApΨ(2,2)
+		  DWDα(131) = CosAmΨ(1,2)
+		  DWDα(132) = 2.0*CosAmΨ(2,2)
 		  
-		  // Factors for H2X
-		  
-		  // Factors for H3X
-		  
-		  // Calculate derivatives with respect to Ψr
-		  // For H0P
-		  DWDΨ(0) = -2*(s20*c02+c20*s02)*snratio2
-		  DWDΨ(1) = -2*(s10*c02+c10*s02)*snratio2
-		  DWDΨ(2) = 2*(s10*c02-c10*s02)*snratio2
-		  DWDΨ(3) = 2*(s20*c02-c20*s02)*snratio2
-		  DWDΨ(4) = -2*s02*snratio2
-		  
-		  // Factors for H1P
-		  DWDΨ(5) = -2*(s30*c03+c30*s03)*snratio3
-		  DWDΨ(6) = -2*(s10*c01+c10*s01)*snratio1
-		  DWDΨ(7) = (s10*c01-c10*s01)*snratio1
-		  DWDΨ(8) = (-s30*c01-c30*s01)*snratio1
-		  DWDΨ(9) = -3*(s10*c03+c10*s03)*snratio3
-		  DWDΨ(10) = 3*(s10*c03-c10*s03)*snratio3
-		  DWDΨ(11) = (s30*c01-c30*s01)*snratio1
-		  DWDΨ(12) = 3*(s30*c03-c30*s03)*snratio3
-		  DWDΨ(13) = -3*s03*snratio3
-		  DWDΨ(14) = (-s20*c01-c20*s01)*snratio1
-		  DWDΨ(15) = -3*(s20*c03+c20*s03)*snratio3
-		  DWDΨ(16) = (s20*c01-c20*s01)*snratio1
-		  DWDΨ(17) = 3*(s20*c03-c20*s03)*snratio3
-		  DWDΨ(18) = -s01*snratio1
-		  
-		  // Factors for H2P
-		  
-		  // Factors for H3P
-		  
-		  // Factors for H0X
-		  DWDΨ(129) = -2*(c10*c02+s10*s02)*snratio2
-		  DWDΨ(130) = -2*(c20*c02+s20*s02)*snratio2
-		  DWDΨ(131) = 2*(c10*c02-s10*s02)*snratio2
-		  DWDΨ(132) = 2*(c20*c02-s20*s02)*snratio2
+		  DWDΨ(129) = 2.0*CosApΨ(1,2)
+		  DWDΨ(130) = 2.0*CosApΨ(2,2)
+		  DWDΨ(131) = -2.0*CosAmΨ(1,2)
+		  DWDΨ(132) = -2.0*CosAmΨ(2,2)
 		  
 		  // Factors for H1X
 		  
@@ -729,346 +651,896 @@ Protected Class EvolverClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(P As CaseParametersClass, BaseCase As EvolverClass = Nil)
+		Sub Constructor(P As CaseParametersClass)
+		  // Initialize constants
 		  Parameters = P
-		  Dτr = P.ΔT/P.GM
-		  Infinity = Double.FromString("INF")
+		  Cosβ = Cos(P.β)
+		  Sinβ = Sin(P.β)
+		  εForβ = 1.0e-5
+		  CosβPlus = Cos(P.β+εForβ)
+		  SinβPlus = Sin(P.β+εForβ)
+		  CosβMinus = Cos(P.β-εForβ)
+		  SinβMinus = Sin(P.β-εForβ)
 		  
-		  // This is the base case if there is no base-case parameter
-		  IsBaseCase = (BaseCase = Nil)
+		  // Set up the base case
+		  PhaseEvolverBase = New PhaseEvolverClass(P)
+		  δBase = P.δ
 		  
-		  // Initialize the velocity-related properties
-		  VN = P.V0
-		  VP = VN
-		  VF = VN
+		  // Set up phase evolvers where the value of M1 is tweaked
+		  εForM1 = 1.0e-5
+		  PhaseEvolverM1Minus = New PhaseEvolverClass(Tweak(Item.M1), -εForM1)
+		  PhaseEvolverM1Plus = New PhaseEvolverClass(Tweak(Item.M1), +εForM1)
 		  
-		  // Initialize phase-related properties
-		  ΨrN = P.λ0  // Set the initial phase
-		  ΨrP = ΨrN   // The past phase is initially the same
-		  ΨrF = ΨrN
-		  VeSinΘ = Sin(Parameters.Θ)*Parameters.Ve
+		  // Set up phase evolvers where the value of M2 is tweaked
+		  εForM2 = 1.0e-5
+		  PhaseEvolverM2Minus = New PhaseEvolverClass(Tweak(Item.M2), -εForM2)
+		  PhaseEvolverM2Plus = New PhaseEvolverClass(Tweak(Item.M2), +εForM2)
 		  
-		  // Initialize the spin-related properties
-		  // Get the the stars' initial spins
-		  Var spin1 As New Vector(Parameters.χ10x, Parameters.χ10y, Parameters.χ10z)
-		  Var spin2 As New Vector(Parameters.χ20x, Parameters.χ20y, Parameters.χ20z)
+		  // Set up phase evolvers where the value of V0 is adjusted
+		  εForV0 = 1.0e-5
+		  PhaseEvolverV0Minus = New PhaseEvolverClass(Tweak(Item.V0), -εForV0)
+		  PhaseEvolverV0Plus = New PhaseEvolverClass(Tweak(Item.V0), +εForV0)
 		  
-		  // calculate the magnitudes of the spin vectors
-		  Magχ1 = spin1.GetMagnitude
-		  Magχ2 = spin2.GetMagnitude
+		  // Set up phase evolvers where the value of χ10x is adjusted
+		  εForχ10x = 1.0e-5
+		  PhaseEvolverχ10xMinus = New PhaseEvolverClass(Tweak(Item.χ10x), -εForχ10x)
+		  PhaseEvolverχ10xPlus = New PhaseEvolverClass(Tweak(Item.χ10x), +εForχ10x)
 		  
-		  // If its magnitude is not strictly zero, create a unit vector for each spin
-		  // But if the magnitude is zero, then the unit vector is also zero
-		  if Magχ1 > 0.0 Then
-		    χ1HatN = spin1/Magχ1
-		  Else
-		    χ1HatN = New Vector(0.0, 0.0, 0.0)
-		  end if
-		  χ1HatP = χ1HatN.Clone  // initially, the past is the same as the present
-		  χ1HatF = χ1HatN.Clone  // This is just a placeholder so this vector is defined
-		  if Magχ2 > 0.0 Then 
-		    χ2HatN = spin2/Magχ2
-		  Else
-		    χ2HatN = New Vector(0.0, 0.0, 0.0)
-		  End if
-		  χ2HatP = χ2HatN.Clone   // Past is the same as present
-		  χ2HatF = χ2HatN.Clone  // Placeholder
+		  // Set up phase evolvers where the value of χ10y is adjusted
+		  εForχ10y = 1.0e-5
+		  PhaseEvolverχ10yMinus = New PhaseEvolverClass(Tweak(Item.χ10y), -εForχ10y)
+		  PhaseEvolverχ10yPlus = New PhaseEvolverClass(Tweak(Item.χ10y), +εForχ10y)
 		  
-		  // get some local variables from the parameters
-		  Var v0 As Double = Parameters.V0
-		  Var η As Double = Parameters.η
-		  Var δ As Double = Parameters.δ
-		  Var onePlusδ As Double = 1.0 + δ
-		  Var oneMinusδ As Double = 1.0 - δ
-		  Var plusOverMinus As Double = onePlusδ/oneMinusδ
-		  Var minusOverPlus As Double = oneMinusδ/onePlusδ
+		  // Set up phase evolvers where the value of χ10z is adjusted
+		  εForχ10z = 1.0e-5
+		  PhaseEvolverχ10zMinus = New PhaseEvolverClass(Tweak(Item.χ10z), -εForχ10z)
+		  PhaseEvolverχ10zPlus = New PhaseEvolverClass(Tweak(Item.χ10z), +εForχ10z)
 		  
-		  // This value is the inverse magnitude of the L vector  
-		  Var B As Double = v0 - (1.5 + η/6.0)*v0*v0*v0 - ((27.0-19.0*η)/8.0 + η*η/24.0)*v0*v0*v0*v0
+		  // Set up phase evolvers where the value of χ20x is adjusted
+		  εForχ20x = 1.0e-5
+		  PhaseEvolverχ20xMinus = New PhaseEvolverClass(Tweak(Item.χ20x), -εForχ20x)
+		  PhaseEvolverχ20xPlus = New PhaseEvolverClass(Tweak(Item.χ20x), +εForχ20x)
 		  
-		  // This sets up the LHat vector according to equation 12.37 
-		  Var ellx As Double = -B*(plusOverMinus*Parameters.χ10x + minusOverPlus*Parameters.χ20x)
-		  Var elly As Double = -B*(plusOverMinus*Parameters.χ10y + minusOverPlus*Parameters.χ20y)
-		  LN = New Vector(ellx, elly, Sqrt(1.0 - ellx*ellx - elly*elly))  // set the LN vector
-		  LP = LN.Clone  // Past is the same as the present
-		  LF = LN.Clone  // Placeholder
+		  // Set up phase evolvers where the value of χ20y is adjusted
+		  εForχ20y = 1.0e-5
+		  PhaseEvolverχ20yMinus = New PhaseEvolverClass(Tweak(Item.χ20y), -εForχ20y)
+		  PhaseEvolverχ20yPlus = New PhaseEvolverClass(Tweak(Item.χ20y), +εForχ20y)
 		  
-		  // Compute the symmetric and antisymmetric spin vectors and set the parameters
-		  χsN = 0.25*(onePlusδ*onePlusδ*spin1 + oneMinusδ*oneMinusδ*spin2)
-		  χaN = 0.5*(oneMinusδ*spin1-Magχ2*onePlusδ*spin2)
-		  χsP = χsN.Clone // past is the same as the present
-		  χaP = χaN.Clone
-		  χaF = χaN.Clone // placeholders for now
-		  χsF = χsN.Clone
-		  χaMN = χaN.Clone // placeholders for now
-		  χsMN = χsN.Clone
+		  // Set up phase evolvers where the value of χ20z is adjusted
+		  εForχ20z = 1.0e-5
+		  PhaseEvolverχ20zMinus = New PhaseEvolverClass(Tweak(Item.χ20z), -εForχ20z)
+		  PhaseEvolverχ20zPlus = New PhaseEvolverClass(Tweak(Item.χ20z), -εForχ20z)
 		  
-		  // Compute their projections on the L unit vector and set those parameters
-		  χs𝓁 = χsN*LN
-		  χa𝓁 = χaN*LN
+		  // Calculate derivative of Z with respect to Λ
+		  Var universe As New UniverseClass
+		  εForΛ = 1.0e-5
+		  Var rInSeconds As Double = P.R*(1.0 + εForΛ)
+		  Var zpε As Double = universe.GetZFrom(rInSeconds)
+		  Var Λpε As Double = P.Λ*(1.0 + εForΛ)
+		  rInSeconds = P.R*(1.0 - εForΛ)
+		  Var zmε As Double = universe.GetZFrom(rInSeconds)
+		  Var Λmε As Double = P.Λ*(1.0 - εForΛ)
+		  DZDΛ = (zpε - zmε)/(Λpε - Λmε)
+		  Dτr = P.ΔT/P.GM  // Get the value of the main time step at the detector
+		  DτF = Dτr/(1.0+P.Z)  // This is time step at the source
+		  // do a trial step to get a value of DτIdeal.
+		  DτIdeal = 1.0e300 // Initialize this to be something huge
+		  // Note that DτIdeal is passed by reference, so each case has an opportunity to
+		  // tweak its value. This is necessary because the base case may have no spin,
+		  // while some side cases might have a spin that requires a certain step size.
+		  // Note that the orbital phase is irrelevant here.
+		  PhaseEvolverBase.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverM1Minus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverM1Plus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverM2Minus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverM2Plus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverV0Minus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverV0Plus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ10xMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ10xPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ10yMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ10yPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ10zMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ10zPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ20xMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ20xPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ20yMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ20yPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ20zMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  PhaseEvolverχ20zPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
 		  
-		  Var LProj As Double = LN.X*LN.X + LN.Y*LN.Y // squared projection of LHat on xy plane
-		  If LProj > 0.0 then // If we don't have exactly zero total spin
-		    αN = Atan2(LN.Y,LN.X) // we should be able to define alpha
-		    αP = αN  // Past is the same as the present
-		    CosιN = LN.Z // and iota based on the projection of LHat on the z axis
-		    CosιP = CosιN
-		    CosιF = CosιN
-		  Else // otherwise, these are the conventions for no spin evolution
-		    αN = Parameters.π
-		    αP = αN
-		    αF = αN
-		    CosιN = 1.0
-		    CosιP = CosιN
-		    CosιF = CosιN
+		  // Now set up the actual first time step
+		  // The ratio of the real future step will be some power of two of the main step.
+		  // Compute that power of two
+		  Var NewStepPower as Integer = Floor(Log(DτIdeal*(1.0+P.Z)/DτF)/Log(2))
+		  StepPowerFF = NewStepPower // initalize the CurrentStepPower
+		  StepPowerF = NewStepPower
+		  StepPowerP = NewStepPower
+		  DτFF = Dτr*2^StepPowerF/(1.0 + P.Z) // and initialize DτFF
+		  DτF = DτFF // and set DτF
+		  DτP = DτF  // and DτP to be the same
+		  
+		  // Finally, do an actual first (Euler) phase step with the new step size
+		  // Note that DτF is half the value of the TwoDτF parameter, so doing a
+		  // half step with the past value of each item equal to the present is the same
+		  // as doing an Euler step
+		  Var orbitPhase As Double = -P.Φ  // orbital phase factor at time τr = 0
+		  PhaseEvolverBase.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverM1Minus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverM1Plus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverM2Minus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverM2Plus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverV0Minus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverV0Plus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ10xMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ10xPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ10yMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ10yPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ10zMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ10zPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ20xMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ20xPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ20yMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ20yPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ20zMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverχ20zPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DidMainStepOK(MainStepNumber As Integer) As Boolean
+		  // This method will execute as many steps of the source evolution code as necessary to stay ahead of
+		  // (or at least in step with) steps of the main program.
+		  
+		  Var OKToContinue As Boolean = True
+		  N = MainStepNumber
+		  Var orbitalPhase As Double = Parameters.GMΩe*N*Dτr - Parameters.Φ
+		  If N = 0 Then // If this is the first step
+		    MainStepsInSourceStep = 2^StepPowerP  // Set up this variable
+		    WhereInSourceStep = 0 // but we will report the present values
+		  ElseIf StepPowerF > 0 Then  // If the step that will be taken is bigger than the main step
+		    If LastSourceStep > N Then // and the last source step (which might have been bigger) is still ahead
+		      WhereInSourceStep = WhereInSourceStep + 1   // Update the "WhereInSourceStep" counter and we are done
+		    ElseIf LastSourceStep = N Then  // if we have caught up with the source
+		      WhereInSourceStep = 0  // and we are back at the beginning of the current window
+		    Else  // main program is now ahead of the source
+		      DoSourceStep  // Take a new source step
+		      MainStepsInSourceStep = 2^StepPowerP // This is the number of main steps within the source step just taken
+		      // update the source step counter in units of the main step
+		      LastSourceStep = LastSourceStep + MainStepsInSourceStep
+		      WhereInSourceStep = 1 // we are now at the first step within that total range
+		    End If
+		  ElseIf StepPowerF = 0 Then // If the next source step will be equal to the main program step
+		    If LastSourceStep < N Then // If source is behind the main step
+		      DoSourceStep
+		      LastSourceStep = LastSourceStep + 1   // update the source step counter
+		      WhereInSourceStep = 0  // and we will report the present values
+		    ElseIf LastSourceStep = N Then   // I don't think this should happen, but if it does
+		      WhereInSourceStep = 0 // we will just report the present values
+		    End If
+		  Else  // the next source step size will be smaller than the main step size
+		    Var stepsToDo As Integer = 2^(-StepPowerF) // get the number of steps to execute in units of the current step size
+		    Var stepUnitPower As Integer = StepPowerF // these are the units of StepsToDo
+		    Var stepsDone As Integer = 0
+		    Do
+		      DoSourceStep  // Do a source step
+		      If StepPowerF < -10 Then
+		        OKToContinue = False
+		        Exit
+		      End If
+		      stepsDone = stepsDone + 1  // Count the step
+		      If StepPowerF < stepUnitPower And stepsDone < stepsToDo Then
+		        // If the next step size will be smaller and we have not reached the target
+		        stepsToDo = 2^(-stepPowerF)   // re-express the target in terms of the next step size
+		        stepsDone = stepsDone*2^(stepUnitPower-StepPowerF)  // and rescale the steps already done
+		      End If
+		    Loop Until stepsDone = stepsToDo
+		    If OKToContinue Then // if we haven't exited becase we are too close to coalescence
+		      WhereInSourceStep = 0 // and we will report the present values
+		    End If
 		  End If
+		  If OKToContinue Then AssembleDerivatives  // Calculate H at the main step if we can
+		  Return OKToContinue
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DoSourceStep()
+		  // This method performs a source step
 		  
-		  // Initialize noise
-		  If IsBaseCase Then
-		    Noise = New NoiseClass(P.ΔT)
-		  Else
-		    Noise = BaseCase.Noise  // point to the base-case's noise class
+		  // First, make the future the present
+		  StepPowerP = StepPowerF
+		  StepPowerF = StepPowerFF
+		  DτP = DτF
+		  DτF = DτFF
+		  
+		  // Set up some pre-calculated local variables
+		  Var dτRatio As Double = DτF/DτP
+		  Var twoDτ As Double = 2.0*DτF
+		  Var twoDτPhase As Double = twoDτ
+		  If StepPowerF > 0 Then twoDτPhase = 2.0*Dτr/(1.0 + Parameters.Z)
+		  Var orbitPhase As Double = Parameters.GMΩe*N*Dτr - Parameters.Φ
+		  // Do the base case and side case steps
+		  PhaseEvolverBase.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverM1Minus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverM1Plus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverM2Minus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverM2Plus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverV0Minus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverV0Plus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ10xMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ10xPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ10yMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ10yPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ10zMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ10zPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ20xMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ20xPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ20yMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ20yPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ20zMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverχ20zPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  
+		  // This chooses the next time step to be a multiple or fraction of a power of 2
+		  // times the main program time step (as seen in the source frame)
+		  // The ratio of the real future step will be some power of two of the main step.
+		  // Compute that power of two
+		  Var NewStepPower as Integer = Floor(Log(DτIdeal*(1.0+Parameters.Z)/Dτr)/Log(2))
+		  If NewStepPower > StepPowerF Then NewStepPower = StepPowerF // This power should never increase
+		  If NewStepPower < StepPowerF Then // if the new step is smaller
+		    StepPowerFF = NewStepPower // this will be the step power for the next step
+		    // note that if the power is NOT smaller, everything will remain the same
 		  End If
-		  
-		  // Intialize constants
-		  Var f0 As Double =  v0*v0*v0/(2*P.π*P.GM*(1.0 + P.Z))
-		  CH = New ConstantHolderClass(P, Sqrt(Noise.GetNoise(2*f0)), χa𝓁, χs𝓁)
-		  
-		  If Parameters.UseBaseAmplitude Then  // If we are using the base case amplitude
-		    A = BaseCase.A // The side case A points to the base-case array
-		    // Be sure not to modify A in this case
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub GetDataAtMainStep(N As Integer, PE As PhaseEvolverClass, StepRatio As Double, OneMinusRatio As Double)
+		  If StepRatio = 0.0 Then // if we are getting information about the current step,
+		    VMN = PE.VN
+		    ιMN = PE.ιN
+		    αMN = PE.αN
+		    ΨrMN = PE.ΨrN
+		    χaxMN = PE.χaxN
+		    χayMN = PE.χayN
+		    χazMN = PE.χazN
+		    χsxMN = PE.χsxN
+		    χsyMN = PE.χsyN
+		    χszMN = PE.χszN
+		  Else // if we are interpolating between the current step and a future step,
+		    // Get the interpolated values and return them
+		    VMN = OneMinusRatio*PE.VN + StepRatio*PE.VPold
+		    ιMN = OneMinusRatio*PE.ιN  + StepRatio*PE.ιP
+		    αMN = OneMinusRatio*PE.αN + StepRatio*PE.αPold
+		    χaxMN = OneMinusRatio*PE.χaxN + StepRatio*PE.χaXP
+		    χayMN = OneMinusRatio*PE.χayN + StepRatio*PE.χaYP
+		    χazMN = OneMinusRatio*PE.χazN + StepRatio*PE.χazP
+		    χsxMN = OneMinusRatio*PE.χsxN + StepRatio*PE.χsxP
+		    χsyMN = OneMinusRatio*PE.χsyN + StepRatio*PE.χsyP
+		    χszMN = OneMinusRatio*PE.χszN + StepRatio*PE.χszP
+		    // Update the phase in this case
+		    orbitalPhase = Parameters.GMΩe*N*Dτr - Parameters.Φ
+		    twoDτPhase = 2.0*Dτr/(1.0 + Parameters.Z)
+		    PE.DoPhaseStep(OneMinusRatio, StepRatio, orbitalPhase, twoDτPhase)
+		    ΨrMN = PE.ΨrN
 		  End If
-		  
-		  If Not IsBaseCase Then  // If this is not the base case, then point the wave arrays to the base case
-		    W = BaseCase.W
-		    DWDΨ = BaseCase.DWDΨ
-		  End If
-		  
-		  // Initialize time-related properties
-		  τ = 0.0  // currently, we are at time step zero
-		  
-		  // If this is the base case, do a trial first step to get DτIdeal
-		  If IsBaseCase Then
-		    Var Dτ0 As Double = 0.5*Dτr/(1.0 + P.Z)
-		    DoStep(Dτ0,Dτ0)
-		    // Now erase the effects of the step
-		    τ = 0.0
-		  End If
-		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub oldAssembleH()
+		  '// Assemble the total plus polarization terms
+		  'Var jStart As Integer = 0
+		  'Var jEnd As Integer = CH.H0PLastIndex
+		  'Var hp As Double = 0.0
+		  'Var vPower As Double = VMN*VMN
+		  'For j As Integer = jStart to jEnd
+		  'hp = hp + A(j)*W(j)
+		  'Next
+		  'hp = hp*vPower
+		  'Var dhpDΨ As Double = 0.0
+		  'If IsBaseCase Then
+		  'For j As Integer = jStart to jEnd
+		  'dhpDΨ = dhpDΨ + A(j)*DWDΨ(j)
+		  'Next
+		  'End If
+		  'dhpDΨ = dhpDΨ*vPower
+		  'If Parameters.PNOrder > 0 Then
+		  'vPower = vPower*VMN
+		  'jStart = jEnd + 1
+		  'jEnd = CH.H1PLastIndex
+		  '// (Process HP1 terms similarly)
+		  'End If
+		  'If Parameters.PNOrder > 1 Then
+		  'vPower = vPower*VMN
+		  'jStart = jEnd + 1
+		  'jEnd = CH.H2PLastIndex
+		  '// (Process HP2 terms similarly)
+		  'End If
+		  'If Parameters.PNOrder > 2 Then
+		  'vPower = vPower*VMN
+		  'jStart = jEnd + 1
+		  'jEnd = CH.H3PLastIndex
+		  '// (Process HP2 terms similarly)
+		  'End If
+		  '
+		  '// Now do cross polarization
+		  'Var hx As Double = 0.0
+		  'vPower = VMN*VMN  // Start over with powers
+		  'jStart = CH.H3PLastIndex + 1  // This will ensure a correct start
+		  'jEnd = CH.H0XLastIndex
+		  'For j As Integer = jStart to jEnd
+		  'hx = hx + A(j)*W(j)
+		  'Next
+		  'hx = hx*VPower
+		  'Var dhxDΨ As Double = 0.0
+		  'If IsBaseCase Then
+		  'For j As Integer = jStart to jEnd
+		  'dhxDΨ = dhxDΨ + A(j)*DWDΨ(j)
+		  'Next
+		  'End If
+		  'dhxDΨ = dhxDΨ*vPower
+		  'If Parameters.PNOrder > 0 Then
+		  'vPower = vPower*VMN
+		  'jStart = jEnd + 1
+		  'jEnd = CH.H1XLastIndex
+		  '// (Process HP1 terms similarly)
+		  'End If
+		  'If Parameters.PNOrder > 1 Then
+		  'vPower = vPower*VMN
+		  'jStart = jEnd + 1
+		  'jEnd = CH.H2XLastIndex
+		  '// (Process H2X terms similarly)
+		  'End If
+		  'If Parameters.PNOrder > 2 Then
+		  'vPower = vPower*VMN
+		  'jStart = jEnd + 1
+		  'jEnd = CH.H3PLastIndex
+		  '// (Process H3X terms similarly)
+		  'End If
+		  '
+		  '// Set up some useful local values so that we don't need to
+		  '// calculate them multiple times
+		  'Var ρ As Double = Parameters.GMΩe*τrMN
+		  'Var twoρ As Double = 2*ρ
+		  'Var threeρ As Double = 3*ρ
+		  'Var fourρ As Double = 4*ρ
+		  'Var Φ As Double = Parameters.Φ
+		  '
+		  '// Set up the sine and cosines for functions for detector 1
+		  'Var arg22 As Double = twoρ-CH.DC2σ1
+		  'Var arg422 As Double = fourρ-CH.DC2σ1-CH.DC2Φ
+		  'Var arg321 As Double = threeρ-CH.DC2σ1-Φ
+		  'Var arg121 As Double = ρ-CH.DC2σ1+Φ
+		  'Var sin22 As Double = Sin(arg22)
+		  'Var sin422 As Double = Sin(arg422)
+		  'Var sin321 As Double = Sin(arg321)
+		  'Var sin121 As Double = Sin(arg121)
+		  'Var cos22 As Double = Cos(arg22)
+		  'Var cos422 As Double = Cos(arg422)
+		  'Var cos321 As Double = Cos(arg321)
+		  'Var cos121 As Double = Cos(arg121)
+		  '
+		  '// Calculate the D+ factor
+		  'Var term1 As Double = CH.DC3*(-6.0*sin22 + CH.DCSinσ1x9 - sin422)
+		  'Var term2 As Double = CH.DC1*(18.0*sin22 + CH.DCSinσ1x9 - sin422)
+		  'Var term3 As Double = -CH.DC2*(sin321 - 3.0*sin121)
+		  'Var dPlus1 As Double = term1 + CH.DCCos2Θ*term2 + CH.DCSin2Θ*term3
+		  '// Calculate the Dx factor
+		  'term1 = 4*CH.DC1*(CH.DCCosσ1x9 - cos422)
+		  'term2 = -CH.DC2*(cos321 - 3*cos121)
+		  'Var dCross1 As Double = CH.DCCosΘ*term1 + CH.DCSinΘ*term2
+		  '// Finally, Calculate the F+ and Fx factors for Detector 1
+		  'Var fPlus1 As Double = CH.DCHalfCos2ψ*dPlus1 - CH.DCHalfSin2ψ*dCross1
+		  'Var fCross1 As Double = CH.DCHalfSin2ψ*dPlus1 + CH.DCHalfCos2ψ*DCross1
+		  '
+		  'Var fPlus2 As Double = 0.0
+		  'Var fCross2 As Double = 0.0
+		  'If Parameters.Detectors = 2 Then // If we are doing two detectors
+		  '// Then repeat the whole thing for detector 2
+		  'arg22 = twoρ-CH.DC2σ2
+		  'arg422 = fourρ-CH.DC2σ2-CH.DC2Φ
+		  'arg321 = threeρ-CH.DC2σ2-Φ
+		  'arg121 = ρ-CH.DC2σ2+Φ
+		  'sin22 = Sin(arg22)
+		  'sin422 = Sin(arg422)
+		  'sin321 = Sin(arg321)
+		  'sin121 = Sin(arg121)
+		  'cos22 = Cos(arg22)
+		  'cos422 = Cos(arg422)
+		  'cos321 = Cos(arg321)
+		  'cos121 = Cos(arg121)
+		  '// Calculate the D+ factor
+		  'term1 = CH.DC3*(-6.0*sin22 + CH.DCSinσ2x9 - sin422)
+		  'term2 = CH.DC1*(18.0*sin22 + CH.DCSinσ2x9 - sin422)
+		  'term3 = -CH.DC2*(sin321 - 3.0*sin121)
+		  'Var dPlus2 As Double = term1 + CH.DCCos2Θ*term2 + CH.DCSin2Θ*term3
+		  '// Calculate the Dx factor
+		  'term1 = 4*CH.DC1*(CH.DCCosσ2x9 - cos422)
+		  'term2 = -CH.DC2*(cos321 - 3*cos121)
+		  'Var dCross2 As Double = CH.DCCosΘ*term1 + CH.DCSinΘ*term2
+		  '// Finally, Calculate the F+ and Fx factors for Detector 2
+		  'fPlus2 = CH.DCHalfCos2ψ*dPlus2 - CH.DCHalfSin2ψ*dCross2
+		  'fCross2 = CH.DCHalfSin2ψ*dPlus2 + CH.DCHalfCos2ψ*dCross2
+		  'End If
+		  '
+		  '// Calculate the total amplitude
+		  'Var h0 As Double = 2*Parameters.GM*Parameters.η/(Parameters.Λ*Parameters.R0)
+		  '
+		  '// This will calculate the total signal H
+		  'Var fPlus As Double = fPlus1 + fPlus2
+		  'Var fCross As Double = fCross1 + fCross2
+		  'H = h0*(fPlus*hp + fCross*hx)
+		  '// If this is the base case, then we will also find the derivative with respect to Ψr
+		  'If IsBaseCase Then
+		  'DHDΨ = h0*(fPlus*dhpDΨ + fCross*dhxDΨ)
+		  'End If
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DoStep(DτF As Double, DτP As Double, First As Boolean = False)
-		  // This is the main method for doing a time step for the source.
-		  
-		  // The current time at Now is equal to the previous time times the magnitude of the past time step
-		  τ = τ + DτP
-		  
-		  // If this is not the first step, make the future present
-		  If Not First Then
-		    VP = VN
-		    VN = VF
-		    CosιP = CosιN
-		    CosιN = CosιF
-		    LP.X = LN.X
-		    LP.Y = LN.Y
-		    LP.Z = LN.Z
-		    LN.X = LF.X
-		    LN.Y = LF.Y
-		    LN.Z = LF.Z
-		    αP = αN
-		    αN = αF
-		    χ1HatP.X =χ1HatN.X
-		    χ1HatP.Y =χ1HatN.Y
-		    χ1HatP.Z =χ1HatN.Z
-		    χ1HatN.X = χ1HatF.X
-		    χ1HatN.Y = χ1HatF.Y
-		    χ1HatN.Z = χ1HatF.Z
-		    χ2HatP.X = χ2HatN.X
-		    χ2HatP.Y = χ2HatN.Y
-		    χ2HatP.Z = χ2HatN.Z
-		    χ2HatN.X = χ2HatF.X
-		    χ2HatN.Y = χ2HatF.Y
-		    χ2HatN.Z = χ2HatF.Z
-		    χaP.X = χaN.X
-		    χaP.Y = χaN.Y
-		    χaP.Z = χaN.Z
-		    χaN.X = χaF.X
-		    χaN.Y = χaF.Y
-		    χaN.Z = χaF.Z
-		    χsP.X = χsN.X
-		    χsP.Y = χsN.Y
-		    χsP.Z = χsN.Z
-		    χsN.X = χsF.X
-		    χsN.Y = χsF.Y
-		    χsN.Z = χsF.Z
-		    ΨrP = ΨrN
-		    ΨrN = ΨrF
-		  End If
-		  
-		  // There is no need to evolve at all if this cases uses the base phase
-		  If Not Parameters.UseBasePhase Then
-		    
-		    // Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
-		    // but it is probably faster just to do the calculation than to do a check and then a calculation
-		    Var dτRatio As Double = DτF/DτP // calculate this ratio once so we don't have to do it many times
-		    Var oneMinusRatio As Double = 1.0 - DτRatio // Calculate this only once also
-		    Var twoDτF As Double = 2.0*DτF
-		    VP = oneMinusRatio*VN + dτRatio*VP
-		    
-		    // Evolve the velocity forward
-		    Var v2 As Double = VN*VN
-		    Var v3 As Double = v2*VN
-		    Var v4 As Double = v2*v2
-		    Var v5 As Double = v2*v3
-		    Var v6 As Double = v3*v3
-		    Var v7 As Double = v3*v4
-		    Var v9 As Double = v4*v5
-		    Var vDotN As Double = CH.V0*v9*(1 + CH.V2*v2 + CH.V3*v3 + CH.V4*v4 + CH.V5*v5 + (CH.V6 + CH.V6L*Log(VN))*v6 + CH.V7*v7)
-		    VF = VP + twoDτF*vDotN
-		    Var ε As Double = 1.0e-3  // define what the maximum allowable change during a step should be
-		    If IsBaseCase Then
-		      DτIdeal = ε/vDotN  // Calculate the ideal next step (we will only pay attention to the base case value)
-		    End If
-		    
-		    // Now we will do the spin evolution
-		    If Magχ1 = 0.0 and Magχ2 = 0.0 Then // If spins are both strictly zero, then there is no evolution
-		      χ1hatF = χ1hatN
-		      χ2hatF = χ2hatN
-		      LF = LN
-		      αF = αN
-		      CosιF = CosιN
-		      αDotN = 0.0
-		      χsF = χsN
-		      χaF = χaN
-		      αF = αN
-		      CosιF = 0.0
-		      αDotN = 0.0
-		    Else // spins are not strictly zero
-		      // Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
-		      // but it is probably faster just to do the calculation
-		      // Note that we are NOT using the defined vector operations because the overhead is large
-		      // and we do not want to create new objects after initialization
-		      χ1hatP.X = oneMinusRatio*χ1hatN.X + dτRatio*χ1hatP.X  
-		      χ1hatP.Y = oneMinusRatio*χ1hatN.Y + dτRatio*χ1hatP.Y 
-		      χ1hatP.Z = oneMinusRatio*χ1hatN.Z + dτRatio*χ1hatP.Z  
-		      χ2hatP.X = oneMinusRatio*χ2hatN.X + dτRatio*χ2hatP.X  
-		      χ2hatP.Y = oneMinusRatio*χ2hatN.Y + dτRatio*χ2hatP.Y 
-		      χ2hatP.Z = oneMinusRatio*χ2hatN.Z + dτRatio*χ2hatP.Z  
-		      LP.X = oneMinusRatio*LN.X + dτRatio*LP.X
-		      LP.Y = oneMinusRatio*LN.Y + dτRatio*LP.Y
-		      LP.Z = oneMinusRatio*LN.Z + dτRatio*LP.Z
-		      αP = oneMinusRatio*αN + dτRatio*αP
-		      
-		      // Do the step
-		      // Evolve the two spins using the leapfrog method
-		      Var Factor As Double = v5*(CH.Ω0  + CH.Ω2*v2 + CH.Ω4*v4)*2*DτF
-		      Var χ1HatDotNx As Double = Factor*(LN.Y*χ1HatN.Z - LN.Z*χ1HatN.Y)
-		      Var χ1HatDotNy As Double = Factor*(LN.Z*χ1HatN.X - LN.X*χ1HatN.Z)
-		      Var χ1HatDotNz As Double = Factor*(LN.X*χ1HatN.Y - LN.Y*χ1HatN.X)
-		      χ1HatF.X = χ1HatP.X + χ1HatDotNx
-		      χ1HatF.Y = χ1HatP.Y + χ1HatDotNy
-		      χ1HatF.Z = χ1HatP.Z + χ1HatDotNz
-		      Var χ2HatDotNx As Double = Factor*(LN.Y*χ2HatN.Z - LN.Z*χ2HatN.Y)
-		      Var χ2HatDotNy As Double = Factor*(LN.Z*χ2HatN.X - LN.X*χ2HatN.Z)
-		      Var χ2HatDotNz As Double = Factor*(LN.X*χ2HatN.Y - LN.Y*χ2HatN.X)
-		      χ2HatF.X = χ2HatP.X + χ2HatDotNx
-		      χ2HatF.Y = χ2HatP.Y + χ2HatDotNy
-		      χ2HatF.Z = χ2HatP.Z + χ2HatDotNz
-		      
-		      
-		      // Evolve the orbital angular momentum
-		      Factor = -(VN-CH.L3*v3-CH.L4*v4)*2*DτF
-		      Var Factor1 As Double = Factor*CH.L1*Magχ1
-		      Var Factor2 As Double = Factor*CH.L2*Magχ2
-		      Var ellNDotx As Double = Factor1*χ1HatDotNx + Factor2*χ2HatDotNx
-		      Var ellNDoty As Double = Factor1*χ1HatDotNy + Factor2*χ2HatDotNy
-		      Var ellNDotz As Double = Factor1*χ1HatDotNz + Factor2*χ2HatDotNz
-		      LF.X = LP.X + ellNDotx
-		      LF.Y = LP.Y + ellNDoty
-		      LF.Z = LP.Z + ellNDotz
-		      // The magnitude of L MUST be one, so ensure this
-		      Var invMagLF As Double = 1.0/LF.GetMagnitude
-		      LF.X = LF.X*invMagLF
-		      LF.Y = LF.Y*invMagLF
-		      LF.Z = LF.Z*invMagLF
-		      
-		      // Calculate the future angles
-		      Var ellFx As Double = LF.X
-		      Var ellFy As Double = LF.Y
-		      Var ellNx As Double = LN.X
-		      Var ellNy As Double = LN.Y
-		      If ellFx*ellFx + ellFy*ellFy > 1.0e-10 Then
-		        // The future L vector points at least some angle away from the vertical,
-		        // so α is well-defined and we can calculate it normally
-		        αF = ATan2(ellFy, ellFx)
-		        // To keep α from jumping in value when the L vector crosses the x axis,
-		        // we need to adjust its value from what the ATan2 function gives us
-		        If ellFy < 0.0 and ellNy > 0.0 Then // If we are crossing the x axis downward
-		          // and if the intercept with the x axis is negative, meaning we are going
-		          // from the second quadrant to the third, then ATan jumps from π to -π,
-		          // so we add 2π to compensate
-		          If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF + 2*Parameters.π
-		        Elseif ellFy > 0.0 and ellNy < 0.0 Then // If we are crossing the x axis upward
-		          // and if the intercept with the x axis is negative, meaning we are going
-		          // from the third quadrant to the second, then ATan jumps from -π to π,
-		          // so we subtract2π to compensate
-		          If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF - 2*Parameters.π
-		        End If
-		        CosιF = LF.Z  // This is the future value of iota
-		      Else
-		        CosιF = 1.0 // we are going through vertical
-		        αF = 2*αN - αP // Guess that we are going in a reasonably straight line
-		      End If
-		      αDotN = (αF - αP)/(2*DτF)   // Calculate the present value of αDot
-		      
-		      // Calculate future values of χs and χa
-		      Var onePlusδ As Double = 1.0 + Parameters.δ
-		      Var oneMinusδ As Double = 1.0 - Parameters.δ
-		      χsF.X = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.X + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.X)
-		      χsF.Y = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.Y + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.Y)
-		      χsF.Z = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.Z + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.Z)
-		      χaF.X = 0.5*(Magχ1*oneMinusδ*χ1HatF.X-Magχ2*onePlusδ*χ2HatF.X)
-		      χaF.Y = 0.5*(Magχ1*oneMinusδ*χ1HatF.Y-Magχ2*onePlusδ*χ2HatF.Y)
-		      χaF.Z = 0.5*(Magχ1*oneMinusδ*χ1HatF.Z-Magχ2*onePlusδ*χ2HatF.Z)
-		      
-		      If IsBaseCase Then  // We only do this for the base case
-		        // This section chooses a time step such that the change in any of the unit
-		        // vectors is less than 1/1000 of its magnitude (which is 1).
-		        // We only do this for the base case.
-		        Var dτχ1 As Double = Infinity
-		        Var dτχ2 As Double = Infinity
-		        Var dτL As Double = Infinity
-		        // If the magnitudes of the change are not strictly zero, then calculate
-		        // what time step would lead to a change of 1/1000
-		        Var χ1HatDotMag As Double = Sqrt(χ1HatDotNx*χ1HatDotNx + χ1HatDotNy*χ1HatDotNy + χ1HatDotNz*χ1HatDotNz)
-		        If χ1HatDotMag > 0.0 Then dτχ1 = ε/χ1HatDotMag
-		        Var χ2HatDotMag As Double = Sqrt(χ2HatDotNx*χ2HatDotNx + χ2HatDotNy*χ2HatDotNy + χ2HatDotNz*χ2HatDotNz)
-		        If χ2HatDotMag > 0.0 Then dτχ2 = ε/χ2HatDotMag
-		        Var ellDotMag As Double = Sqrt(ellNDotx*ellNDotx + ellNDoty*ellNDoty+ ellNDotz*ellNDotz)
-		        If ellDotMag > 0.0 Then dτL = ε/ellDotMag
-		        // Then choose the minimum of these values (including the earlier calculation of DτIdeal for the velocity evolution)
-		        DτIdeal = Min(dτχ1, dτχ2, dτL, DτIdeal)
-		      End If
-		    End If
-		    
-		    // Now evolve the phase
-		    Var τr As Double = τ*(1.0 + Parameters.Z) // Calculate the received time
-		    Var gMΩeτr As Double = Parameters.GMΩe*τr
-		    Var ΨrDot As Double = v3 - CosιN*αDotN - 6.0*v2*(3.0*Log(VN/Parameters.V0) + 1.0)*vDotN
-		    Var stepFactor As Double = 2*DτF*(1.0 + VeSinΘ*Sin(gMΩeτr - Parameters.Φ))
-		    
-		    // Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
-		    // but it is probably faster just to do the calculation
-		    ΨrP = oneMinusRatio*ΨrN + dτRatio*ΨrP
-		    
-		    // Now update the evolving phase value and its derivatives
-		    ΨrF = ΨrP + StepFactor*ΨrDot
-		  End If
+		Sub oldConstructor(P As CaseParametersClass, BaseCase As EvolverClass = Nil)
+		  'Parameters = P
+		  'Dτr = P.ΔT/P.GM
+		  'Infinity = Double.FromString("INF")
+		  '
+		  '// This is the base case if there is no base-case parameter
+		  'IsBaseCase = (BaseCase = Nil)
+		  '
+		  '// Initialize the velocity-related properties
+		  'VN = P.V0
+		  'VP = VN
+		  'VF = VN
+		  '
+		  '// Initialize phase-related properties
+		  'ΨrN = P.λ0  // Set the initial phase
+		  'ΨrP = ΨrN   // The past phase is initially the same
+		  'ΨrF = ΨrN
+		  'VeSinΘ = Sin(Parameters.Θ)*Parameters.Ve
+		  '
+		  '// Initialize the spin-related properties
+		  '// Get the the stars' initial spins
+		  'Var spin1 As New Vector(Parameters.χ10x, Parameters.χ10y, Parameters.χ10z)
+		  'Var spin2 As New Vector(Parameters.χ20x, Parameters.χ20y, Parameters.χ20z)
+		  '
+		  '// calculate the magnitudes of the spin vectors
+		  'Magχ1 = spin1.GetMagnitude
+		  'Magχ2 = spin2.GetMagnitude
+		  '
+		  '// If its magnitude is not strictly zero, create a unit vector for each spin
+		  '// But if the magnitude is zero, then the unit vector is also zero
+		  'if Magχ1 > 0.0 Then
+		  'χ1HatN = spin1/Magχ1
+		  'Else
+		  'χ1HatN = New Vector(0.0, 0.0, 0.0)
+		  'end if
+		  'χ1HatP = χ1HatN.Clone  // initially, the past is the same as the present
+		  'χ1HatF = χ1HatN.Clone  // This is just a placeholder so this vector is defined
+		  'if Magχ2 > 0.0 Then 
+		  'χ2HatN = spin2/Magχ2
+		  'Else
+		  'χ2HatN = New Vector(0.0, 0.0, 0.0)
+		  'End if
+		  'χ2HatP = χ2HatN.Clone   // Past is the same as present
+		  'χ2HatF = χ2HatN.Clone  // Placeholder
+		  '
+		  '// get some local variables from the parameters
+		  'Var v0 As Double = Parameters.V0
+		  'Var η As Double = Parameters.η
+		  'Var δ As Double = Parameters.δ
+		  'Var onePlusδ As Double = 1.0 + δ
+		  'Var oneMinusδ As Double = 1.0 - δ
+		  'Var plusOverMinus As Double = onePlusδ/oneMinusδ
+		  'Var minusOverPlus As Double = oneMinusδ/onePlusδ
+		  '
+		  '// This value is the inverse magnitude of the L vector  
+		  'Var B As Double = v0 - (1.5 + η/6.0)*v0*v0*v0 - ((27.0-19.0*η)/8.0 + η*η/24.0)*v0*v0*v0*v0
+		  '
+		  '// This sets up the LHat vector according to equation 12.37 
+		  'Var ellx As Double = -B*(plusOverMinus*Parameters.χ10x + minusOverPlus*Parameters.χ20x)
+		  'Var elly As Double = -B*(plusOverMinus*Parameters.χ10y + minusOverPlus*Parameters.χ20y)
+		  'LN = New Vector(ellx, elly, Sqrt(1.0 - ellx*ellx - elly*elly))  // set the LN vector
+		  'LP = LN.Clone  // Past is the same as the present
+		  'LF = LN.Clone  // Placeholder
+		  '
+		  '// Compute the symmetric and antisymmetric spin vectors and set the parameters
+		  'χsN = 0.25*(onePlusδ*onePlusδ*spin1 + oneMinusδ*oneMinusδ*spin2)
+		  'χaN = 0.5*(oneMinusδ*spin1-Magχ2*onePlusδ*spin2)
+		  'χsP = χsN.Clone // past is the same as the present
+		  'χaP = χaN.Clone
+		  'χaF = χaN.Clone // placeholders for now
+		  'χsF = χsN.Clone
+		  'χaMN = χaN.Clone // placeholders for now
+		  'χsMN = χsN.Clone
+		  '
+		  '// Compute their projections on the L unit vector and set those parameters
+		  'χs𝓁 = χsN*LN
+		  'χa𝓁 = χaN*LN
+		  '
+		  'Var LProj As Double = LN.X*LN.X + LN.Y*LN.Y // squared projection of LHat on xy plane
+		  'If LProj > 0.0 then // If we don't have exactly zero total spin
+		  'αN = Atan2(LN.Y,LN.X) // we should be able to define alpha
+		  'αP = αN  // Past is the same as the present
+		  'CosιN = LN.Z // and iota based on the projection of LHat on the z axis
+		  'CosιP = CosιN
+		  'CosιF = CosιN
+		  'Else // otherwise, these are the conventions for no spin evolution
+		  'αN = Parameters.π
+		  'αP = αN
+		  'αF = αN
+		  'CosιN = 1.0
+		  'CosιP = CosιN
+		  'CosιF = CosιN
+		  'End If
+		  '
+		  '// Initialize noise
+		  'If IsBaseCase Then
+		  'Noise = New NoiseClass(P.ΔT)
+		  'Else
+		  'Noise = BaseCase.Noise  // point to the base-case's noise class
+		  'End If
+		  '
+		  '// Intialize constants
+		  'Var f0 As Double =  v0*v0*v0/(2*P.π*P.GM*(1.0 + P.Z))
+		  'CH = New ConstantHolderClass(P, Sqrt(Noise.GetNoise(2*f0)), χa𝓁, χs𝓁)
+		  '
+		  'If Parameters.UseBaseAmplitude Then  // If we are using the base case amplitude
+		  'A = BaseCase.A // The side case A points to the base-case array
+		  '// Be sure not to modify A in this case
+		  'End If
+		  '
+		  'If Not IsBaseCase Then  // If this is not the base case, then point the wave arrays to the base case
+		  'W = BaseCase.W
+		  'DWDΨ = BaseCase.DWDΨ
+		  'End If
+		  '
+		  '// Initialize time-related properties
+		  'τ = 0.0  // currently, we are at time step zero
+		  '
+		  '// If this is the base case, do a trial first step to get DτIdeal
+		  'If IsBaseCase Then
+		  'Var Dτ0 As Double = 0.5*Dτr/(1.0 + P.Z)
+		  'DoStep(Dτ0,Dτ0)
+		  '// Now erase the effects of the step
+		  'τ = 0.0
+		  'End If
+		  '
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub oldDoStep(DτF As Double, DτP As Double, First As Boolean = False)
+		  '// This is the main method for doing a time step for the source.
+		  '
+		  '// The current time at Now is equal to the previous time times the magnitude of the past time step
+		  'τ = τ + DτP
+		  '
+		  '// If this is not the first step, make the future present
+		  'If Not First Then
+		  'VP = VN
+		  'VN = VF
+		  'CosιP = CosιN
+		  'CosιN = CosιF
+		  'LP.X = LN.X
+		  'LP.Y = LN.Y
+		  'LP.Z = LN.Z
+		  'LN.X = LF.X
+		  'LN.Y = LF.Y
+		  'LN.Z = LF.Z
+		  'αP = αN
+		  'αN = αF
+		  'χ1HatP.X =χ1HatN.X
+		  'χ1HatP.Y =χ1HatN.Y
+		  'χ1HatP.Z =χ1HatN.Z
+		  'χ1HatN.X = χ1HatF.X
+		  'χ1HatN.Y = χ1HatF.Y
+		  'χ1HatN.Z = χ1HatF.Z
+		  'χ2HatP.X = χ2HatN.X
+		  'χ2HatP.Y = χ2HatN.Y
+		  'χ2HatP.Z = χ2HatN.Z
+		  'χ2HatN.X = χ2HatF.X
+		  'χ2HatN.Y = χ2HatF.Y
+		  'χ2HatN.Z = χ2HatF.Z
+		  'χaP.X = χaN.X
+		  'χaP.Y = χaN.Y
+		  'χaP.Z = χaN.Z
+		  'χaN.X = χaF.X
+		  'χaN.Y = χaF.Y
+		  'χaN.Z = χaF.Z
+		  'χsP.X = χsN.X
+		  'χsP.Y = χsN.Y
+		  'χsP.Z = χsN.Z
+		  'χsN.X = χsF.X
+		  'χsN.Y = χsF.Y
+		  'χsN.Z = χsF.Z
+		  'ΨrP = ΨrN
+		  'ΨrN = ΨrF
+		  'End If
+		  '
+		  '// There is no need to evolve at all if this cases uses the base phase
+		  'If Not Parameters.UseBasePhase Then
+		  '
+		  '// Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
+		  '// but it is probably faster just to do the calculation than to do a check and then a calculation
+		  'Var dτRatio As Double = DτF/DτP // calculate this ratio once so we don't have to do it many times
+		  'Var oneMinusRatio As Double = 1.0 - DτRatio // Calculate this only once also
+		  'Var twoDτF As Double = 2.0*DτF
+		  'VP = oneMinusRatio*VN + dτRatio*VP
+		  '
+		  '// Evolve the velocity forward
+		  'Var v2 As Double = VN*VN
+		  'Var v3 As Double = v2*VN
+		  'Var v4 As Double = v2*v2
+		  'Var v5 As Double = v2*v3
+		  'Var v6 As Double = v3*v3
+		  'Var v7 As Double = v3*v4
+		  'Var v9 As Double = v4*v5
+		  'Var vDotN As Double = CH.V0*v9*(1 + CH.V2*v2 + CH.V3*v3 + CH.V4*v4 + CH.V5*v5 + (CH.V6 + CH.V6L*Log(VN))*v6 + CH.V7*v7)
+		  'VF = VP + twoDτF*vDotN
+		  'Var ε As Double = 1.0e-3  // define what the maximum allowable change during a step should be
+		  'If IsBaseCase Then
+		  'DτIdeal = ε/vDotN  // Calculate the ideal next step (we will only pay attention to the base case value)
+		  'End If
+		  '
+		  '// Now we will do the spin evolution
+		  'If Magχ1 = 0.0 and Magχ2 = 0.0 Then // If spins are both strictly zero, then there is no evolution
+		  'χ1hatF = χ1hatN
+		  'χ2hatF = χ2hatN
+		  'LF = LN
+		  'αF = αN
+		  'CosιF = CosιN
+		  'αDotN = 0.0
+		  'χsF = χsN
+		  'χaF = χaN
+		  'αF = αN
+		  'CosιF = 0.0
+		  'αDotN = 0.0
+		  'Else // spins are not strictly zero
+		  '// Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
+		  '// but it is probably faster just to do the calculation
+		  '// Note that we are NOT using the defined vector operations because the overhead is large
+		  '// and we do not want to create new objects after initialization
+		  'χ1hatP.X = oneMinusRatio*χ1hatN.X + dτRatio*χ1hatP.X  
+		  'χ1hatP.Y = oneMinusRatio*χ1hatN.Y + dτRatio*χ1hatP.Y 
+		  'χ1hatP.Z = oneMinusRatio*χ1hatN.Z + dτRatio*χ1hatP.Z  
+		  'χ2hatP.X = oneMinusRatio*χ2hatN.X + dτRatio*χ2hatP.X  
+		  'χ2hatP.Y = oneMinusRatio*χ2hatN.Y + dτRatio*χ2hatP.Y 
+		  'χ2hatP.Z = oneMinusRatio*χ2hatN.Z + dτRatio*χ2hatP.Z  
+		  'LP.X = oneMinusRatio*LN.X + dτRatio*LP.X
+		  'LP.Y = oneMinusRatio*LN.Y + dτRatio*LP.Y
+		  'LP.Z = oneMinusRatio*LN.Z + dτRatio*LP.Z
+		  'αP = oneMinusRatio*αN + dτRatio*αP
+		  '
+		  '// Do the step
+		  '// Evolve the two spins using the leapfrog method
+		  'Var Factor As Double = v5*(CH.Ω0  + CH.Ω2*v2 + CH.Ω4*v4)*2*DτF
+		  'Var χ1HatDotNx As Double = Factor*(LN.Y*χ1HatN.Z - LN.Z*χ1HatN.Y)
+		  'Var χ1HatDotNy As Double = Factor*(LN.Z*χ1HatN.X - LN.X*χ1HatN.Z)
+		  'Var χ1HatDotNz As Double = Factor*(LN.X*χ1HatN.Y - LN.Y*χ1HatN.X)
+		  'χ1HatF.X = χ1HatP.X + χ1HatDotNx
+		  'χ1HatF.Y = χ1HatP.Y + χ1HatDotNy
+		  'χ1HatF.Z = χ1HatP.Z + χ1HatDotNz
+		  'Var χ2HatDotNx As Double = Factor*(LN.Y*χ2HatN.Z - LN.Z*χ2HatN.Y)
+		  'Var χ2HatDotNy As Double = Factor*(LN.Z*χ2HatN.X - LN.X*χ2HatN.Z)
+		  'Var χ2HatDotNz As Double = Factor*(LN.X*χ2HatN.Y - LN.Y*χ2HatN.X)
+		  'χ2HatF.X = χ2HatP.X + χ2HatDotNx
+		  'χ2HatF.Y = χ2HatP.Y + χ2HatDotNy
+		  'χ2HatF.Z = χ2HatP.Z + χ2HatDotNz
+		  '
+		  '
+		  '// Evolve the orbital angular momentum
+		  'Factor = -(VN-CH.L3*v3-CH.L4*v4)*2*DτF
+		  'Var Factor1 As Double = Factor*CH.L1*Magχ1
+		  'Var Factor2 As Double = Factor*CH.L2*Magχ2
+		  'Var ellNDotx As Double = Factor1*χ1HatDotNx + Factor2*χ2HatDotNx
+		  'Var ellNDoty As Double = Factor1*χ1HatDotNy + Factor2*χ2HatDotNy
+		  'Var ellNDotz As Double = Factor1*χ1HatDotNz + Factor2*χ2HatDotNz
+		  'LF.X = LP.X + ellNDotx
+		  'LF.Y = LP.Y + ellNDoty
+		  'LF.Z = LP.Z + ellNDotz
+		  '// The magnitude of L MUST be one, so ensure this
+		  'Var invMagLF As Double = 1.0/LF.GetMagnitude
+		  'LF.X = LF.X*invMagLF
+		  'LF.Y = LF.Y*invMagLF
+		  'LF.Z = LF.Z*invMagLF
+		  '
+		  '// Calculate the future angles
+		  'Var ellFx As Double = LF.X
+		  'Var ellFy As Double = LF.Y
+		  'Var ellNx As Double = LN.X
+		  'Var ellNy As Double = LN.Y
+		  'If ellFx*ellFx + ellFy*ellFy > 1.0e-10 Then
+		  '// The future L vector points at least some angle away from the vertical,
+		  '// so α is well-defined and we can calculate it normally
+		  'αF = ATan2(ellFy, ellFx)
+		  '// To keep α from jumping in value when the L vector crosses the x axis,
+		  '// we need to adjust its value from what the ATan2 function gives us
+		  'If ellFy < 0.0 and ellNy > 0.0 Then // If we are crossing the x axis downward
+		  '// and if the intercept with the x axis is negative, meaning we are going
+		  '// from the second quadrant to the third, then ATan jumps from π to -π,
+		  '// so we add 2π to compensate
+		  'If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF + 2*Parameters.π
+		  'Elseif ellFy > 0.0 and ellNy < 0.0 Then // If we are crossing the x axis upward
+		  '// and if the intercept with the x axis is negative, meaning we are going
+		  '// from the third quadrant to the second, then ATan jumps from -π to π,
+		  '// so we subtract2π to compensate
+		  'If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF - 2*Parameters.π
+		  'End If
+		  'CosιF = LF.Z  // This is the future value of iota
+		  'Else
+		  'CosιF = 1.0 // we are going through vertical
+		  'αF = 2*αN - αP // Guess that we are going in a reasonably straight line
+		  'End If
+		  'αDotN = (αF - αP)/(2*DτF)   // Calculate the present value of αDot
+		  '
+		  '// Calculate future values of χs and χa
+		  'Var onePlusδ As Double = 1.0 + Parameters.δ
+		  'Var oneMinusδ As Double = 1.0 - Parameters.δ
+		  'χsF.X = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.X + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.X)
+		  'χsF.Y = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.Y + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.Y)
+		  'χsF.Z = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.Z + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.Z)
+		  'χaF.X = 0.5*(Magχ1*oneMinusδ*χ1HatF.X-Magχ2*onePlusδ*χ2HatF.X)
+		  'χaF.Y = 0.5*(Magχ1*oneMinusδ*χ1HatF.Y-Magχ2*onePlusδ*χ2HatF.Y)
+		  'χaF.Z = 0.5*(Magχ1*oneMinusδ*χ1HatF.Z-Magχ2*onePlusδ*χ2HatF.Z)
+		  '
+		  'If IsBaseCase Then  // We only do this for the base case
+		  '// This section chooses a time step such that the change in any of the unit
+		  '// vectors is less than 1/1000 of its magnitude (which is 1).
+		  '// We only do this for the base case.
+		  'Var dτχ1 As Double = Infinity
+		  'Var dτχ2 As Double = Infinity
+		  'Var dτL As Double = Infinity
+		  '// If the magnitudes of the change are not strictly zero, then calculate
+		  '// what time step would lead to a change of 1/1000
+		  'Var χ1HatDotMag As Double = Sqrt(χ1HatDotNx*χ1HatDotNx + χ1HatDotNy*χ1HatDotNy + χ1HatDotNz*χ1HatDotNz)
+		  'If χ1HatDotMag > 0.0 Then dτχ1 = ε/χ1HatDotMag
+		  'Var χ2HatDotMag As Double = Sqrt(χ2HatDotNx*χ2HatDotNx + χ2HatDotNy*χ2HatDotNy + χ2HatDotNz*χ2HatDotNz)
+		  'If χ2HatDotMag > 0.0 Then dτχ2 = ε/χ2HatDotMag
+		  'Var ellDotMag As Double = Sqrt(ellNDotx*ellNDotx + ellNDoty*ellNDoty+ ellNDotz*ellNDotz)
+		  'If ellDotMag > 0.0 Then dτL = ε/ellDotMag
+		  '// Then choose the minimum of these values (including the earlier calculation of DτIdeal for the velocity evolution)
+		  'DτIdeal = Min(dτχ1, dτχ2, dτL, DτIdeal)
+		  'End If
+		  'End If
+		  '
+		  '// Now evolve the phase
+		  'Var τr As Double = τ*(1.0 + Parameters.Z) // Calculate the received time
+		  'Var gMΩeτr As Double = Parameters.GMΩe*τr
+		  'Var ΨrDot As Double = v3 - CosιN*αDotN - 6.0*v2*(3.0*Log(VN/Parameters.V0) + 1.0)*vDotN
+		  'Var stepFactor As Double = 2*DτF*(1.0 + VeSinΘ*Sin(gMΩeτr - Parameters.Φ))
+		  '
+		  '// Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
+		  '// but it is probably faster just to do the calculation
+		  'ΨrP = oneMinusRatio*ΨrN + dτRatio*ΨrP
+		  '
+		  '// Now update the evolving phase value and its derivatives
+		  'ΨrF = ΨrP + StepFactor*ΨrDot
+		  'End If
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SumSourceH(Wave() As Double)
+		  // These constants define static variables indicating the endpoints of certain polarizations
+		  Static H0PLastIndex As Integer = 4
+		  Static H1PLastIndex As integer = 18
+		  Static H2PLastIndex As Integer = 46
+		  Static H3PLastIndex As Integer = 128
+		  Static H0XLastIndex As Integer = 132
+		  Static H1XLastIndex As Integer = 145
+		  Static H2XLastIndex As Integer = 172
+		  Static H3XLastIndex As Integer = 247
+		  
+		  // First, do the plus polarization
+		  Var jStart As Integer
+		  Var sum As Double
+		  For j As Integer = 0 To H0PLastIndex
+		    sum = sum + A(j)*W(j)
+		  Next
+		  Var vpower As Double = VMN*VMN
+		  HP = sum*vpower
+		  
+		  If Parameters.PNOrder > 0 Then
+		    sum = 0.0
+		    jStart = H0PLastIndex + 1
+		    For j As Integer = jStart to H1PLastIndex
+		      sum = sum + A(j)*Wave(j)
+		    Next
+		    vpower = vpower*VMN
+		    HP = HP + sum*vpower
+		  End If
+		  
+		  If Parameters.PNOrder > 1 Then
+		    sum = 0.0
+		    Start = H1PLastIndex + 1
+		    For j As Integer = jStart to H2PLastIndex
+		      sum = sum + A(j)*Wave(j)
+		    Next
+		    vpower = vpower*VMN
+		    HP = HP + sum*vpower
+		  End If
+		  
+		  If Parameters.PNOrder > 2 Then
+		    Start = H2PLastIndex + 1
+		    sum = 0.0
+		    For j As Integer = jStart to H3PLastIndex
+		      sum = sum + A(j)*Wave(j)
+		    Next
+		    vpower = vpower*VMN
+		    HP = HP + sum*vpower
+		  End If
+		  
+		  // now assemble cross polarization
+		  sum - 0.0
+		  vpower = VMN*VMN
+		  jStart = H3PLastIndex + 1
+		  For j As Integer = jStart To H0PLastIndex
+		    sum = sum + A(j)*Wave(j)
+		  Next
+		  Var vpower As Double = VMN*VMN
+		  HX = sum*vpower
+		  
+		  If Parameters.PNOrder > 0 Then
+		    sum = 0.0
+		    jStart = H0XLastIndex + 1
+		    For j As Integer = jStart to H1PLastIndex
+		      sum = sum + A(j)*Wave(j)
+		    Next
+		    vpower = vpower*VMN
+		    HX = HX + sum*vpower
+		  End If
+		  
+		  If Parameters.PNOrder > 1 Then
+		    sum = 0.0
+		    Start = H1XLastIndex + 1
+		    For j As Integer = jStart to H2PLastIndex
+		      sum = sum + A(j)*Wave(j)
+		    Next
+		    vpower = vpower*VMN
+		    HX = HX + sum*vpower
+		  End If
+		  
+		  If Parameters.PNOrder > 2 Then
+		    Start = H2XLastIndex + 1
+		    sum = 0.0
+		    For j As Integer = jStart to H3PLastIndex
+		      sum = sum + A(j)*Wave(j)
+		    Next
+		    vpower = vpower*VMN
+		    HX = HX + sum*vpower
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Tweak(TheItem As Item, ε As Double) As CaseParametersClass
+		  Var P As CaseParametersClass = Parameters.Clone
+		  Select Case TheItem
+		  Case Item.M1 Then
+		    P.M1 = P.M1*(1.0 + ε)
+		    P.δ = (P.M1 - P.M2)/(P.M1 + P.M2)
+		  Case Item.M2 Then
+		    P.M1 = P.M1*(1.0 + ε)
+		    P.δ = (P.M1 - P.M2)/(P.M1 + P.M2)
+		  Case Item.V0
+		    P.V0 = P.V0*(1.0 + ε)
+		  Case Item.χ10x
+		    P.χ10x = P.χ10x + ε
+		  Case Item.χ10y
+		    P.χ10y = P.χ10y + ε
+		  Case Item.χ10z
+		    P.χ10z = P.χ10z + ε
+		  Case Item.χ20x
+		    P.χ20x = P.χ20x + ε
+		  Case Item.χ20y
+		    P.χ20y = P.χ20y + ε
+		  Case Item.χ20z
+		    P.χ20z = P.χ20z + ε
+		  End Select
+		End Function
 	#tag EndMethod
 
 
@@ -1077,31 +1549,31 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		BaseCase As EvolverClass
+		CosAmΨ(5,5) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		CH As ConstantHolderClass
+		CosApΨ(5,5) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		CosιF As Double
+		Cosβ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		CosιMN As Double
+		CosβMinus As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		CosιN As Double
+		CosβPlus As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		CosιP As Double
+		DHDq(14) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DHDΨ As Double
+		DWDα(247) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1109,7 +1581,23 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		DZDΛ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DτF As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DτFF As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		DτIdeal As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DτP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1117,35 +1605,31 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		H As Double
+		DΨrDΘMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Infinity As Double
+		DΨrDΦMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		IsBaseCase As Boolean
+		HP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		LF As Vector
+		HX As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		LN As Vector
+		LastSourceStep As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		LP As Vector
+		MainStepsInSourceStep As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Magχ1 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Magχ2 As Double
+		N As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1157,11 +1641,115 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		VeSinΘ As Double
+		PhaseEvolverBase As PhaseEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		VF As Double
+		PhaseEvolverM1Minus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverM1Plus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverM2Minus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverM2Plus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverV0Minus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverV0Plus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ10xMinus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ10xPlus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ10yMinus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ10yPlus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ10zMinus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ10zPlus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ20xMinus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ20xPlus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ20yMinus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ20yPlus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ20zMinus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverχ20zPlus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SinAmΨ(5,5) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SinApΨ(5,5) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Sinβ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SinβMinus As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SinβPlus As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Sn20 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		StepPowerF As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		StepPowerFF As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		StepPowerP As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1169,23 +1757,15 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		VN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		VP As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		W(247) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		αDotN As Double
+		WhereInSourceStep As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		αF As Double
+		ιMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1193,100 +1773,95 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		αN As Double
+		εForM1 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		αP As Double
+		εForM2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		τ As Double
+		εForV0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		τrMN As Double
+		εForβ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ1HatF As Vector
+		εForΛ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ1HatN As Vector
+		εForχ10x As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ1HatP As Vector
+		εForχ10y As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ2HatF As Vector
+		εForχ10z As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ2HatN As Vector
+		εForχ20x As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ2HatP As Vector
+		εForχ20y As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χaF As Vector
+		εForχ20z As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χaMN As Vector
+		χaxMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χaN As Vector
+		χayMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χaP As Vector
+		χazMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χa𝓁 As Double
+		χsxMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χsF As Vector
+		χsyMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χsMN As Vector
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χsN As Vector
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χsP As Vector
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χs𝓁 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ΨrF As Double
+		χszMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		ΨrMN As Double
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		ΨrN As Double
-	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		ΨrP As Double
-	#tag EndProperty
+	#tag Enum, Name = Item, Flags = &h0
+		M1
+		  M2
+		  v0
+		  Λ
+		  β
+		  ψ
+		  λ0
+		  Θ
+		  Φ
+		  χ10x
+		  χ10y
+		  χ10z
+		  χ20x
+		  χ20y
+		χ20z
+	#tag EndEnum
 
 
 	#tag ViewBehavior
@@ -1331,7 +1906,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ΨrN"
+			Name="DτF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1339,7 +1914,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ΨrF"
+			Name="DτFF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1347,7 +1922,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ΨrP"
+			Name="DτP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1363,7 +1938,55 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="τ"
+			Name="LastSourceStep"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="MainStepsInSourceStep"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StepPowerF"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StepPowerFF"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StepPowerP"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="WhereInSourceStep"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ιMN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1371,127 +1994,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Magχ1"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Magχ2"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CosιF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CosιN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="αDotN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="αF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="αN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="αP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χa𝓁"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χs𝓁"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="VF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="VN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="VP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="VeSinΘ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DτIdeal"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CosιMN"
+			Name="Sn20"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1515,6 +2018,54 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="χaxMN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χayMN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χazMN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χsxMN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χsyMN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χszMN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="ΨrMN"
 			Visible=false
 			Group="Behavior"
@@ -1523,7 +2074,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="H"
+			Name="DZDΛ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1531,15 +2082,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="IsBaseCase"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Boolean"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CosιP"
+			Name="Cosβ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1547,7 +2090,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Infinity"
+			Name="CosβPlus"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1555,7 +2098,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DHDΨ"
+			Name="CosβMinus"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1563,7 +2106,151 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="τrMN"
+			Name="Sinβ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SinβMinus"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SinβPlus"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForβ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForM1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForM2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForV0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForΛ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForχ10x"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForχ10y"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForχ10z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForχ20x"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForχ20y"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForχ20z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HP"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HX"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DτIdeal"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΨrDΘMN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΨrDΦMN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

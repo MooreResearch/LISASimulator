@@ -43,8 +43,7 @@ Protected Class CaseSupervisorClass
 		  
 		  StartTicks = System.Ticks
 		  CaseParameters = currentCaseParameterSet // save the parameters for the current case
-		  InitializeParameters // flesh out the supplied parameters and put them into the right units
-		  // the following gives the number of main time steps to execute
+		  I// the following gives the number of main time steps to execute
 		  NSteps = Round(CaseParameters.RunDuration*Year/CaseParameters.ΔT)
 		  Dτr = CaseParameters.ΔT/CaseParameters.GM
 		  τr = -Dτr // set this back a step so that the first step is at time τr = 0.

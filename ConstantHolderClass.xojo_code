@@ -8,28 +8,6 @@ Protected Class ConstantHolderClass
 		  Var δ As Double = P.δ
 		  Var η As Double = P.η
 		  Var π As Double = P.π
-		  Var γE As Double = 0.5772156649015328606
-		  V0 = 32*η/5
-		  V2 = -743/336 - 11*η/4
-		  V3 = 4*π - 47*χsL/3 - δ*25*χaL/4
-		  V4 = 34103/18144 + 13661*η/2016 + 59*η*η/18
-		  V5 = (-5861/144 + 1001*η/12)*χsL + δ*(-809/84 + 281*η/8)*χaL _
-		  + 4159*π/672 + 189*π*η/8
-		  V6 = 16477322263.0/139708800 - 1712*γE/105 + 16*π*π/3 _
-		  + (-56198689/217728 + 451*π*π/48)*η _
-		  + 541*η*η/896 - 5605*η*η*η/2592 - 856*Log(32)/105
-		  V6L = 856/105
-		  V7 = π*(-4415/4032 + 358675*η/6048 + 91495*η*η/1512)
-		  
-		  // Initialize constants for spin evolution
-		  // Set up some constants that will be useful for the spin evolution equations.
-		  Ω0 = 0.75 + η/2.0 -0.75*δ
-		  Ω2 = 9.0/16.0 + 1.25*η + η*η/24.0 + 0.675*δ*η +(-9.0/16.0 + 0.675*η)*δ
-		  Ω4 = 27.0/32.0 + 3.0*η/16.0 - 105.0*η*η/32.0 - η*η*η/48.0 + (-27.0/32.0 + 39.0*η/8.0 - 5.0*η*η/32.0)*δ
-		  L1 = (1.0 + δ)/(1.0 - δ)
-		  L2 = (1.0 - δ)/(1.0 + δ)
-		  L3 = 1.5 + η/6.0
-		  L4 = 27.0/8.0 - 19.0*η/8.0 + η*η/24.0
 		  
 		  //Initialize constants for amplitude calculation
 		  Var β As Double = P.β
@@ -89,34 +67,6 @@ Protected Class ConstantHolderClass
 		End Sub
 	#tag EndMethod
 
-
-	#tag Property, Flags = &h0
-		C2β As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		C3β As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		C4β As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		C5β As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Cβ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Cβ2 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Cβ3 As Double
-	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		DC1 As Double
@@ -183,10 +133,6 @@ Protected Class ConstantHolderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		F(247,9) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		H0PLastIndex As Integer
 	#tag EndProperty
 
@@ -219,99 +165,7 @@ Protected Class ConstantHolderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		L1 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		L2 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		L3 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		L4 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		S2β As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		S3β As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		S4β As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		S5β As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		Sn20 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Sβ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Sβ2 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Sβ3 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V2 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V3 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V4 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V5 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V6 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V6L As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		V7 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Ω0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Ω2 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Ω4 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Ω6 As Double
 	#tag EndProperty
 
 
@@ -354,230 +208,6 @@ Protected Class ConstantHolderClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="L2"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="L3"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V2"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V3"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V4"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V5"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V6"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V6L"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="V7"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Ω0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Ω2"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Ω4"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Ω6"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Cβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Sβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="C2β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="C3β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="C4β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="C5β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="S2β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="S3β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="S4β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="S5β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Sβ2"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Sβ3"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Cβ3"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Cβ2"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -770,22 +400,6 @@ Protected Class ConstantHolderClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="L1"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="L4"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty

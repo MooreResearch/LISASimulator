@@ -1,110 +1,91 @@
 #tag Class
 Protected Class CaseParametersClass
 	#tag Method, Flags = &h0
-		Function GetTweaked(Which As Item, ε As Double) As CaseParametersClass
-		  // This method creates a parameter list where the specified parameter has
-		  // been tweaked by the value ε to serve as a parameters list for side cases.
-		  // For this method to work properly, the current parameter class must have been
-		  // fleshed out by the CaseSupervisor.
-		  Var CP As New CaseParametersClass
-		  // Copy over parameters. Note that the SolveFor list is
-		  // *not* copied, as that is only relevant to the base case.
-		  CP.Detectors = Detectors
-		  CP.F0 = F0
-		  CP.GM = GM
-		  CP.GMΩe = GMΩe
-		  CP.M1 = M1
-		  CP.M2 = M2
-		  CP.PNOrder = PNOrder
-		  CP.R = R
-		  CP.R0 = R0
-		  CP.RunDuration = RunDuration
-		  CP.V0 = V0
-		  CP.Ve = Ve
-		  CP.Z = Z
-		  CP.β = β
-		  CP.δ = δ
-		  CP.ΔT = ΔT
-		  CP.η = η
-		  CP.Θ = Θ
-		  CP.Λ = Λ
-		  CP.λ0 = λ0
-		  CP.π = π
-		  CP.ρ0 = ρ0
-		  CP.Φ = Φ
-		  CP.χ10x = χ10x
-		  CP.χ10y = χ10y
-		  CP.χ10z = χ10z
-		  CP.χ20x = χ20x
-		  CP.χ20y = χ20y
-		  CP.χ20z = χ20z
-		  CP.ψ = ψ
-		  // Now tweak the appropriate item. Note that this method *assumes*
-		  // that it will be called once with a positive value of ε and once with a
-		  // negative value *of the same magnitude* when calculating InvDε,
-		  // which is one over the value of the denominator for the centered difference
-		  // when calculating derivatives from side cases. Note also that a nonzero
-		  // value for this quantity indicates that it is a side case
-		  Select Case Which
-		  Case Item.M1
-		    Var M1Tweaked As Double = M1*(1+ε)
-		    Var InverseMTweaked As Double = 1.0/(M1Tweaked + M2)
-		    CP.M1 = M1Tweaked
-		    CP.δ = (M1Tweaked - M2)*InverseMTweaked
-		    CP.η = M1Tweaked*M2*InverseMTweaked*InverseMTweaked
-		    CP.InvDε = 0.5/(M1*Abs(ε))
-		  Case Item.M2
-		    Var M2Tweaked As Double = M2*(1+ε)
-		    Var InverseMTweaked As Double = 1.0/(M2Tweaked + M1)
-		    CP.M2 = M2Tweaked
-		    CP.δ = (M1 - M2Tweaked)*InverseMTweaked
-		    CP.η = M1*M2Tweaked*InverseMTweaked*InverseMTweaked
-		    CP.InvDε = 0.5/(M2*Abs(ε))
-		  Case Item.v0
-		    CP.V0 = V0*(1+ε)
-		    CP.InvDε = 0.5/(V0*Abs(ε))
-		  Case Item.Λ
-		    CP.Λ = Λ*(1 + ε)
-		    CP.InvDε = 0.5/(Λ*Abs(ε))
-		  Case Item.β
-		    CP.β = β+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		    CP.UseBasePhase = True
-		  Case Item.ψ
-		    CP.ψ = ψ+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		    CP.UseBaseAmplitude = True
-		    CP.UseBasePhase = True
-		  Case Item.Θ
-		    CP.Θ = Θ+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		    CP.UseBaseAmplitude = True
-		  Case Item.Φ
-		    CP.Φ = Φ+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		    CP.UseBaseAmplitude = True
-		  Case Item.χ10x
-		    CP.χ10x = χ10x+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		  Case Item.χ10y
-		    CP.χ10y = χ10y+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		  Case Item.χ10z
-		    CP.χ10z = χ10z+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		  Case Item.χ20x
-		    CP.χ20x = χ20x+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		  Case Item.χ20y
-		    CP.χ20y = χ20y+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		  Case Item.χ20z
-		    CP.χ20z = χ20z+ε
-		    CP.InvDε = 0.5/Abs(ε)
-		  End Select
-		  Return CP
+		Function Clone() As CaseParametersClass
+		  Var P As New CaseParametersClass
+		  P.Detectors = Detectors
+		  P.F0 = F0
+		  P.GM = GM
+		  P.GMΩe = GMΩe
+		  P.M1 = M1
+		  P.M2 = M2
+		  P.PNOrder = PNOrder
+		  P.R = R
+		  P.R0 = R0
+		  P.RunDuration = RunDuration
+		  P.Sn20 = Sn20
+		  P.SolveForM1 = SolveForM1
+		  P.SolveForM2 = SolveForM2
+		  P.SolveForR = SolveForR
+		  P.SolveForV0 = SolveForV0
+		  P.SolveForβ = SolveForβ
+		  P.SolveForΘ = SolveForΘ
+		  P.SolveForλ0 = SolveForλ0
+		  P.SolveForΦ = SolveForΦ
+		  P.SolveForχ10x = SolveForχ10x
+		  P.SolveForχ10y = SolveForχ10y
+		  P.SolveForχ10z = SolveForχ10z
+		  P.SolveForχ20x = SolveForχ20x
+		  P.SolveForχ20y = SolveForχ20y
+		  P.SolveForχ20z = SolveForχ20z
+		  P.SolveForψ = SolveForψ
+		  P.V0 = V0
+		  P.Ve = Ve
+		  P.Z = Z
+		  P.β = β
+		  P.δ = δ
+		  P.ΔT = ΔT
+		  P.η = η
+		  P.Θ = Θ
+		  P.Λ = Λ
+		  P.λ0 = λ0
+		  P.π = π
+		  P.ρ0 = ρ0
+		  P.Φ = Φ
+		  P.χ10x = χ10x
+		  P.χ10y = χ10y
+		  P.χ10z = χ10z
+		  P.χ20x = χ20x
+		  P.χ20y = χ20y
+		  P.χ20z = χ20z
+		  P.ψ = ψ
+		  Return P
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub FinishConstruction()
+		  // This method takes the information provided by the main window and fleshes out the parameter list.
+		  // This assumes that M1, M2 are in solar masses, F0 in mHz, R in lightyears, and angles in degrees.
+		  // The spin variables are assumed to be already unitless (in units of the star's squared  mass).
+		  // The run duration is assumed to be in years, but the step time is in seconds.
+		  
+		  Var Year As Double = 3.15576e7
+		  Var m As Double = M1 + M2  // total mass in solar masses
+		  GM = 4.9267e-6*m
+		  δ = (M1 - M2)/m // calculate delta
+		  η = M1*M2/(m*m)
+		  Var rInSeconds As Double = R*Year // get R in seconds
+		  R0 = 1.0e7*Year  // Defines the reference for R (10 Mly)
+		  Λ = rInSeconds/R0  // This is the unitless luminosity distance
+		  Var universe As New UniverseClass // Create a universe class to solve the Z(R) problem
+		  Z = universe.GetZFrom(rinSeconds) // get the Z value for the given value of R
+		  V0 = Pow(GM*F0*2*π*(1+localZ)/1000,1/3)  // Initialize V0
+		  π = 3.14159265358979324  // record the value of pi so that we only have to define it once
+		  // convert all angles from radians to degrees
+		  Var radiansFromDegrees As Double = π/180.0
+		  β = radiansFromDegrees*β
+		  ψ = radiansFromDegrees*ψ
+		  λ0 = radiansFromDegrees*λ0
+		  ρ0 = radiansFromDegrees*ρ0
+		  Θ = radiansFromDegrees*Θ
+		  Φ = radiansFromDegrees*Φ
+		  Ve = 9.936e-5   //Average orbital speed of the LISA detector
+		  GMΩe = GM*1.99213231e-7 //Unitless value of LISA's orbital frequency
+		  Var Noise As New NoiseClass(ΔT)
+		  Sn20 = Sqrt(Noise.GetNoise(0.002*F0))
+		End Sub
 	#tag EndMethod
 
 
@@ -122,10 +103,6 @@ Protected Class CaseParametersClass
 
 	#tag Property, Flags = &h0
 		GMΩe As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		InvDε As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -153,7 +130,19 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForH0 As Boolean = True
+		Sn20 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SolveForM1 As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SolveForM2 As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SolveForR As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -161,15 +150,7 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForZ As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		SolveForβ As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SolveForδ As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -210,14 +191,6 @@ Protected Class CaseParametersClass
 
 	#tag Property, Flags = &h0
 		SolveForψ As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		UseBaseAmplitude As Boolean = False
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		UseBasePhase As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -562,7 +535,7 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForH0"
+			Name="SolveForM1"
 			Visible=false
 			Group="Behavior"
 			InitialValue="True"
@@ -578,7 +551,7 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForZ"
+			Name="SolveForR"
 			Visible=false
 			Group="Behavior"
 			InitialValue="True"
@@ -594,7 +567,7 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForδ"
+			Name="SolveForM2"
 			Visible=false
 			Group="Behavior"
 			InitialValue="True"
@@ -698,14 +671,6 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="InvDε"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="R"
 			Visible=false
 			Group="Behavior"
@@ -722,23 +687,15 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="UseBaseAmplitude"
-			Visible=false
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UseBasePhase"
-			Visible=false
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Λ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sn20"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
