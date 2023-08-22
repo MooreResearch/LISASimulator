@@ -7,23 +7,23 @@ Protected Class PhaseEvolverClass
 		  VP = VN
 		  V0 = VN
 		  // Initialize spin-replated quantities
-		  χ1 = Sqrt(P.χ10x*P.χ10x + P.χ10y*χ1y + χ10z*χ10z)
-		  χ2 = Sqrt(P.χ02x*P.χ02x + P.χ20y*P.χ20y + P.χ20z*P.χ20z)
+		  χ1 = Sqrt(P.χ10x*P.χ10x + P.χ10y*P.χ10y + P.χ10z*P.χ10z)
+		  χ2 = Sqrt(P.χ20x*P.χ20x + P.χ20y*P.χ20y + P.χ20z*P.χ20z)
 		  If χ1 <> 0.0 Then
 		    χ1HatXN = P.χ10x/χ1
 		    χ1HatYN = P.χ10y/χ1
 		    χ1HatZN = P.χ10z/χ1
-		    χ1HatXP = P.χ1HatXN
-		    χ1HatYP = P.χ1HatYN
-		    χ1HatZP = P.χ1HatZN
+		    χ1HatXP = χ1HatXN
+		    χ1HatYP = χ1HatYN
+		    χ1HatZP = χ1HatZN
 		  End If
 		  If χ2 <> 0.0 Then
 		    χ2HatXN = P.χ20x/χ2
 		    χ2HatYN = P.χ20y/χ2
 		    χ2HatZN = P.χ20z/χ2
-		    χ2HatXP = P.χ2HatXN
-		    χ2HatYP = P.χ2HatYN
-		    χ2HatZP = P.χ2HatZN
+		    χ2HatXP = χ2HatXN
+		    χ2HatYP = χ2HatYN
+		    χ2HatZP = χ2HatZN
 		  End If
 		  Var δ As Double = P.δ
 		  Var η As Double = 0.25*(1.0 - δ*δ)
@@ -48,9 +48,9 @@ Protected Class PhaseEvolverClass
 		  χsXN = 0.25*(OnePlusδ*OnePlusδ*P.χ10x + OneMinusδ*OneMinusδ*P.χ20x)
 		  χsYN = 0.25*(OnePlusδ*OnePlusδ*P.χ10y + OneMinusδ*OneMinusδ*P.χ20y)
 		  χsZN = 0.25*(OnePlusδ*OnePlusδ*P.χ10z + OneMinusδ*OneMinusδ*P.χ20z)
-		  χaXN = 0.5*(OneMinusδ*χ20x-OnePlusδ*P.χ10x)
-		  χaYN = 0.5*(OneMinusδ*χ20y-OnePlusδ*P.χ10y)
-		  χaZN = 0.5*(OneMinusδ*χ20z-OnePlusδ*P.χ10z)
+		  χaXN = 0.5*(OneMinusδ*P.χ20x-OnePlusδ*P.χ10x)
+		  χaYN = 0.5*(OneMinusδ*P.χ20y-OnePlusδ*P.χ10y)
+		  χaZN = 0.5*(OneMinusδ*P.χ20z-OnePlusδ*P.χ10z)
 		  
 		  χsXP = χsXN
 		  χsYP = χsYN 
@@ -65,10 +65,10 @@ Protected Class PhaseEvolverClass
 		  
 		  Var LProj As Double = LXN*LXN + LYN*LYN // squared projection of LHat on xy plane
 		  If LProj > 0.0 then // If we don't have exactly zero total spin
-		    αN = Atan2(LYX,LXN) // we should be able to define alpha
+		    αN = Atan2(LYN,LXN) // we should be able to define alpha
 		    αP = αN  // Past is the same as the present
 		  Else // otherwise, these are the conventions for no spin evolution
-		    αN = Parameters.π
+		    αN = P.π
 		    αP = αN
 		    LZN = 1.0
 		    LZP = 1.0
@@ -112,17 +112,41 @@ Protected Class PhaseEvolverClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DoMiniPhaseStep(OneMinusRatio As Double, StepRatio As Double, OrbitPhase As Double, TwoDτPhase As Double)
-		  // This does just a phase step when the main step is shorter than a source step
-		  // Interpolate the value of ΨDot
-		  Var ΨDotMN As Double = OneMinusRatio*ΨDotP + StepRatio*ΨDotN
+		Sub DoMiniPhaseStep(OneMinusRatio As Double, StepRatio As Double, OrbitPhase As Double, TwoDτPhase As Double, BaseCase As Boolean = False)
+		  // This does a phase step when the main step is shorter than a source step
+		  // Interpolate the value of ΨDot to get the most accurate value at the center of the phase step
+		  Var ΨDotMN As Double 
+		  If StepRatio = 0.0 Then
+		    ΨDotMN = ΨDotN
+		  Else
+		    ΨDotMN = OneMinusRatio*ΨDotP + StepRatio*ΨDotN
+		  End If
 		  // Now calculate the phase
 		  ΨrF = ΨrP + TwoDτPhase*CVeSinΘ*Sin(OrbitPhase)*ΨDotMN
+		  If BaseCase Then // also evolve these phase derivatives
+		    DΨrDΘF = DΨrDΘP + TwoDτPhase*CVeCosΘ*Sin(OrbitPhase)*ΨDotMN
+		    DΨrDΦF = DΨrDΦF + TwoDτPhase*CVeSinΘ*Cos(OrbitPhase)*ΨDotMN
+		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DoStep(DτRatio As Double, TwoDτF As Double, OrbitalPhase As Double, TwoDτPhase, ByRef DτIdeal As Double)
+		Sub DoPhaseStep(DτRatio As Double, oneMinusRatio As Double, OrbitPhase As Double, TwoDτPhase As Double, BaseCase As Boolean = False)
+		  // This does a phase step when the main step is equal to or larger  than a source step
+		  // When DτRatio ≠ 1, meaning that the next step is smaller, then we need to interpolate to find the correct past value.
+		  // (If DτRatio = 1, this effectively does nothing, but it is probably faster to calculate it then to do the check.)
+		  ΨrP = oneMinusRatio*ΨrN + DτRatio*ΨrP
+		  // Now calculate the phase
+		  ΨrF = ΨrP + TwoDτPhase*CVeSinΘ*Sin(OrbitPhase)*ΨDotN
+		  If BaseCase Then // also evolve these phase derivatives
+		    DΨrDΘF = DΨrDΘP + TwoDτPhase*CVeCosΘ*Sin(OrbitPhase)*ΨDotN
+		    DΨrDΦF = DΨrDΦF + TwoDτPhase*CVeSinΘ*Cos(OrbitPhase)*ΨDotN
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DoStep(DτRatio As Double, TwoDτF As Double, ByRef DτIdeal As Double)
 		  // Make future the present, as long as this is not the trial step or the first step
 		  // Since a future time step of zero is impossible, we are using that value as a flag
 		  // that this is either a test step or a future
@@ -274,7 +298,7 @@ Protected Class PhaseEvolverClass
 		        // and if the intercept with the x axis is negative, meaning we are going
 		        // from the second quadrant to the third, then ATan jumps from π to -π,
 		        // so we add 2π to compensate
-		        If (LYF*LXN - LXF*LYN)/(LYF-LYN) < 0.0 Then αF = αF + 2*Parameters.π
+		        If (LYF*LXN - LXF*LYN)/(LYF-LYN) < 0.0 Then αF = αF + 2*π
 		      Elseif LYF > 0.0 and LYN < 0.0 Then // If we are crossing the x axis upward
 		        // and if the intercept with the x axis is negative, meaning we are going
 		        // from the third quadrant to the second, then ATan jumps from -π to π,
@@ -308,11 +332,12 @@ Protected Class PhaseEvolverClass
 		  
 		  // Now calculate the current frequency
 		  ΨDotN = v3 - LZN*αDotN - 6.0*v2*(3.0*Log(VN/V0) + 1.0)*vDotN
-		  // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
-		  // but it is probably faster just to do the calculation
-		  ΨrP = oneMinusRatio*ΨrN + DτRatio*ΨrP
-		  // calculate the phase
-		  ΨrF = ΨrP + TwoDτPhase*CVeSinΘ*Sin(OrbitalPhase)
+		  '// If the next step is different than the previous step (DτRatio ≠ 1) and the phase step is equal to the source step
+		  '// then we need to interpolate to find the correct past value. But if the phase step is different (smaller) than the
+		  '// source step, then our source steps are larger than the phase steps, so the past value will still be correct
+		  'If DτRatio <> 1.0 And TwoDτPhase = TwoDτF Then ΨrP = oneMinusRatio*ΨrN + DτRatio*ΨrP
+		  '// calculate the phase
+		  'ΨrF = ΨrP + TwoDτPhase*CVeSinΘ*Sin(OrbitalPhase)
 		End Sub
 	#tag EndMethod
 
@@ -391,6 +416,30 @@ Protected Class PhaseEvolverClass
 
 	#tag Property, Flags = &h0
 		DτIdeal As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DΨrDΘF As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DΨrDΘN As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DΨrDΘP As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DΨrDΦF As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DΨrDΦN As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DΨrDΦP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1401,6 +1450,62 @@ Protected Class PhaseEvolverClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="χaZP"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="VPold"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΨrDΘF"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΨrDΘN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΨrDΘP"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΨrDΦF"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΨrDΦN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΨrDΦP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

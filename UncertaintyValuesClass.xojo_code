@@ -17,15 +17,7 @@ Protected Class UncertaintyValuesClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		OfV0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		Ofβ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Ofδ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -147,7 +139,7 @@ Protected Class UncertaintyValuesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="OfV0"
+			Name="OfF0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -156,14 +148,6 @@ Protected Class UncertaintyValuesClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Ofβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Ofδ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

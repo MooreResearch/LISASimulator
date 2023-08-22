@@ -1,7 +1,7 @@
 #tag Class
 Protected Class EvolverClass
 	#tag Method, Flags = &h0
-		Sub AssembleDerivatives(N As Integer)
+		Sub AssembleDerivatives()
 		  // These constants help us build the detector functions
 		  Static cos2ψ As Double = Cos(2*Parameters.ψ)
 		  Static sin2ψ As Double = Sin(2*Parameters.ψ)
@@ -24,8 +24,7 @@ Protected Class EvolverClass
 		  Static c2Θ As Double = cΘ*cΘ - sΘ*sΘ
 		  
 		  // Now start calculating detector functions
-		  Var τr As Double = N*Parameters.ΔT/Parameters.GM
-		  Var ρ As Double = Parameters.GMΩe*τr
+		  Var ρ As Double = Parameters.GMΩe*N*Dτr
 		  Var s210 As Double = Sin(2.0*ρ - σ1)
 		  Var s012 As Double = Sin(σ1 - 2.0*Parameters.Φ)
 		  Var s412 As Double = Sin(4.0*ρ - σ1 - 2.0*Parameters.Φ)
@@ -50,7 +49,6 @@ Protected Class EvolverClass
 		  Var dfp1dΦ As Double = cos2ψ*ddpdΦ - sin2ψ*ddxdΦ
 		  Var dfx1dΦ As Double = sin2ψ*ddpdΦ + cos2ψ*ddxdΦ
 		  
-		  
 		  // repeat the whole thing again for detector 2
 		  Var fp2 As Double
 		  Var fx2 As Double
@@ -59,7 +57,7 @@ Protected Class EvolverClass
 		  Var dfp2dΦ As Double
 		  Var dfx2dΦ As Double
 		  If Parameters.Detectors = 2 Then
-		    // Note that if we don't have 2 detectors, then the variables above will be zero.
+		    // Note that if we don't have 2 detectors, then the variables above will all be zero.
 		    s210 = Sin(2.0*ρ - σ2)
 		    s012 = Sin(σ2 - 2.0*Parameters.Φ)
 		    s412 = Sin(4.0*ρ - σ2 - 2.0*Parameters.Φ)
@@ -84,32 +82,454 @@ Protected Class EvolverClass
 		    dfp2dΦ = cos2ψ*ddpdΦ - sin2ψ*ddxdΦ
 		    dfx2dΦ = sin2ψ*ddpdΦ + cos2ψ*ddxdΦ
 		  End If
-		  
-		  // Calculate overall wave amplitude constant
-		  Var h0 As Double = 0.5*(1.0 - Parameters.δ*Parameters.δ)/Parameters.Λ
+		  Var fp As Double = fp1 + fp2
+		  Var fx As Double = fx1 + fx2
 		  
 		  // Assemble the base case situation
 		  
 		  GetDataAtMainStep(PhaseEvolverBase)
 		  CalculateWaveFactors
-		  CalculateAmplitudes(Cosβ, Sinβ, Parameters.δ)
+		  CalculateAmplitudes
+		  SumSourceH(W)
 		  
 		  // Calculate the derivative with respect to ψ (this is the easy one!)
-		  DHDq(Item.ψ) = 2.0*h0*(-fx1*HP + fp1*HX - fx2*HP + fp2*HX)
+		  DHDq(Integer(Item.ψ)) = 2.0*(-fx*HP + fp*HX)
 		  
+		  // Store valuable variables for later use
+		  Var hpBase As Double = HP
+		  Var hxBase As Double = HX
+		  Var hBase As Double = fp*HP + fx*HX
+		  SumSourceH(DWDα)
+		  Var dHDα As Double = fp*HP + fx*HX
+		  SumSourceH(DWDΨ)
+		  Var dHDΨr As Double = fp*HP + fx*HX
+		  // This gets the derivative of the amplitude part of the wave with respect to V
+		  SumSourceH(W, True)
+		  Var dHDV As Double = fp*HP + fx*HX
+		  
+		  // in the case of λ0, DΨrDλ0 = 1, so the following is the correct total derivative.
+		  DHDq(Integer(Item.λ0)) = dHDΨr
+		  
+		  // We can also use the above items to calculate the derivative with respect to Θ
+		  DHDq(Integer(Item.Θ)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
+		  + dHDΨr*DΨrDΘMN
+		  
+		  // and the derivative with respect to Φ
+		  DHDq(Integer(Item.Φ)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
+		  + dHDΨr*DΨrDΦMN
+		  
+		  // Now we will start calculating derivatives that involve derivatives of the wave amplitudes
+		  // First, calculate the derivative with respect to β
+		  Var originalValue As Double = Cosβ // Store these values for safekeeping
+		  Var originalValue2 As Double = Sinβ
+		  Cosβ = CosβPlus  // Reset their values to the plus tweaked versions
+		  Sinβ = SinβPlus
+		  CalculateAmplitudes  // calculate amplitudes using these tweaked values
+		  SumSourceH(W)  // and calculate the waves with these amplitudes
+		  Var hPlus As Double = fp*HP + fx*HX  // save the results for later
+		  Cosβ = CosβMinus  // now reset the values of Cosβ, Sinβ to the minus tweaked version
+		  Sinβ = SinβMinus
+		  CalculateAmplitudes // calculate the amplitudes using these tweaked values
+		  SumSourceH(W) // and calculate the waves
+		  Cosβ = originalValue  // restore the original values of of Cosβ, Sinβ, so that no harm is done
+		  Sinβ = originalValue2
+		  DHDq(Integer(Item.β)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
+		  
+		  // Most of the remaining parameters require all or nearly all the following amplitude derivatives
+		  // because varying the parameters have either implicit or explicit effects on the quantities that
+		  // the wave amplitudes depend on.
+		  
+		  // Calculate amplitude derivative with respect to ι
+		  Var ε As Double = 1.0e-5
+		  originalValue = ιMN
+		  ιMN = ιMN + ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  hPlus = fp*HP + fx*HX
+		  ιMN = originalValue - ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  ιMN = originalValue
+		  Var dHDι As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  
+		  // Calculate amplitude derivative with respect to δ
+		  ε = 1.0e-5  // (one can reset this for individual cases if desired without affecting others)
+		  originalValue = δ
+		  originalValue2 = η
+		  δ = δ + ε
+		  η = 0.25*(1.0-δ*δ)
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  hPlus = fp*HP + fx*HX
+		  δ = originalValue - ε
+		  η = 0.25*(1.0-δ*δ)
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  δ = originalValue
+		  η = originalValue2
+		  Var dHDδ As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  
+		  // Calculate amplitude derivative with respect to χax
+		  ε = 1.0e-5
+		  originalValue = χaxMN
+		  χaxMN = χaxMN + ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  hPlus = fp*HP + fx*HX
+		  χaxMN = originalValue - ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  χaxMN = originalValue
+		  Var dHDχax As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  
+		  // Calculate amplitude derivative with respect to χay
+		  ε = 1.0e-5
+		  originalValue = χayMN
+		  χayMN = χayMN + ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  hPlus = fp*HP + fx*HX
+		  χayMN = originalValue - ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  χayMN = originalValue
+		  Var dHDχay As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  
+		  // Calculate amplitude derivative with respect to χaz
+		  ε = 1.0e-5
+		  originalValue = χazMN
+		  χazMN = χazMN + ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  hPlus = fp*HP + fx*HX
+		  χazMN = originalValue - ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  χazMN = originalValue
+		  Var dHDχaz As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  
+		  // Calculate amplitude derivative with respect to χsx
+		  ε = 1.0e-5
+		  originalValue = χsxMN
+		  χsxMN = χsxMN + ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  hPlus = fp*HP + fx*HX
+		  χsxMN = originalValue - ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  χsxMN = originalValue
+		  Var dHDχsx As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  
+		  // Calculate amplitude derivative with respect to χsy
+		  ε = 1.0e-5
+		  originalValue = χsyMN
+		  χsyMN = χsyMN + ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  hPlus = fp*HP + fx*HX
+		  χsyMN = originalValue - ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  χsyMN = originalValue
+		  Var dHDχsy As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  
+		  // Calculate amplitude derivative with respect to χsz
+		  ε = 1.0e-5
+		  originalValue = χszMN
+		  χszMN = χszMN + ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  hPlus = fp*HP + fx*HX
+		  χszMN = originalValue - ε
+		  CalculateAmplitudes
+		  SumSourceH(W)
+		  χszMN = originalValue
+		  Var dHDχsz As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  
+		  // Calculate the derivative with respect to q = lnΛ
+		  Var dαDq As Double = (αMN - α0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dΨrDq As Double = (ΨrMN - Parameters.λ0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dVDq As Double = (VMN - Parameters.V0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dιDq As Double = (ιMN - ι0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dδDq As Double // We'll need this later
+		  Var dχaxDq As Double = (χaxMN - χax0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dχayDq As Double = (χayMN - χay0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dχazDq As Double = (χazMN - χaz0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dχsxDq As Double = (χsxMN - χsx0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dχsyDq As Double = (χsyMN - χsy0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  Var dχszDq As Double = (χszMN - χsz0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  
+		  // Now, we put it all together (The first term is actually the derivative of h0 with respect to lnΛ).
+		  DHDq(Integer(Item.Λ)) = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq+ dHDχsz*dχszDq
+		  
+		  // Calculate the derivative with respect to q = lnF0
+		  GetDataAtMainStep(PhaseEvolverF0Plus)
+		  Var ιPlus As Double = ιMN
+		  Var αPlus As Double = αMN
+		  Var ΨrPlus As Double = ΨrMN
+		  Var VPlus As Double = VMN
+		  Var χaxPlus As Double = χaxMN
+		  Var χayPlus As Double = χayMN
+		  Var χazPlus As Double = χazMN
+		  Var χsxPlus As Double = χsxMN
+		  Var χsyPlus As Double = χsyMN
+		  Var χszPlus As Double = χszMN
+		  GetDataAtMainStep(PhaseEvolverF0Minus)
+		  dαDq = (αPlus - αMN)*IDεForF0
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForF0
+		  dιDq = (ιPlus - ιMN)*IDεForF0
+		  dVDq = (VPlus - VMN)*IDεForF0
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForF0
+		  dχayDq = (χayPlus - χayMN)*IDεForF0
+		  dχazDq = (χazPlus - χazMN)*IDεForF0
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForF0
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForF0
+		  dχszDq = (χszPlus - χszMN)*IDεForF0
+		  // Put it all together
+		  DHDq(Integer(Item.F0)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  
+		  // Calculate the derivative with respect to q = lnM1
+		  GetDataAtMainStep(PhaseEvolverM1Plus)
+		  ιPlus = ιMN
+		  αPlus = αMN
+		  ΨrPlus = ΨrMN
+		  VPlus = VMN
+		  χaxPlus = χaxMN
+		  χayPlus = χayMN
+		  χazPlus = χazMN
+		  χsxPlus = χsxMN
+		  χsyPlus = χsyMN
+		  χszPlus = χszMN
+		  GetDataAtMainStep(PhaseEvolverM1Minus)
+		  dαDq = (αPlus - αMN)*IDεForM1
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForM1
+		  dVDq = (VPlus - VMN)*IDεForM1
+		  dιDq = (ιPlus - ιMN)*IDεForM1
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForM1
+		  dχayDq = (χayPlus - χayMN)*IDεForM1
+		  dχazDq = (χazPlus - χazMN)*IDεForM1
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForM1
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForM1
+		  dχszDq = (χszPlus - χszMN)*IDεForM1
+		  dδDq = 2.0*η  // this can be calculated analytically
+		  // Put it all together
+		  DHDq(Integer(Item.M1)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
+		  
+		  // Calculate the derivative with respect to q = lnM2
+		  GetDataAtMainStep(PhaseEvolverM2Plus)
+		  ιPlus = ιMN
+		  αPlus = αMN
+		  ΨrPlus = ΨrMN
+		  VPlus = VMN
+		  χaxPlus = χaxMN
+		  χayPlus = χayMN
+		  χazPlus = χazMN
+		  χsxPlus = χsxMN
+		  χsyPlus = χsyMN
+		  χszPlus = χszMN
+		  GetDataAtMainStep(PhaseEvolverM2Minus)
+		  dαDq = (αPlus - αMN)*IDεForM2
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForM2
+		  dVDq = (VPlus - VMN)*IDεForM2
+		  dιDq = (ιPlus - ιMN)*IDεForM2
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForM2
+		  dχayDq = (χayPlus - χayMN)*IDεForM2
+		  dχazDq = (χazPlus - χazMN)*IDεForM2
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForM2
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForM2
+		  dχszDq = (χszPlus - χszMN)*IDεForM2
+		  // Put it all together
+		  DHDq(Integer(Item.M2)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
+		  
+		  // Calculate the derivative with respect to q = χ10x
+		  GetDataAtMainStep(PhaseEvolverχ10xPlus)
+		  ιPlus = ιMN
+		  αPlus = αMN
+		  ΨrPlus = ΨrMN
+		  VPlus = VMN
+		  χaxPlus = χaxMN
+		  χayPlus = χayMN
+		  χazPlus = χazMN
+		  χsxPlus = χsxMN
+		  χsyPlus = χsyMN
+		  χszPlus = χszMN
+		  GetDataAtMainStep(PhaseEvolverχ10xMinus)
+		  dαDq = (αPlus - αMN)*IDεForχ10x
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForχ10x
+		  dVDq = (VPlus - VMN)*IDεForχ10x
+		  dιDq = (ιPlus - ιMN)*IDεForχ10x
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForχ10x
+		  dχayDq = (χayPlus - χayMN)*IDεForχ10x
+		  dχazDq = (χazPlus - χazMN)*IDεForχ10x
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForχ10x
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForχ10x
+		  dχszDq = (χszPlus - χszMN)*IDεForχ10x
+		  // Put it all together
+		  DHDq(Integer(Item.χ10x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  
+		  // Calculate the derivative with respect to q = χ10y
+		  GetDataAtMainStep(PhaseEvolverχ10yPlus)
+		  ιPlus = ιMN
+		  αPlus = αMN
+		  ΨrPlus = ΨrMN
+		  VPlus = VMN
+		  χaxPlus = χaxMN
+		  χayPlus = χayMN
+		  χazPlus = χazMN
+		  χsxPlus = χsxMN
+		  χsyPlus = χsyMN
+		  χszPlus = χszMN
+		  GetDataAtMainStep(PhaseEvolverχ10yMinus)
+		  dαDq = (αPlus - αMN)*IDεForχ10y
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForχ10y
+		  dVDq = (VPlus - VMN)*IDεForχ10y
+		  dιDq = (ιPlus - ιMN)*IDεForχ10y
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForχ10y
+		  dχayDq = (χayPlus - χayMN)*IDεForχ10y
+		  dχazDq = (χazPlus - χazMN)*IDεForχ10y
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForχ10y
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForχ10y
+		  dχszDq = (χszPlus - χszMN)*IDεForχ10y
+		  // Put it all together
+		  DHDq(Integer(Item.χ10y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  
+		  // Calculate the derivative with respect to q = χ10z
+		  GetDataAtMainStep(PhaseEvolverχ10zPlus)
+		  ιPlus = ιMN
+		  αPlus = αMN
+		  ΨrPlus = ΨrMN
+		  VPlus = VMN
+		  χaxPlus = χaxMN
+		  χayPlus = χayMN
+		  χazPlus = χazMN
+		  χsxPlus = χsxMN
+		  χsyPlus = χsyMN
+		  χszPlus = χszMN
+		  GetDataAtMainStep(PhaseEvolverχ10zMinus)
+		  dαDq = (αPlus - αMN)*IDεForχ10z
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForχ10z
+		  dVDq = (VPlus - VMN)*IDεForχ10z
+		  dιDq = (ιPlus - ιMN)*IDεForχ10z
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForχ10z
+		  dχayDq = (χayPlus - χayMN)*IDεForχ10z
+		  dχazDq = (χazPlus - χazMN)*IDεForχ10z
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForχ10z
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForχ10z
+		  dχszDq = (χszPlus - χszMN)*IDεForχ10z
+		  // Put it all together
+		  DHDq(Integer(Item.χ10z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  
+		  // Calculate the derivative with respect to q = χ20x
+		  GetDataAtMainStep(PhaseEvolverχ20xPlus)
+		  ιPlus = ιMN
+		  αPlus = αMN
+		  ΨrPlus = ΨrMN
+		  VPlus = VMN
+		  χaxPlus = χaxMN
+		  χayPlus = χayMN
+		  χazPlus = χazMN
+		  χsxPlus = χsxMN
+		  χsyPlus = χsyMN
+		  χszPlus = χszMN
+		  GetDataAtMainStep(PhaseEvolverχ20xMinus)
+		  dαDq = (αPlus - αMN)*IDεForχ20x
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForχ20x
+		  dVDq = (VPlus - VMN)*IDεForχ20x
+		  dιDq = (ιPlus - ιMN)*IDεForχ20x
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForχ20x
+		  dχayDq = (χayPlus - χayMN)*IDεForχ20x
+		  dχazDq = (χazPlus - χazMN)*IDεForχ20x
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForχ20x
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForχ20x
+		  dχszDq = (χszPlus - χszMN)*IDεForχ20x
+		  // Put it all together
+		  DHDq(Integer(Item.χ20x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  
+		  // Calculate the derivative with respect to q = χ20y
+		  GetDataAtMainStep(PhaseEvolverχ20yPlus)
+		  ιPlus = ιMN
+		  αPlus = αMN
+		  ΨrPlus = ΨrMN
+		  VPlus = VMN
+		  χaxPlus = χaxMN
+		  χayPlus = χayMN
+		  χazPlus = χazMN
+		  χsxPlus = χsxMN
+		  χsyPlus = χsyMN
+		  χszPlus = χszMN
+		  GetDataAtMainStep(PhaseEvolverχ20yMinus)
+		  dαDq = (αPlus - αMN)*IDεForχ20y
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForχ20y
+		  dVDq = (VPlus - VMN)*IDεForχ20y
+		  dιDq = (ιPlus - ιMN)*IDεForχ20y
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForχ20y
+		  dχayDq = (χayPlus - χayMN)*IDεForχ20y
+		  dχazDq = (χazPlus - χazMN)*IDεForχ20y
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForχ20y
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForχ20y
+		  dχszDq = (χszPlus - χszMN)*IDεForχ20y
+		  // Put it all together
+		  DHDq(Integer(Item.χ20y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  
+		  // Calculate the derivative with respect to q = χ20z
+		  GetDataAtMainStep(PhaseEvolverχ20zPlus)
+		  ιPlus = ιMN
+		  αPlus = αMN
+		  ΨrPlus = ΨrMN
+		  VPlus = VMN
+		  χaxPlus = χaxMN
+		  χayPlus = χayMN
+		  χazPlus = χazMN
+		  χsxPlus = χsxMN
+		  χsyPlus = χsyMN
+		  χszPlus = χszMN
+		  GetDataAtMainStep(PhaseEvolverχ20zMinus)
+		  dαDq = (αPlus - αMN)*IDεForχ20z
+		  dΨrDq = (ΨrPlus - ΨrMN)*IDεForχ20z
+		  dVDq = (VPlus - VMN)*IDεForχ20z
+		  dιDq = (ιPlus - ιMN)*IDεForχ20z
+		  dχaxDq = (χaxPlus - χaxMN)*IDεForχ20z
+		  dχayDq = (χayPlus - χayMN)*IDεForχ20z
+		  dχazDq = (χazPlus - χazMN)*IDεForχ20z
+		  dχsxDq = (χsxPlus - χsxMN)*IDεForχ20z
+		  dχsyDq = (χsyPlus - χsyMN)*IDεForχ20z
+		  dχszDq = (χszPlus - χszMN)*IDεForχ20z
+		  // Put it all together
+		  DHDq(Integer(Item.χ20z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub CalculateAmplitudes(MyCosβ As Double, MySinβ As Double, δ As Double)
+		Sub CalculateAmplitudes()
 		  // Now calculate all wave amplitudes
 		  
 		  // Calculate some useful trig functions of angle ι
-		  Var c2 As Double = Cos(ι)
-		  Var s2 As Double = Sin(ι)
-		  Var c1 As Double = Cos(0.5*ι)
-		  Var s1 As Double = Sin(0.5*ι)
+		  Var c2 As Double = Cos(ιMN)
+		  Var s2 As Double = Sin(ιMN)
+		  Var c1 As Double = Cos(0.5*ιMN)
+		  Var s1 As Double = Sin(0.5*ιMN)
 		  Var c3 As Double = c2*c1 - s2*s1
 		  Var s3 As Double = s2*c1 + c2*s1
 		  Var c4 As Double = c2*c2-s2*s2
@@ -152,8 +572,8 @@ Protected Class EvolverClass
 		  Var s2p4 As Double = s2p3*s2
 		  
 		  // Define local β trig functions
-		  Var cβ As Double = MyCosβ
-		  Var sβ As Double = MySinβ
+		  Var cβ As Double = Cosβ
+		  Var sβ As Double = Sinβ
 		  Var c2β As Double = cβ*cβ - sβ*sβ
 		  Var s2β As Double = 2*sβ*cβ
 		  Var c3β As Double = c2β*cβ - s2β*sβ
@@ -166,9 +586,6 @@ Protected Class EvolverClass
 		  Var cβ3 As Double = c2β*cβ
 		  Var sβ2 As Double = sβ*sβ
 		  Var sβ3 As Double = s2β*sβ
-		  
-		  // Define η
-		  Var η As Double = 0.25*(1.0 - δ*δ)
 		  
 		  // Amplitudes for H0P
 		  A(0) = (-1.5 - 0.5*c2β)*c1p4
@@ -536,7 +953,7 @@ Protected Class EvolverClass
 		Sub CalculateWaveFactors()
 		  // Calculate signal-to-noise rations
 		  // This is the value of the observed orbital frequency in Hz
-		  Var fN As Double =  VMN*VMN*VMN/(2*Parameters.π*Parameters.GM*(1.0 + Parameters.Z))
+		  Var fN As Double =  VMN*VMN*VMN/(2*Parameters.π*Parameters.GM)*Parameters.IVOnePlusZ
 		  //  get the noise at various frequencies
 		  // The following set of variables contains ratios that we will use to enhance derivatives of harmonics at higher frequencies
 		  // to reflect how they may be better or more poorly received by the detector than the fundamental harmonic
@@ -576,7 +993,7 @@ Protected Class EvolverClass
 		  
 		  // Now basically calculate all possible combinations
 		  For j As Integer = 1 to 5
-		    For k As Integer 1 to 5
+		    For k As Integer = 1 to 5
 		      CosApΨ(j,k) = CosApΨ(j,0)*CosApΨ(0,k) - SinApΨ(j,0)*SinApΨ(0,k)
 		      CosAmΨ(j,k) = CosApΨ(j,0)*CosApΨ(0,k) + SinApΨ(j,0)*SinApΨ(0,k)
 		      SinApΨ(j,k)  = SinApΨ(j,0)*CosApΨ(0,k) + CosApΨ(j,0)*SinApΨ(0,k)
@@ -661,66 +1078,83 @@ Protected Class EvolverClass
 		  SinβPlus = Sin(P.β+εForβ)
 		  CosβMinus = Cos(P.β-εForβ)
 		  SinβMinus = Sin(P.β-εForβ)
+		  δ = P.δ
+		  η = 0.25*(1.0 - δ*δ)
 		  
 		  // Set up the base case
 		  PhaseEvolverBase = New PhaseEvolverClass(P)
-		  δBase = P.δ
+		  // We need the following for calculating the z-derivative
+		  α0 = PhaseEvolverBase.αN
+		  ι0 = PhaseEvolverBase.ιN
+		  χax0 = PhaseEvolverBase.χaXN
+		  χay0 = PhaseEvolverBase.χaYN
+		  χaz0 = PhaseEvolverBase.χaZN
+		  χsx0 = PhaseEvolverBase.χsXN
+		  χsy0 = PhaseEvolverBase.χsYN
+		  χsz0 = PhaseEvolverBase.χsZN
 		  
 		  // Set up phase evolvers where the value of M1 is tweaked
-		  εForM1 = 1.0e-5
-		  PhaseEvolverM1Minus = New PhaseEvolverClass(Tweak(Item.M1), -εForM1)
-		  PhaseEvolverM1Plus = New PhaseEvolverClass(Tweak(Item.M1), +εForM1)
+		  Var ε As Double = 1.0e-5
+		  PhaseEvolverM1Minus = New PhaseEvolverClass(Tweak(Item.M1, -ε))
+		  PhaseEvolverM1Plus = New PhaseEvolverClass(Tweak(Item.M1, ε))
+		  IDεForM1 = 0.5/ε
 		  
 		  // Set up phase evolvers where the value of M2 is tweaked
-		  εForM2 = 1.0e-5
-		  PhaseEvolverM2Minus = New PhaseEvolverClass(Tweak(Item.M2), -εForM2)
-		  PhaseEvolverM2Plus = New PhaseEvolverClass(Tweak(Item.M2), +εForM2)
+		  ε = 1.0e-5
+		  PhaseEvolverM2Minus = New PhaseEvolverClass(Tweak(Item.M2, -ε))
+		  PhaseEvolverM2Plus = New PhaseEvolverClass(Tweak(Item.M2, ε))
+		  IDεForM2 = 0.5/ε
 		  
-		  // Set up phase evolvers where the value of V0 is adjusted
-		  εForV0 = 1.0e-5
-		  PhaseEvolverV0Minus = New PhaseEvolverClass(Tweak(Item.V0), -εForV0)
-		  PhaseEvolverV0Plus = New PhaseEvolverClass(Tweak(Item.V0), +εForV0)
+		  // Set up phase evolvers where the value of F0 is adjusted
+		  ε = 1.0e-5
+		  PhaseEvolverF0Minus = New PhaseEvolverClass(Tweak(Item.F0, -ε))
+		  PhaseEvolverF0Plus = New PhaseEvolverClass(Tweak(Item.F0, ε))
+		  IDεForF0 = 0.5/ε
 		  
 		  // Set up phase evolvers where the value of χ10x is adjusted
-		  εForχ10x = 1.0e-5
-		  PhaseEvolverχ10xMinus = New PhaseEvolverClass(Tweak(Item.χ10x), -εForχ10x)
-		  PhaseEvolverχ10xPlus = New PhaseEvolverClass(Tweak(Item.χ10x), +εForχ10x)
+		  ε = 1.0e-5
+		  PhaseEvolverχ10xMinus = New PhaseEvolverClass(Tweak(Item.χ10x, -ε))
+		  PhaseEvolverχ10xPlus = New PhaseEvolverClass(Tweak(Item.χ10x, ε))
+		  IDεForχ10x = 0.5/ε
 		  
 		  // Set up phase evolvers where the value of χ10y is adjusted
-		  εForχ10y = 1.0e-5
-		  PhaseEvolverχ10yMinus = New PhaseEvolverClass(Tweak(Item.χ10y), -εForχ10y)
-		  PhaseEvolverχ10yPlus = New PhaseEvolverClass(Tweak(Item.χ10y), +εForχ10y)
+		  ε = 1.0e-5
+		  PhaseEvolverχ10yMinus = New PhaseEvolverClass(Tweak(Item.χ10y, -ε))
+		  PhaseEvolverχ10yPlus = New PhaseEvolverClass(Tweak(Item.χ10y, ε))
+		  IDεForχ10y = 0.5/ε
 		  
 		  // Set up phase evolvers where the value of χ10z is adjusted
-		  εForχ10z = 1.0e-5
-		  PhaseEvolverχ10zMinus = New PhaseEvolverClass(Tweak(Item.χ10z), -εForχ10z)
-		  PhaseEvolverχ10zPlus = New PhaseEvolverClass(Tweak(Item.χ10z), +εForχ10z)
+		  ε = 1.0e-5
+		  PhaseEvolverχ10zMinus = New PhaseEvolverClass(Tweak(Item.χ10z, -ε))
+		  PhaseEvolverχ10zPlus = New PhaseEvolverClass(Tweak(Item.χ10z, ε))
+		  IDεForχ10z = 0.5/ε
 		  
 		  // Set up phase evolvers where the value of χ20x is adjusted
-		  εForχ20x = 1.0e-5
-		  PhaseEvolverχ20xMinus = New PhaseEvolverClass(Tweak(Item.χ20x), -εForχ20x)
-		  PhaseEvolverχ20xPlus = New PhaseEvolverClass(Tweak(Item.χ20x), +εForχ20x)
+		  ε = 1.0e-5
+		  PhaseEvolverχ20xMinus = New PhaseEvolverClass(Tweak(Item.χ20x, -ε))
+		  PhaseEvolverχ20xPlus = New PhaseEvolverClass(Tweak(Item.χ20x, ε))
+		  IDεForχ20x = 0.5/ε
 		  
 		  // Set up phase evolvers where the value of χ20y is adjusted
-		  εForχ20y = 1.0e-5
-		  PhaseEvolverχ20yMinus = New PhaseEvolverClass(Tweak(Item.χ20y), -εForχ20y)
-		  PhaseEvolverχ20yPlus = New PhaseEvolverClass(Tweak(Item.χ20y), +εForχ20y)
+		  ε = 1.0e-5
+		  PhaseEvolverχ20yMinus = New PhaseEvolverClass(Tweak(Item.χ20y, -ε))
+		  PhaseEvolverχ20yPlus = New PhaseEvolverClass(Tweak(Item.χ20y, ε))
+		  IDεForχ20y = 0.5/ε
 		  
 		  // Set up phase evolvers where the value of χ20z is adjusted
-		  εForχ20z = 1.0e-5
-		  PhaseEvolverχ20zMinus = New PhaseEvolverClass(Tweak(Item.χ20z), -εForχ20z)
-		  PhaseEvolverχ20zPlus = New PhaseEvolverClass(Tweak(Item.χ20z), -εForχ20z)
+		  ε = 1.0e-5
+		  PhaseEvolverχ20zMinus = New PhaseEvolverClass(Tweak(Item.χ20z, -ε))
+		  PhaseEvolverχ20zPlus = New PhaseEvolverClass(Tweak(Item.χ20z, ε))
+		  IDεForχ20z = 0.5/ε
 		  
 		  // Calculate derivative of Z with respect to Λ
 		  Var universe As New UniverseClass
-		  εForΛ = 1.0e-5
+		  Var εForΛ As Double = 1.0e-5
 		  Var rInSeconds As Double = P.R*(1.0 + εForΛ)
 		  Var zpε As Double = universe.GetZFrom(rInSeconds)
-		  Var Λpε As Double = P.Λ*(1.0 + εForΛ)
 		  rInSeconds = P.R*(1.0 - εForΛ)
 		  Var zmε As Double = universe.GetZFrom(rInSeconds)
-		  Var Λmε As Double = P.Λ*(1.0 - εForΛ)
-		  DZDΛ = (zpε - zmε)/(Λpε - Λmε)
+		  DZDlnΛ = (zpε - zmε)/(2.0*εForΛ)
 		  Dτr = P.ΔT/P.GM  // Get the value of the main time step at the detector
 		  DτF = Dτr/(1.0+P.Z)  // This is time step at the source
 		  // do a trial step to get a value of DτIdeal.
@@ -728,26 +1162,26 @@ Protected Class EvolverClass
 		  // Note that DτIdeal is passed by reference, so each case has an opportunity to
 		  // tweak its value. This is necessary because the base case may have no spin,
 		  // while some side cases might have a spin that requires a certain step size.
-		  // Note that the orbital phase is irrelevant here.
-		  PhaseEvolverBase.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverM1Minus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverM1Plus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverM2Minus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverM2Plus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverV0Minus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverV0Plus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ10xMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ10xPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ10yMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ10yPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ10zMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ10zPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ20xMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ20xPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ20yMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ20yPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ20zMinus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
-		  PhaseEvolverχ20zPlus.DoStep(0.0, DτF, 1.0, 0.0, DτIdeal)
+		  // A first argument of zero indicates a trial step here.
+		  PhaseEvolverBase.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverM1Minus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverM1Plus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverM2Minus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverM2Plus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverF0Minus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverF0Plus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10xMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10xPlus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10yMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10yPlus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10zMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10zPlus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20xMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20xPlus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20yMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20yPlus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20zMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20zPlus.DoStep(0.0, DτF, DτIdeal)
 		  
 		  // Now set up the actual first time step
 		  // The ratio of the real future step will be some power of two of the main step.
@@ -756,34 +1190,41 @@ Protected Class EvolverClass
 		  StepPowerFF = NewStepPower // initalize the CurrentStepPower
 		  StepPowerF = NewStepPower
 		  StepPowerP = NewStepPower
-		  DτFF = Dτr*2^StepPowerF/(1.0 + P.Z) // and initialize DτFF
+		  DτFF = Dτr*2^StepPowerF*P.IVOnePlusZ  // and initialize DτFF
 		  DτF = DτFF // and set DτF
 		  DτP = DτF  // and DτP to be the same
 		  
 		  // Finally, do an actual first (Euler) phase step with the new step size
+		  // Note that setting the first argument to zero indicates a first step here
 		  // Note that DτF is half the value of the TwoDτF parameter, so doing a
 		  // half step with the past value of each item equal to the present is the same
 		  // as doing an Euler step
-		  Var orbitPhase As Double = -P.Φ  // orbital phase factor at time τr = 0
-		  PhaseEvolverBase.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverM1Minus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverM1Plus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverM2Minus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverM2Plus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverV0Minus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverV0Plus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ10xMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ10xPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ10yMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ10yPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ10zMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ10zPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ20xMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ20xPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ20yMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ20yPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ20zMinus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
-		  PhaseEvolverχ20zPlus.DoStep(1.0, 0.0, DτF, DτIdeal, True)
+		  PhaseEvolverBase.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverM1Minus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverM1Plus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverM2Minus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverM2Plus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverF0Minus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverF0Plus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10xMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10xPlus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10yMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10yPlus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10zMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ10zPlus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20xMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20xPlus.DoStep(1.0, DτF, DτIdeal)
+		  PhaseEvolverχ20yMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20yPlus.DoStep(0.0, 0.0, DτIdeal)
+		  PhaseEvolverχ20zMinus.DoStep(0.0, DτF, DτIdeal)
+		  PhaseEvolverχ20zPlus.DoStep(0.0, DτF, DτIdeal)
+		  
+		  // We also need to do a phase step
+		  If StepPowerF > 0 Then // Source step is larger than phase step
+		    DoMainPhaseStep
+		  Else
+		    DoSourcePhaseStep
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -794,25 +1235,28 @@ Protected Class EvolverClass
 		  
 		  Var OKToContinue As Boolean = True
 		  N = MainStepNumber
-		  Var orbitalPhase As Double = Parameters.GMΩe*N*Dτr - Parameters.Φ
-		  If N = 0 Then // If this is the first step
+		  If N = 0 Then // If this is the first step, we have already done both the source step and the phase step
 		    MainStepsInSourceStep = 2^StepPowerP  // Set up this variable
-		    WhereInSourceStep = 0 // but we will report the present values
+		    WhereInSourceStep = 0 // we will simply report the present values
 		  ElseIf StepPowerF > 0 Then  // If the step that will be taken is bigger than the main step
-		    If LastSourceStep > N Then // and the last source step (which might have been bigger) is still ahead
-		      WhereInSourceStep = WhereInSourceStep + 1   // Update the "WhereInSourceStep" counter and we are done
-		    ElseIf LastSourceStep = N Then  // if we have caught up with the source
-		      WhereInSourceStep = 0  // and we are back at the beginning of the current window
+		    If LastSourceStep > N Then // and the last source step (which might have been bigger than the current step) is still ahead
+		      WhereInSourceStep = WhereInSourceStep + 1   // Update the "WhereInSourceStep" counter
+		    Elseif LastSourceStep = N Then  // We have caught up with the source
+		      WhereInSourceStep = 0  // and we will simply report present values
 		    Else  // main program is now ahead of the source
-		      DoSourceStep  // Take a new source step
+		      DoSourceStep  // Take a new source step (which will include a phase step of the appropriate size)
 		      MainStepsInSourceStep = 2^StepPowerP // This is the number of main steps within the source step just taken
 		      // update the source step counter in units of the main step
 		      LastSourceStep = LastSourceStep + MainStepsInSourceStep
 		      WhereInSourceStep = 1 // we are now at the first step within that total range
 		    End If
+		    DoMainPhaseStep // whether we take a source step or not, we must take a phase step.
+		    // In this case, we do phase steps every main step because the Earth's orbital phase changes
+		    // significantly each main step, even if the binary's frequency does not
 		  ElseIf StepPowerF = 0 Then // If the next source step will be equal to the main program step
 		    If LastSourceStep < N Then // If source is behind the main step
-		      DoSourceStep
+		      DoSourceStep // do a source step
+		      DoSourcePhaseStep // and a phase step aligned with the
 		      LastSourceStep = LastSourceStep + 1   // update the source step counter
 		      WhereInSourceStep = 0  // and we will report the present values
 		    ElseIf LastSourceStep = N Then   // I don't think this should happen, but if it does
@@ -824,6 +1268,7 @@ Protected Class EvolverClass
 		    Var stepsDone As Integer = 0
 		    Do
 		      DoSourceStep  // Do a source step
+		      DoSourcePhaseStep  // and a phase step
 		      If StepPowerF < -10 Then
 		        OKToContinue = False
 		        Exit
@@ -845,6 +1290,67 @@ Protected Class EvolverClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub DoMainPhaseStep()
+		  // We do this only when the source step is larger than the main step: in such a case,
+		  // we need to do phase steps aligned with the main steps because the Earth's orbital
+		  // phase may change even if the binary's orbital frequency remains basically constant
+		  Var orbitPhase As Double = Parameters.GMΩe*N*Dτr - Parameters.Φ
+		  Var twoDτPhase As Double = 2.0*Dτr*Parameters.IVOnePlusZ
+		  Var stepRatio As Double = WhereInSourceStep/MainStepsInSourceStep
+		  Var oneMinusRatio As Double = 1.0 - stepRatio
+		  PhaseEvolverBase.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase, True)
+		  PhaseEvolverM1Minus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverM1Plus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverM2Minus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverM2Plus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverF0Minus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverF0Plus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10xMinus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10xPlus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10yMinus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10yPlus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10zMinus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10zPlus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20xMinus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20xPlus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20yMinus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20yPlus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20zMinus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20zPlus.DoMiniPhaseStep(oneMinusRatio, stepRatio, orbitPhase, twoDτPhase)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DoSourcePhaseStep()
+		  // We do this only when the source step equal to or smaller than main step.
+		  // In such a case, the phase steps are synchronized with the source steps.
+		  Var orbitPhase As Double = Parameters.GMΩe*N*Dτr - Parameters.Φ
+		  Var twoDτPhase As Double = 2.0*DτF
+		  Var dτRatio As Double = DτF/DτP
+		  Var oneMinusRatio As Double = 1.0 - dτRatio
+		  PhaseEvolverBase.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase, True)
+		  PhaseEvolverM1Minus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverM1Plus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverM2Minus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverM2Plus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverF0Minus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverF0Plus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10xMinus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10xPlus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10yMinus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10yPlus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10zMinus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ10zPlus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20xMinus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20xPlus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20yMinus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20yPlus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20zMinus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		  PhaseEvolverχ20zPlus.DoPhaseStep(dτRatio, oneMinusRatio, orbitPhase, twoDτPhase)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub DoSourceStep()
 		  // This method performs a source step
 		  
@@ -857,29 +1363,26 @@ Protected Class EvolverClass
 		  // Set up some pre-calculated local variables
 		  Var dτRatio As Double = DτF/DτP
 		  Var twoDτ As Double = 2.0*DτF
-		  Var twoDτPhase As Double = twoDτ
-		  If StepPowerF > 0 Then twoDτPhase = 2.0*Dτr/(1.0 + Parameters.Z)
-		  Var orbitPhase As Double = Parameters.GMΩe*N*Dτr - Parameters.Φ
 		  // Do the base case and side case steps
-		  PhaseEvolverBase.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverM1Minus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverM1Plus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverM2Minus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverM2Plus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverV0Minus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverV0Plus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ10xMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ10xPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ10yMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ10yPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ10zMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ10zPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ20xMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ20xPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ20yMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ20yPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ20zMinus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
-		  PhaseEvolverχ20zPlus.DoStep(dτRatio, twoDτ, orbitPhase, twoDτPhase, DτIdeal)
+		  PhaseEvolverBase.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverM1Minus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverM1Plus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverM2Minus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverM2Plus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverF0Minus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverF0Plus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ10xMinus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ10xPlus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ10yMinus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ10yPlus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ10zMinus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ10zPlus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ20xMinus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ20xPlus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ20yMinus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ20yPlus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ20zMinus.DoStep(dτRatio, twoDτ, DτIdeal)
+		  PhaseEvolverχ20zPlus.DoStep(dτRatio, twoDτ, DτIdeal)
 		  
 		  // This chooses the next time step to be a multiple or fraction of a power of 2
 		  // times the main program time step (as seen in the source frame)
@@ -895,8 +1398,8 @@ Protected Class EvolverClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub GetDataAtMainStep(N As Integer, PE As PhaseEvolverClass, StepRatio As Double, OneMinusRatio As Double)
-		  If StepRatio = 0.0 Then // if we are getting information about the current step,
+		Sub GetDataAtMainStep(PE As PhaseEvolverClass)
+		  If WhereInSourceStep = 0 Then // if we are getting information about the current step,
 		    VMN = PE.VN
 		    ιMN = PE.ιN
 		    αMN = PE.αN
@@ -907,523 +1410,30 @@ Protected Class EvolverClass
 		    χsxMN = PE.χsxN
 		    χsyMN = PE.χsyN
 		    χszMN = PE.χszN
+		    DΨrDΘMN = PE.DΨrDΘN
+		    DΨrDΦMN = PE.DΨrDΦN
 		  Else // if we are interpolating between the current step and a future step,
 		    // Get the interpolated values and return them
-		    VMN = OneMinusRatio*PE.VN + StepRatio*PE.VPold
-		    ιMN = OneMinusRatio*PE.ιN  + StepRatio*PE.ιP
-		    αMN = OneMinusRatio*PE.αN + StepRatio*PE.αPold
-		    χaxMN = OneMinusRatio*PE.χaxN + StepRatio*PE.χaXP
-		    χayMN = OneMinusRatio*PE.χayN + StepRatio*PE.χaYP
-		    χazMN = OneMinusRatio*PE.χazN + StepRatio*PE.χazP
-		    χsxMN = OneMinusRatio*PE.χsxN + StepRatio*PE.χsxP
-		    χsyMN = OneMinusRatio*PE.χsyN + StepRatio*PE.χsyP
-		    χszMN = OneMinusRatio*PE.χszN + StepRatio*PE.χszP
-		    // Update the phase in this case
-		    orbitalPhase = Parameters.GMΩe*N*Dτr - Parameters.Φ
-		    twoDτPhase = 2.0*Dτr/(1.0 + Parameters.Z)
-		    PE.DoPhaseStep(OneMinusRatio, StepRatio, orbitalPhase, twoDτPhase)
-		    ΨrMN = PE.ΨrN
+		    Var stepRatio As Double = WhereInSourceStep/MainStepsInSourceStep
+		    Var oneMinusRatio As Double = 1.0 - stepRatio
+		    VMN = oneMinusRatio*PE.VN + stepRatio*PE.VPold
+		    ιMN = oneMinusRatio*PE.ιN  + stepRatio*PE.ιP
+		    αMN = oneMinusRatio*PE.αN + stepRatio*PE.αPold
+		    χaxMN = oneMinusRatio*PE.χaxN + stepRatio*PE.χaXP
+		    χayMN = oneMinusRatio*PE.χayN + stepRatio*PE.χaYP
+		    χazMN = oneMinusRatio*PE.χazN + stepRatio*PE.χazP
+		    χsxMN = oneMinusRatio*PE.χsxN + stepRatio*PE.χsxP
+		    χsyMN = oneMinusRatio*PE.χsyN + stepRatio*PE.χsyP
+		    χszMN = oneMinusRatio*PE.χszN + stepRatio*PE.χszP
+		    DΨrDΘMN = oneMinusRatio*PE.DΨrDΘN + stepRatio*PE.DΨrDΘP
+		    DΨrDΦMN = oneMinusRatio*PE.DΨrDΦN + stepRatio*PE.DΨrDΦP
+		    ΨrMN = PE.ΨrN // in this case, though, the phase step is still equal to the main step
 		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub oldAssembleH()
-		  '// Assemble the total plus polarization terms
-		  'Var jStart As Integer = 0
-		  'Var jEnd As Integer = CH.H0PLastIndex
-		  'Var hp As Double = 0.0
-		  'Var vPower As Double = VMN*VMN
-		  'For j As Integer = jStart to jEnd
-		  'hp = hp + A(j)*W(j)
-		  'Next
-		  'hp = hp*vPower
-		  'Var dhpDΨ As Double = 0.0
-		  'If IsBaseCase Then
-		  'For j As Integer = jStart to jEnd
-		  'dhpDΨ = dhpDΨ + A(j)*DWDΨ(j)
-		  'Next
-		  'End If
-		  'dhpDΨ = dhpDΨ*vPower
-		  'If Parameters.PNOrder > 0 Then
-		  'vPower = vPower*VMN
-		  'jStart = jEnd + 1
-		  'jEnd = CH.H1PLastIndex
-		  '// (Process HP1 terms similarly)
-		  'End If
-		  'If Parameters.PNOrder > 1 Then
-		  'vPower = vPower*VMN
-		  'jStart = jEnd + 1
-		  'jEnd = CH.H2PLastIndex
-		  '// (Process HP2 terms similarly)
-		  'End If
-		  'If Parameters.PNOrder > 2 Then
-		  'vPower = vPower*VMN
-		  'jStart = jEnd + 1
-		  'jEnd = CH.H3PLastIndex
-		  '// (Process HP2 terms similarly)
-		  'End If
-		  '
-		  '// Now do cross polarization
-		  'Var hx As Double = 0.0
-		  'vPower = VMN*VMN  // Start over with powers
-		  'jStart = CH.H3PLastIndex + 1  // This will ensure a correct start
-		  'jEnd = CH.H0XLastIndex
-		  'For j As Integer = jStart to jEnd
-		  'hx = hx + A(j)*W(j)
-		  'Next
-		  'hx = hx*VPower
-		  'Var dhxDΨ As Double = 0.0
-		  'If IsBaseCase Then
-		  'For j As Integer = jStart to jEnd
-		  'dhxDΨ = dhxDΨ + A(j)*DWDΨ(j)
-		  'Next
-		  'End If
-		  'dhxDΨ = dhxDΨ*vPower
-		  'If Parameters.PNOrder > 0 Then
-		  'vPower = vPower*VMN
-		  'jStart = jEnd + 1
-		  'jEnd = CH.H1XLastIndex
-		  '// (Process HP1 terms similarly)
-		  'End If
-		  'If Parameters.PNOrder > 1 Then
-		  'vPower = vPower*VMN
-		  'jStart = jEnd + 1
-		  'jEnd = CH.H2XLastIndex
-		  '// (Process H2X terms similarly)
-		  'End If
-		  'If Parameters.PNOrder > 2 Then
-		  'vPower = vPower*VMN
-		  'jStart = jEnd + 1
-		  'jEnd = CH.H3PLastIndex
-		  '// (Process H3X terms similarly)
-		  'End If
-		  '
-		  '// Set up some useful local values so that we don't need to
-		  '// calculate them multiple times
-		  'Var ρ As Double = Parameters.GMΩe*τrMN
-		  'Var twoρ As Double = 2*ρ
-		  'Var threeρ As Double = 3*ρ
-		  'Var fourρ As Double = 4*ρ
-		  'Var Φ As Double = Parameters.Φ
-		  '
-		  '// Set up the sine and cosines for functions for detector 1
-		  'Var arg22 As Double = twoρ-CH.DC2σ1
-		  'Var arg422 As Double = fourρ-CH.DC2σ1-CH.DC2Φ
-		  'Var arg321 As Double = threeρ-CH.DC2σ1-Φ
-		  'Var arg121 As Double = ρ-CH.DC2σ1+Φ
-		  'Var sin22 As Double = Sin(arg22)
-		  'Var sin422 As Double = Sin(arg422)
-		  'Var sin321 As Double = Sin(arg321)
-		  'Var sin121 As Double = Sin(arg121)
-		  'Var cos22 As Double = Cos(arg22)
-		  'Var cos422 As Double = Cos(arg422)
-		  'Var cos321 As Double = Cos(arg321)
-		  'Var cos121 As Double = Cos(arg121)
-		  '
-		  '// Calculate the D+ factor
-		  'Var term1 As Double = CH.DC3*(-6.0*sin22 + CH.DCSinσ1x9 - sin422)
-		  'Var term2 As Double = CH.DC1*(18.0*sin22 + CH.DCSinσ1x9 - sin422)
-		  'Var term3 As Double = -CH.DC2*(sin321 - 3.0*sin121)
-		  'Var dPlus1 As Double = term1 + CH.DCCos2Θ*term2 + CH.DCSin2Θ*term3
-		  '// Calculate the Dx factor
-		  'term1 = 4*CH.DC1*(CH.DCCosσ1x9 - cos422)
-		  'term2 = -CH.DC2*(cos321 - 3*cos121)
-		  'Var dCross1 As Double = CH.DCCosΘ*term1 + CH.DCSinΘ*term2
-		  '// Finally, Calculate the F+ and Fx factors for Detector 1
-		  'Var fPlus1 As Double = CH.DCHalfCos2ψ*dPlus1 - CH.DCHalfSin2ψ*dCross1
-		  'Var fCross1 As Double = CH.DCHalfSin2ψ*dPlus1 + CH.DCHalfCos2ψ*DCross1
-		  '
-		  'Var fPlus2 As Double = 0.0
-		  'Var fCross2 As Double = 0.0
-		  'If Parameters.Detectors = 2 Then // If we are doing two detectors
-		  '// Then repeat the whole thing for detector 2
-		  'arg22 = twoρ-CH.DC2σ2
-		  'arg422 = fourρ-CH.DC2σ2-CH.DC2Φ
-		  'arg321 = threeρ-CH.DC2σ2-Φ
-		  'arg121 = ρ-CH.DC2σ2+Φ
-		  'sin22 = Sin(arg22)
-		  'sin422 = Sin(arg422)
-		  'sin321 = Sin(arg321)
-		  'sin121 = Sin(arg121)
-		  'cos22 = Cos(arg22)
-		  'cos422 = Cos(arg422)
-		  'cos321 = Cos(arg321)
-		  'cos121 = Cos(arg121)
-		  '// Calculate the D+ factor
-		  'term1 = CH.DC3*(-6.0*sin22 + CH.DCSinσ2x9 - sin422)
-		  'term2 = CH.DC1*(18.0*sin22 + CH.DCSinσ2x9 - sin422)
-		  'term3 = -CH.DC2*(sin321 - 3.0*sin121)
-		  'Var dPlus2 As Double = term1 + CH.DCCos2Θ*term2 + CH.DCSin2Θ*term3
-		  '// Calculate the Dx factor
-		  'term1 = 4*CH.DC1*(CH.DCCosσ2x9 - cos422)
-		  'term2 = -CH.DC2*(cos321 - 3*cos121)
-		  'Var dCross2 As Double = CH.DCCosΘ*term1 + CH.DCSinΘ*term2
-		  '// Finally, Calculate the F+ and Fx factors for Detector 2
-		  'fPlus2 = CH.DCHalfCos2ψ*dPlus2 - CH.DCHalfSin2ψ*dCross2
-		  'fCross2 = CH.DCHalfSin2ψ*dPlus2 + CH.DCHalfCos2ψ*dCross2
-		  'End If
-		  '
-		  '// Calculate the total amplitude
-		  'Var h0 As Double = 2*Parameters.GM*Parameters.η/(Parameters.Λ*Parameters.R0)
-		  '
-		  '// This will calculate the total signal H
-		  'Var fPlus As Double = fPlus1 + fPlus2
-		  'Var fCross As Double = fCross1 + fCross2
-		  'H = h0*(fPlus*hp + fCross*hx)
-		  '// If this is the base case, then we will also find the derivative with respect to Ψr
-		  'If IsBaseCase Then
-		  'DHDΨ = h0*(fPlus*dhpDΨ + fCross*dhxDΨ)
-		  'End If
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub oldConstructor(P As CaseParametersClass, BaseCase As EvolverClass = Nil)
-		  'Parameters = P
-		  'Dτr = P.ΔT/P.GM
-		  'Infinity = Double.FromString("INF")
-		  '
-		  '// This is the base case if there is no base-case parameter
-		  'IsBaseCase = (BaseCase = Nil)
-		  '
-		  '// Initialize the velocity-related properties
-		  'VN = P.V0
-		  'VP = VN
-		  'VF = VN
-		  '
-		  '// Initialize phase-related properties
-		  'ΨrN = P.λ0  // Set the initial phase
-		  'ΨrP = ΨrN   // The past phase is initially the same
-		  'ΨrF = ΨrN
-		  'VeSinΘ = Sin(Parameters.Θ)*Parameters.Ve
-		  '
-		  '// Initialize the spin-related properties
-		  '// Get the the stars' initial spins
-		  'Var spin1 As New Vector(Parameters.χ10x, Parameters.χ10y, Parameters.χ10z)
-		  'Var spin2 As New Vector(Parameters.χ20x, Parameters.χ20y, Parameters.χ20z)
-		  '
-		  '// calculate the magnitudes of the spin vectors
-		  'Magχ1 = spin1.GetMagnitude
-		  'Magχ2 = spin2.GetMagnitude
-		  '
-		  '// If its magnitude is not strictly zero, create a unit vector for each spin
-		  '// But if the magnitude is zero, then the unit vector is also zero
-		  'if Magχ1 > 0.0 Then
-		  'χ1HatN = spin1/Magχ1
-		  'Else
-		  'χ1HatN = New Vector(0.0, 0.0, 0.0)
-		  'end if
-		  'χ1HatP = χ1HatN.Clone  // initially, the past is the same as the present
-		  'χ1HatF = χ1HatN.Clone  // This is just a placeholder so this vector is defined
-		  'if Magχ2 > 0.0 Then 
-		  'χ2HatN = spin2/Magχ2
-		  'Else
-		  'χ2HatN = New Vector(0.0, 0.0, 0.0)
-		  'End if
-		  'χ2HatP = χ2HatN.Clone   // Past is the same as present
-		  'χ2HatF = χ2HatN.Clone  // Placeholder
-		  '
-		  '// get some local variables from the parameters
-		  'Var v0 As Double = Parameters.V0
-		  'Var η As Double = Parameters.η
-		  'Var δ As Double = Parameters.δ
-		  'Var onePlusδ As Double = 1.0 + δ
-		  'Var oneMinusδ As Double = 1.0 - δ
-		  'Var plusOverMinus As Double = onePlusδ/oneMinusδ
-		  'Var minusOverPlus As Double = oneMinusδ/onePlusδ
-		  '
-		  '// This value is the inverse magnitude of the L vector  
-		  'Var B As Double = v0 - (1.5 + η/6.0)*v0*v0*v0 - ((27.0-19.0*η)/8.0 + η*η/24.0)*v0*v0*v0*v0
-		  '
-		  '// This sets up the LHat vector according to equation 12.37 
-		  'Var ellx As Double = -B*(plusOverMinus*Parameters.χ10x + minusOverPlus*Parameters.χ20x)
-		  'Var elly As Double = -B*(plusOverMinus*Parameters.χ10y + minusOverPlus*Parameters.χ20y)
-		  'LN = New Vector(ellx, elly, Sqrt(1.0 - ellx*ellx - elly*elly))  // set the LN vector
-		  'LP = LN.Clone  // Past is the same as the present
-		  'LF = LN.Clone  // Placeholder
-		  '
-		  '// Compute the symmetric and antisymmetric spin vectors and set the parameters
-		  'χsN = 0.25*(onePlusδ*onePlusδ*spin1 + oneMinusδ*oneMinusδ*spin2)
-		  'χaN = 0.5*(oneMinusδ*spin1-Magχ2*onePlusδ*spin2)
-		  'χsP = χsN.Clone // past is the same as the present
-		  'χaP = χaN.Clone
-		  'χaF = χaN.Clone // placeholders for now
-		  'χsF = χsN.Clone
-		  'χaMN = χaN.Clone // placeholders for now
-		  'χsMN = χsN.Clone
-		  '
-		  '// Compute their projections on the L unit vector and set those parameters
-		  'χs𝓁 = χsN*LN
-		  'χa𝓁 = χaN*LN
-		  '
-		  'Var LProj As Double = LN.X*LN.X + LN.Y*LN.Y // squared projection of LHat on xy plane
-		  'If LProj > 0.0 then // If we don't have exactly zero total spin
-		  'αN = Atan2(LN.Y,LN.X) // we should be able to define alpha
-		  'αP = αN  // Past is the same as the present
-		  'CosιN = LN.Z // and iota based on the projection of LHat on the z axis
-		  'CosιP = CosιN
-		  'CosιF = CosιN
-		  'Else // otherwise, these are the conventions for no spin evolution
-		  'αN = Parameters.π
-		  'αP = αN
-		  'αF = αN
-		  'CosιN = 1.0
-		  'CosιP = CosιN
-		  'CosιF = CosιN
-		  'End If
-		  '
-		  '// Initialize noise
-		  'If IsBaseCase Then
-		  'Noise = New NoiseClass(P.ΔT)
-		  'Else
-		  'Noise = BaseCase.Noise  // point to the base-case's noise class
-		  'End If
-		  '
-		  '// Intialize constants
-		  'Var f0 As Double =  v0*v0*v0/(2*P.π*P.GM*(1.0 + P.Z))
-		  'CH = New ConstantHolderClass(P, Sqrt(Noise.GetNoise(2*f0)), χa𝓁, χs𝓁)
-		  '
-		  'If Parameters.UseBaseAmplitude Then  // If we are using the base case amplitude
-		  'A = BaseCase.A // The side case A points to the base-case array
-		  '// Be sure not to modify A in this case
-		  'End If
-		  '
-		  'If Not IsBaseCase Then  // If this is not the base case, then point the wave arrays to the base case
-		  'W = BaseCase.W
-		  'DWDΨ = BaseCase.DWDΨ
-		  'End If
-		  '
-		  '// Initialize time-related properties
-		  'τ = 0.0  // currently, we are at time step zero
-		  '
-		  '// If this is the base case, do a trial first step to get DτIdeal
-		  'If IsBaseCase Then
-		  'Var Dτ0 As Double = 0.5*Dτr/(1.0 + P.Z)
-		  'DoStep(Dτ0,Dτ0)
-		  '// Now erase the effects of the step
-		  'τ = 0.0
-		  'End If
-		  '
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub oldDoStep(DτF As Double, DτP As Double, First As Boolean = False)
-		  '// This is the main method for doing a time step for the source.
-		  '
-		  '// The current time at Now is equal to the previous time times the magnitude of the past time step
-		  'τ = τ + DτP
-		  '
-		  '// If this is not the first step, make the future present
-		  'If Not First Then
-		  'VP = VN
-		  'VN = VF
-		  'CosιP = CosιN
-		  'CosιN = CosιF
-		  'LP.X = LN.X
-		  'LP.Y = LN.Y
-		  'LP.Z = LN.Z
-		  'LN.X = LF.X
-		  'LN.Y = LF.Y
-		  'LN.Z = LF.Z
-		  'αP = αN
-		  'αN = αF
-		  'χ1HatP.X =χ1HatN.X
-		  'χ1HatP.Y =χ1HatN.Y
-		  'χ1HatP.Z =χ1HatN.Z
-		  'χ1HatN.X = χ1HatF.X
-		  'χ1HatN.Y = χ1HatF.Y
-		  'χ1HatN.Z = χ1HatF.Z
-		  'χ2HatP.X = χ2HatN.X
-		  'χ2HatP.Y = χ2HatN.Y
-		  'χ2HatP.Z = χ2HatN.Z
-		  'χ2HatN.X = χ2HatF.X
-		  'χ2HatN.Y = χ2HatF.Y
-		  'χ2HatN.Z = χ2HatF.Z
-		  'χaP.X = χaN.X
-		  'χaP.Y = χaN.Y
-		  'χaP.Z = χaN.Z
-		  'χaN.X = χaF.X
-		  'χaN.Y = χaF.Y
-		  'χaN.Z = χaF.Z
-		  'χsP.X = χsN.X
-		  'χsP.Y = χsN.Y
-		  'χsP.Z = χsN.Z
-		  'χsN.X = χsF.X
-		  'χsN.Y = χsF.Y
-		  'χsN.Z = χsF.Z
-		  'ΨrP = ΨrN
-		  'ΨrN = ΨrF
-		  'End If
-		  '
-		  '// There is no need to evolve at all if this cases uses the base phase
-		  'If Not Parameters.UseBasePhase Then
-		  '
-		  '// Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
-		  '// but it is probably faster just to do the calculation than to do a check and then a calculation
-		  'Var dτRatio As Double = DτF/DτP // calculate this ratio once so we don't have to do it many times
-		  'Var oneMinusRatio As Double = 1.0 - DτRatio // Calculate this only once also
-		  'Var twoDτF As Double = 2.0*DτF
-		  'VP = oneMinusRatio*VN + dτRatio*VP
-		  '
-		  '// Evolve the velocity forward
-		  'Var v2 As Double = VN*VN
-		  'Var v3 As Double = v2*VN
-		  'Var v4 As Double = v2*v2
-		  'Var v5 As Double = v2*v3
-		  'Var v6 As Double = v3*v3
-		  'Var v7 As Double = v3*v4
-		  'Var v9 As Double = v4*v5
-		  'Var vDotN As Double = CH.V0*v9*(1 + CH.V2*v2 + CH.V3*v3 + CH.V4*v4 + CH.V5*v5 + (CH.V6 + CH.V6L*Log(VN))*v6 + CH.V7*v7)
-		  'VF = VP + twoDτF*vDotN
-		  'Var ε As Double = 1.0e-3  // define what the maximum allowable change during a step should be
-		  'If IsBaseCase Then
-		  'DτIdeal = ε/vDotN  // Calculate the ideal next step (we will only pay attention to the base case value)
-		  'End If
-		  '
-		  '// Now we will do the spin evolution
-		  'If Magχ1 = 0.0 and Magχ2 = 0.0 Then // If spins are both strictly zero, then there is no evolution
-		  'χ1hatF = χ1hatN
-		  'χ2hatF = χ2hatN
-		  'LF = LN
-		  'αF = αN
-		  'CosιF = CosιN
-		  'αDotN = 0.0
-		  'χsF = χsN
-		  'χaF = χaN
-		  'αF = αN
-		  'CosιF = 0.0
-		  'αDotN = 0.0
-		  'Else // spins are not strictly zero
-		  '// Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
-		  '// but it is probably faster just to do the calculation
-		  '// Note that we are NOT using the defined vector operations because the overhead is large
-		  '// and we do not want to create new objects after initialization
-		  'χ1hatP.X = oneMinusRatio*χ1hatN.X + dτRatio*χ1hatP.X  
-		  'χ1hatP.Y = oneMinusRatio*χ1hatN.Y + dτRatio*χ1hatP.Y 
-		  'χ1hatP.Z = oneMinusRatio*χ1hatN.Z + dτRatio*χ1hatP.Z  
-		  'χ2hatP.X = oneMinusRatio*χ2hatN.X + dτRatio*χ2hatP.X  
-		  'χ2hatP.Y = oneMinusRatio*χ2hatN.Y + dτRatio*χ2hatP.Y 
-		  'χ2hatP.Z = oneMinusRatio*χ2hatN.Z + dτRatio*χ2hatP.Z  
-		  'LP.X = oneMinusRatio*LN.X + dτRatio*LP.X
-		  'LP.Y = oneMinusRatio*LN.Y + dτRatio*LP.Y
-		  'LP.Z = oneMinusRatio*LN.Z + dτRatio*LP.Z
-		  'αP = oneMinusRatio*αN + dτRatio*αP
-		  '
-		  '// Do the step
-		  '// Evolve the two spins using the leapfrog method
-		  'Var Factor As Double = v5*(CH.Ω0  + CH.Ω2*v2 + CH.Ω4*v4)*2*DτF
-		  'Var χ1HatDotNx As Double = Factor*(LN.Y*χ1HatN.Z - LN.Z*χ1HatN.Y)
-		  'Var χ1HatDotNy As Double = Factor*(LN.Z*χ1HatN.X - LN.X*χ1HatN.Z)
-		  'Var χ1HatDotNz As Double = Factor*(LN.X*χ1HatN.Y - LN.Y*χ1HatN.X)
-		  'χ1HatF.X = χ1HatP.X + χ1HatDotNx
-		  'χ1HatF.Y = χ1HatP.Y + χ1HatDotNy
-		  'χ1HatF.Z = χ1HatP.Z + χ1HatDotNz
-		  'Var χ2HatDotNx As Double = Factor*(LN.Y*χ2HatN.Z - LN.Z*χ2HatN.Y)
-		  'Var χ2HatDotNy As Double = Factor*(LN.Z*χ2HatN.X - LN.X*χ2HatN.Z)
-		  'Var χ2HatDotNz As Double = Factor*(LN.X*χ2HatN.Y - LN.Y*χ2HatN.X)
-		  'χ2HatF.X = χ2HatP.X + χ2HatDotNx
-		  'χ2HatF.Y = χ2HatP.Y + χ2HatDotNy
-		  'χ2HatF.Z = χ2HatP.Z + χ2HatDotNz
-		  '
-		  '
-		  '// Evolve the orbital angular momentum
-		  'Factor = -(VN-CH.L3*v3-CH.L4*v4)*2*DτF
-		  'Var Factor1 As Double = Factor*CH.L1*Magχ1
-		  'Var Factor2 As Double = Factor*CH.L2*Magχ2
-		  'Var ellNDotx As Double = Factor1*χ1HatDotNx + Factor2*χ2HatDotNx
-		  'Var ellNDoty As Double = Factor1*χ1HatDotNy + Factor2*χ2HatDotNy
-		  'Var ellNDotz As Double = Factor1*χ1HatDotNz + Factor2*χ2HatDotNz
-		  'LF.X = LP.X + ellNDotx
-		  'LF.Y = LP.Y + ellNDoty
-		  'LF.Z = LP.Z + ellNDotz
-		  '// The magnitude of L MUST be one, so ensure this
-		  'Var invMagLF As Double = 1.0/LF.GetMagnitude
-		  'LF.X = LF.X*invMagLF
-		  'LF.Y = LF.Y*invMagLF
-		  'LF.Z = LF.Z*invMagLF
-		  '
-		  '// Calculate the future angles
-		  'Var ellFx As Double = LF.X
-		  'Var ellFy As Double = LF.Y
-		  'Var ellNx As Double = LN.X
-		  'Var ellNy As Double = LN.Y
-		  'If ellFx*ellFx + ellFy*ellFy > 1.0e-10 Then
-		  '// The future L vector points at least some angle away from the vertical,
-		  '// so α is well-defined and we can calculate it normally
-		  'αF = ATan2(ellFy, ellFx)
-		  '// To keep α from jumping in value when the L vector crosses the x axis,
-		  '// we need to adjust its value from what the ATan2 function gives us
-		  'If ellFy < 0.0 and ellNy > 0.0 Then // If we are crossing the x axis downward
-		  '// and if the intercept with the x axis is negative, meaning we are going
-		  '// from the second quadrant to the third, then ATan jumps from π to -π,
-		  '// so we add 2π to compensate
-		  'If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF + 2*Parameters.π
-		  'Elseif ellFy > 0.0 and ellNy < 0.0 Then // If we are crossing the x axis upward
-		  '// and if the intercept with the x axis is negative, meaning we are going
-		  '// from the third quadrant to the second, then ATan jumps from -π to π,
-		  '// so we subtract2π to compensate
-		  'If (ellFy*ellNx - ellFx*ellNy)/(ellFy-ellNy) < 0.0 Then αF = αF - 2*Parameters.π
-		  'End If
-		  'CosιF = LF.Z  // This is the future value of iota
-		  'Else
-		  'CosιF = 1.0 // we are going through vertical
-		  'αF = 2*αN - αP // Guess that we are going in a reasonably straight line
-		  'End If
-		  'αDotN = (αF - αP)/(2*DτF)   // Calculate the present value of αDot
-		  '
-		  '// Calculate future values of χs and χa
-		  'Var onePlusδ As Double = 1.0 + Parameters.δ
-		  'Var oneMinusδ As Double = 1.0 - Parameters.δ
-		  'χsF.X = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.X + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.X)
-		  'χsF.Y = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.Y + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.Y)
-		  'χsF.Z = 0.25*(Magχ1*onePlusδ*onePlusδ*χ1HatF.Z + Magχ2*oneMinusδ*oneMinusδ*χ2HatF.Z)
-		  'χaF.X = 0.5*(Magχ1*oneMinusδ*χ1HatF.X-Magχ2*onePlusδ*χ2HatF.X)
-		  'χaF.Y = 0.5*(Magχ1*oneMinusδ*χ1HatF.Y-Magχ2*onePlusδ*χ2HatF.Y)
-		  'χaF.Z = 0.5*(Magχ1*oneMinusδ*χ1HatF.Z-Magχ2*onePlusδ*χ2HatF.Z)
-		  '
-		  'If IsBaseCase Then  // We only do this for the base case
-		  '// This section chooses a time step such that the change in any of the unit
-		  '// vectors is less than 1/1000 of its magnitude (which is 1).
-		  '// We only do this for the base case.
-		  'Var dτχ1 As Double = Infinity
-		  'Var dτχ2 As Double = Infinity
-		  'Var dτL As Double = Infinity
-		  '// If the magnitudes of the change are not strictly zero, then calculate
-		  '// what time step would lead to a change of 1/1000
-		  'Var χ1HatDotMag As Double = Sqrt(χ1HatDotNx*χ1HatDotNx + χ1HatDotNy*χ1HatDotNy + χ1HatDotNz*χ1HatDotNz)
-		  'If χ1HatDotMag > 0.0 Then dτχ1 = ε/χ1HatDotMag
-		  'Var χ2HatDotMag As Double = Sqrt(χ2HatDotNx*χ2HatDotNx + χ2HatDotNy*χ2HatDotNy + χ2HatDotNz*χ2HatDotNz)
-		  'If χ2HatDotMag > 0.0 Then dτχ2 = ε/χ2HatDotMag
-		  'Var ellDotMag As Double = Sqrt(ellNDotx*ellNDotx + ellNDoty*ellNDoty+ ellNDotz*ellNDotz)
-		  'If ellDotMag > 0.0 Then dτL = ε/ellDotMag
-		  '// Then choose the minimum of these values (including the earlier calculation of DτIdeal for the velocity evolution)
-		  'DτIdeal = Min(dτχ1, dτχ2, dτL, DτIdeal)
-		  'End If
-		  'End If
-		  '
-		  '// Now evolve the phase
-		  'Var τr As Double = τ*(1.0 + Parameters.Z) // Calculate the received time
-		  'Var gMΩeτr As Double = Parameters.GMΩe*τr
-		  'Var ΨrDot As Double = v3 - CosιN*αDotN - 6.0*v2*(3.0*Log(VN/Parameters.V0) + 1.0)*vDotN
-		  'Var stepFactor As Double = 2*DτF*(1.0 + VeSinΘ*Sin(gMΩeτr - Parameters.Φ))
-		  '
-		  '// Calculate new past values using interpolation (note that this effectively does nothing if DτF/DτP = 1,
-		  '// but it is probably faster just to do the calculation
-		  'ΨrP = oneMinusRatio*ΨrN + dτRatio*ΨrP
-		  '
-		  '// Now update the evolving phase value and its derivatives
-		  'ΨrF = ΨrP + StepFactor*ΨrDot
-		  'End If
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SumSourceH(Wave() As Double)
+		Sub SumSourceH(Wave() As Double, DoVDeriv As Boolean = False)
 		  // These constants define static variables indicating the endpoints of certain polarizations
 		  Static H0PLastIndex As Integer = 4
 		  Static H1PLastIndex As integer = 18
@@ -1440,7 +1450,12 @@ Protected Class EvolverClass
 		  For j As Integer = 0 To H0PLastIndex
 		    sum = sum + A(j)*W(j)
 		  Next
-		  Var vpower As Double = VMN*VMN
+		  Var vpower As Double
+		  If DoVDeriv Then
+		    If DoVDeriv Then vpower = 2.0*VMN
+		  Else
+		    vpower = VMN*VMN
+		  End If
 		  HP = sum*vpower
 		  
 		  If Parameters.PNOrder > 0 Then
@@ -1450,37 +1465,44 @@ Protected Class EvolverClass
 		      sum = sum + A(j)*Wave(j)
 		    Next
 		    vpower = vpower*VMN
+		    If DoVDeriv Then vpower = 1.5*vpower
 		    HP = HP + sum*vpower
 		  End If
 		  
 		  If Parameters.PNOrder > 1 Then
 		    sum = 0.0
-		    Start = H1PLastIndex + 1
+		    jStart = H1PLastIndex + 1
 		    For j As Integer = jStart to H2PLastIndex
 		      sum = sum + A(j)*Wave(j)
 		    Next
 		    vpower = vpower*VMN
+		    If DoVDeriv Then vpower = 1.33333333333333333*vpower
 		    HP = HP + sum*vpower
 		  End If
 		  
 		  If Parameters.PNOrder > 2 Then
-		    Start = H2PLastIndex + 1
+		    jStart = H2PLastIndex + 1
 		    sum = 0.0
 		    For j As Integer = jStart to H3PLastIndex
 		      sum = sum + A(j)*Wave(j)
 		    Next
 		    vpower = vpower*VMN
+		    If DoVDeriv Then vpower = 1.25*vpower
 		    HP = HP + sum*vpower
 		  End If
 		  
 		  // now assemble cross polarization
-		  sum - 0.0
+		  sum = 0.0
 		  vpower = VMN*VMN
 		  jStart = H3PLastIndex + 1
 		  For j As Integer = jStart To H0PLastIndex
 		    sum = sum + A(j)*Wave(j)
 		  Next
-		  Var vpower As Double = VMN*VMN
+		  If DoVDeriv Then
+		    vpower = 2.0*VMN
+		  Else
+		    vpower = VMN*VMN
+		  End If
 		  HX = sum*vpower
 		  
 		  If Parameters.PNOrder > 0 Then
@@ -1490,28 +1512,36 @@ Protected Class EvolverClass
 		      sum = sum + A(j)*Wave(j)
 		    Next
 		    vpower = vpower*VMN
+		    If DoVDeriv Then vpower = 1.5*vpower
 		    HX = HX + sum*vpower
 		  End If
 		  
 		  If Parameters.PNOrder > 1 Then
 		    sum = 0.0
-		    Start = H1XLastIndex + 1
+		    jStart = H1XLastIndex + 1
 		    For j As Integer = jStart to H2PLastIndex
 		      sum = sum + A(j)*Wave(j)
 		    Next
 		    vpower = vpower*VMN
+		    If DoVDeriv Then vpower = 1.3333333333333333*vpower
 		    HX = HX + sum*vpower
 		  End If
 		  
 		  If Parameters.PNOrder > 2 Then
-		    Start = H2XLastIndex + 1
+		    jStart = H2XLastIndex + 1
 		    sum = 0.0
-		    For j As Integer = jStart to H3PLastIndex
+		    For j As Integer = jStart to H3XLastIndex
 		      sum = sum + A(j)*Wave(j)
 		    Next
 		    vpower = vpower*VMN
+		    If DoVDeriv Then vpower = 1.25*vpower
 		    HX = HX + sum*vpower
 		  End If
+		  
+		  // Calculate overall wave amplitude constant
+		  Var h0 As Double = 0.5*(1.0 - Parameters.δ*Parameters.δ)/Parameters.Λ
+		  HP = h0*HP
+		  HX = h0*HX
 		End Sub
 	#tag EndMethod
 
@@ -1519,14 +1549,15 @@ Protected Class EvolverClass
 		Function Tweak(TheItem As Item, ε As Double) As CaseParametersClass
 		  Var P As CaseParametersClass = Parameters.Clone
 		  Select Case TheItem
-		  Case Item.M1 Then
+		  Case Item.M1
 		    P.M1 = P.M1*(1.0 + ε)
 		    P.δ = (P.M1 - P.M2)/(P.M1 + P.M2)
-		  Case Item.M2 Then
+		  Case Item.M2
 		    P.M1 = P.M1*(1.0 + ε)
 		    P.δ = (P.M1 - P.M2)/(P.M1 + P.M2)
-		  Case Item.V0
-		    P.V0 = P.V0*(1.0 + ε)
+		  Case Item.F0
+		    P.F0 = P.F0*(1.0 + ε)
+		    P.V0 = Pow(P.GM*P.F0*2*P.π*(1.0+P.Z)/1000,1/3)
 		  Case Item.χ10x
 		    P.χ10x = P.χ10x + ε
 		  Case Item.χ10y
@@ -1581,7 +1612,7 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DZDΛ As Double
+		DZDlnΛ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1621,6 +1652,46 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		IDεForF0 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForM1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForM2 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForβ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForχ10x As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForχ10y As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForχ10z As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForχ20x As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForχ20y As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForχ20z As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		LastSourceStep As Integer
 	#tag EndProperty
 
@@ -1645,6 +1716,14 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		PhaseEvolverF0Minus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PhaseEvolverF0Plus As PhaseEvolverClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		PhaseEvolverM1Minus As PhaseEvolverClass
 	#tag EndProperty
 
@@ -1658,14 +1737,6 @@ Protected Class EvolverClass
 
 	#tag Property, Flags = &h0
 		PhaseEvolverM2Plus As PhaseEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		PhaseEvolverV0Minus As PhaseEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		PhaseEvolverV0Plus As PhaseEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1765,7 +1836,15 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		ι0 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		ιMN As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		α0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1773,15 +1852,7 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		εForM1 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		εForM2 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		εForV0 As Double
+		δ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1789,31 +1860,11 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		εForΛ As Double
+		η As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		εForχ10x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		εForχ10y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		εForχ10z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		εForχ20x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		εForχ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		εForχ20z As Double
+		χax0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1821,7 +1872,15 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		χay0 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		χayMN As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		χaz0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1829,11 +1888,23 @@ Protected Class EvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		χsx0 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		χsxMN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		χsy0 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		χsyMN As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		χsz0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1848,7 +1919,7 @@ Protected Class EvolverClass
 	#tag Enum, Name = Item, Flags = &h0
 		M1
 		  M2
-		  v0
+		  F0
 		  Λ
 		  β
 		  ψ
@@ -2074,7 +2145,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DZDΛ"
+			Name="DZDlnΛ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2130,7 +2201,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForβ"
+			Name="IDεForβ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2138,7 +2209,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForM1"
+			Name="IDεForM1"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2146,7 +2217,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForM2"
+			Name="IDεForM2"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2154,7 +2225,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForV0"
+			Name="IDεForF0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2162,7 +2233,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForΛ"
+			Name="IDεForχ10x"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2170,7 +2241,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForχ10x"
+			Name="IDεForχ10y"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2178,7 +2249,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForχ10y"
+			Name="IDεForχ10z"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2186,7 +2257,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForχ10z"
+			Name="IDεForχ20x"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2194,7 +2265,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForχ20x"
+			Name="IDεForχ20y"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2202,15 +2273,7 @@ Protected Class EvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="εForχ20y"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εForχ20z"
+			Name="IDεForχ20z"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2251,6 +2314,94 @@ Protected Class EvolverClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DΨrDΦMN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="N"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="α0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ι0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="δ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="η"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χax0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χay0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χaz0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χsx0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χsy0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χsz0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

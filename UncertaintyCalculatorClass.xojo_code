@@ -52,7 +52,7 @@ Protected Class UncertaintyCalculatorClass
 		  Parameters = MyParameters
 		  InitSolveList
 		  Var V0 As Double = Parameters.V0
-		  Var f0 As Double =  V0*V0*V0/(2*Parameters.π*Parameters.GM*(1.0 + Parameters.Z))
+		  Var f0 As Double =  V0*V0*V0/(2*Parameters.π*Parameters.GM)*Parameters.IVOnePlusZ
 		  Var Noise As New NoiseClass(Parameters.ΔT)
 		  //  get the noise at various frequencies
 		  // This is the noise at th initiale fundamental gravitational wave frequency
@@ -149,10 +149,10 @@ Protected Class UncertaintyCalculatorClass
 		  // This creates an array of items to solve for. This is the canonical order
 		  // of items, by the way. This must be consistent with the order in the
 		  // enumeration "Item."
-		  SolveList(0) = Parameters.SolveForH0
-		  SolveList(1) = Parameters.SolveForδ
-		  SolveList(2) = Parameters.SolveForV0
-		  SolveList(3) = Parameters.SolveForZ
+		  SolveList(0) = Parameters.SolveForM1
+		  SolveList(1) = Parameters.SolveForM2
+		  SolveList(2) = Parameters.SolveForF0
+		  SolveList(3) = Parameters.SolveForΛ
 		  SolveList(4) = Parameters.SolveForβ
 		  SolveList(5) = Parameters.SolveForψ
 		  SolveList(6) = Parameters.SolveForλ0
@@ -234,7 +234,7 @@ Protected Class UncertaintyCalculatorClass
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
 		h0
 		  δ
-		  v0
+		  F0
 		  z
 		  β
 		  ψ

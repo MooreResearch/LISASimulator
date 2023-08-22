@@ -7,6 +7,7 @@ Protected Class CaseParametersClass
 		  P.F0 = F0
 		  P.GM = GM
 		  P.GMΩe = GMΩe
+		  P.IVOnePlusZ = IVOnePlusZ
 		  P.M1 = M1
 		  P.M2 = M2
 		  P.PNOrder = PNOrder
@@ -16,8 +17,8 @@ Protected Class CaseParametersClass
 		  P.Sn20 = Sn20
 		  P.SolveForM1 = SolveForM1
 		  P.SolveForM2 = SolveForM2
-		  P.SolveForR = SolveForR
-		  P.SolveForV0 = SolveForV0
+		  P.SolveForΛ = SolveForΛ
+		  P.SolveForF0 = SolveForF0
 		  P.SolveForβ = SolveForβ
 		  P.SolveForΘ = SolveForΘ
 		  P.SolveForλ0 = SolveForλ0
@@ -35,7 +36,6 @@ Protected Class CaseParametersClass
 		  P.β = β
 		  P.δ = δ
 		  P.ΔT = ΔT
-		  P.η = η
 		  P.Θ = Θ
 		  P.Λ = Λ
 		  P.λ0 = λ0
@@ -65,13 +65,13 @@ Protected Class CaseParametersClass
 		  Var m As Double = M1 + M2  // total mass in solar masses
 		  GM = 4.9267e-6*m
 		  δ = (M1 - M2)/m // calculate delta
-		  η = M1*M2/(m*m)
 		  Var rInSeconds As Double = R*Year // get R in seconds
 		  R0 = 1.0e7*Year  // Defines the reference for R (10 Mly)
 		  Λ = rInSeconds/R0  // This is the unitless luminosity distance
 		  Var universe As New UniverseClass // Create a universe class to solve the Z(R) problem
 		  Z = universe.GetZFrom(rinSeconds) // get the Z value for the given value of R
-		  V0 = Pow(GM*F0*2*π*(1+localZ)/1000,1/3)  // Initialize V0
+		  IVOnePlusZ = 1.0/(1.0 + Z)
+		  V0 = Pow(GM*F0*2*π*(1.0 + Z)/1000,1/3)  // Initialize V0
 		  π = 3.14159265358979324  // record the value of pi so that we only have to define it once
 		  // convert all angles from radians to degrees
 		  Var radiansFromDegrees As Double = π/180.0
@@ -106,6 +106,10 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		IVOnePlusZ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		M1 As Double
 	#tag EndProperty
 
@@ -134,6 +138,10 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		SolveForF0 As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		SolveForM1 As Boolean = True
 	#tag EndProperty
 
@@ -142,19 +150,15 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SolveForR As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SolveForV0 As Boolean = True
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		SolveForβ As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		SolveForΘ As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SolveForΛ As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -218,10 +222,6 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		η As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		Θ As Double
 	#tag EndProperty
 
@@ -277,7 +277,7 @@ Protected Class CaseParametersClass
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
 		M1
 		  M2
-		  v0
+		  F0
 		  Λ
 		  β
 		  ψ
@@ -519,14 +519,6 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="η"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="π"
 			Visible=false
 			Group="Behavior"
@@ -543,7 +535,7 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForV0"
+			Name="SolveForF0"
 			Visible=false
 			Group="Behavior"
 			InitialValue="True"
@@ -551,7 +543,7 @@ Protected Class CaseParametersClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SolveForR"
+			Name="SolveForΛ"
 			Visible=false
 			Group="Behavior"
 			InitialValue="True"
@@ -696,6 +688,14 @@ Protected Class CaseParametersClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Sn20"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IVOnePlusZ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

@@ -2252,6 +2252,7 @@ Begin DesktopWindow MainWindow
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
+      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
@@ -2303,7 +2304,7 @@ End
 		Sub DisplayUncertainties(Params As CaseParametersClass, UV As UncertaintyValuesClass)
 		  ResultsListBox1.CellTextAt(0,0) = Params.M1.toString + EndOfLine + GetUncertaintyString(UV.OfM1)
 		  ResultsListBox1.CellTextAt(1,0) = Params.M2.toString + EndOfLine + GetUncertaintyString(UV.OfM2)
-		  ResultsListBox1.CellTextAt(2,0) = Params.V0.toString + EndOfLine + GetUncertaintyString(UV.OfV0)
+		  ResultsListBox1.CellTextAt(2,0) = Params.F0.toString + EndOfLine + GetUncertaintyString(UV.OfF0)
 		  ResultsListBox1.CellTextAt(3,0) = Params.R.toString + EndOfLine + GetUncertaintyString(UV.OfR)
 		  ResultsListBox2.CellTextAt(0,0) = ConvertToDegrees(Params.β).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofβ))
 		  ResultsListBox2.CellTextAt(1,0) = ConvertToDegrees(Params.ψ).toString + EndOfLine + GetUncertaintyString(ConvertToDegrees(UV.Ofψ))
@@ -2329,9 +2330,9 @@ End
 		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass) As Double
 		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
 		  Var δ As Double = parameters.δ
-		  Var η As Double = parameters.η
-		  Var χa𝓁 As Double = TheSuper.Evolver.χa𝓁
-		  Var χs𝓁 As Double = TheSuper.Evolver.χs𝓁
+		  Var η As Double = 0.25*(1.0 - δ*δ)
+		  Var χa𝓁 As Double = TheSuper.Evolver.PhaseEvolverBase.χaL
+		  Var χs𝓁 As Double = TheSuper.Evolver.PhaseEvolverBase.χsL
 		  Var v0 As Double = parameters.V0
 		  Var Threepi As Double = 3.0*parameters.π
 		  Var c As Double = 743/2688 + (11/32)*η 
@@ -2943,8 +2944,7 @@ End
 			"6 - Rounded Window"
 			"7 - Global Floating Window"
 			"8 - Sheet Window"
-			"9 - Metal Window"
-			"11 - Modeless Dialog"
+			"9 - Modeless Dialog"
 		#tag EndEnumValues
 	#tag EndViewProperty
 	#tag ViewProperty
