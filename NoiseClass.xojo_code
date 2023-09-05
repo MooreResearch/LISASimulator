@@ -12,6 +12,8 @@ Protected Class NoiseClass
 		  //  This dates from a very early version of the code.
 		  
 		  Var stot, sb as Double
+		  Var fb1ocal As Double = fb1
+		  Var salocal As Double = sa
 		  stot = sqrt(sx*sx + (sa/(fn*fn*fn*fn))*(sa/(fn*fn*fn*fn)))
 		  stot = stot*(1+(fn*fn)/fc2)
 		  sb = b1/(fn^(1.9))
@@ -24,6 +26,7 @@ Protected Class NoiseClass
 		  //  ONLY valid at that frequency.
 		  
 		  Return stot/(2*ΔT) // return the calculated noise
+		  
 		End Function
 	#tag EndMethod
 
@@ -39,7 +42,7 @@ Protected Class NoiseClass
 	#tag Constant, Name = b2, Type = Double, Dynamic = False, Default = \"4.7315e-61", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = b3, Type = Double, Dynamic = False, Default = \"1.41254e-47", Scope = Public
+	#tag Constant, Name = b3, Type = Double, Dynamic = False, Default = \"1.4125e-47", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = fb1, Type = Double, Dynamic = False, Default = \"7.08e-4", Scope = Public
@@ -48,7 +51,7 @@ Protected Class NoiseClass
 	#tag Constant, Name = fb2, Type = Double, Dynamic = False, Default = \"1.778e-3", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = fc2, Type = Double, Dynamic = False, Default = \"1.0e-4", Scope = Public
+	#tag Constant, Name = fc2, Type = Double, Dynamic = False, Default = \"1.0e-3", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = sa, Type = Double, Dynamic = False, Default = \"2.31e-52", Scope = Public
@@ -104,7 +107,7 @@ Protected Class NoiseClass
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Double"
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

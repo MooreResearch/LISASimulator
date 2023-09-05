@@ -8,6 +8,7 @@ Protected Class CaseSupervisorClass
 		  
 		  StartTicks = System.Ticks
 		  CaseParameters = currentCaseParameterSet // save the parameters for the current case
+		  CaseParameters.FinishConstruction // flesh out the constants not set in the user interface
 		  // the following gives the number of main time steps to execute
 		  NSteps = Round(CaseParameters.RunDuration*Year/CaseParameters.ΔT)
 		  Dτr = CaseParameters.ΔT/CaseParameters.GM
@@ -87,127 +88,7 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		EvolverForM1Minus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForM1Plus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForM2Minus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForM2Plus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForV0Minus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForV0Plus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForβMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForβPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForΘMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForΘPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForΛMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForΛPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForΦMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForΦPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ10xMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ10xPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ10yMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ10yPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ10zMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ10zPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ20xMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ20xPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ20yMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ20yPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ20zMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForχ20zPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForψMinus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		EvolverForψPlus As EvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		GMSun As Double = 4.92708e-6
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		LastSourceStep As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		MainStepsInSourceStep As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -244,10 +125,6 @@ Protected Class CaseSupervisorClass
 
 	#tag Property, Flags = &h0
 		UncertaintyCalculator As UncertaintyCalculatorClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		WhereInSourceStep As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -398,30 +275,6 @@ Protected Class CaseSupervisorClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="LastSourceStep"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="MainStepsInSourceStep"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="WhereInSourceStep"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty

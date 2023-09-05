@@ -1081,6 +1081,9 @@ Protected Class EvolverClass
 		  δ = P.δ
 		  η = 0.25*(1.0 - δ*δ)
 		  
+		  // Initialize the Noise class
+		  Noise = New NoiseClass(Parameters.ΔT)
+		  
 		  // Set up the base case
 		  PhaseEvolverBase = New PhaseEvolverClass(P)
 		  // We need the following for calculating the z-derivative
@@ -1571,6 +1574,7 @@ Protected Class EvolverClass
 		  Case Item.χ20z
 		    P.χ20z = P.χ20z + ε
 		  End Select
+		  Return P
 		End Function
 	#tag EndMethod
 
@@ -2402,6 +2406,14 @@ Protected Class EvolverClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="χsz0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="εForβ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

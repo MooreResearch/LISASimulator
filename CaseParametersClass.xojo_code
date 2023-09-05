@@ -71,8 +71,8 @@ Protected Class CaseParametersClass
 		  Var universe As New UniverseClass // Create a universe class to solve the Z(R) problem
 		  Z = universe.GetZFrom(rinSeconds) // get the Z value for the given value of R
 		  IVOnePlusZ = 1.0/(1.0 + Z)
-		  V0 = Pow(GM*F0*2*π*(1.0 + Z)/1000,1/3)  // Initialize V0
 		  π = 3.14159265358979324  // record the value of pi so that we only have to define it once
+		  V0 = Pow(GM*F0*2*π*(1.0 + Z)/1000,1/3)  // Initialize V0
 		  // convert all angles from radians to degrees
 		  Var radiansFromDegrees As Double = π/180.0
 		  β = radiansFromDegrees*β

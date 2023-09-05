@@ -90,9 +90,12 @@ Protected Class PhaseEvolverClass
 		  
 		  // Initialize constants for spin evolution
 		  // Set up some constants that will be useful for the spin evolution equations.
-		  CΩ0 = 0.75 + η/2.0 -0.75*δ
-		  CΩ2 = 9.0/16.0 + 1.25*η + η*η/24.0 + 0.675*δ*η +(-9.0/16.0 + 0.675*η)*δ
+		  CΩ0 = 0.75 + η/2.0 - 0.75*δ
+		  CΩ1 = 0.75 + η/2.0 + 0.75*δ
+		  CΩ2 = 9.0/16.0 + 1.25*η + η*η/24.0 + 0.675*δ*η + (-9.0/16.0 + 0.675*η)*δ
+		  CΩ3 = 9.0/16.0 + 1.25*η + η*η/24.0 - 0.675*δ*η - (-9.0/16.0 + 0.675*η)*δ
 		  CΩ4 = 27.0/32.0 + 3.0*η/16.0 - 105.0*η*η/32.0 - η*η*η/48.0 + (-27.0/32.0 + 39.0*η/8.0 - 5.0*η*η/32.0)*δ
+		  CΩ5 = 27.0/32.0 + 3.0*η/16.0 - 105.0*η*η/32.0 - η*η*η/48.0 - (-27.0/32.0 + 39.0*η/8.0 - 5.0*η*η/32.0)*δ
 		  CL1 = (1.0 + δ)/(1.0 - δ)
 		  CL2 = (1.0 - δ)/(1.0 + δ)
 		  CL3 = 1.5 + η/6.0
@@ -255,31 +258,32 @@ Protected Class PhaseEvolverClass
 		    
 		    // Do the step
 		    // Evolve the two spins using the leapfrog method
-		    Var Factor As Double = v5*(CΩ0  + CΩ2*v2 + CΩ4*v4)*TwoDτF
+		    Var Factor As Double = v5*(CΩ0  + CΩ2*v2 + CΩ4*v4)
 		    Var χ1HatDotNx As Double = Factor*(LYN*χ1HatZN - LZN*χ1HatYN)
 		    Var χ1HatDotNy As Double = Factor*(LZN*χ1HatXN - LXN*χ1HatZN)
 		    Var χ1HatDotNz As Double = Factor*(LXN*χ1HatYN - LYN*χ1HatXN)
-		    χ1HatXF = χ1HatXP + χ1HatDotNx
-		    χ1HatYF = χ1HatYP + χ1HatDotNy
-		    χ1HatZF = χ1HatZP + χ1HatDotNz
+		    χ1HatXF = χ1HatXP + χ1HatDotNx*TwoDτF
+		    χ1HatYF = χ1HatYP + χ1HatDotNy*TwoDτF
+		    χ1HatZF = χ1HatZP + χ1HatDotNz*TwoDτF
+		    Factor = v5*(CΩ1  + CΩ3*v2 + CΩ5*v4)
 		    Var χ2HatDotNx As Double = Factor*(LYN*χ2HatZN - LZN*χ2HatYN)
 		    Var χ2HatDotNy As Double = Factor*(LZN*χ2HatXN - LXN*χ2HatZN)
 		    Var χ2HatDotNz As Double = Factor*(LXN*χ2HatYN - LYN*χ2HatXN)
-		    χ2HatXF = χ2HatXP + χ2HatDotNx
-		    χ2HatYF = χ2HatYP + χ2HatDotNy
-		    χ2HatZF = χ2HatZP + χ2HatDotNz
+		    χ2HatXF = χ2HatXP + χ2HatDotNx*TwoDτF
+		    χ2HatYF = χ2HatYP + χ2HatDotNy*TwoDτF
+		    χ2HatZF = χ2HatZP + χ2HatDotNz*TwoDτF
 		    
 		    
 		    // Evolve the orbital angular momentum
-		    Factor = -(VN-CL3*v3-CL4*v4)*TwoDτF
+		    Factor = -(VN-CL3*v3-CL4*v4)
 		    Var Factor1 As Double = Factor*CL1*χ1
 		    Var Factor2 As Double = Factor*CL2*χ2
 		    Var ellNDotx As Double = Factor1*χ1HatDotNx + Factor2*χ2HatDotNx
 		    Var ellNDoty As Double = Factor1*χ1HatDotNy + Factor2*χ2HatDotNy
 		    Var ellNDotz As Double = Factor1*χ1HatDotNz + Factor2*χ2HatDotNz
-		    LXF = LXP + ellNDotx
-		    LYF = LYP + ellNDoty
-		    LZF = LZP + ellNDotz
+		    LXF = LXP + ellNDotx*TwoDτF
+		    LYF = LYP + ellNDoty*TwoDτF
+		    LZF = LZP + ellNDotz*TwoDτF
 		    // The magnitude of L MUST be one, so ensure this
 		    Var invMagLF As Double = 1.0/Sqrt(LXF*LXF + LYF*LYF + LZF*LZF)
 		    LXF = LXF*invMagLF
@@ -321,13 +325,14 @@ Protected Class PhaseEvolverClass
 		    χaZF = 0.5*(χ2*oneMinusδ*χ2HatZF-χ1*OnePlusδ*χ1HatZF)
 		    
 		    // This section chooses a time step such that the change in any of the unit
-		    // vectors is less than 1/1000 of its magnitude (which is 1).
+		    // vectors is less than 1/100 of its magnitude (which is 1).
+		    ε = 0.01
 		    Var χ1HatDotMag As Double = Sqrt(χ1HatDotNx*χ1HatDotNx + χ1HatDotNy*χ1HatDotNy + χ1HatDotNz*χ1HatDotNz)
 		    If χ1HatDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/χ1HatDotMag)
 		    Var χ2HatDotMag As Double = Sqrt(χ2HatDotNx*χ2HatDotNx + χ2HatDotNy*χ2HatDotNy + χ2HatDotNz*χ2HatDotNz)
-		    If χ2HatDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/χ1HatDotMag)
+		    If χ2HatDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/χ2HatDotMag)
 		    Var ellDotMag As Double = Sqrt(ellNDotx*ellNDotx + ellNDoty*ellNDoty+ ellNDotz*ellNDotz)
-		    If ellDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/χ1HatDotMag)
+		    If ellDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/ellDotMag)
 		  End If
 		  
 		  // Now calculate the current frequency
@@ -407,11 +412,23 @@ Protected Class PhaseEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		CΩ1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		CΩ2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		CΩ3 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		CΩ4 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		CΩ5 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
