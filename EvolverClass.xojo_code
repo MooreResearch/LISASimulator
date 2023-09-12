@@ -957,11 +957,13 @@ Protected Class EvolverClass
 		  //  get the noise at various frequencies
 		  // The following set of variables contains ratios that we will use to enhance derivatives of harmonics at higher frequencies
 		  // to reflect how they may be better or more poorly received by the detector than the fundamental harmonic
-		  Var snratio1 As Double = sn20/Sqrt(Noise.GetNoise(fN))
-		  Var snratio2 As Double = sn20/Sqrt(Noise.GetNoise(2*fN))
-		  Var snratio3 As Double = sn20/Sqrt(Noise.GetNoise(3*fN))
-		  Var snratio4 As Double = sn20/Sqrt(Noise.GetNoise(4*fN))
-		  Var snratio5 As Double = sn20/Sqrt(Noise.GetNoise(5*fN))
+		  Var sn20string As String = Format(Sn20, "+0.00e+00")
+		  Var snfnstring As String = Format(Sqrt(Noise.GetNoise(2*fN)), "+0.00e+00")
+		  Var snratio1 As Double = Sn20/Sqrt(Noise.GetNoise(fN))
+		  Var snratio2 As Double = Sn20/Sqrt(Noise.GetNoise(2*fN))
+		  Var snratio3 As Double = Sn20/Sqrt(Noise.GetNoise(3*fN))
+		  Var snratio4 As Double = Sn20/Sqrt(Noise.GetNoise(4*fN))
+		  Var snratio5 As Double = Sn20/Sqrt(Noise.GetNoise(5*fN))
 		  
 		  // Calculate the received wave phase
 		  
@@ -1080,6 +1082,7 @@ Protected Class EvolverClass
 		  SinβMinus = Sin(P.β-εForβ)
 		  δ = P.δ
 		  η = 0.25*(1.0 - δ*δ)
+		  Sn20 = P.Sn20
 		  
 		  // Initialize the Noise class
 		  Noise = New NoiseClass(Parameters.ΔT)
@@ -1216,14 +1219,15 @@ Protected Class EvolverClass
 		  PhaseEvolverχ10zMinus.DoStep(0.0, DτF, DτIdeal)
 		  PhaseEvolverχ10zPlus.DoStep(0.0, DτF, DτIdeal)
 		  PhaseEvolverχ20xMinus.DoStep(0.0, DτF, DτIdeal)
-		  PhaseEvolverχ20xPlus.DoStep(1.0, DτF, DτIdeal)
+		  PhaseEvolverχ20xPlus.DoStep(0.0, DτF, DτIdeal)
 		  PhaseEvolverχ20yMinus.DoStep(0.0, DτF, DτIdeal)
-		  PhaseEvolverχ20yPlus.DoStep(0.0, 0.0, DτIdeal)
+		  PhaseEvolverχ20yPlus.DoStep(0.0, DτF, DτIdeal)
 		  PhaseEvolverχ20zMinus.DoStep(0.0, DτF, DτIdeal)
 		  PhaseEvolverχ20zPlus.DoStep(0.0, DτF, DτIdeal)
 		  
 		  // We also need to do a phase step
 		  If StepPowerF > 0 Then // Source step is larger than phase step
+		    MainStepsInSourceStep = 2^StepPowerF
 		    DoMainPhaseStep
 		  Else
 		    DoSourcePhaseStep

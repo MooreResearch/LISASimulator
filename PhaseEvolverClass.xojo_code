@@ -152,7 +152,7 @@ Protected Class PhaseEvolverClass
 		Sub DoStep(DτRatio As Double, TwoDτF As Double, ByRef DτIdeal As Double)
 		  // Make future the present, as long as this is not the trial step or the first step
 		  // Since a future time step of zero is impossible, we are using that value as a flag
-		  // that this is either a test step or a future
+		  // that this is either a test step or a first step
 		  If DτRatio = 0.0 Then
 		    DτRatio = 1.0
 		  Else // This is not the first step, so make the future present
@@ -314,7 +314,7 @@ Protected Class PhaseEvolverClass
 		      ιF = 0.0 // we are going through vertical
 		      αF = 2*αN - αP // Guess that we are going in a reasonably straight line
 		    End If
-		    αDotN = (αF - αP)/twoDτF // Calculate the present value of αDot
+		    αDotN = (αF - αP)/TwoDτF // Calculate the present value of αDot
 		    
 		    // Calculate future values of χs and χa
 		    χsXF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatXF + OneMinusδ*OneMinusδ*χ2HatXF)
@@ -337,12 +337,6 @@ Protected Class PhaseEvolverClass
 		  
 		  // Now calculate the current frequency
 		  ΨDotN = v3 - LZN*αDotN - 6.0*v2*(3.0*Log(VN/V0) + 1.0)*vDotN
-		  '// If the next step is different than the previous step (DτRatio ≠ 1) and the phase step is equal to the source step
-		  '// then we need to interpolate to find the correct past value. But if the phase step is different (smaller) than the
-		  '// source step, then our source steps are larger than the phase steps, so the past value will still be correct
-		  'If DτRatio <> 1.0 And TwoDτPhase = TwoDτF Then ΨrP = oneMinusRatio*ΨrN + DτRatio*ΨrP
-		  '// calculate the phase
-		  'ΨrF = ΨrP + TwoDτPhase*CVeSinΘ*Sin(OrbitalPhase)
 		End Sub
 	#tag EndMethod
 
@@ -1523,6 +1517,30 @@ Protected Class PhaseEvolverClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DΨrDΦP"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CΩ1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CΩ3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CΩ5"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

@@ -3,6 +3,14 @@ Protected Class NoiseClass
 	#tag Method, Flags = &h0
 		Sub Constructor(dT As Double)
 		  ΔT = dT
+		  b1 = 2.0654e-43
+		  b2 = 4.7315e-61
+		  b3 = 1.4125e-47
+		  fb1 = 7.08e-4
+		  fb2 = 1.778e-3
+		  fc2 = 1.0e-3
+		  sa = 2.31e-52
+		  sx = 1.257e-41
 		End Sub
 	#tag EndMethod
 
@@ -12,14 +20,12 @@ Protected Class NoiseClass
 		  //  This dates from a very early version of the code.
 		  
 		  Var stot, sb as Double
-		  Var fb1ocal As Double = fb1
-		  Var salocal As Double = sa
 		  stot = sqrt(sx*sx + (sa/(fn*fn*fn*fn))*(sa/(fn*fn*fn*fn)))
 		  stot = stot*(1+(fn*fn)/fc2)
 		  sb = b1/(fn^(1.9))
 		  If fn >= fb1 Then sb = b2/(fn^(7.5))
 		  If fn >= fb2 Then sb = b3/(fn^(2.6))
-		  stot = sqrt(stot^2 + 4*sb*sb)
+		  stot = sqrt(stot*stot + 4*sb*sb)
 		  
 		  //  This correction specifies the noise value that matches
 		  //  the Benacquista data at f = 0.002 Hz.  Note that this is
@@ -32,33 +38,40 @@ Protected Class NoiseClass
 
 
 	#tag Property, Flags = &h0
-		ΔT As Double
+		b1 As Double
 	#tag EndProperty
 
+	#tag Property, Flags = &h0
+		b2 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = b1, Type = Double, Dynamic = False, Default = \"2.0654e-43", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		b3 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = b2, Type = Double, Dynamic = False, Default = \"4.7315e-61", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		fb1 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = b3, Type = Double, Dynamic = False, Default = \"1.4125e-47", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		fb2 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = fb1, Type = Double, Dynamic = False, Default = \"7.08e-4", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		fc2 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = fb2, Type = Double, Dynamic = False, Default = \"1.778e-3", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		sa As Double
+	#tag EndProperty
 
-	#tag Constant, Name = fc2, Type = Double, Dynamic = False, Default = \"1.0e-3", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		sx As Double
+	#tag EndProperty
 
-	#tag Constant, Name = sa, Type = Double, Dynamic = False, Default = \"2.31e-52", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = sx, Type = Double, Dynamic = False, Default = \"1.257e-41", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		ΔT As Double
+	#tag EndProperty
 
 
 	#tag ViewBehavior
@@ -107,7 +120,71 @@ Protected Class NoiseClass
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
-			Type="Integer"
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="b1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="b2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="b3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fb1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fb2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fc2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sa"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sx"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
