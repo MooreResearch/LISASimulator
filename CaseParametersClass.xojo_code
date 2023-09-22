@@ -23,9 +23,11 @@ Protected Class CaseParametersClass
 		  P.SolveForΘ = SolveForΘ
 		  P.SolveForλ0 = SolveForλ0
 		  P.SolveForΦ = SolveForΦ
+		  P.SolveForχ1 = SolveForχ1
 		  P.SolveForχ10x = SolveForχ10x
 		  P.SolveForχ10y = SolveForχ10y
 		  P.SolveForχ10z = SolveForχ10z
+		  P.SolveForχ2 = SolveForχ2
 		  P.SolveForχ20x = SolveForχ20x
 		  P.SolveForχ20y = SolveForχ20y
 		  P.SolveForχ20z = SolveForχ20z
@@ -61,18 +63,18 @@ Protected Class CaseParametersClass
 		  // The spin variables are assumed to be already unitless (in units of the star's squared  mass).
 		  // The run duration is assumed to be in years, but the step time is in seconds.
 		  
-		  Var Year As Double = 3.15576e7
+		  Var year As Double = 3.15576e7
 		  Var m As Double = M1 + M2  // total mass in solar masses
 		  GM = 4.9267e-6*m
 		  δ = (M1 - M2)/m // calculate delta
-		  Var rInSeconds As Double = R*Year // get R in seconds
-		  R0 = 1.0e7*Year  // Defines the reference for R (10 Mly)
+		  Var rInSeconds As Double = R*year // get R in seconds
+		  R0 = 1.0e7*year  // Defines the reference for R (10 Mly)
 		  Λ = rInSeconds/R0  // This is the unitless luminosity distance
 		  Var universe As New UniverseClass // Create a universe class to solve the Z(R) problem
 		  Z = universe.GetZFrom(rinSeconds) // get the Z value for the given value of R
 		  IVOnePlusZ = 1.0/(1.0 + Z)
 		  π = 3.14159265358979324  // record the value of pi so that we only have to define it once
-		  V0 = Pow(GM*F0*2*π*(1.0 + Z)/1000,1/3)  // Initialize V0
+		  V0 = Pow(GM*F0*2.0*π*(1.0 + Z)/1000.0,1/3)  // Initialize V0
 		  // convert all angles from radians to degrees
 		  Var radiansFromDegrees As Double = π/180.0
 		  β = radiansFromDegrees*β
@@ -85,6 +87,10 @@ Protected Class CaseParametersClass
 		  GMΩe = GM*1.99213231e-7 //Unitless value of LISA's orbital frequency
 		  Var Noise As New NoiseClass(ΔT)
 		  Sn20 = Sqrt(Noise.GetNoise(0.002*F0))
+		  // If we are generating a solution for any component of spin 1, we must generate the solution for all
+		  SolveForχ1 = SolveForχ10x or SolveForχ10y or SolveForχ10z
+		  // the same for spin 2
+		  SolveForχ2 = SolveForχ20x or SolveForχ20y or SolveForχ20z
 		End Sub
 	#tag EndMethod
 
@@ -170,6 +176,10 @@ Protected Class CaseParametersClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		SolveForχ1 As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		SolveForχ10x As Boolean = True
 	#tag EndProperty
 
@@ -179,6 +189,10 @@ Protected Class CaseParametersClass
 
 	#tag Property, Flags = &h0
 		SolveForχ10z As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SolveForχ2 As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

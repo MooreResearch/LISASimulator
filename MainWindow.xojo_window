@@ -2252,7 +2252,6 @@ Begin DesktopWindow MainWindow
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
-      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
@@ -2335,11 +2334,11 @@ End
 		  Var χs𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χsL
 		  Var v0 As Double = parameters.V0
 		  Var Threepi As Double = 3.0*parameters.π
-		  Var c As Double = 743/2688 + (11/32)*η 
-		  Var Term2 As Double = (32/3)*c
-		  Var Term3 As Double = (64/3)*((47/40)*χs𝓁 + (15/32)*δ*χa𝓁 - Threepi/10)
-		  Var Term4 As Double = 64*c*c + (128/9)*(1855099/14450688 + (56975/258048)*η - (371/2048)*η*η)
-		  Var A As Double = 5*Parameters.GM/(256*η*TheSuper.Year*v0^8)
+		  Var c As Double = 743.0/2688.0 + (11.0/32.0)*η 
+		  Var Term2 As Double = (32.0/3.0)*c
+		  Var Term3 As Double = (64.0/3.0)*((47.0/40.0)*χs𝓁 + (15.0/32.0)*δ*χa𝓁 - Threepi/10.0)
+		  Var Term4 As Double = 64.0*c*c/9.0 + (128.0/3.0)*(1855099.0/14450688.0 + (56975.0/258048.0)*η + (371.0/2048.0)*η*η)
+		  Var A As Double = 5.0*Parameters.GM/(256.0*η*TheSuper.Year*v0^8)
 		  Return A*(1 + Term2*v0*v0 + Term3*v0*v0*v0 + Term4*v0*v0*v0*v0)
 		  
 		End Function

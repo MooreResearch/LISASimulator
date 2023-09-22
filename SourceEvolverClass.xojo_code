@@ -80,17 +80,17 @@ Protected Class SourceEvolverClass
 		  
 		  // Initialize constants
 		  Var γE As Double = 0.5772156649015328606
-		  CV0 = 32*η/5
-		  CV2 = -743/336 - 11*η/4
-		  CV3 = 4*π - 47*χsL/3 - δ*25*χaL/4
-		  CV4 = 34103/18144 + 13661*η/2016 + 59*η*η/18
-		  CV5 = (-5861/144 + 1001*η/12)*χsL + δ*(-809/84 + 281*η/8)*χaL _
-		  + 4159*π/672 + 189*π*η/8
-		  CV6 = 16477322263.0/139708800 - 1712*γE/105 + 16*π*π/3 _
-		  + (-56198689/217728 + 451*π*π/48)*η _
-		  + 541*η*η/896 - 5605*η*η*η/2592 - 856*Log(32)/105
-		  CV6L = 856/105
-		  CV7 = π*(-4415/4032 + 358675*η/6048 + 91495*η*η/1512)
+		  CV0 = 32.0*η/5.0
+		  CV2 = -743.0/336.0 - 11.0*η/4.0
+		  CV3 = 4.0*π - 47.0*χsL/3.0 - δ*25.0*χaL/4.0
+		  CV4 = 34103.0/18144.0 + 13661.0*η/2016.0 + 59.0*η*η/18.0
+		  CV5 = (-5861.0/144.0 + 1001.0*η/12.0)*χsL + δ*(-809.0/84.0 + 281.0*η/8.0)*χaL _
+		  + 4159.0*π/672.0 + 189.0*π*η/8.0
+		  CV6 = 16477322263.0/139708800.0 - 1712.0*γE/105.0 + 16.0*π*π/3.0 _
+		  + (-56198689.0/217728.0 + 451.0*π*π/48.0)*η _
+		  + 541.0*η*η/896.0 - 5605.0*η*η*η/2592.0
+		  CV6L = -2.0*856.0/105.0
+		  CV7 = π*(-4415.0/4032.0 + 358675.0*η/6048.0 + 91495.0*η*η/1512.0)
 		  
 		  // Initialize constants for spin evolution
 		  // Set up some constants that will be useful for the spin evolution equations.
@@ -143,7 +143,7 @@ Protected Class SourceEvolverClass
 		  Var v6 As Double = v3*v3
 		  Var v7 As Double = v3*v4
 		  Var v9 As Double = v4*v5
-		  Var vDotN As Double = CV0*v9*(1 + CV2*v2 + CV3*v3 + CV4*v4 + CV5*v5 + (CV6 + CV6L*Log(VN))*v6 + CV7*v7)
+		  Var vDotN As Double = CV0*v9*(1.0 + CV2*v2 + CV3*v3 + CV4*v4 + CV5*v5 + (CV6 + CV6L*Log(4.0*VN))*v6 + CV7*v7)
 		  VF = VP + twoDτF*vDotN
 		  Var ε As Double = 1.0e-3  // define what the maximum allowable change during a step should be
 		  DτIdeal = Min(DτIdeal, ε/Abs(vDotN))  // Calculate the ideal next step (we will only pay attention to the base case value)
@@ -337,10 +337,6 @@ Protected Class SourceEvolverClass
 
 	#tag Property, Flags = &h0
 		CV0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		CV1 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1027,14 +1023,6 @@ Protected Class SourceEvolverClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="CV0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CV1"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

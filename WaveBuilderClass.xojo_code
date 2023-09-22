@@ -103,7 +103,11 @@ Protected Class WaveBuilderClass
 		  SumSourceH(W)  // this will put the total plus and  cross polarizations into HP and HX
 		  
 		  // Calculate the derivative with respect to ψ (this is the easy one!)
-		  DHDq(Integer(Item.ψ)) = 2.0*(-fx*HP + fp*HX)
+		  If Parameters.SolveForψ Then
+		    DHDq(Integer(Item.ψ)) = 2.0*(-fx*HP + fp*HX)
+		  Else
+		    DHDq(Integer(Item.ψ)) = 0.0
+		  End If
 		  
 		  // Store valuable variables for later use
 		  Var hpBase As Double = HP
@@ -118,32 +122,52 @@ Protected Class WaveBuilderClass
 		  Var dHDV As Double = fp*HP + fx*HX
 		  
 		  // in the case of λ0, DΨrDλ0 = 1, so the following is the correct total derivative.
-		  DHDq(Integer(Item.λ0)) = dHDΨr
+		  If Parameters.SolveForλ0 Then
+		    DHDq(Integer(Item.λ0)) = dHDΨr
+		  Else
+		    DHDq(Integer(Item.λ0)) = 0.0
+		  End If
 		  
 		  // We can also use the above items to calculate the derivative with respect to Θ
-		  DHDq(Integer(Item.Θ)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
-		  + dHDΨr*DΨrDΘDN
+		  If Parameters.SolveForΘ Then
+		    DHDq(Integer(Item.Θ)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
+		    + dHDΨr*DΨrDΘDN
+		  Else
+		    DHDq(Integer(Item.Θ)) = 0.0
+		  End If
 		  
 		  // and the derivative with respect to Φ
-		  DHDq(Integer(Item.Φ)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
-		  + dHDΨr*DΨrDΦDN
+		  If Parameters.SolveForΦ Then
+		    DHDq(Integer(Item.Φ)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
+		    + dHDΨr*DΨrDΦDN
+		  Else
+		    DHDq(Integer(Item.Φ)) = 0.0
+		  End If
 		  
 		  // Now we will start calculating derivatives that involve derivatives of the wave amplitudes
-		  // First, calculate the derivative with respect to β
-		  Var originalValue As Double = Cosβ // Store these values for safekeeping
-		  Var originalValue2 As Double = Sinβ
-		  Cosβ = CosβPlus  // Reset their values to the plus tweaked versions
-		  Sinβ = SinβPlus
-		  CalculateAmplitudes  // calculate amplitudes using these tweaked values
-		  SumSourceH(W)  // and calculate the waves with these amplitudes
-		  Var hPlus As Double = fp*HP + fx*HX  // save the results for later
-		  Cosβ = CosβMinus  // now reset the values of Cosβ, Sinβ to the minus tweaked version
-		  Sinβ = SinβMinus
-		  CalculateAmplitudes // calculate the amplitudes using these tweaked values
-		  SumSourceH(W) // and calculate the waves
-		  Cosβ = originalValue  // restore the original values of of Cosβ, Sinβ, so that no harm is done
-		  Sinβ = originalValue2
-		  DHDq(Integer(Item.β)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
+		  
+		  Var originalValue As Double
+		  Var originalValue2 As Double
+		  Var hPlus As Double
+		  If Parameters.SolveForβ Then
+		    // First, calculate the derivative with respect to β
+		    originalValue = Cosβ // Store these values for safekeeping
+		    originalValue2 = Sinβ
+		    Cosβ = CosβPlus  // Reset their values to the plus tweaked versions
+		    Sinβ = SinβPlus
+		    CalculateAmplitudes  // calculate amplitudes using these tweaked values
+		    SumSourceH(W)  // and calculate the waves with these amplitudes
+		    hPlus= fp*HP + fx*HX  // save the results for later
+		    Cosβ = CosβMinus  // now reset the values of Cosβ, Sinβ to the minus tweaked version
+		    Sinβ = SinβMinus
+		    CalculateAmplitudes // calculate the amplitudes using these tweaked values
+		    SumSourceH(W) // and calculate the waves
+		    Cosβ = originalValue  // restore the original values of of Cosβ, Sinβ, so that no harm is done
+		    Sinβ = originalValue2
+		    DHDq(Integer(Item.β)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
+		  Else
+		    DHDq(Integer(Item.β)) = 0.0
+		  End If
 		  
 		  // Most of the remaining parameters require all or nearly all the following amplitude derivatives
 		  // because varying the parameters have either implicit or explicit effects on the quantities that
@@ -257,276 +281,340 @@ Protected Class WaveBuilderClass
 		  χszDN = originalValue
 		  Var dHDχsz As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
 		  
-		  // Calculate the derivative with respect to q = lnΛ
-		  Var dαDq As Double = (αDN - α0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dΨrDq As Double = (ΨrDN - Parameters.λ0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dVDq As Double = (VDN - Parameters.V0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dιDq As Double = (ιDN - ι0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dδDq As Double // We'll need this later
-		  Var dχaxDq As Double = (χaxDN - χax0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dχayDq As Double = (χayDN - χay0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dχazDq As Double = (χazDN - χaz0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dχsxDq As Double = (χsxDN - χsx0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dχsyDq As Double = (χsyDN - χsy0)*Parameters.IVOnePlusZ*DZDlnΛ
-		  Var dχszDq As Double = (χszDN - χsz0)*Parameters.IVOnePlusZ*DZDlnΛ
 		  
-		  // Now, we put it all together (The first term is actually the derivative of h0 with respect to lnΛ).
-		  DHDq(Integer(Item.Λ)) = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq+ dHDχsz*dχszDq
+		  // We need to define a bunch of variables to be used later
+		  Var ιPlus As Double
+		  Var αPlus As Double
+		  Var ΨrPlus As Double
+		  Var VPlus As Double
+		  Var χaxPlus As Double
+		  Var χayPlus As Double
+		  Var χazPlus As Double
+		  Var χsxPlus As Double
+		  Var χsyPlus As Double
+		  Var χszPlus As Double
+		  // These variables will hold derivatives
+		  Var dαDq As Double
+		  Var dΨrDq As Double
+		  Var dVDq As Double 
+		  Var dιDq As Double
+		  Var dδDq As Double
+		  Var dχaxDq As Double
+		  Var dχayDq As Double
+		  Var dχazDq As Double
+		  Var dχsxDq As Double
+		  Var dχsyDq As Double
+		  Var dχszDq As Double
 		  
-		  // Calculate the derivative with respect to q = lnF0
-		  GetDataAtDetectorStep(SourceEvolverF0Plus)
-		  Var ιPlus As Double = ιDN
-		  Var αPlus As Double = αDN
-		  Var ΨrPlus As Double = ΨrDN
-		  Var VPlus As Double = VDN
-		  Var χaxPlus As Double = χaxDN
-		  Var χayPlus As Double = χayDN
-		  Var χazPlus As Double = χazDN
-		  Var χsxPlus As Double = χsxDN
-		  Var χsyPlus As Double = χsyDN
-		  Var χszPlus As Double = χszDN
-		  GetDataAtDetectorStep(SourceEvolverF0Minus)
-		  dαDq = (αPlus - αDN)*IDεForF0
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForF0
-		  dιDq = (ιPlus - ιDN)*IDεForF0
-		  dVDq = (VPlus - VDN)*IDεForF0
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForF0
-		  dχayDq = (χayPlus - χayDN)*IDεForF0
-		  dχazDq = (χazPlus - χazDN)*IDεForF0
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForF0
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForF0
-		  dχszDq = (χszPlus - χszDN)*IDεForF0
-		  // Put it all together
-		  DHDq(Integer(Item.F0)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  If Parameters.SolveForΛ Then
+		    // Calculate the derivative with respect to q = lnΛ
+		    dαDq = (αDN - α0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dΨrDq = (ΨrDN - Parameters.λ0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dVDq = (VDN - Parameters.V0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dιDq = (ιDN - ι0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχaxDq = (χaxDN - χax0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχayDq = (χayDN - χay0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχazDq = (χazDN - χaz0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχsxDq = (χsxDN - χsx0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχsyDq = (χsyDN - χsy0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχszDq = (χszDN - χsz0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    
+		    // Now, we put it all together (The first term is actually the derivative of h0 with respect to lnΛ).
+		    DHDq(Integer(Item.Λ)) = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq+ dHDχsz*dχszDq
+		  Else
+		    DHDq(Integer(Item.Λ)) = 0.0
+		  End If
 		  
-		  // Calculate the derivative with respect to q = lnM1
-		  GetDataAtDetectorStep(SourceEvolverM1Plus)
-		  ιPlus = ιDN
-		  αPlus = αDN
-		  ΨrPlus = ΨrDN
-		  VPlus = VDN
-		  χaxPlus = χaxDN
-		  χayPlus = χayDN
-		  χazPlus = χazDN
-		  χsxPlus = χsxDN
-		  χsyPlus = χsyDN
-		  χszPlus = χszDN
-		  GetDataAtDetectorStep(SourceEvolverM1Minus)
-		  dαDq = (αPlus - αDN)*IDεForM1
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForM1
-		  dVDq = (VPlus - VDN)*IDεForM1
-		  dιDq = (ιPlus - ιDN)*IDεForM1
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForM1
-		  dχayDq = (χayPlus - χayDN)*IDεForM1
-		  dχazDq = (χazPlus - χazDN)*IDεForM1
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForM1
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForM1
-		  dχszDq = (χszPlus - χszDN)*IDεForM1
-		  dδDq = 2.0*η  // this can be calculated analytically
-		  // Put it all together
-		  DHDq(Integer(Item.M1)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
+		  If Parameters.SolveForF0 Then
+		    // Calculate the derivative with respect to q = lnF0
+		    GetDataAtDetectorStep(SourceEvolverF0Plus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverF0Minus)
+		    dαDq = (αPlus - αDN)*IDεForF0
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForF0
+		    dιDq = (ιPlus - ιDN)*IDεForF0
+		    dVDq = (VPlus - VDN)*IDεForF0
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForF0
+		    dχayDq = (χayPlus - χayDN)*IDεForF0
+		    dχazDq = (χazPlus - χazDN)*IDεForF0
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForF0
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForF0
+		    dχszDq = (χszPlus - χszDN)*IDεForF0
+		    // Put it all together
+		    DHDq(Integer(Item.F0)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  Else
+		    DHDq(Integer(Item.F0)) = 0.0
+		  End If
 		  
-		  // Calculate the derivative with respect to q = lnM2
-		  GetDataAtDetectorStep(SourceEvolverM2Plus)
-		  ιPlus = ιDN
-		  αPlus = αDN
-		  ΨrPlus = ΨrDN
-		  VPlus = VDN
-		  χaxPlus = χaxDN
-		  χayPlus = χayDN
-		  χazPlus = χazDN
-		  χsxPlus = χsxDN
-		  χsyPlus = χsyDN
-		  χszPlus = χszDN
-		  GetDataAtDetectorStep(SourceEvolverM2Minus)
-		  dαDq = (αPlus - αDN)*IDεForM2
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForM2
-		  dVDq = (VPlus - VDN)*IDεForM2
-		  dιDq = (ιPlus - ιDN)*IDεForM2
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForM2
-		  dχayDq = (χayPlus - χayDN)*IDεForM2
-		  dχazDq = (χazPlus - χazDN)*IDεForM2
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForM2
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForM2
-		  dχszDq = (χszPlus - χszDN)*IDεForM2
-		  // Put it all together
-		  DHDq(Integer(Item.M2)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
+		  If Parameters.SolveForM1 Then
+		    // Calculate the derivative with respect to q = lnM1
+		    GetDataAtDetectorStep(SourceEvolverM1Plus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverM1Minus)
+		    dαDq = (αPlus - αDN)*IDεForM1
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForM1
+		    dVDq = (VPlus - VDN)*IDεForM1
+		    dιDq = (ιPlus - ιDN)*IDεForM1
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForM1
+		    dχayDq = (χayPlus - χayDN)*IDεForM1
+		    dχazDq = (χazPlus - χazDN)*IDεForM1
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForM1
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForM1
+		    dχszDq = (χszPlus - χszDN)*IDεForM1
+		    dδDq = 2.0*η  // this can be calculated analytically
+		    // Put it all together
+		    DHDq(Integer(Item.M1)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
+		  Else
+		    DHDq(Integer(Item.M1)) = 0.0
+		  End If
 		  
-		  // Calculate the derivative with respect to q = χ10x
-		  GetDataAtDetectorStep(SourceEvolverχ10xPlus)
-		  ιPlus = ιDN
-		  αPlus = αDN
-		  ΨrPlus = ΨrDN
-		  VPlus = VDN
-		  χaxPlus = χaxDN
-		  χayPlus = χayDN
-		  χazPlus = χazDN
-		  χsxPlus = χsxDN
-		  χsyPlus = χsyDN
-		  χszPlus = χszDN
-		  GetDataAtDetectorStep(SourceEvolverχ10xMinus)
-		  dαDq = (αPlus - αDN)*IDεForχ10x
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10x
-		  dVDq = (VPlus - VDN)*IDεForχ10x
-		  dιDq = (ιPlus - ιDN)*IDεForχ10x
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForχ10x
-		  dχayDq = (χayPlus - χayDN)*IDεForχ10x
-		  dχazDq = (χazPlus - χazDN)*IDεForχ10x
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForχ10x
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForχ10x
-		  dχszDq = (χszPlus - χszDN)*IDεForχ10x
-		  // Put it all together
-		  DHDq(Integer(Item.χ10x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  If Parameters.SolveForM2 Then
+		    // Calculate the derivative with respect to q = lnM2
+		    GetDataAtDetectorStep(SourceEvolverM2Plus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverM2Minus)
+		    dαDq = (αPlus - αDN)*IDεForM2
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForM2
+		    dVDq = (VPlus - VDN)*IDεForM2
+		    dιDq = (ιPlus - ιDN)*IDεForM2
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForM2
+		    dχayDq = (χayPlus - χayDN)*IDεForM2
+		    dχazDq = (χazPlus - χazDN)*IDεForM2
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForM2
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForM2
+		    dχszDq = (χszPlus - χszDN)*IDεForM2
+		    // Put it all together
+		    DHDq(Integer(Item.M2)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
+		  Else
+		    DHDq(Integer(Item.M2)) = 0.0
+		  End If
 		  
-		  // Calculate the derivative with respect to q = χ10y
-		  GetDataAtDetectorStep(SourceEvolverχ10yPlus)
-		  ιPlus = ιDN
-		  αPlus = αDN
-		  ΨrPlus = ΨrDN
-		  VPlus = VDN
-		  χaxPlus = χaxDN
-		  χayPlus = χayDN
-		  χazPlus = χazDN
-		  χsxPlus = χsxDN
-		  χsyPlus = χsyDN
-		  χszPlus = χszDN
-		  GetDataAtDetectorStep(SourceEvolverχ10yMinus)
-		  dαDq = (αPlus - αDN)*IDεForχ10y
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10y
-		  dVDq = (VPlus - VDN)*IDεForχ10y
-		  dιDq = (ιPlus - ιDN)*IDεForχ10y
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForχ10y
-		  dχayDq = (χayPlus - χayDN)*IDεForχ10y
-		  dχazDq = (χazPlus - χazDN)*IDεForχ10y
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForχ10y
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForχ10y
-		  dχszDq = (χszPlus - χszDN)*IDεForχ10y
-		  // Put it all together
-		  DHDq(Integer(Item.χ10y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  If Parameters.SolveForχ10x Then
+		    // Calculate the derivative with respect to q = χ10x
+		    GetDataAtDetectorStep(SourceEvolverχ10xPlus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverχ10xMinus)
+		    dαDq = (αPlus - αDN)*IDεForχ10x
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10x
+		    dVDq = (VPlus - VDN)*IDεForχ10x
+		    dιDq = (ιPlus - ιDN)*IDεForχ10x
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ10x
+		    dχayDq = (χayPlus - χayDN)*IDεForχ10x
+		    dχazDq = (χazPlus - χazDN)*IDεForχ10x
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ10x
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10x
+		    dχszDq = (χszPlus - χszDN)*IDεForχ10x
+		    // Put it all together
+		    DHDq(Integer(Item.χ10x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  Else
+		    DHDq(Integer(Item.χ10x)) = 0.0
+		  End If
 		  
-		  // Calculate the derivative with respect to q = χ10z
-		  GetDataAtDetectorStep(SourceEvolverχ10zPlus)
-		  ιPlus = ιDN
-		  αPlus = αDN
-		  ΨrPlus = ΨrDN
-		  VPlus = VDN
-		  χaxPlus = χaxDN
-		  χayPlus = χayDN
-		  χazPlus = χazDN
-		  χsxPlus = χsxDN
-		  χsyPlus = χsyDN
-		  χszPlus = χszDN
-		  GetDataAtDetectorStep(SourceEvolverχ10zMinus)
-		  dαDq = (αPlus - αDN)*IDεForχ10z
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10z
-		  dVDq = (VPlus - VDN)*IDεForχ10z
-		  dιDq = (ιPlus - ιDN)*IDεForχ10z
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForχ10z
-		  dχayDq = (χayPlus - χayDN)*IDεForχ10z
-		  dχazDq = (χazPlus - χazDN)*IDεForχ10z
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForχ10z
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForχ10z
-		  dχszDq = (χszPlus - χszDN)*IDεForχ10z
-		  // Put it all together
-		  DHDq(Integer(Item.χ10z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  If Parameters.SolveForχ10y Then
+		    // Calculate the derivative with respect to q = χ10y
+		    GetDataAtDetectorStep(SourceEvolverχ10yPlus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverχ10yMinus)
+		    dαDq = (αPlus - αDN)*IDεForχ10y
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10y
+		    dVDq = (VPlus - VDN)*IDεForχ10y
+		    dιDq = (ιPlus - ιDN)*IDεForχ10y
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ10y
+		    dχayDq = (χayPlus - χayDN)*IDεForχ10y
+		    dχazDq = (χazPlus - χazDN)*IDεForχ10y
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ10y
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10y
+		    dχszDq = (χszPlus - χszDN)*IDεForχ10y
+		    // Put it all together
+		    DHDq(Integer(Item.χ10y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  Else
+		    DHDq(Integer(Item.χ10y)) = 0.0
+		  End If
 		  
-		  // Calculate the derivative with respect to q = χ20x
-		  GetDataAtDetectorStep(SourceEvolverχ20xPlus)
-		  ιPlus = ιDN
-		  αPlus = αDN
-		  ΨrPlus = ΨrDN
-		  VPlus = VDN
-		  χaxPlus = χaxDN
-		  χayPlus = χayDN
-		  χazPlus = χazDN
-		  χsxPlus = χsxDN
-		  χsyPlus = χsyDN
-		  χszPlus = χszDN
-		  GetDataAtDetectorStep(SourceEvolverχ20xMinus)
-		  dαDq = (αPlus - αDN)*IDεForχ20x
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20x
-		  dVDq = (VPlus - VDN)*IDεForχ20x
-		  dιDq = (ιPlus - ιDN)*IDεForχ20x
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForχ20x
-		  dχayDq = (χayPlus - χayDN)*IDεForχ20x
-		  dχazDq = (χazPlus - χazDN)*IDεForχ20x
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForχ20x
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForχ20x
-		  dχszDq = (χszPlus - χszDN)*IDεForχ20x
-		  // Put it all together
-		  DHDq(Integer(Item.χ20x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  If Parameters.SolveForχ10z Then
+		    // Calculate the derivative with respect to q = χ10z
+		    GetDataAtDetectorStep(SourceEvolverχ10zPlus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverχ10zMinus)
+		    dαDq = (αPlus - αDN)*IDεForχ10z
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10z
+		    dVDq = (VPlus - VDN)*IDεForχ10z
+		    dιDq = (ιPlus - ιDN)*IDεForχ10z
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ10z
+		    dχayDq = (χayPlus - χayDN)*IDεForχ10z
+		    dχazDq = (χazPlus - χazDN)*IDεForχ10z
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ10z
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10z
+		    dχszDq = (χszPlus - χszDN)*IDεForχ10z
+		    // Put it all together
+		    DHDq(Integer(Item.χ10z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  Else
+		    DHDq(Integer(Item.χ10z)) = 0.0
+		  End If
 		  
-		  // Calculate the derivative with respect to q = χ20y
-		  GetDataAtDetectorStep(SourceEvolverχ20yPlus)
-		  ιPlus = ιDN
-		  αPlus = αDN
-		  ΨrPlus = ΨrDN
-		  VPlus = VDN
-		  χaxPlus = χaxDN
-		  χayPlus = χayDN
-		  χazPlus = χazDN
-		  χsxPlus = χsxDN
-		  χsyPlus = χsyDN
-		  χszPlus = χszDN
-		  GetDataAtDetectorStep(SourceEvolverχ20yMinus)
-		  dαDq = (αPlus - αDN)*IDεForχ20y
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20y
-		  dVDq = (VPlus - VDN)*IDεForχ20y
-		  dιDq = (ιPlus - ιDN)*IDεForχ20y
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForχ20y
-		  dχayDq = (χayPlus - χayDN)*IDεForχ20y
-		  dχazDq = (χazPlus - χazDN)*IDεForχ20y
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForχ20y
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForχ20y
-		  dχszDq = (χszPlus - χszDN)*IDεForχ20y
-		  // Put it all together
-		  DHDq(Integer(Item.χ20y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  If Parameters.SolveForχ20x Then
+		    // Calculate the derivative with respect to q = χ20x
+		    GetDataAtDetectorStep(SourceEvolverχ20xPlus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverχ20xMinus)
+		    dαDq = (αPlus - αDN)*IDεForχ20x
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20x
+		    dVDq = (VPlus - VDN)*IDεForχ20x
+		    dιDq = (ιPlus - ιDN)*IDεForχ20x
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ20x
+		    dχayDq = (χayPlus - χayDN)*IDεForχ20x
+		    dχazDq = (χazPlus - χazDN)*IDεForχ20x
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ20x
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20x
+		    dχszDq = (χszPlus - χszDN)*IDεForχ20x
+		    // Put it all together
+		    DHDq(Integer(Item.χ20x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  Else
+		    DHDq(Integer(Item.χ20x)) = 0.0
+		  End If
 		  
-		  // Calculate the derivative with respect to q = χ20z
-		  GetDataAtDetectorStep(SourceEvolverχ20zPlus)
-		  ιPlus = ιDN
-		  αPlus = αDN
-		  ΨrPlus = ΨrDN
-		  VPlus = VDN
-		  χaxPlus = χaxDN
-		  χayPlus = χayDN
-		  χazPlus = χazDN
-		  χsxPlus = χsxDN
-		  χsyPlus = χsyDN
-		  χszPlus = χszDN
-		  GetDataAtDetectorStep(SourceEvolverχ20zMinus)
-		  dαDq = (αPlus - αDN)*IDεForχ20z
-		  dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20z
-		  dVDq = (VPlus - VDN)*IDεForχ20z
-		  dιDq = (ιPlus - ιDN)*IDεForχ20z
-		  dχaxDq = (χaxPlus - χaxDN)*IDεForχ20z
-		  dχayDq = (χayPlus - χayDN)*IDεForχ20z
-		  dχazDq = (χazPlus - χazDN)*IDεForχ20z
-		  dχsxDq = (χsxPlus - χsxDN)*IDεForχ20z
-		  dχsyDq = (χsyPlus - χsyDN)*IDεForχ20z
-		  dχszDq = (χszPlus - χszDN)*IDεForχ20z
-		  // Put it all together
-		  DHDq(Integer(Item.χ20z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		  + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		  + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  If Parameters.SolveForχ20y Then
+		    // Calculate the derivative with respect to q = χ20y
+		    GetDataAtDetectorStep(SourceEvolverχ20yPlus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverχ20yMinus)
+		    dαDq = (αPlus - αDN)*IDεForχ20y
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20y
+		    dVDq = (VPlus - VDN)*IDεForχ20y
+		    dιDq = (ιPlus - ιDN)*IDεForχ20y
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ20y
+		    dχayDq = (χayPlus - χayDN)*IDεForχ20y
+		    dχazDq = (χazPlus - χazDN)*IDεForχ20y
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ20y
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20y
+		    dχszDq = (χszPlus - χszDN)*IDεForχ20y
+		    // Put it all together
+		    DHDq(Integer(Item.χ20y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  Else
+		    DHDq(Integer(Item.χ20y)) = 0.0
+		  End If
+		  
+		  If Parameters.SolveForχ20z Then
+		    // Calculate the derivative with respect to q = χ20z
+		    GetDataAtDetectorStep(SourceEvolverχ20zPlus)
+		    ιPlus = ιDN
+		    αPlus = αDN
+		    ΨrPlus = ΨrDN
+		    VPlus = VDN
+		    χaxPlus = χaxDN
+		    χayPlus = χayDN
+		    χazPlus = χazDN
+		    χsxPlus = χsxDN
+		    χsyPlus = χsyDN
+		    χszPlus = χszDN
+		    GetDataAtDetectorStep(SourceEvolverχ20zMinus)
+		    dαDq = (αPlus - αDN)*IDεForχ20z
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20z
+		    dVDq = (VPlus - VDN)*IDεForχ20z
+		    dιDq = (ιPlus - ιDN)*IDεForχ20z
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ20z
+		    dχayDq = (χayPlus - χayDN)*IDεForχ20z
+		    dχazDq = (χazPlus - χazDN)*IDεForχ20z
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ20z
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20z
+		    dχszDq = (χszPlus - χszDN)*IDεForχ20z
+		    // Put it all together
+		    DHDq(Integer(Item.χ20z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  Else
+		    DHDq(Integer(Item.χ20z)) = 0.0
+		  End If
 		  
 		End Sub
 	#tag EndMethod
@@ -1189,24 +1277,34 @@ Protected Class WaveBuilderClass
 		  // while some side cases might have a spin that requires a certain step size.
 		  // A first argument of zero indicates a trial step here.
 		  SourceEvolverBase.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverM1Minus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverM1Plus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverM2Minus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverM2Plus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverF0Minus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverF0Plus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ10xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ10xPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ10yMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ10yPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ10zMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ10zPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ20xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ20xPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ20yMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ20yPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ20zMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  SourceEvolverχ20zPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  If P.SolveForM1 Then 
+		    SourceEvolverM1Minus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverM1Plus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  End If
+		  If P.SolveForM2 Then
+		    SourceEvolverM2Minus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverM2Plus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  End If
+		  If P.SolveForF0 Then
+		    SourceEvolverF0Minus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverF0Plus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  End If
+		  If P.SolveForχ1 Then
+		    SourceEvolverχ10xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ10xPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ10yMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ10yPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ10zMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ10zPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  End If
+		  If P.SolveForχ2 Then
+		    SourceEvolverχ20xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ20xPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ20yMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ20yPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ20zMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverχ20zPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  End If
 		  SourceBestDτr = SourceBestDτr*(1.0 + P.Z)  // get this step size in the solar system frame
 		  
 		  // Now set up the actual first time step
@@ -1251,24 +1349,34 @@ Protected Class WaveBuilderClass
 		  // This method performs a source step
 		  // Do the base case and side case steps
 		  SourceEvolverBase.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverM1Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverM1Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverM2Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverM2Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverF0Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverF0Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ10xMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ10xPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ10yMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ10yPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ10zMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ10zPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ20xMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ20xPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ20yMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ20yPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ20zMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  SourceEvolverχ20zPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		  If Parameters.SolveForM1 Then
+		    SourceEvolverM1Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverM1Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		  End If
+		  If Parameters.SolveForM2 Then
+		    SourceEvolverM2Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverM2Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		  End If
+		  If Parameters.SolveForF0 Then
+		    SourceEvolverF0Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverF0Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		  End If
+		  If Parameters.SolveForχ1 Then
+		    SourceEvolverχ10xMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ10xPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ10yMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ10yPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ10zMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ10zPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		  End If
+		  If Parameters.SolveForχ2 Then
+		    SourceEvolverχ20xMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ20xPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ20yMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ20yPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ20zMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverχ20zPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		  End If
 		  SourceBestDτr = SourceBestDτr*(1.0+Parameters.Z) // correct to solar system time
 		  // Make the source step just completed the present step
 		  StepPowerP = StepPowerF
