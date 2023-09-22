@@ -145,7 +145,7 @@ Protected Class SourceEvolverClass
 		  Var v9 As Double = v4*v5
 		  Var vDotN As Double = CV0*v9*(1.0 + CV2*v2 + CV3*v3 + CV4*v4 + CV5*v5 + (CV6 + CV6L*Log(4.0*VN))*v6 + CV7*v7)
 		  VF = VP + twoDτF*vDotN
-		  Var ε As Double = 1.0e-3  // define what the maximum allowable change during a step should be
+		  Var ε As Double = VN*2.0e-3  // define what the maximum allowable change during a step should be
 		  DτIdeal = Min(DτIdeal, ε/Abs(vDotN))  // Calculate the ideal next step (we will only pay attention to the base case value)
 		  
 		  Var αDotN As Double
