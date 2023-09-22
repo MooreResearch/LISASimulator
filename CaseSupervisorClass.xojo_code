@@ -11,9 +11,8 @@ Protected Class CaseSupervisorClass
 		  CaseParameters.FinishConstruction // flesh out the constants not set in the user interface
 		  // the following gives the number of main time steps to execute
 		  NSteps = Round(CaseParameters.RunDuration*Year/CaseParameters.ΔT)
-		  Dτr = CaseParameters.ΔT/CaseParameters.GM
-		  τr = -Dτr // set this back a step so that the first step is at time τr = 0.
-		  Evolver = New EvolverClass(CaseParameters) // create the Evolver class and initialize it
+		  DτrD = CaseParameters.ΔT/CaseParameters.GM
+		  WaveBuilder = New WaveBuilderClass(CaseParameters) // create the WaveBuilder and initialize it
 		  // Create and initialize the ATA matrix
 		  ATAMatrix = New Matrix(15) // Initalize an empty 15x15 matrix
 		  ATAMatrix.InverseTest // Check that Matrix code is working
@@ -28,11 +27,11 @@ Protected Class CaseSupervisorClass
 		  // When it is done, the uncertainties should be in the Uncertainties property.
 		  Try
 		    For N = 0 to NSteps
-		      τr = τr + Dτr // one step to the future
-		      If Evolver.DidMainStepOK(N) Then  // If the evolver was able to execute a step
-		        LoadATA(Evolver.DHDq)
+		      τr = N*DτrD // this is the current tau time (needed to update the user interface)
+		      If WaveBuilder.DidDetectorStepOK(N) Then  // If the WaveBuilder was able to execute a sample step
+		        LoadATA(WaveBuilder.DHDq)
 		        // Load the ATA matrix with the current values
-		      Else  // If the evolver was not able to complete the step, we are at coalescence
+		      Else  // If the WaveBuilder was not able to complete the sample step, we are at coalescence
 		        TerminationMessage = "Coalescence Happened"
 		        Exit  // Abort the loop
 		      End If
@@ -68,23 +67,7 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DτF As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DτFF As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DτP As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Dτr As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Evolver As EvolverClass
+		DτrD As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -104,18 +87,6 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		StepPowerF As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		StepPowerFF As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		StepPowerP As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		TerminationMessage As String
 	#tag EndProperty
 
@@ -125,6 +96,10 @@ Protected Class CaseSupervisorClass
 
 	#tag Property, Flags = &h0
 		UncertaintyCalculator As UncertaintyCalculatorClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		WaveBuilder As WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -214,14 +189,6 @@ Protected Class CaseSupervisorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Dτr"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="NSteps"
 			Visible=false
 			Group="Behavior"
@@ -247,54 +214,6 @@ Protected Class CaseSupervisorClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StartTicks"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DτF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DτFF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DτP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="StepPowerF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="StepPowerFF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="StepPowerP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

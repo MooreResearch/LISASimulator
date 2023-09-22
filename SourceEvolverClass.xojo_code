@@ -1,7 +1,8 @@
 #tag Class
-Protected Class PhaseEvolverClass
+Protected Class SourceEvolverClass
 	#tag Method, Flags = &h0
 		Sub Constructor(P As CaseParametersClass)
+		  π = P.π
 		  // Initialize the velocity-related properties
 		  VN = P.V0
 		  VP = VN
@@ -31,6 +32,9 @@ Protected Class PhaseEvolverClass
 		  OneMinusδ = 1.0 - δ
 		  Var plusOverMinus As Double = OnePlusδ/OneMinusδ
 		  Var minusOverPlus As Double = OneMinusδ/OnePlusδ
+		  
+		  // Cosmic redshift factor
+		  Inv1PlusZ = 1.0/(1.0 + P.Z)
 		  
 		  // This value is the inverse magnitude of the L vector  
 		  Var B As Double = VN - (1.5 + η/6.0)*VN*VN*VN - ((27.0-19.0*η)/8.0 + η*η/24.0)*VN*VN*VN*VN
@@ -68,7 +72,7 @@ Protected Class PhaseEvolverClass
 		    αN = Atan2(LYN,LXN) // we should be able to define alpha
 		    αP = αN  // Past is the same as the present
 		  Else // otherwise, these are the conventions for no spin evolution
-		    αN = P.π
+		    αN = π
 		    αP = αN
 		    LZN = 1.0
 		    LZP = 1.0
@@ -100,107 +104,36 @@ Protected Class PhaseEvolverClass
 		  CL2 = (1.0 - δ)/(1.0 + δ)
 		  CL3 = 1.5 + η/6.0
 		  CL4 = 27.0/8.0 - 19.0*η/8.0 + η*η/24.0
-		  π = P.π
 		  
-		  // Initialize Doppler shift factors
-		  CVeCosΘ = P.Ve*Cos(P.Θ)
-		  CVeSinΘ = P.Ve*Sin(P.Θ)
-		  
-		  // Initialize phases
-		  ΨrN = P.λ0
-		  ΨrP = ΨrN
-		  
-		  // Note that ΨDotN and ΨDotP are set up during the first step
+		  // Initialize phase stuff
+		  λN = P.λ0
+		  λP = λN
+		  ΨN = P.λ0
+		  ΨP = ΨN
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DoMiniPhaseStep(OneMinusRatio As Double, StepRatio As Double, OrbitPhase As Double, TwoDτPhase As Double, BaseCase As Boolean = False)
-		  // This does a phase step when the main step is shorter than a source step
-		  // Interpolate the value of ΨDot to get the most accurate value at the center of the phase step
-		  Var ΨDotMN As Double 
-		  If StepRatio = 0.0 Then
-		    ΨDotMN = ΨDotN
+		Sub DoStep(DτrP As Double, DτrF As Double, ByRef DτIdeal As Double)
+		  // Since a past time step less than or equal to zero is impossible, we are using that value as a flag
+		  // that this is either a test step (DτrP < 0) or a first step (DτrP = 0).
+		  // Note that these time intervals are solar system times.
+		  Var testStep As Boolean = (DτrP < 0.0)
+		  Var eulerStep As Boolean = testStep or (DτrP = 0.0)
+		  Var dτRatio As Double
+		  Var twoDτF As Double = 2.0*DτrF*Inv1PlusZ  // this is the future time step corrected for the source frame
+		  If eulerStep Then
+		    dτRatio = 1.0
+		    twoDτF = 0.5*twoDτF  // Test or first step is an Euler step, so half the usual step size
 		  Else
-		    ΨDotMN = OneMinusRatio*ΨDotP + StepRatio*ΨDotN
-		  End If
-		  // Now calculate the phase
-		  ΨrF = ΨrP + TwoDτPhase*CVeSinΘ*Sin(OrbitPhase)*ΨDotMN
-		  If BaseCase Then // also evolve these phase derivatives
-		    DΨrDΘF = DΨrDΘP + TwoDτPhase*CVeCosΘ*Sin(OrbitPhase)*ΨDotMN
-		    DΨrDΦF = DΨrDΦF + TwoDτPhase*CVeSinΘ*Cos(OrbitPhase)*ΨDotMN
-		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub DoPhaseStep(DτRatio As Double, oneMinusRatio As Double, OrbitPhase As Double, TwoDτPhase As Double, BaseCase As Boolean = False)
-		  // This does a phase step when the main step is equal to or larger  than a source step
-		  // When DτRatio ≠ 1, meaning that the next step is smaller, then we need to interpolate to find the correct past value.
-		  // (If DτRatio = 1, this effectively does nothing, but it is probably faster to calculate it then to do the check.)
-		  ΨrP = oneMinusRatio*ΨrN + DτRatio*ΨrP
-		  // Now calculate the phase
-		  ΨrF = ΨrP + TwoDτPhase*CVeSinΘ*Sin(OrbitPhase)*ΨDotN
-		  If BaseCase Then // also evolve these phase derivatives
-		    DΨrDΘF = DΨrDΘP + TwoDτPhase*CVeCosΘ*Sin(OrbitPhase)*ΨDotN
-		    DΨrDΦF = DΨrDΦF + TwoDτPhase*CVeSinΘ*Cos(OrbitPhase)*ΨDotN
-		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub DoStep(DτRatio As Double, TwoDτF As Double, ByRef DτIdeal As Double)
-		  // Make future the present, as long as this is not the trial step or the first step
-		  // Since a future time step of zero is impossible, we are using that value as a flag
-		  // that this is either a test step or a first step
-		  If DτRatio = 0.0 Then
-		    DτRatio = 1.0
-		  Else // This is not the first step, so make the future present
-		    VP = VN
-		    VN = VF
-		    ιP = ιN
-		    ιN = ιF
-		    LXP = LXN
-		    LYP = LYN
-		    LZP = LZN
-		    LXN = LXF
-		    LYN = LYF
-		    LZN = LZF
-		    αP = αN
-		    αN = αF
-		    χ1HatXP =χ1HatXN
-		    χ1HatYP =χ1HatYN
-		    χ1HatZP =χ1HatZN
-		    χ1HatXN = χ1HatXF
-		    χ1HatYN = χ1HatYF
-		    χ1HatZN = χ1HatZF
-		    χ2HatXP = χ2HatXN
-		    χ2HatYP = χ2HatYN
-		    χ2HatZP = χ2HatZN
-		    χ2HatXN = χ2HatXF
-		    χ2HatYN = χ2HatYF
-		    χ2HatZN = χ2HatZF
-		    χaXP = χaXN
-		    χaYP = χaYN
-		    χaZP = χaZN
-		    χaXN = χaXF
-		    χaYN = χaYF
-		    χaZN = χaZF
-		    χsXP = χsXN
-		    χsYP = χsYN
-		    χsZP = χsZN
-		    χsXN = χsXF
-		    χsYN = χsYF
-		    χsZN = χsZF
-		    ΨrP = ΨrN
-		    ΨrN = ΨrF
+		    dτRatio = DτrF/DτrP
 		  End If
 		  
-		  Var oneMinusRatio As Double = 1.0 - DτRatio
+		  Var oneMinusRatio As Double = 1.0 - dτRatio
 		  // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
 		  // but it is probably faster just to do the calculation than to do a check and then a calculation
 		  VPold = VP // Save the old value for interpolation purposes
-		  VP = oneMinusRatio*VN + DτRatio*VP
+		  VP = oneMinusRatio*VN + dτRatio*VP
 		  
 		  // Evolve the velocity forward
 		  Var v2 As Double = VN*VN
@@ -241,20 +174,21 @@ Protected Class PhaseEvolverClass
 		  Else // spins are not strictly zero
 		    // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
 		    // but it is probably faster just to do the calculation
-		    // Note that we are NOT using the defined vector operations because the overhead is large
-		    // and we do not want to create new objects after initialization
+		    // Note that we are calculating components directly rather than defining a vector class and
+		    // doing operations via operator overloading because the overhead is with the latter is huge and
+		    // we also do not want to be creating any new objects while we are looping, as that is also slow.
 		    
-		    χ1hatXP = OneMinusRatio*χ1hatXN + DτRatio*χ1hatXP  
-		    χ1hatYP = OneMinusRatio*χ1hatYN + DτRatio*χ1hatYP
-		    χ1hatZP = OneMinusRatio*χ1hatZN + DτRatio*χ1hatZP  
-		    χ2hatXP = OneMinusRatio*χ2hatXN + DτRatio*χ2hatXP  
-		    χ2hatYP = OneMinusRatio*χ2hatYN + DτRatio*χ2hatYP
-		    χ2hatZP = OneMinusRatio*χ2hatZN + DτRatio*χ2hatZP  
-		    LXP = OneMinusRatio*LXN + DτRatio*LXP
-		    LYP = OneMinusRatio*LYN + DτRatio*LYP
-		    LZP = OneMinusRatio*LZN + DτRatio*LZP
+		    χ1hatXP = OneMinusRatio*χ1hatXN + dτRatio*χ1hatXP  
+		    χ1hatYP = OneMinusRatio*χ1hatYN + dτRatio*χ1hatYP
+		    χ1hatZP = OneMinusRatio*χ1hatZN + dτRatio*χ1hatZP  
+		    χ2hatXP = OneMinusRatio*χ2hatXN + dτRatio*χ2hatXP  
+		    χ2hatYP = OneMinusRatio*χ2hatYN + dτRatio*χ2hatYP
+		    χ2hatZP = OneMinusRatio*χ2hatZN + dτRatio*χ2hatZP  
+		    LXP = OneMinusRatio*LXN + dτRatio*LXP
+		    LYP = OneMinusRatio*LYN + dτRatio*LYP
+		    LZP = OneMinusRatio*LZN + dτRatio*LZP
 		    αPold = αP  // Save the old value for interpolation purposes
-		    αP = OneMinusRatio*αN + DτRatio*αP
+		    αP = OneMinusRatio*αN + dτRatio*αP
 		    
 		    // Do the step
 		    // Evolve the two spins using the leapfrog method
@@ -262,33 +196,27 @@ Protected Class PhaseEvolverClass
 		    Var χ1HatDotNx As Double = Factor*(LYN*χ1HatZN - LZN*χ1HatYN)
 		    Var χ1HatDotNy As Double = Factor*(LZN*χ1HatXN - LXN*χ1HatZN)
 		    Var χ1HatDotNz As Double = Factor*(LXN*χ1HatYN - LYN*χ1HatXN)
-		    χ1HatXF = χ1HatXP + χ1HatDotNx*TwoDτF
-		    χ1HatYF = χ1HatYP + χ1HatDotNy*TwoDτF
-		    χ1HatZF = χ1HatZP + χ1HatDotNz*TwoDτF
+		    χ1HatXF = χ1HatXP + χ1HatDotNx*twoDτF
+		    χ1HatYF = χ1HatYP + χ1HatDotNy*twoDτF
+		    χ1HatZF = χ1HatZP + χ1HatDotNz*twoDτF
 		    Factor = v5*(CΩ1  + CΩ3*v2 + CΩ5*v4)
 		    Var χ2HatDotNx As Double = Factor*(LYN*χ2HatZN - LZN*χ2HatYN)
 		    Var χ2HatDotNy As Double = Factor*(LZN*χ2HatXN - LXN*χ2HatZN)
 		    Var χ2HatDotNz As Double = Factor*(LXN*χ2HatYN - LYN*χ2HatXN)
-		    χ2HatXF = χ2HatXP + χ2HatDotNx*TwoDτF
-		    χ2HatYF = χ2HatYP + χ2HatDotNy*TwoDτF
-		    χ2HatZF = χ2HatZP + χ2HatDotNz*TwoDτF
+		    χ2HatXF = χ2HatXP + χ2HatDotNx*twoDτF
+		    χ2HatYF = χ2HatYP + χ2HatDotNy*twoDτF
+		    χ2HatZF = χ2HatZP + χ2HatDotNz*twoDτF
 		    
-		    
-		    // Evolve the orbital angular momentum
+		    // Calculate the future value of the orbital angular momentum
 		    Factor = -(VN-CL3*v3-CL4*v4)
 		    Var Factor1 As Double = Factor*CL1*χ1
 		    Var Factor2 As Double = Factor*CL2*χ2
-		    Var ellNDotx As Double = Factor1*χ1HatDotNx + Factor2*χ2HatDotNx
-		    Var ellNDoty As Double = Factor1*χ1HatDotNy + Factor2*χ2HatDotNy
-		    Var ellNDotz As Double = Factor1*χ1HatDotNz + Factor2*χ2HatDotNz
-		    LXF = LXP + ellNDotx*TwoDτF
-		    LYF = LYP + ellNDoty*TwoDτF
-		    LZF = LZP + ellNDotz*TwoDτF
-		    // The magnitude of L MUST be one, so ensure this
-		    Var invMagLF As Double = 1.0/Sqrt(LXF*LXF + LYF*LYF + LZF*LZF)
-		    LXF = LXF*invMagLF
-		    LYF = LYF*invMagLF
-		    LZF = LZF*invMagLF
+		    LXF = Factor1*χ1HatXF + Factor2*χ2HatXF
+		    LYF = Factor1*χ1HatYF + Factor2*χ2HatYF
+		    LZF = Sqrt(1.0 - LXF*LXF - LYF*LYF)
+		    // Note that the above could possibly be NaN if LXF^2 + LYF^2 > 1,
+		    // but this is not likely, as the spin angular momenta should be way
+		    // less than the orbital angular momentum
 		    
 		    // Calculate the future angles
 		    Var ellHF As Double = Sqrt(LXF*LXF+LYF*LYF)
@@ -314,7 +242,7 @@ Protected Class PhaseEvolverClass
 		      ιF = 0.0 // we are going through vertical
 		      αF = 2*αN - αP // Guess that we are going in a reasonably straight line
 		    End If
-		    αDotN = (αF - αP)/TwoDτF // Calculate the present value of αDot
+		    αDotN = (αF - αP)/twoDτF // Calculate the present value of αDot
 		    
 		    // Calculate future values of χs and χa
 		    χsXF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatXF + OneMinusδ*OneMinusδ*χ2HatXF)
@@ -331,12 +259,62 @@ Protected Class PhaseEvolverClass
 		    If χ1HatDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/χ1HatDotMag)
 		    Var χ2HatDotMag As Double = Sqrt(χ2HatDotNx*χ2HatDotNx + χ2HatDotNy*χ2HatDotNy + χ2HatDotNz*χ2HatDotNz)
 		    If χ2HatDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/χ2HatDotMag)
-		    Var ellDotMag As Double = Sqrt(ellNDotx*ellNDotx + ellNDoty*ellNDoty+ ellNDotz*ellNDotz)
+		    Var ellDotMag As Double = Sqrt((LXF-LXP)*(LXF-LXP) + (LYF-LYP)+ (LZF-LZP)*(LZF-LZP))/twoDτF
 		    If ellDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/ellDotMag)
 		  End If
 		  
-		  // Now calculate the current frequency
-		  ΨDotN = v3 - LZN*αDotN - 6.0*v2*(3.0*Log(VN/V0) + 1.0)*vDotN
+		  // Now evolve the source phase
+		  If eulerStep Then  // if this an Euler step
+		    v3 = 0.5*(VN + VF)
+		    v3 = v3*v3*v3
+		    λF = λN + twoDτF*(v3 - 0.5*(LZN+LZF)*(αF-αN)) // (This is actually 2nd-order accurate!)
+		  Else
+		    λF = λP + twoDτF*(v3 - LZN*αDotN)
+		  End If
+		  ΨF = λF - 6.0*VF*VF*VF*Log(VF/V0)
+		  
+		  // The step just taken now becomes the present
+		  // (as long as it is not a test step)
+		  If not testStep Then
+		    VP = VN
+		    VN = VF
+		    ιP = ιN
+		    ιN = ιF
+		    LXP = LXN
+		    LYP = LYN
+		    LZP = LZN
+		    LXN = LXF
+		    LYN = LYF
+		    LZN = LZF
+		    αP = αN
+		    αN = αF
+		    χ1HatXP =χ1HatXN
+		    χ1HatYP =χ1HatYN
+		    χ1HatZP =χ1HatZN
+		    χ1HatXN = χ1HatXF
+		    χ1HatYN = χ1HatYF
+		    χ1HatZN = χ1HatZF
+		    χ2HatXP = χ2HatXN
+		    χ2HatYP = χ2HatYN
+		    χ2HatZP = χ2HatZN
+		    χ2HatXN = χ2HatXF
+		    χ2HatYN = χ2HatYF
+		    χ2HatZN = χ2HatZF
+		    χaXP = χaXN
+		    χaYP = χaYN
+		    χaZP = χaZN
+		    χaXN = χaXF
+		    χaYN = χaYF
+		    χaZN = χaZF
+		    χsXP = χsXN
+		    χsYP = χsYN
+		    χsZP = χsZN
+		    χsXN = χsXF
+		    χsYN = χsYF
+		    χsZN = χsZF
+		    ΨP = ΨN
+		    ΨN = ΨF
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -394,14 +372,6 @@ Protected Class PhaseEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		CVeCosΘ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		CVeSinΘ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		CΩ0 As Double
 	#tag EndProperty
 
@@ -426,31 +396,7 @@ Protected Class PhaseEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DτIdeal As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DΨrDΘF As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DΨrDΘN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DΨrDΘP As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DΨrDΦF As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DΨrDΦN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DΨrDΦP As Double
+		Inv1PlusZ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -543,6 +489,18 @@ Protected Class PhaseEvolverClass
 
 	#tag Property, Flags = &h0
 		αPold As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		λF As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		λN As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		λP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -710,23 +668,15 @@ Protected Class PhaseEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ΨDotN As Double
+		ΨF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ΨDotP As Double
+		ΨN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ΨrF As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ΨrN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ΨrP As Double
+		ΨP As Double
 	#tag EndProperty
 
 
@@ -1060,7 +1010,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ΨrN"
+			Name="ΨN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1068,7 +1018,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ΨrP"
+			Name="ΨP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1229,14 +1179,6 @@ Protected Class PhaseEvolverClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="χsL"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DτIdeal"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1412,39 +1354,7 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="CVeCosΘ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CVeSinΘ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ΨrF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ΨDotN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ΨDotP"
+			Name="ΨF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1476,54 +1386,6 @@ Protected Class PhaseEvolverClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDΘF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΨrDΘN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΨrDΘP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΨrDΦF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΨrDΦN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΨrDΦP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="CΩ1"
 			Visible=false
 			Group="Behavior"
@@ -1541,6 +1403,38 @@ Protected Class PhaseEvolverClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="CΩ5"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Inv1PlusZ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="λF"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="λN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="λP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

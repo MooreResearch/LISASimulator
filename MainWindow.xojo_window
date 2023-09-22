@@ -2331,8 +2331,8 @@ End
 		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
 		  Var δ As Double = parameters.δ
 		  Var η As Double = 0.25*(1.0 - δ*δ)
-		  Var χa𝓁 As Double = TheSuper.Evolver.PhaseEvolverBase.χaL
-		  Var χs𝓁 As Double = TheSuper.Evolver.PhaseEvolverBase.χsL
+		  Var χa𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χaL
+		  Var χs𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χsL
 		  Var v0 As Double = parameters.V0
 		  Var Threepi As Double = 3.0*parameters.π
 		  Var c As Double = 743/2688 + (11/32)*η 
@@ -2382,7 +2382,7 @@ End
 		  'myMain = New Main(M, δ, f0, R, β, ψangle, λ0, Θ, Φ, χ1Initial, χ2Initial, PNOrder, Detectors, dτ0, K)  // instantiate the Main class
 		  '
 		  '// these lines are remnants from the spin-only program. The program now runs whether there's spin evolution or not
-		  ''GraphAllowed = myMain.Evolver.ReadyToGo
+		  ''GraphAllowed = myMainWaveBuilder.ReadyToGo
 		  ''if GraphAllowed then      // Checks to see if we are ready to go (i.e. if ι0 and its derivatives are nonzero)
 		  '
 		  'GraphArray = New ArrayClass  // set up a new array to help with graphing
@@ -2413,18 +2413,18 @@ End
 		  'NewValues(15) = myMain.h
 		  'NewValues(16) = myMain.hp
 		  'NewValues(17) = myMain.hc
-		  'NewValues(18) = myMain.Evolver.αAcc
+		  'NewValues(18) = myMainWaveBuilder.αAcc
 		  'NewValues(19) = myMain.ιF
 		  'NewValues(20) = myMain.ζ
-		  'NewValues(21) = myMain.Evolver.LNhatF.x
-		  'NewValues(22) = myMain.Evolver.LNhatF.y
-		  'NewValues(23) = myMain.Evolver.LNhatF.z
-		  'NewValues(24) = myMain.Evolver.χ1hatF.x
-		  'NewValues(25) = myMain.Evolver.χ1hatF.y
-		  'NewValues(26) = myMain.Evolver.χ1hatF.z
-		  'NewValues(27) = myMain.Evolver.χ2hatF.x
-		  'NewValues(28) = myMain.Evolver.χ2hatF.y
-		  'NewValues(29) = myMain.Evolver.χ2hatF.z
+		  'NewValues(21) = myMainWaveBuilder.LNhatF.x
+		  'NewValues(22) = myMainWaveBuilder.LNhatF.y
+		  'NewValues(23) = myMainWaveBuilder.LNhatF.z
+		  'NewValues(24) = myMainWaveBuilder.χ1hatF.x
+		  'NewValues(25) = myMainWaveBuilder.χ1hatF.y
+		  'NewValues(26) = myMainWaveBuilder.χ1hatF.z
+		  'NewValues(27) = myMainWaveBuilder.χ2hatF.x
+		  'NewValues(28) = myMainWaveBuilder.χ2hatF.y
+		  'NewValues(29) = myMainWaveBuilder.χ2hatF.z
 		  'NewValues(30) = myMain.sn2
 		  '
 		  'GraphArray.AddAll(NewValues)
@@ -2564,11 +2564,11 @@ End
 		  Var TheSuper As CaseSupervisorClass = MainThread.CaseSupervisor  // Get a reference to the supervisor
 		  // Whether the thread is running or not, update these values
 		  ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseParameters.GM/TheSuper.Year, "0.0000000")
-		  ValueOfVLabel.Text = Format(TheSuper.Evolver.VMN,"0.000000")
+		  ValueOfVLabel.Text = Format(TheSuper.WaveBuilder.VDN,"0.000000")
 		  ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
 		  ValueOfStepNumberLabel.Text = TheSuper.N.ToString
 		  If ValueOfTcLabel.Text = "" Then ValueOfTcLabel.Text = GetTimeToCoalescence(TheSuper).ToString
-		  Var theStepPower As Integer = TheSuper.StepPowerP
+		  Var theStepPower As Integer = TheSuper.WaveBuilder.StepPowerP
 		  Var theFactor as Integer
 		  If theStepPower < 0 Then
 		    theFactor = 2^(-theStepPower)
