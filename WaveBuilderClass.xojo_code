@@ -1418,6 +1418,7 @@ Protected Class WaveBuilderClass
 		    VDN = oneMinusRatio*PE.VPold + stepRatio*PE.VN
 		    ιDN = oneMinusRatio*PE.ιP  + stepRatio*PE.ιN
 		    αDN = oneMinusRatio*PE.αPold + stepRatio*PE.αN
+		    ΨDN = oneMinusRatio*PE.ΨP + stepRatio*PE.ΨN
 		    χaxDN = oneMinusRatio*PE.χaxP + stepRatio*PE.χaXN
 		    χayDN = oneMinusRatio*PE.χayP + stepRatio*PE.χaYN
 		    χazDN = oneMinusRatio*PE.χazP + stepRatio*PE.χazN

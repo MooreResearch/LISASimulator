@@ -245,9 +245,9 @@ Protected Class SourceEvolverClass
 		    αDotN = (αF - αP)/twoDτF // Calculate the present value of αDot
 		    
 		    // Calculate future values of χs and χa
-		    χsXF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatXF + OneMinusδ*OneMinusδ*χ2HatXF)
-		    χsYF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatYF + OneMinusδ*OneMinusδ*χ2HatYF)
-		    χsZF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatZF + OneMinusδ*OneMinusδ*χ2HatZF)
+		    χsXF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatXF + χ2*OneMinusδ*OneMinusδ*χ2HatXF)
+		    χsYF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatYF + χ2*OneMinusδ*OneMinusδ*χ2HatYF)
+		    χsZF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatZF + χ2*OneMinusδ*OneMinusδ*χ2HatZF)
 		    χaXF = 0.5*(χ2*OneMinusδ*χ2HatXF-χ1*OnePlusδ*χ1HatXF)
 		    χaYF = 0.5*(χ2*OneMinusδ*χ2HatYF-χ1*OnePlusδ*χ1HatYF)
 		    χaZF = 0.5*(χ2*oneMinusδ*χ2HatZF-χ1*OnePlusδ*χ1HatZF)
@@ -312,6 +312,8 @@ Protected Class SourceEvolverClass
 		    χsXN = χsXF
 		    χsYN = χsYF
 		    χsZN = χsZF
+		    λP = λN
+		    λN = λF
 		    ΨP = ΨN
 		    ΨN = ΨF
 		  End If
