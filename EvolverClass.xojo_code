@@ -1004,33 +1004,33 @@ Protected Class EvolverClass
 		  // Now calculate all wavy parts
 		  // Factors for H0P
 		  W(0) = CosApΨ(2,2)  // cos(2α + 2Ψ)
-		  W(1) = CosApΨ(1,2)   // cos(2α + Ψ)
+		  W(1) = CosApΨ(1,2)   // cos(α +2Ψ)
 		  W(2) = CosAmΨ(1,2)  // cos(α - 2Ψ)
 		  W(3) =  CosAmΨ(2,2) // cos(2α - 2Ψ)
 		  W(4) = CosApΨ(0,2)  // cos(2Ψ)
 		  
 		  DWDα(0) = -2.0*SinApΨ(2,2)  // derivative of cos(2α + 2Ψ) with respect to α
-		  DWDα(1) = -2.0*SinApΨ(1,2)   // derivqtive of cos(2α + Ψ)
+		  DWDα(1) = SinApΨ(1,2)   // derivqtive of cos(α + 2Ψ)
 		  DWDα(2) = -SinAmΨ(1,2)  // derivative of cos(α - 2Ψ)
 		  DWDα(3) =  -2.0*SinAmΨ(2,2) // derivative of cos(2α - 2Ψ)
 		  DWDα(4) = 0.0  // derivative of cos(2Ψ)
 		  
 		  DWDΨ(0) = -2.0*SinApΨ(2,2)  // derivative of cos(2α + 2Ψ) with respect to Ψ
-		  DWDΨ(1) = -SinApΨ(1,2)   // derivqtive of cos(2α + Ψ)
+		  DWDΨ(1) = -2.0*SinApΨ(1,2)   // derivqtive of cos(α + 2Ψ)
 		  DWDΨ(2) = 2.0*SinAmΨ(1,2)  // derivative of cos(α - 2Ψ)
 		  DWDΨ(3) =  2.0*SinAmΨ(2,2) // derivative of cos(2α - 2Ψ)
-		  DWDΨ(4) = -SinAmΨ(0,2) // derivative of cos(2Ψ)
+		  DWDΨ(4) = -2.0*SinAmΨ(0,2) // derivative of cos(2Ψ)
 		  
 		  // Factors for H1P
 		  W(5) = CosApΨ(3,3)  // cos(3α + 3Ψ)
 		  W(6) = CosApΨ(1,1)  // cos(α + Ψ)
-		  W(7) = CosAmΨ(1,2)   // cos(α - 2Ψ)
+		  W(7) = CosAmΨ(1,1)   // cos(α - Ψ)
 		  W(8) = CosApΨ(3,1)   // cos(3α + Ψ)
-		  W(9) = CosApΨ(2,2)   // cos(2α + 2Ψ)
+		  W(9) = CosApΨ(1,3)   // cos(2α + 2Ψ)
 		  W(10) = CosAmΨ(1,3)   // cos(α - 3Ψ)
 		  W(11) = CosAmΨ(3,1)   // cos(3α - Ψ)
 		  W(12) = CosAmΨ(3,3)  // cos(3α - 3Ψ)
-		  W(13) = CosAmΨ(0,3)   // cos(3Ψ)
+		  W(13) = CosApΨ(0,3)   // cos(3Ψ)***
 		  W(14) = CosApΨ(2,1)   // cos(2α + Ψ)
 		  W(15) = CosApΨ(2,3)   // cos(2α + 3Ψ)
 		  W(16) = CosAmΨ(2,1)   // cos(2α  - Ψ)
@@ -1042,20 +1042,20 @@ Protected Class EvolverClass
 		  // Factors for H3P
 		  
 		  // Factors for H0X
-		  W(129) = SinApΨ(1,2)
-		  W(130) = SinApΨ(2,2)
-		  W(131) = SinAmΨ(1,2)
-		  W(132) = SinAmΨ(2,2)
+		  W(129) = SinAmΨ(1,2)  
+		  W(130) = SinAmΨ(2,2)
+		  W(131) = SinApΨ(1,2)
+		  W(132) = SinApΨ(2,2)
 		  
-		  DWDα(129) = CosApΨ(1,2)
-		  DWDα(130) = 2.0*CosApΨ(2,2)
-		  DWDα(131) = CosAmΨ(1,2)
-		  DWDα(132) = 2.0*CosAmΨ(2,2)
+		  DWDα(129) = CosAmΨ(1,2)
+		  DWDα(130) = 2.0*CosAmΨ(2,2)
+		  DWDα(131) = CosApΨ(1,2)
+		  DWDα(132) = 2.0*CosApΨ(2,2)
 		  
-		  DWDΨ(129) = 2.0*CosApΨ(1,2)
-		  DWDΨ(130) = 2.0*CosApΨ(2,2)
-		  DWDΨ(131) = -2.0*CosAmΨ(1,2)
-		  DWDΨ(132) = -2.0*CosAmΨ(2,2)
+		  DWDΨ(129) = -2.0*CosAmΨ(1,2)
+		  DWDΨ(130) = -2.0*CosAmΨ(2,2)
+		  DWDΨ(131) = 2.0*CosApΨ(1,2)
+		  DWDΨ(132) = 2.0*CosApΨ(2,2)
 		  
 		  // Factors for H1X
 		  
@@ -1108,10 +1108,17 @@ Protected Class EvolverClass
 		  PhaseEvolverM2Plus = New PhaseEvolverClass(Tweak(Item.M2, ε))
 		  IDεForM2 = 0.5/ε
 		  
+<<<<<<< Updated upstream:EvolverClass.xojo_code
 		  // Set up phase evolvers where the value of F0 is adjusted
 		  ε = 1.0e-5
 		  PhaseEvolverF0Minus = New PhaseEvolverClass(Tweak(Item.F0, -ε))
 		  PhaseEvolverF0Plus = New PhaseEvolverClass(Tweak(Item.F0, ε))
+=======
+		  // Set up source evolvers where the value of F0 is adjusted
+		  ε = 1.0e-
+		  SourceEvolverF0Minus = New SourceEvolverClass(Tweak(Item.F0, -ε))
+		  SourceEvolverF0Plus = New SourceEvolverClass(Tweak(Item.F0, ε))
+>>>>>>> Stashed changes:WaveBuilderClass.xojo_code
 		  IDεForF0 = 0.5/ε
 		  
 		  // Set up phase evolvers where the value of χ10x is adjusted
