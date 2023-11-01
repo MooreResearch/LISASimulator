@@ -5,18 +5,14 @@ Protected Class WaveBuilderClass
 		  // These constants help us build the detector functions
 		  Static cos2ψ As Double = Cos(2*Parameters.ψ)
 		  Static sin2ψ As Double = Sin(2*Parameters.ψ)
-		  Static σ1 As Double = 1.5*Parameters.π + Parameters.ρ0
+		  Static σ1 As Double = 1.5*Parameters.π + 2.0*Parameters.ρ0
 		  Static σ2 As Double = (4/3)*Parameters.π + σ1
 		  
 		  Static dpc1 As Double = 3.0*Sqrt(3.0)/128.0
-		  Static dpc2 As Double = Sqrt(3.0)*Cos(2.0*Parameters.Θ)/128.0
-		  Static dpc3 As Double = 3.0*Sin(2.0*Parameters.Θ)/32.0
-		  Static dxc1 As Double = Sqrt(3.0)*Cos(Parameters.Θ)/32.0
-		  Static dxc2 As Double = 3.0*Sin(Parameters.Θ)/32.0
-		  Static dpc2dΘ As Double = -Sqrt(3.0)*Sin(2.0*Parameters.Θ)/64.0
-		  Static dpc3dΘ As Double = 3.0*Cos(2.0*Parameters.Θ)/16.0
-		  Static dxc1dΘ As Double = -Sqrt(3.0)*Sin(Parameters.Θ)/32.0
-		  Static dxc2dΘ As Double = 3.0*Cos(Parameters.Θ)/32.0
+		  Static dpc2 As Double = Sqrt(3.0)/128.0
+		  Static dpc3 As Double = 3.0/32.0
+		  Static dxc1 As Double = Sqrt(3.0)/32.0
+		  Static dxc2 As Double = 3.0/32.0
 		  
 		  Static sΘ As Double = Sin(Parameters.Θ)
 		  Static cΘ As Double = Cos(Parameters.Θ)
@@ -29,8 +25,7 @@ Protected Class WaveBuilderClass
 		  Var s012 As Double = Sin(σ1 - 2.0*Parameters.Φ)
 		  Var s412 As Double = Sin(4.0*ρ - σ1 - 2.0*Parameters.Φ)
 		  Var s311 As Double = Sin(3.0*ρ - σ1 - Parameters.Φ)
-		  Var s111 As Double = Sin(ρ - σ1 - Parameters.Φ)
-		  Var c210 As Double = Cos(2.0*ρ - σ1)
+		  Var s111 As Double = Sin(ρ - σ1 + Parameters.Φ)
 		  Var c012 As Double = Cos(σ1 - 2.0*Parameters.Φ)
 		  Var c412 As Double = Cos(4.0*ρ - σ1 -2.0*Parameters.Φ)
 		  Var c311 As Double = Cos(3.0*ρ - σ1 - Parameters.Φ)
@@ -63,7 +58,6 @@ Protected Class WaveBuilderClass
 		    s412 = Sin(4.0*ρ - σ2 - 2.0*Parameters.Φ)
 		    s311 = Sin(3.0*ρ - σ2 - Parameters.Φ)
 		    s111 = Sin(ρ - σ2 - Parameters.Φ)
-		    c210 = Cos(2.0*ρ - σ2)
 		    c012 = Cos(σ2 - 2.0*Parameters.Φ)
 		    c412 = Cos(4.0*ρ - σ2 -2.0*Parameters.Φ)
 		    c311 = Cos(3.0*ρ - σ2 - Parameters.Φ)
@@ -308,16 +302,16 @@ Protected Class WaveBuilderClass
 		  
 		  If Parameters.SolveForΛ Then
 		    // Calculate the derivative with respect to q = lnΛ
-		    dαDq = (αDN - α0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dΨrDq = (ΨrDN - Parameters.λ0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dVDq = (VDN - Parameters.V0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dιDq = (ιDN - ι0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχaxDq = (χaxDN - χax0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχayDq = (χayDN - χay0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχazDq = (χazDN - χaz0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχsxDq = (χsxDN - χsx0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχsyDq = (χsyDN - χsy0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχszDq = (χszDN - χsz0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dαDq = -(αDN - α0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dΨrDq = -(ΨrDN - Parameters.λ0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dVDq = -(VDN - Parameters.V0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dιDq = -(ιDN - ι0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχaxDq = -(χaxDN - χax0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχayDq = -(χayDN - χay0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχazDq = -(χazDN - χaz0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχsxDq = -(χsxDN - χsx0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχsyDq = -(χsyDN - χsy0)*Parameters.IVOnePlusZ*DZDlnΛ
+		    dχszDq = -(χszDN - χsz0)*Parameters.IVOnePlusZ*DZDlnΛ
 		    
 		    // Now, we put it all together (The first term is actually the derivative of h0 with respect to lnΛ).
 		    DHDq(Integer(Item.Λ)) = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
@@ -392,6 +386,21 @@ Protected Class WaveBuilderClass
 		    DHDq(Integer(Item.M1)) = 0.0
 		  End If
 		  
+		  '// Code to display values
+		  'Var ιPlusStr as String = Format(ιPlus, "0.00000000000000e+00")
+		  'Var αPlusStr as String = Format(αPlus, "0.00000000000000e+00")
+		  'Var ΨrPlusStr as String = Format(ΨrPlus, "0.00000000000000e+00")
+		  'Var VPlusStr as String = Format(VPlus, "0.00000000000000e+00")
+		  'Var ιDNStr as String = Format(ιDN, "0.00000000000000e+00")
+		  'Var αDNStr as String = Format(αDN, "0.00000000000000e+00")
+		  'Var ΨrDNStr as String = Format(ΨrDN, "0.00000000000000e+00")
+		  'Var VDNStr as String = Format(VDN, "0.00000000000000e+00")
+		  'Var dHDιStr as String = Format(dHDι, "0.00000000000000e+00")
+		  'Var dHDαStr as String = Format(dHDα, "0.00000000000000e+00")
+		  'Var dHDΨrStr as String = Format(dHDΨr, "0.00000000000000e+00")
+		  'Var dHDVStr as String = Format(dHDV, "0.00000000000000e+00")
+		  'Var dHDM1Str as String = Format(DHDq(Integer(Item.M1)), "0.00000000000000e+00")
+		  
 		  If Parameters.SolveForM2 Then
 		    // Calculate the derivative with respect to q = lnM2
 		    GetDataAtDetectorStep(SourceEvolverM2Plus)
@@ -419,7 +428,7 @@ Protected Class WaveBuilderClass
 		    // Put it all together
 		    DHDq(Integer(Item.M2)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq - dHDδ*dδDq
 		  Else
 		    DHDq(Integer(Item.M2)) = 0.0
 		  End If
@@ -1104,33 +1113,33 @@ Protected Class WaveBuilderClass
 		  // Now calculate all wavy parts
 		  // Factors for H0P
 		  W(0) = CosApΨ(2,2)  // cos(2α + 2Ψ)
-		  W(1) = CosApΨ(1,2)   // cos(2α + Ψ)
+		  W(1) = CosApΨ(1,2)   // cos(α + 2Ψ)
 		  W(2) = CosAmΨ(1,2)  // cos(α - 2Ψ)
 		  W(3) =  CosAmΨ(2,2) // cos(2α - 2Ψ)
 		  W(4) = CosApΨ(0,2)  // cos(2Ψ)
 		  
 		  DWDα(0) = -2.0*SinApΨ(2,2)  // derivative of cos(2α + 2Ψ) with respect to α
-		  DWDα(1) = -2.0*SinApΨ(1,2)   // derivqtive of cos(2α + Ψ)
+		  DWDα(1) = -SinApΨ(1,2)   // derivqtive of cos(α + 2Ψ)
 		  DWDα(2) = -SinAmΨ(1,2)  // derivative of cos(α - 2Ψ)
 		  DWDα(3) =  -2.0*SinAmΨ(2,2) // derivative of cos(2α - 2Ψ)
 		  DWDα(4) = 0.0  // derivative of cos(2Ψ)
 		  
 		  DWDΨ(0) = -2.0*SinApΨ(2,2)  // derivative of cos(2α + 2Ψ) with respect to Ψ
-		  DWDΨ(1) = -SinApΨ(1,2)   // derivqtive of cos(2α + Ψ)
+		  DWDΨ(1) = -2.0*SinApΨ(1,2)   // derivqtive of cos(α + 2Ψ)
 		  DWDΨ(2) = 2.0*SinAmΨ(1,2)  // derivative of cos(α - 2Ψ)
 		  DWDΨ(3) =  2.0*SinAmΨ(2,2) // derivative of cos(2α - 2Ψ)
-		  DWDΨ(4) = -SinAmΨ(0,2) // derivative of cos(2Ψ)
+		  DWDΨ(4) = -2.0*SinAmΨ(0,2) // derivative of cos(2Ψ)
 		  
 		  // Factors for H1P
 		  W(5) = CosApΨ(3,3)  // cos(3α + 3Ψ)
 		  W(6) = CosApΨ(1,1)  // cos(α + Ψ)
-		  W(7) = CosAmΨ(1,2)   // cos(α - 2Ψ)
+		  W(7) = CosAmΨ(1,1)   // cos(α - Ψ)
 		  W(8) = CosApΨ(3,1)   // cos(3α + Ψ)
-		  W(9) = CosApΨ(2,2)   // cos(2α + 2Ψ)
+		  W(9) = CosApΨ(1,3)   // cos(α + 3Ψ)
 		  W(10) = CosAmΨ(1,3)   // cos(α - 3Ψ)
 		  W(11) = CosAmΨ(3,1)   // cos(3α - Ψ)
 		  W(12) = CosAmΨ(3,3)  // cos(3α - 3Ψ)
-		  W(13) = CosAmΨ(0,3)   // cos(3Ψ)
+		  W(13) = CosApΨ(0,3)   // cos(3Ψ)
 		  W(14) = CosApΨ(2,1)   // cos(2α + Ψ)
 		  W(15) = CosApΨ(2,3)   // cos(2α + 3Ψ)
 		  W(16) = CosAmΨ(2,1)   // cos(2α  - Ψ)
@@ -1142,20 +1151,20 @@ Protected Class WaveBuilderClass
 		  // Factors for H3P
 		  
 		  // Factors for H0X
-		  W(129) = SinApΨ(1,2)
-		  W(130) = SinApΨ(2,2)
-		  W(131) = SinAmΨ(1,2)
-		  W(132) = SinAmΨ(2,2)
+		  W(129) = SinAmΨ(1,2)
+		  W(130) = SinAmΨ(2,2)
+		  W(131) = SinApΨ(1,2)
+		  W(132) = SinApΨ(2,2)
 		  
-		  DWDα(129) = CosApΨ(1,2)
-		  DWDα(130) = 2.0*CosApΨ(2,2)
-		  DWDα(131) = CosAmΨ(1,2)
-		  DWDα(132) = 2.0*CosAmΨ(2,2)
+		  DWDα(129) = CosAmΨ(1,2)
+		  DWDα(130) = 2.0*CosAmΨ(2,2)
+		  DWDα(131) = CosApΨ(1,2)
+		  DWDα(132) = 2.0*CosApΨ(2,2)
 		  
-		  DWDΨ(129) = 2.0*CosApΨ(1,2)
-		  DWDΨ(130) = 2.0*CosApΨ(2,2)
-		  DWDΨ(131) = -2.0*CosAmΨ(1,2)
-		  DWDΨ(132) = -2.0*CosAmΨ(2,2)
+		  DWDΨ(129) = -2.0*CosAmΨ(1,2)
+		  DWDΨ(130) = -2.0*CosAmΨ(2,2)
+		  DWDΨ(131) = 2.0*CosApΨ(1,2)
+		  DWDΨ(132) = 2.0*CosApΨ(2,2)
 		  
 		  // Factors for H1X
 		  
@@ -1178,6 +1187,7 @@ Protected Class WaveBuilderClass
 		  SinβPlus = Sin(P.β+εForβ)
 		  CosβMinus = Cos(P.β-εForβ)
 		  SinβMinus = Sin(P.β-εForβ)
+		  IDεForβ = 0.5/εForβ
 		  δ = P.δ
 		  η = 0.25*(1.0 - δ*δ)
 		  Sn20 = P.Sn20
@@ -1388,6 +1398,7 @@ Protected Class WaveBuilderClass
 		  If NewStepPower > StepPowerP Then NewStepPower = StepPowerP // This power should never increase
 		  If NewStepPower < StepPowerP Then // if the new step is smaller
 		    StepPowerF = NewStepPower // this will be the step power for the next step
+		    DτrSF = DτrD*2^StepPowerF
 		    // note that if the power is NOT smaller, everything will remain the same
 		  End If
 		End Sub
@@ -1536,7 +1547,7 @@ Protected Class WaveBuilderClass
 		  End If
 		  
 		  // Calculate overall wave amplitude constant
-		  Var h0 As Double = 0.5*(1.0 - Parameters.δ*Parameters.δ)/Parameters.Λ
+		  Var h0 As Double = 0.5*(1.0 - Parameters.δ*Parameters.δ)*Parameters.GM/(Parameters.Λ*Parameters.R0)
 		  HP = h0*HP
 		  HX = h0*HX
 		End Sub

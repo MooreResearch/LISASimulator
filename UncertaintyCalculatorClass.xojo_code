@@ -64,54 +64,54 @@ Protected Class UncertaintyCalculatorClass
 	#tag Method, Flags = &h0
 		Sub FindBestInvertible()
 		  InvertY   // Try a first inversion
-		  Var LowestCondition As Double = Condition
-		  Var RowToOmit As Integer = -1
-		  If Condition > 1.0e12 Then
-		    For i As Integer = 0 to 14
-		      If SolveList(i) Then
-		        SolveList(i) = False   // Try not solving for this row
-		        InvertY
-		        If Condition < LowestCondition Then
-		          LowestCondition = Condition
-		          RowToOmit = i
-		        End If
-		        SolveList(i) = True   // Restore SolveList
-		      End If
-		    Next
-		    If RowToOmit > -1 Then
-		      SolveList(RowToOmit) = False
-		      InvertY
-		    End If
-		  End If
-		  If Condition > 1.0e12 Then
-		    If RowToOmit > -1 Then SolveList(RowToOmit) = True
-		    LowestCondition = Condition
-		    Var RowsToOmit(1) As Integer
-		    RowsToOmit(0) = -1
-		    For i As Integer = 0 to 14
-		      If SolveList(i) Then
-		        SolveList(i) = False
-		        For j As Integer = 0 to 14
-		          If j <> i And SolveList(j) Then
-		            SolveList(j) = False
-		            InvertY
-		            If Condition < LowestCondition Then
-		              LowestCondition = Condition
-		              RowsToOmit(0) = i
-		              RowsToOmit(1) = j
-		            End If
-		            SolveList(j) = True
-		          End If
-		        Next
-		        SolveList(i) = True
-		      End If
-		    Next
-		    If RowsToOmit(0) <> -1 Then
-		      SolveList(RowsToOmit(0)) = False
-		      SolveList(RowsToOmit(1)) = False
-		      InvertY
-		    End If
-		  End If
+		  'Var LowestCondition As Double = Condition
+		  'Var RowToOmit As Integer = -1
+		  'If Condition > 1.0e12 Then
+		  'For i As Integer = 0 to 14
+		  'If SolveList(i) Then
+		  'SolveList(i) = False   // Try not solving for this row
+		  'InvertY
+		  'If Condition < LowestCondition Then
+		  'LowestCondition = Condition
+		  'RowToOmit = i
+		  'End If
+		  'SolveList(i) = True   // Restore SolveList
+		  'End If
+		  'Next
+		  'If RowToOmit > -1 Then
+		  'SolveList(RowToOmit) = False
+		  'InvertY
+		  'End If
+		  'End If
+		  'If Condition > 1.0e12 Then
+		  'If RowToOmit > -1 Then SolveList(RowToOmit) = True
+		  'LowestCondition = Condition
+		  'Var RowsToOmit(1) As Integer
+		  'RowsToOmit(0) = -1
+		  'For i As Integer = 0 to 14
+		  'If SolveList(i) Then
+		  'SolveList(i) = False
+		  'For j As Integer = 0 to 14
+		  'If j <> i And SolveList(j) Then
+		  'SolveList(j) = False
+		  'InvertY
+		  'If Condition < LowestCondition Then
+		  'LowestCondition = Condition
+		  'RowsToOmit(0) = i
+		  'RowsToOmit(1) = j
+		  'End If
+		  'SolveList(j) = True
+		  'End If
+		  'Next
+		  'SolveList(i) = True
+		  'End If
+		  'Next
+		  'If RowsToOmit(0) <> -1 Then
+		  'SolveList(RowsToOmit(0)) = False
+		  'SolveList(RowsToOmit(1)) = False
+		  'InvertY
+		  'End If
+		  'End If
 		End Sub
 	#tag EndMethod
 
