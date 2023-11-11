@@ -125,6 +125,13 @@ Protected Class UncertaintyCalculatorClass
 		  If RowsToInclude = 0 Then Raise New RuntimeException("Nothing to Solve For")
 		  Var n As Integer = RowsToInclude - 1
 		  M.ResizeTo(n,n)
+		  
+		  ReDim DiagEntries(-1)
+		  for s As integer = 0 to 14
+		    DiagEntries.Add(ATA.pData(s,s))
+		  next
+		  
+		  
 		  Var jj As Integer = 0
 		  Var kk As Integer = 0
 		  For j As Integer = 0 to 14
@@ -132,13 +139,15 @@ Protected Class UncertaintyCalculatorClass
 		      kk = 0
 		      For k As Integer = 0 to 14
 		        If SolveList(k) Then
-		          M(jj,kk) = ATA.pData(j,k)
+		          M(jj,kk) = ATA.pData(j,k) / (sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) )
 		          kk = kk + 1
 		        End If
 		      Next
 		      jj = jj + 1
 		    End If
 		  Next
+		  
+		  
 		  Y = New Matrix(M)
 		  Y0 = New Matrix(M)
 		End Sub
@@ -190,9 +199,29 @@ Protected Class UncertaintyCalculatorClass
 		    End If
 		    // Note that if we ever get to a matrix with zero size, a runtime exception will happen
 		  Loop Until badRow = -1
+		  
 		  // When we get here, the Y matrix should be inverted. Do a check:
 		  YInvXY = Y*Y0
-		  Condition = Y.EuclideanNorm*Y0.EuclideanNorm
+		  Condition = Y.EuclideanNorm*Y0.EuclideanNorm 
+		  
+		  Var jj As Integer = 0
+		  Var kk As Integer = 0
+		  For j As Integer = 0 to 14
+		    If SolveList(j) Then
+		      kk = 0
+		      For k As Integer = 0 to 14
+		        If SolveList(k) Then
+		          Y.pData(jj,kk) = Y.pdata(jj,kk) / ( sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) )
+		          Y0.pData(jj,kk) = Y0.pData(jj,kk) * sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) 
+		          kk = kk + 1
+		        End If
+		      Next
+		      jj = jj + 1
+		    End If
+		  Next
+		  
+		  
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -204,6 +233,10 @@ Protected Class UncertaintyCalculatorClass
 
 	#tag Property, Flags = &h0
 		Condition As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DiagEntries() As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
