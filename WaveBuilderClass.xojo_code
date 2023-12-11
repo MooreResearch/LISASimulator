@@ -379,7 +379,8 @@ Protected Class WaveBuilderClass
 		    dχszDq = (χszPlus - χszDN)*IDεForM1
 		    dδDq = 2.0*η  // this can be calculated analytically
 		    // Put it all together
-		    DHDq(Integer(Item.M1)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.M1)) = hbase*Parameters.M1/(Parameters.M1 + Parameters.M2)_
+		    + dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
 		  Else
@@ -426,7 +427,8 @@ Protected Class WaveBuilderClass
 		    dχsyDq = (χsyPlus - χsyDN)*IDεForM2
 		    dχszDq = (χszPlus - χszDN)*IDεForM2
 		    // Put it all together
-		    DHDq(Integer(Item.M2)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.M2)) =  hbase*Parameters.M2/(Parameters.M1 + Parameters.M2)_
+		    + dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq - dHDδ*dδDq
 		  Else

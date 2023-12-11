@@ -126,6 +126,7 @@ Protected Class UncertaintyCalculatorClass
 		  Var n As Integer = RowsToInclude - 1
 		  M.ResizeTo(n,n)
 		  
+		  
 		  ReDim DiagEntries(-1)
 		  for s As integer = 0 to 14
 		    DiagEntries.Add(ATA.pData(s,s))
@@ -139,7 +140,7 @@ Protected Class UncertaintyCalculatorClass
 		      kk = 0
 		      For k As Integer = 0 to 14
 		        If SolveList(k) Then
-		          M(jj,kk) = ATA.pData(j,k) / (sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) )
+		          M(jj,kk) = ATA.pData(j,k)' / (sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) )
 		          kk = kk + 1
 		        End If
 		      Next
