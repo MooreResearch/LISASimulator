@@ -184,14 +184,12 @@ Protected Class UncertaintyCalculatorClass
 		  Var badRow As Integer
 		  Do // We will keep trying to invert smaller and smaller matrices until we find one that we can
 		    GetYToSolve  // Get the submatrix to actually solve for
-		    break
 		    badRow = Y.LUInvert(Y.PDim) - 1  // Get the row index for the bad row if any
 		    Var k As Integer = 0  // This will be the row index in the actual matrix
 		    If badRow <> -1 Then  // If we have a bad row
 		      For j As Integer = 0 to 14   // Scan through the solve list
 		        If SolveList(j) Then  // if we are solving for this item
 		          If k = badRow Then  // and the k index is the same as the bad row
-		            break
 		            SolveList(j) = False  // then we are not going to solve for that item
 		            Exit // No need to go on
 		          Else  // Otherwise
