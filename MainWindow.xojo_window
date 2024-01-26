@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   1
+      Value           =   2
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -349,6 +349,7 @@ Begin DesktopWindow MainWindow
          AllowAutoDeactivate=   True
          AllowFocus      =   False
          AllowFocusRing  =   True
+         AllowPopover    =   True
          AllowTabs       =   False
          BackgroundColor =   &cFFFFFF
          Bold            =   False
@@ -680,6 +681,7 @@ Begin DesktopWindow MainWindow
          AllowAutoDeactivate=   True
          AllowFocus      =   False
          AllowFocusRing  =   True
+         AllowPopover    =   True
          AllowTabs       =   False
          BackgroundColor =   &cFFFFFF
          Bold            =   False
@@ -1835,7 +1837,7 @@ Begin DesktopWindow MainWindow
          Height          =   24
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "ATA\nY Original\nY Inverted\nY^-1 x Y"
+         InitialValue    =   "ATA\nY Original\nY Inverted\nYNormalized Original\nYNormalized Inverted\nY^-1 x Y"
          Italic          =   False
          Left            =   27
          LockBottom      =   False
@@ -2809,11 +2811,19 @@ End
 		  Var theATA As Matrix = MainThread.CaseSupervisor.ATAMatrix
 		  Var theY As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.Y
 		  Var theY0 As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.Y0
+		  Var theYNormalized As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.YNormalized
+		  Var theY0Normalized As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.Y0Normalized
 		  Var theProd As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.YInvXY
+		  
+		  
 		  If me.SelectedRowValue = "ATA" Then
 		    DisplayMatrix(theATA)
 		  ElseIf me.SelectedRowValue = "Y Original" Then
 		    DisplayMatrix(theY0)
+		  ElseIf me.SelectedRowValue = "YNormalized Inverted" Then
+		    DisplayMatrix(theYNormalized)
+		  ElseIf me.SelectedRowValue = "YNormalized Original" Then
+		    DisplayMatrix(theY0Normalized)
 		  ElseIf me.SelectedRowValue = "Y Inverted" Then
 		    DisplayMatrix(theY)
 		  Else

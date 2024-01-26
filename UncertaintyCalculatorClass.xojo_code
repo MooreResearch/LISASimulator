@@ -118,6 +118,8 @@ Protected Class UncertaintyCalculatorClass
 	#tag Method, Flags = &h0
 		Sub GetYToSolve()
 		  Var M(-1,-1) As Double
+		  Var Q(-1,-1) As Double
+		  
 		  Var RowsToInclude As Integer = 0
 		  For j As Integer = 0 to 14
 		    If SolveList(j)Then RowsToInclude = RowsToInclude + 1
@@ -125,6 +127,7 @@ Protected Class UncertaintyCalculatorClass
 		  If RowsToInclude = 0 Then Raise New RuntimeException("Nothing to Solve For")
 		  Var n As Integer = RowsToInclude - 1
 		  M.ResizeTo(n,n)
+		  Q.ResizeTo(n,n)
 		  
 		  
 		  ReDim DiagEntries(-1)
@@ -141,12 +144,16 @@ Protected Class UncertaintyCalculatorClass
 		      For k As Integer = 0 to 14
 		        If SolveList(k) Then
 		          M(jj,kk) = ATA.pData(j,k) / (sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) )
+		          Q(jj,kk) = ATA.pData(j,k) / (sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) )
 		          kk = kk + 1
 		        End If
 		      Next
 		      jj = jj + 1
 		    End If
 		  Next
+		  
+		  Y0Normalized = New Matrix(Q)
+		  YNormalized = New Matrix(Q)
 		  
 		  
 		  Y = New Matrix(M)
@@ -201,17 +208,24 @@ Protected Class UncertaintyCalculatorClass
 		    // Note that if we ever get to a matrix with zero size, a runtime exception will happen
 		  Loop Until badRow = -1
 		  
+		  
+		  
 		  // When we get here, the Y matrix should be inverted. Do a check:
 		  YInvXY = Y*Y0
 		  Condition = Y.EuclideanNorm*Y0.EuclideanNorm 
 		  
+		  
+		  
+		  
 		  Var jj As Integer = 0
 		  Var kk As Integer = 0
+		  
 		  For j As Integer = 0 to 14
 		    If SolveList(j) Then
 		      kk = 0
 		      For k As Integer = 0 to 14
 		        If SolveList(k) Then
+		          YNormalized.pData(jj,kk) = Y.pdata(jj,kk)
 		          Y.pData(jj,kk) = Y.pdata(jj,kk) / ( sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) )
 		          Y0.pData(jj,kk) = Y0.pData(jj,kk) * sqrt(DiagEntries(j)) *sqrt(DiagEntries(k)) 
 		          kk = kk + 1
@@ -261,7 +275,15 @@ Protected Class UncertaintyCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Y0Normalized As Matrix
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		YInvXY As Matrix
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		YNormalized As Matrix
 	#tag EndProperty
 
 
