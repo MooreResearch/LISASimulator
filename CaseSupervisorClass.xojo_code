@@ -8,9 +8,8 @@ Protected Class CaseSupervisorClass
 		  
 		  StartTicks = System.Ticks
 		  CaseParameters = currentCaseParameterSet // save the parameters for the current case
-		  CaseParameters.FinishConstruction // flesh out the constants not set in the user interface
 		  // the following gives the number of main time steps to execute
-		  NSteps = Round(CaseParameters.RunDuration*Year/CaseParameters.ΔT)
+		  NSteps = Round(CaseParameters.RunDuration*CaseParameters.Year/CaseParameters.ΔT)
 		  DτrD = CaseParameters.ΔT/CaseParameters.GM
 		  WaveBuilder = New WaveBuilderClass(CaseParameters) // create the WaveBuilder and initialize it
 		  // Create and initialize the ATA matrix
@@ -71,10 +70,6 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		GMSun As Double = 4.92708e-6
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		N As Integer
 	#tag EndProperty
 
@@ -100,14 +95,6 @@ Protected Class CaseSupervisorClass
 
 	#tag Property, Flags = &h0
 		WaveBuilder As WaveBuilderClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Year As Double = 3.1556e7
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		π As Double = 3.141592653589793
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -165,30 +152,6 @@ Protected Class CaseSupervisorClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="π"
-			Visible=false
-			Group="Behavior"
-			InitialValue="3.141592653589793"
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="GMSun"
-			Visible=false
-			Group="Behavior"
-			InitialValue="4.92708e-6"
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Year"
-			Visible=false
-			Group="Behavior"
-			InitialValue="3.1556e7"
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="NSteps"
 			Visible=false
 			Group="Behavior"
@@ -218,6 +181,14 @@ Protected Class CaseSupervisorClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DτrD"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
