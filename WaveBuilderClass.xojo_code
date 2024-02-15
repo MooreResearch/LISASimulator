@@ -96,13 +96,6 @@ Protected Class WaveBuilderClass
 		  CalculateAmplitudes
 		  SumSourceH(W)  // this will put the total plus and  cross polarizations into HP and HX
 		  
-		  // Calculate the derivative with respect to ψ (this is the easy one!)
-		  If Parameters.SolveForψ Then
-		    DHDq(Integer(Item.ψ)) = 2.0*(-fx*HP + fp*HX)
-		  Else
-		    DHDq(Integer(Item.ψ)) = 0.0
-		  End If
-		  
 		  // Store valuable variables for later use
 		  Var hpBase As Double = HP
 		  Var hxBase As Double = HX
@@ -114,6 +107,20 @@ Protected Class WaveBuilderClass
 		  // This gets the derivative of the amplitude part of the wave with respect to V
 		  SumSourceH(W, True)
 		  Var dHDV As Double = fp*HP + fx*HX
+		  
+		  // Calculate the derivative with respect to M (this is the easy one!)
+		  If Parameters.SolveForM Then
+		    DHDq(Integer(Item.M)) = hBase
+		  Else
+		    DHDq(Integer(Item.M)) = 0.0
+		  End If
+		  
+		  // Calculate the derivative with respect to ψ (this is the next easiest!)
+		  If Parameters.SolveForψ Then
+		    DHDq(Integer(Item.ψ)) = 2.0*(-fx*hpBase + fp*hxBase)
+		  Else
+		    DHDq(Integer(Item.ψ)) = 0.0
+		  End If
 		  
 		  // in the case of λ0, DΨrDλ0 = 1, so the following is the correct total derivative.
 		  If Parameters.SolveForλ0 Then
@@ -292,7 +299,6 @@ Protected Class WaveBuilderClass
 		  Var dΨrDq As Double
 		  Var dVDq As Double 
 		  Var dιDq As Double
-		  Var dδDq As Double
 		  Var dχaxDq As Double
 		  Var dχayDq As Double
 		  Var dχazDq As Double
@@ -300,30 +306,30 @@ Protected Class WaveBuilderClass
 		  Var dχsyDq As Double
 		  Var dχszDq As Double
 		  
-		  If Parameters.SolveForΛ Then
-		    // Calculate the derivative with respect to q = lnΛ
-		    dαDq = -(αDN - α0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dΨrDq = -(ΨrDN - Parameters.λ0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dVDq = -(VDN - Parameters.V0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dιDq = -(ιDN - ι0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχaxDq = -(χaxDN - χax0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχayDq = -(χayDN - χay0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχazDq = -(χazDN - χaz0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχsxDq = -(χsxDN - χsx0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχsyDq = -(χsyDN - χsy0)*Parameters.IVOnePlusZ*DZDlnΛ
-		    dχszDq = -(χszDN - χsz0)*Parameters.IVOnePlusZ*DZDlnΛ
+		  If Parameters.SolveForR Then
+		    // Calculate the derivative with respect to q = lnR
+		    dαDq = -(αDN - α0)*Parameters.IVOnePlusZ*DZDlnR
+		    dΨrDq = -(ΨrDN - Parameters.λ0)*Parameters.IVOnePlusZ*DZDlnR
+		    dVDq = -(VDN - Parameters.V0)*Parameters.IVOnePlusZ*DZDlnR
+		    dιDq = -(ιDN - ι0)*Parameters.IVOnePlusZ*DZDlnR
+		    dχaxDq = -(χaxDN - χax0)*Parameters.IVOnePlusZ*DZDlnR
+		    dχayDq = -(χayDN - χay0)*Parameters.IVOnePlusZ*DZDlnR
+		    dχazDq = -(χazDN - χaz0)*Parameters.IVOnePlusZ*DZDlnR
+		    dχsxDq = -(χsxDN - χsx0)*Parameters.IVOnePlusZ*DZDlnR
+		    dχsyDq = -(χsyDN - χsy0)*Parameters.IVOnePlusZ*DZDlnR
+		    dχszDq = -(χszDN - χsz0)*Parameters.IVOnePlusZ*DZDlnR
 		    
-		    // Now, we put it all together (The first term is actually the derivative of h0 with respect to lnΛ).
-		    DHDq(Integer(Item.Λ)) = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    // Now, we put it all together (The first term is actually the derivative of h0 with respect to lnR).
+		    DHDq(Integer(Item.R)) = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq+ dHDχsz*dχszDq
 		  Else
-		    DHDq(Integer(Item.Λ)) = 0.0
+		    DHDq(Integer(Item.R)) = 0.0
 		  End If
 		  
-		  If Parameters.SolveForF0 Then
-		    // Calculate the derivative with respect to q = lnF0
-		    GetDataAtDetectorStep(SourceEvolverF0Plus)
+		  If Parameters.SolveForV0 Then
+		    // Calculate the derivative with respect to q = lnV0
+		    GetDataAtDetectorStep(SourceEvolverV0Plus)
 		    ιPlus = ιDN
 		    αPlus = αDN
 		    ΨrPlus = ΨrDN
@@ -334,28 +340,28 @@ Protected Class WaveBuilderClass
 		    χsxPlus = χsxDN
 		    χsyPlus = χsyDN
 		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverF0Minus)
-		    dαDq = (αPlus - αDN)*IDεForF0
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForF0
-		    dιDq = (ιPlus - ιDN)*IDεForF0
-		    dVDq = (VPlus - VDN)*IDεForF0
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForF0
-		    dχayDq = (χayPlus - χayDN)*IDεForF0
-		    dχazDq = (χazPlus - χazDN)*IDεForF0
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForF0
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForF0
-		    dχszDq = (χszPlus - χszDN)*IDεForF0
+		    GetDataAtDetectorStep(SourceEvolverV0Minus)
+		    dαDq = (αPlus - αDN)*IDεForV0
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForV0
+		    dιDq = (ιPlus - ιDN)*IDεForV0
+		    dVDq = (VPlus - VDN)*IDεForV0
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForV0
+		    dχayDq = (χayPlus - χayDN)*IDεForV0
+		    dχazDq = (χazPlus - χazDN)*IDεForV0
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForV0
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForV0
+		    dχszDq = (χszPlus - χszDN)*IDεForV0
 		    // Put it all together
-		    DHDq(Integer(Item.F0)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.V0)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
 		  Else
-		    DHDq(Integer(Item.F0)) = 0.0
+		    DHDq(Integer(Item.V0)) = 0.0
 		  End If
 		  
-		  If Parameters.SolveForM1 Then
-		    // Calculate the derivative with respect to q = lnM1
-		    GetDataAtDetectorStep(SourceEvolverM1Plus)
+		  If Parameters.SolveForδ Then
+		    // Calculate the derivative with respect to q = δ
+		    GetDataAtDetectorStep(SourceEvolverδPlus)
 		    ιPlus = ιDN
 		    αPlus = αDN
 		    ΨrPlus = ΨrDN
@@ -366,25 +372,23 @@ Protected Class WaveBuilderClass
 		    χsxPlus = χsxDN
 		    χsyPlus = χsyDN
 		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverM1Minus)
-		    dαDq = (αPlus - αDN)*IDεForM1
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForM1
-		    dVDq = (VPlus - VDN)*IDεForM1
-		    dιDq = (ιPlus - ιDN)*IDεForM1
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForM1
-		    dχayDq = (χayPlus - χayDN)*IDεForM1
-		    dχazDq = (χazPlus - χazDN)*IDεForM1
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForM1
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForM1
-		    dχszDq = (χszPlus - χszDN)*IDεForM1
-		    dδDq = 2.0*η  // this can be calculated analytically
+		    GetDataAtDetectorStep(SourceEvolverδMinus)
+		    dαDq = (αPlus - αDN)*IDεForδ
+		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForδ
+		    dVDq = (VPlus - VDN)*IDεForδ
+		    dιDq = (ιPlus - ιDN)*IDεForδ
+		    dχaxDq = (χaxPlus - χaxDN)*IDεForδ
+		    dχayDq = (χayPlus - χayDN)*IDεForδ
+		    dχazDq = (χazPlus - χazDN)*IDεForδ
+		    dχsxDq = (χsxPlus - χsxDN)*IDεForδ
+		    dχsyDq = (χsyPlus - χsyDN)*IDεForδ
+		    dχszDq = (χszPlus - χszDN)*IDεForδ
 		    // Put it all together
-		    DHDq(Integer(Item.M1)) = hbase*Parameters.M1/(Parameters.M1 + Parameters.M2)_
-		    + dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.δ)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ*dδDq
+		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ
 		  Else
-		    DHDq(Integer(Item.M1)) = 0.0
+		    DHDq(Integer(Item.δ)) = 0.0
 		  End If
 		  
 		  '// Code to display values
@@ -401,39 +405,6 @@ Protected Class WaveBuilderClass
 		  'Var dHDΨrStr as String = Format(dHDΨr, "0.00000000000000e+00")
 		  'Var dHDVStr as String = Format(dHDV, "0.00000000000000e+00")
 		  'Var dHDM1Str as String = Format(DHDq(Integer(Item.M1)), "0.00000000000000e+00")
-		  
-		  If Parameters.SolveForM2 Then
-		    // Calculate the derivative with respect to q = lnM2
-		    GetDataAtDetectorStep(SourceEvolverM2Plus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverM2Minus)
-		    dαDq = (αPlus - αDN)*IDεForM2
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForM2
-		    dVDq = (VPlus - VDN)*IDεForM2
-		    dιDq = (ιPlus - ιDN)*IDεForM2
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForM2
-		    dχayDq = (χayPlus - χayDN)*IDεForM2
-		    dχazDq = (χazPlus - χazDN)*IDεForM2
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForM2
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForM2
-		    dχszDq = (χszPlus - χszDN)*IDεForM2
-		    // Put it all together
-		    DHDq(Integer(Item.M2)) =  hbase*Parameters.M2/(Parameters.M1 + Parameters.M2)_
-		    + dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq - dHDδ*dδDq
-		  Else
-		    DHDq(Integer(Item.M2)) = 0.0
-		  End If
 		  
 		  If Parameters.SolveForχ10x Then
 		    // Calculate the derivative with respect to q = χ10x
@@ -1092,40 +1063,24 @@ Protected Class WaveBuilderClass
 
 	#tag Method, Flags = &h0
 		Sub CalculateWaveFactors()
-		  // Calculate signal-to-noise rations
-		  // This is the value of the observed orbital frequency in Hz
-		  Var fN As Double =  VDN*VDN*VDN/(2*Parameters.π*Parameters.GM)*Parameters.IVOnePlusZ
-		  //  get the noise at various frequencies
-		  // The following set of variables contains ratios that we will use to enhance derivatives of harmonics at higher frequencies
-		  // to reflect how they may be better or more poorly received by the detector than the fundamental harmonic
-		  Var sn20string As String = Format(Sn20, "+0.00e+00")
-		  Var snfnstring As String = Format(Sqrt(Noise.GetNoise(2*fN)), "+0.00e+00")
-		  Var snratio1 As Double = Sn20/Sqrt(Noise.GetNoise(fN))
-		  Var snratio2 As Double = Sn20/Sqrt(Noise.GetNoise(2*fN))
-		  Var snratio3 As Double = Sn20/Sqrt(Noise.GetNoise(3*fN))
-		  Var snratio4 As Double = Sn20/Sqrt(Noise.GetNoise(4*fN))
-		  Var snratio5 As Double = Sn20/Sqrt(Noise.GetNoise(5*fN))
-		  
 		  // Calculate the received wave phase
 		  
 		  // Calculate basic angle multiples for the phase Ψ
-		  // (The noise adjustment assumes that the orbital motion will dominate in the total wave phase,
-		  // which should be an excellent approximation).
-		  CosApΨ(0,1) = Cos(ΨrDN)*snratio1
-		  SinApΨ(0,1) = Sin(ΨrDN)*snratio1
-		  CosApΨ(0,2) = (CosApΨ(0,1)*CosApΨ(0,1) - SinApΨ(0,1)*SinApΨ(0,1))*snratio2
-		  SinApΨ(0,2)  = (2*CosApΨ(0,1)*SinApΨ(0,1))*snratio2
-		  CosApΨ(0,3) = (CosApΨ(0,2)*CosApΨ(0,1) - SinApΨ(0,2)*SinApΨ(0,1))*snratio3
-		  SinApΨ(0,3)  = (SinApΨ(0,2)*CosApΨ(0,1) + CosApΨ(0,2)*SinApΨ(0,1))*snratio3
-		  CosApΨ(0,4) = (CosApΨ(0,3)*CosApΨ(0,1) - SinApΨ(0,3)*SinApΨ(0,1))*snratio4
-		  SinApΨ(0,4)  = (SinApΨ(0,3)*CosApΨ(0,1) + CosApΨ(0,3)*SinApΨ(0,1))*snratio4
-		  CosApΨ(0,5) = (CosApΨ(0,4)*CosApΨ(0,1) - SinApΨ(0,4)*SinApΨ(0,1))*snratio5
-		  SinApΨ(0,5)  = (SinApΨ(0,4)*CosApΨ(0,1) + CosApΨ(0,4)*SinApΨ(0,1))*snratio5
+		  CosApΨ(0,1) = Cos(ΨrDN)
+		  SinApΨ(0,1) = Sin(ΨrDN)
+		  CosApΨ(0,2) = CosApΨ(0,1)*CosApΨ(0,1) - SinApΨ(0,1)*SinApΨ(0,1)
+		  SinApΨ(0,2)  = 2*CosApΨ(0,1)*SinApΨ(0,1)
+		  CosApΨ(0,3) = CosApΨ(0,2)*CosApΨ(0,1) - SinApΨ(0,2)*SinApΨ(0,1)
+		  SinApΨ(0,3)  = SinApΨ(0,2)*CosApΨ(0,1) + CosApΨ(0,2)*SinApΨ(0,1)
+		  CosApΨ(0,4) = CosApΨ(0,3)*CosApΨ(0,1) - SinApΨ(0,3)*SinApΨ(0,1)
+		  SinApΨ(0,4)  = SinApΨ(0,3)*CosApΨ(0,1) + CosApΨ(0,3)*SinApΨ(0,1)
+		  CosApΨ(0,5) = CosApΨ(0,4)*CosApΨ(0,1) - SinApΨ(0,4)*SinApΨ(0,1)
+		  SinApΨ(0,5)  = SinApΨ(0,4)*CosApΨ(0,1) + CosApΨ(0,4)*SinApΨ(0,1)
 		  
 		  // Calculate basic angle multiples for the phase α
 		  CosApΨ(1,0) = Cos(αDN)
 		  SinApΨ(1,0) = Sin(αDN)
-		  CosApΨ(2,0) = CosApΨ(1,0)*CosApΨ(1,0) - SinApΨ(1,0)*SinApΨ(1,1)
+		  CosApΨ(2,0) = CosApΨ(1,0)*CosApΨ(1,0) - SinApΨ(1,0)*SinApΨ(1,0)
 		  SinApΨ(2,0)  = 2*CosApΨ(1,0)*SinApΨ(1,0)
 		  CosApΨ(3,0) = CosApΨ(2,0)*CosApΨ(1,0) - SinApΨ(2,0)*SinApΨ(1,0)
 		  SinApΨ(3,0)  = SinApΨ(2,0)*CosApΨ(1,0) + CosApΨ(2,0)*SinApΨ(1,0)
@@ -1134,14 +1089,33 @@ Protected Class WaveBuilderClass
 		  CosApΨ(5,0) = CosApΨ(4,0)*CosApΨ(1,0) - SinApΨ(4,0)*SinApΨ(1,0)
 		  SinApΨ(5,0)  = SinApΨ(4,0)*CosApΨ(1,0) + CosApΨ(4,0)*SinApΨ(1,0)
 		  
-		  // Now basically calculate all possible combinations
-		  For j As Integer = 1 to 5
-		    For k As Integer = 1 to 5
-		      CosApΨ(j,k) = CosApΨ(j,0)*CosApΨ(0,k) - SinApΨ(j,0)*SinApΨ(0,k)
-		      CosAmΨ(j,k) = CosApΨ(j,0)*CosApΨ(0,k) + SinApΨ(j,0)*SinApΨ(0,k)
-		      SinApΨ(j,k)  = SinApΨ(j,0)*CosApΨ(0,k) + CosApΨ(j,0)*SinApΨ(0,k)
-		      SinApΨ(j,k)  = SinApΨ(j,0)*CosApΨ(0,k) - CosApΨ(j,0)*SinApΨ(0,k)
+		  // Calculate noise factors
+		  // This is the value of the observed orbital frequency in Hz
+		  Var fN As Double =  VDN*VDN*VDN/(2*Parameters.π*Parameters.GM)*Parameters.IVOnePlusZ
+		  //  get the noise at various frequencies
+		  // The following array allows us to to enhance or suppress values of harmonics at various frequencies
+		  // to reflect how they may be better or more poorly received by the detector due to noise
+		  // (Declaring this array as a class property reduces background memory management.)
+		  Sn(1) = 1.0/Sqrt(Noise.GetNoise(fN))
+		  Sn(2) = 1.0/Sqrt(Noise.GetNoise(2*fN))
+		  Sn(3) = 1.0/Sqrt(Noise.GetNoise(3*fN))
+		  Sn(4) = 1.0/Sqrt(Noise.GetNoise(4*fN))
+		  Sn(5) = 1.0/Sqrt(Noise.GetNoise(5*fN))
+		  
+		  // Now basically calculate all possible combinations and weight according to the
+		  // noise at a given frequency
+		  For k As Integer = 1 to 5
+		    Var sn As Double = Sn(k)
+		    for j as Integer = 1 to 5
+		      CosApΨ(j,k) = (CosApΨ(j,0)*CosApΨ(0,k) - SinApΨ(j,0)*SinApΨ(0,k))*sn
+		      CosAmΨ(j,k) = (CosApΨ(j,0)*CosApΨ(0,k) + SinApΨ(j,0)*SinApΨ(0,k))*sn
+		      SinApΨ(j,k)  = (SinApΨ(j,0)*CosApΨ(0,k) + CosApΨ(j,0)*SinApΨ(0,k))*sn
+		      SinAmΨ(j,k)  = (SinApΨ(j,0)*CosApΨ(0,k) - CosApΨ(j,0)*SinApΨ(0,k))*sn
 		    Next
+		    CosApΨ(0,k) = CosApΨ(0,k)*sn
+		    CosAmΨ(0,k) = CosApΨ(0,k)
+		    SinApΨ(0,k) = SinApΨ(0,k)*sn
+		    SinAmΨ(0,k) = -SinApΨ(0,k)
 		  Next
 		  
 		  // Now calculate all wavy parts
@@ -1224,7 +1198,6 @@ Protected Class WaveBuilderClass
 		  IDεForβ = 0.5/εForβ
 		  δ = P.δ
 		  η = 0.25*(1.0 - δ*δ)
-		  Sn20 = P.Sn20
 		  VeSinΘ = P.Ve*Sin(P.Θ)
 		  VeCosΘ = P.Ve*Cos(P.Θ)
 		  ΨDN = P.λ0
@@ -1251,23 +1224,17 @@ Protected Class WaveBuilderClass
 		  χsy0 = SourceEvolverBase.χsYN
 		  χsz0 = SourceEvolverBase.χsZN
 		  
-		  // Set up source evolvers where the value of M1 is tweaked
+		  // Set up source evolvers where the value of δ is tweaked
 		  Var ε As Double = 1.0e-6
-		  SourceEvolverM1Minus = New SourceEvolverClass(Tweak(Item.M1, -ε))
-		  SourceEvolverM1Plus = New SourceEvolverClass(Tweak(Item.M1, ε))
-		  IDεForM1 = 0.5/ε
+		  SourceEvolverδMinus = New SourceEvolverClass(Tweak(Item.δ, -ε))
+		  SourceEvolverδPlus = New SourceEvolverClass(Tweak(Item.δ, ε))
+		  IDεForδ = 0.5/ε
 		  
-		  // Set up source evolvers where the value of M2 is tweaked
+		  // Set up source evolvers where the value of v0 is adjusted
 		  ε = 1.0e-6
-		  SourceEvolverM2Minus = New SourceEvolverClass(Tweak(Item.M2, -ε))
-		  SourceEvolverM2Plus = New SourceEvolverClass(Tweak(Item.M2, ε))
-		  IDεForM2 = 0.5/ε
-		  
-		  // Set up source evolvers where the value of F0 is adjusted
-		  ε = 1.0e-6
-		  SourceEvolverF0Minus = New SourceEvolverClass(Tweak(Item.F0, -ε))
-		  SourceEvolverF0Plus = New SourceEvolverClass(Tweak(Item.F0, ε))
-		  IDεForF0 = 0.5/ε
+		  SourceEvolverV0Minus = New SourceEvolverClass(Tweak(Item.v0, -ε))
+		  SourceEvolverV0Plus = New SourceEvolverClass(Tweak(Item.v0, ε))
+		  IDεForV0 = 0.5/ε
 		  
 		  // Set up source evolvers where the value of χ10x is adjusted
 		  ε = 1.0e-6
@@ -1305,15 +1272,11 @@ Protected Class WaveBuilderClass
 		  SourceEvolverχ20zPlus = New SourceEvolverClass(Tweak(Item.χ20z, ε))
 		  IDεForχ20z = 0.5/ε
 		  
-		  // Calculate derivative of Z with respect to Λ
-		  Var universe As New UniverseClass
-		  Var εForΛ As Double = 1.0e-6
-		  Var rInSeconds As Double = P.R*(1.0 + εForΛ)
-		  Var zpε As Double = universe.GetZFrom(rInSeconds)
-		  rInSeconds = P.R*(1.0 - εForΛ)
-		  Var zmε As Double = universe.GetZFrom(rInSeconds)
-		  DZDlnΛ = (zpε - zmε)/(2.0*εForΛ)
-		  DτrD = P.ΔT/P.GM  // Get the value of the detector time step (sampling interval)
+		  // Calculate derivative of Z with respect to lnR
+		  DZDlnR = P.R*P.DZDR
+		  
+		  // Get the value of the detector time step (sampling interval)
+		  DτrD = P.ΔT/P.GM
 		  // do a trial step to get a value of DτIdeal.
 		  SourceBestDτr = 1.0e300 // Initialize this to be something huge
 		  // Note that DτIdeal is passed by reference, so each case has an opportunity to
@@ -1321,17 +1284,13 @@ Protected Class WaveBuilderClass
 		  // while some side cases might have a spin that requires a certain step size.
 		  // A first argument of zero indicates a trial step here.
 		  SourceEvolverBase.DoStep(-1.0, DτrD, SourceBestDτr)
-		  If P.SolveForM1 Then 
-		    SourceEvolverM1Minus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverM1Plus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  If P.SolveForδ Then
+		    SourceEvolverδMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverδPlus.DoStep(-1.0, DτrD, SourceBestDτr)
 		  End If
-		  If P.SolveForM2 Then
-		    SourceEvolverM2Minus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverM2Plus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  End If
-		  If P.SolveForF0 Then
-		    SourceEvolverF0Minus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverF0Plus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  If P.SolveForV0 Then
+		    SourceEvolverV0Minus.DoStep(-1.0, DτrD, SourceBestDτr)
+		    SourceEvolverV0Plus.DoStep(-1.0, DτrD, SourceBestDτr)
 		  End If
 		  If P.SolveForχ1 Then
 		    SourceEvolverχ10xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
@@ -1393,17 +1352,13 @@ Protected Class WaveBuilderClass
 		  // This method performs a source step
 		  // Do the base case and side case steps
 		  SourceEvolverBase.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  If Parameters.SolveForM1 Then
-		    SourceEvolverM1Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverM1Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		  If Parameters.SolveForδ Then
+		    SourceEvolverδMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverδPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
 		  End If
-		  If Parameters.SolveForM2 Then
-		    SourceEvolverM2Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverM2Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  End If
-		  If Parameters.SolveForF0 Then
-		    SourceEvolverF0Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverF0Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		  If Parameters.SolveForV0 Then
+		    SourceEvolverV0Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
+		    SourceEvolverV0Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
 		  End If
 		  If Parameters.SolveForχ1 Then
 		    SourceEvolverχ10xMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
@@ -1581,7 +1536,7 @@ Protected Class WaveBuilderClass
 		  End If
 		  
 		  // Calculate overall wave amplitude constant
-		  Var h0 As Double = 0.5*(1.0 - Parameters.δ*Parameters.δ)*Parameters.GM/(Parameters.Λ*Parameters.R0)
+		  Var h0 As Double = 0.5*(1.0 - Parameters.δ*Parameters.δ)*Parameters.GM/(Parameters.R)
 		  HP = h0*HP
 		  HX = h0*HX
 		End Sub
@@ -1591,15 +1546,10 @@ Protected Class WaveBuilderClass
 		Function Tweak(TheItem As Item, ε As Double) As CaseParametersClass
 		  Var P As CaseParametersClass = Parameters.Clone
 		  Select Case TheItem
-		  Case Item.M1
-		    P.M1 = P.M1*(1.0 + ε)
-		    P.δ = (P.M1 - P.M2)/(P.M1 + P.M2)
-		  Case Item.M2
-		    P.M1 = P.M1*(1.0 + ε)
-		    P.δ = (P.M1 - P.M2)/(P.M1 + P.M2)
-		  Case Item.F0
-		    P.F0 = P.F0*(1.0 + ε)
-		    P.V0 = Pow(P.GM*P.F0*2*P.π*(1.0+P.Z)/1000,1/3)
+		  Case Item.δ
+		    P.δ = δ + ε
+		  Case Item.V0
+		    P.V0 = P.V0*(1.0+ε)
 		  Case Item.χ10x
 		    P.χ10x = P.χ10x + ε
 		  Case Item.χ10y
@@ -1659,7 +1609,7 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DZDlnΛ As Double
+		DZDlnR As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1699,19 +1649,15 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		IDεForF0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForM1 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForM2 As Double
+		IDεForV0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		IDεForβ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		IDεForδ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1767,7 +1713,7 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Sn20 As Double
+		Sn(5) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1779,27 +1725,19 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SourceEvolverF0Minus As SourceEvolverClass
+		SourceEvolverV0Minus As SourceEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SourceEvolverF0Plus As SourceEvolverClass
+		SourceEvolverV0Plus As SourceEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SourceEvolverM1Minus As SourceEvolverClass
+		SourceEvolverδMinus As SourceEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SourceEvolverM1Plus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverM2Minus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverM2Plus As SourceEvolverClass
+		SourceEvolverδPlus As SourceEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1984,10 +1922,10 @@ Protected Class WaveBuilderClass
 
 
 	#tag Enum, Name = Item, Flags = &h0
-		M1
-		  M2
-		  F0
-		  Λ
+		M
+		  δ
+		  V0
+		  R
 		  β
 		  ψ
 		  λ0
@@ -2076,14 +2014,6 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Sn20"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="VDN"
 			Visible=false
 			Group="Behavior"
@@ -2156,7 +2086,7 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DZDlnΛ"
+			Name="DZDlnR"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2220,7 +2150,7 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="IDεForM1"
+			Name="IDεForδ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2228,15 +2158,7 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="IDεForM2"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForF0"
+			Name="IDεForV0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

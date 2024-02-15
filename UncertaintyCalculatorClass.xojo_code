@@ -25,23 +25,28 @@ Protected Class UncertaintyCalculatorClass
 		    End If
 		  Next
 		  Var degFromRad As Double = 180.0/Parameters.π
+		  Var uncT1 As Double
+		  Var uncT2 As Double
 		  Var uv As New UncertaintyValuesClass // Get a new instance of the uncertainty values class
 		  // Note that the order here is assumed to be that specified by the enumeration "Item"
-		  uv.OfM1 = uncList(0)*Sn2F0*Parameters.M1
-		  uv.OfM2 = uncList(1)*Sn2F0*Parameters.M2
-		  uv.OfF0 = 2*uncList(2)*Sn2F0*Parameters.F0/1000
-		  uv.OfR = uncList(3)*Sn2F0*Parameters.R0*Parameters.Λ
-		  uv.Ofβ = uncList(4)*Sn2F0*degFromRad
-		  uv.Ofψ = uncList(5)*Sn2F0*degFromRad
-		  uv.Ofλ0 = uncList(6)*Sn2F0*degFromRad
-		  uv.OfΘ = uncList(7)*Sn2F0*degFromRad
-		  uv.OfΦ = uncList(8)*Sn2F0*degFromRad
-		  uv.Ofχ10x = uncList(9)*Sn2F0*degFromRad
-		  uv.Ofχ10y = uncList(10)*Sn2F0*degFromRad
-		  uv.Ofχ10z = uncList(11)*Sn2F0*degFromRad
-		  uv.Ofχ20x = uncList(12)*Sn2F0*degFromRad
-		  uv.Ofχ20y = uncList(13)*Sn2F0*degFromRad
-		  uv.Ofχ20z = uncList(14)*Sn2F0*degFromRad
+		  uv.OfM = uncList(0)*Parameters.M
+		  uv.Ofδ = uncList(1)
+		  uncT1 = Parameters.T0*uncList(0)  // portion of uncertainty of T0 from uncertainty in mass
+		  uncT2 = -3.0*Parameters.T0*Parameters.V0*Parameters.V0*uncList(2) // portion from uncertainty in lnV0
+		  uv.OfT0 = Sqrt(uncT1*uncT1 + uncT2*uncT2)  // This gives the total uncertainty
+		  uv.OfR = uncList(3)*Parameters.R
+		  uv.OfR = uv.OfR/Parameters.Year  // convert back to ly
+		  uv.Ofβ = uncList(4)*degFromRad
+		  uv.Ofψ = uncList(5)*degFromRad
+		  uv.Ofλ0 = uncList(6)*degFromRad
+		  uv.OfΘ = uncList(7)*degFromRad
+		  uv.OfΦ = uncList(8)*degFromRad
+		  uv.Ofχ10x = uncList(9)*degFromRad
+		  uv.Ofχ10y = uncList(10)*degFromRad
+		  uv.Ofχ10z = uncList(11)*degFromRad
+		  uv.Ofχ20x = uncList(12)*degFromRad
+		  uv.Ofχ20y = uncList(13)*degFromRad
+		  uv.Ofχ20z = uncList(14)*degFromRad
 		  uv.OfΩ = Sin(Θ)*uv.OfΘ*uv.OfΦ/(12.566370614359172*degFromRad*degFromRad)
 		  Return uv
 		End Function
@@ -51,12 +56,6 @@ Protected Class UncertaintyCalculatorClass
 		Sub Constructor(MyParameters As CaseParametersClass)
 		  Parameters = MyParameters
 		  InitSolveList
-		  Var V0 As Double = Parameters.V0
-		  Var f0 As Double =  V0*V0*V0/(2*Parameters.π*Parameters.GM)*Parameters.IVOnePlusZ
-		  Var Noise As New NoiseClass(Parameters.ΔT)
-		  //  get the noise at various frequencies
-		  // This is the noise at th initiale fundamental gravitational wave frequency
-		  Sn2F0 = Sqrt(Noise.GetNoise(2*f0))
 		  
 		End Sub
 	#tag EndMethod
@@ -166,10 +165,10 @@ Protected Class UncertaintyCalculatorClass
 		  // This creates an array of items to solve for. This is the canonical order
 		  // of items, by the way. This must be consistent with the order in the
 		  // enumeration "Item."
-		  SolveList(0) = Parameters.SolveForM1
-		  SolveList(1) = Parameters.SolveForM2
-		  SolveList(2) = Parameters.SolveForF0
-		  SolveList(3) = Parameters.SolveForΛ
+		  SolveList(0) = Parameters.SolveForM
+		  SolveList(1) = Parameters.SolveForδ
+		  SolveList(2) = Parameters.SolveForV0
+		  SolveList(3) = Parameters.SolveForR
 		  SolveList(4) = Parameters.SolveForβ
 		  SolveList(5) = Parameters.SolveForψ
 		  SolveList(6) = Parameters.SolveForλ0
@@ -259,10 +258,6 @@ Protected Class UncertaintyCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Sn2F0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		SolveList(14) As Boolean
 	#tag EndProperty
 
@@ -288,10 +283,10 @@ Protected Class UncertaintyCalculatorClass
 
 
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
-		h0
+		M
 		  δ
-		  F0
-		  z
+		  T0
+		  R
 		  β
 		  ψ
 		  λ0
@@ -345,14 +340,6 @@ Protected Class UncertaintyCalculatorClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Sn2F0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
