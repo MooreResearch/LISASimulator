@@ -11,6 +11,26 @@ Protected Class NoiseClass
 		  fc2 = 1.0e-3
 		  sa = 2.31e-52
 		  sx = 1.257e-41
+		  
+		  // New parameters
+		  
+		  p1 = .171
+		  p2 = 292.0
+		  p3 = 1020.0
+		  p4 = 1680.0
+		  fk = .00215
+		  
+		  POMS = (1.5e-11)*(1.5e-11)
+		  PACCBASE = (3e-15)*(3e-15)
+		  A = 9e-45
+		  L = 2.5e9
+		  
+		  e = 2.7182818284
+		  pi = 3.14159265
+		  
+		  
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -36,6 +56,32 @@ Protected Class NoiseClass
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetNoiseNew(fn As Double) As Double
+		  Var Sc, Sn, PACC As Double
+		  
+		  Var tanhArg As Double
+		  
+		  TanhArg = p4*(fk-fn)
+		  
+		  If fn < .015 then 
+		     Sc = A*(fn)^(-7/3) * e^(-fn*p1 + p2*fn*sin(p3*fn))*(1 + (e^TanhArg - e^-TanhArg)/(e^TanhArg + e^-TanhArg))
+		  else
+		    Sc = 0 
+		  end if 
+		  
+		  PACC = PACCBASE*(1.0+(.0004/fn)*(.0004/fn))
+		  
+		  Sn = (10.0/(3.0*L*L))*(POMS + (4.0*PACC)/((2.0*pi*fn)*(2.0*pi*fn)*(2.0*pi*fn)*(2.0*pi*fn)))*(1.0+.6*(fn/.0191)*(fn/.0191))+Sc
+		  
+		  Return Sn/(2*ΔT)
+		End Function
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		A As Double
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		b1 As Double
@@ -50,6 +96,10 @@ Protected Class NoiseClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		e As double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		fb1 As Double
 	#tag EndProperty
 
@@ -59,6 +109,42 @@ Protected Class NoiseClass
 
 	#tag Property, Flags = &h0
 		fc2 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		fk As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		L As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		p1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		p2 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		p3 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		p4 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PACCBASE As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		pi As double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		POMS As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
