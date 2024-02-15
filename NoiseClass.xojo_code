@@ -36,6 +36,28 @@ Protected Class NoiseClass
 
 	#tag Method, Flags = &h0
 		Function GetNoise(fn As Double) As Double
+		  Var Sc, Sn, PACC As Double
+		  
+		  Var tanhArg As Double
+		  
+		  TanhArg = p4*(fk-fn)
+		  
+		  If fn < .015 then 
+		    Sc = A*(fn)^(-7/3) * e^(-fn*p1 + p2*fn*sin(p3*fn))*(1 + (e^TanhArg - e^-TanhArg)/(e^TanhArg + e^-TanhArg))
+		  else
+		    Sc = 0 
+		  end if 
+		  
+		  PACC = PACCBASE*(1.0+(.0004/fn)*(.0004/fn))
+		  
+		  Sn = (10.0/(3.0*L*L))*(POMS + (4.0*PACC)/((2.0*pi*fn)*(2.0*pi*fn)*(2.0*pi*fn)*(2.0*pi*fn)))*(1.0+.6*(fn/.0191)*(fn/.0191))+Sc
+		  
+		  Return Sn/(2*ΔT)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetNoiseOld(fn As Double) As Double
 		  //  Class subroutine to generate the noise in LISA at each frequency
 		  //  This dates from a very early version of the code.
 		  
@@ -53,28 +75,6 @@ Protected Class NoiseClass
 		  
 		  Return stot/(2*ΔT) // return the calculated noise
 		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetNoiseNew(fn As Double) As Double
-		  Var Sc, Sn, PACC As Double
-		  
-		  Var tanhArg As Double
-		  
-		  TanhArg = p4*(fk-fn)
-		  
-		  If fn < .015 then 
-		     Sc = A*(fn)^(-7/3) * e^(-fn*p1 + p2*fn*sin(p3*fn))*(1 + (e^TanhArg - e^-TanhArg)/(e^TanhArg + e^-TanhArg))
-		  else
-		    Sc = 0 
-		  end if 
-		  
-		  PACC = PACCBASE*(1.0+(.0004/fn)*(.0004/fn))
-		  
-		  Sn = (10.0/(3.0*L*L))*(POMS + (4.0*PACC)/((2.0*pi*fn)*(2.0*pi*fn)*(2.0*pi*fn)*(2.0*pi*fn)))*(1.0+.6*(fn/.0191)*(fn/.0191))+Sc
-		  
-		  Return Sn/(2*ΔT)
 		End Function
 	#tag EndMethod
 
@@ -267,6 +267,94 @@ Protected Class NoiseClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="sx"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="A"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="e"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fk"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="L"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="p1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="p2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="p3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="p4"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PACCBASE"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="pi"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="POMS"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

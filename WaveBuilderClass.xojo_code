@@ -1154,6 +1154,36 @@ Protected Class WaveBuilderClass
 		  W(17) = CosAmΨ(2,3)   // cos(2α - 3Ψ)
 		  W(18) = CosApΨ(0,1)  // cos(Ψ)
 		  
+		  DWDα(5) = -3.0*SinApΨ(3,3) // derivative of cos(3α + 3Ψ) with respect to α
+		  DWDα(6) = -1.0*SinApΨ(1,1)
+		  DWDα(7) = -1.0*SinAmΨ(1,1)
+		  DWDα(8) = -3.0*SinApΨ(3,1)
+		  DWDα(9) = -1.0*SinApΨ(1,3)
+		  DWDα(10) = -1.0*SinAmΨ(1,3)
+		  DWDα(11) = -3.0*SinAmΨ(3,1)
+		  DWDα(12) = -3.0*SinAmΨ(3,3)
+		  DWDα(13) = 0.0
+		  DWDα(14) = -2.0*SinApΨ(2,1)
+		  DWDα(15) = -2.0*SinApΨ(2,3)
+		  DWDα(16) = -2.0*SinAmΨ(2,1)
+		  DWDα(17) = -2.0*SinAmΨ(2,3)
+		  DWDα(18) = 0.0
+		  
+		  DWDΨ(5) = -3.0*SinApΨ(3,3) // derivative of cos(3α + 3Ψ) with respect to Ψ
+		  DWDΨ(6) = -1.0*SinApΨ(1,1)
+		  DWDΨ(7) = SinAmΨ(1,1)
+		  DWDΨ(8) = -1.0*SinApΨ(3,1)
+		  DWDΨ(9) = -3.0*SinApΨ(1,3)
+		  DWDΨ(10) = 3.0*SinAmΨ(1,3)
+		  DWDΨ(11) = SinAmΨ(3,1)
+		  DWDΨ(12) = 3.0*SinAmΨ(3,3)
+		  DWDΨ(13) = -3.0*SinApΨ(0,3)
+		  DWDΨ(14) = -1.0*SinApΨ(2,1)
+		  DWDΨ(15) = -3.0*SinApΨ(2,3)
+		  DWDΨ(16) = SinAmΨ(2,1)
+		  DWDΨ(17) = 3.0*SinAmΨ(2,3)
+		  DWDΨ(18) = -1.0*SinApΨ(0,1)
+		  
 		  // Factors for H2P
 		  
 		  // Factors for H3P
@@ -1175,6 +1205,47 @@ Protected Class WaveBuilderClass
 		  DWDΨ(132) = 2.0*CosApΨ(2,2)
 		  
 		  // Factors for H1X
+		  W(133) = SinAmΨ(1,3)  // sin(α  - 3Ψ)
+		  W(134) = SinAmΨ(2,3)  // sin(2α - 3Ψ)
+		  W(135) = SinAmΨ(3,3)  // sin(3α - 3Ψ)
+		  W(136)= SinAmΨ(1,1)    // sin(α - Ψ)
+		  W(137) = SinAmΨ(2,1)   // sin(2α - Ψ)
+		  W(138) = SinAmΨ(3,1)   // sin(3α - Ψ)
+		  W(139) = SinApΨ(0,1)   // sin(Ψ)
+		  W(140) = SinApΨ(1,1)   // sin(α + Ψ)
+		  W(141) = SinApΨ(2,1)   // sin(2α + Ψ)
+		  W(142) = SinApΨ(3,1)  // sin(3α + Ψ)
+		  W(143) = SinApΨ(1,3)  // sin(α + 3Ψ)
+		  W(144) = SinApΨ(2,3) // sin(2α + 3Ψ)
+		  W(145) = SinApΨ(3,3) // sin(3α + 3Ψ)
+		  
+		  DWDα(133) = CosAmΨ(1,3) // derivative of sin(α + 3Ψ) with respect to α
+		  DWDα(134) = 2.0*CosAmΨ(2,3)
+		  DWDα(135) = 3.0*CosAmΨ(3,3)
+		  DWDα(136) = CosAmΨ(1,1)
+		  DWDα(137) = 2.0*CosAmΨ(2,1)
+		  DWDα(138) = 3.0*CosAmΨ(3,1)
+		  DWDα(139) = 0.0
+		  DWDα(140) = CosApΨ(1,1)
+		  DWDα(141) = 2.0*CosApΨ(2,1)
+		  DWDα(142) = 3.0*CosApΨ(3,1)
+		  DWDα(143) = CosApΨ(1,3)
+		  DWDα(144) = 2.0*CosApΨ(2,3)
+		  DWDα(145) = 3.0*CosApΨ(3,3)
+		  
+		  DWDΨ(133) = -3.0*CosAmΨ(1,3) // derivative of sin(α + 3Ψ) with respect to α
+		  DWDΨ(134) = 3.0*CosAmΨ(2,3)
+		  DWDΨ(135) = -3.0*CosAmΨ(3,3)
+		  DWDΨ(136) = -1.0*CosAmΨ(1,1)
+		  DWDΨ(137) = -1.0*CosAmΨ(2,1)
+		  DWDΨ(138) = -1.0*CosAmΨ(3,1)
+		  DWDΨ(139) = CosApΨ(0,1)
+		  DWDΨ(140) = CosApΨ(1,1)
+		  DWDΨ(141) = CosApΨ(2,1)
+		  DWDΨ(142) = CosApΨ(3,1)
+		  DWDΨ(143) = 3.0*CosApΨ(1,3)
+		  DWDΨ(144) = 3.0*CosApΨ(2,3)
+		  DWDΨ(145) = 3.0*CosApΨ(3,3)
 		  
 		  // Factors for H2X
 		  
