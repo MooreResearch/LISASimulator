@@ -270,6 +270,9 @@ Protected Class Matrix
 		  //          The method also modifies the original array a(,), overwriting its entries with the entries of the upper/lower matrices.
 		  //          (We can choose the diagonal entries of the lower matrix to be all 1; diagonal entries of the modified matrix are of the
 		  //          upper matrix.) 
+		  var pDimint as Integer = pDim
+		  
+		  //bookmark
 		  
 		  Var a(-1, -1) As Double   // initializes array for storing and updating matrix entries
 		  a.resizeTo(pDim - 1, pDim - 1)  // resizes as appropriate
@@ -294,6 +297,7 @@ Protected Class Matrix
 		      scale(i)=1/aamax                              // stores scaling factor for the row
 		    End If
 		  Next
+		  
 		  
 		  // SECOND LOOP: where the actual decomposition takes place
 		  For j As Integer = 0 To nm1                    // loops over columns
@@ -340,6 +344,7 @@ Protected Class Matrix
 		    end if
 		  next
 		  pData = a   // return the data
+		   
 		  return 0   
 		End Function
 	#tag EndMethod

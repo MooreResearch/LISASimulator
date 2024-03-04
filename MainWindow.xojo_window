@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   -1
       Transparent     =   False
       Underline       =   False
-      Value           =   0
+      Value           =   1
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -504,7 +504,7 @@ Begin DesktopWindow MainWindow
          Height          =   24
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "ATA\nY Original\nY Inverted\nYNormalized Original\nYNormalized Inverted\nY^-1 x Y"
+         InitialValue    =   "ATA\nY Original\nY Inverted\nYNormalized Original\nYNormalized Inverted\nY^-1 x Y\nY0 Normalized Unchanged\n"
          Italic          =   False
          Left            =   144
          LockBottom      =   False
@@ -2147,6 +2147,7 @@ End
 		  Var theYNormalized As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.YNormalized
 		  Var theY0Normalized As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.Y0Normalized
 		  Var theProd As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.YInvXY
+		  Var theY0NormalizedUnchanged As Matrix = MainThread.CaseSupervisor.UncertaintyCalculator.Y0NormUnchanged
 		  
 		  
 		  If me.SelectedRowValue = "ATA" Then
@@ -2159,6 +2160,8 @@ End
 		    DisplayMatrix(theY0Normalized)
 		  ElseIf me.SelectedRowValue = "Y Inverted" Then
 		    DisplayMatrix(theY)
+		  ElseIf me.SelectedRowValue = "Y0 Normalized Unchanged" Then
+		    DisplayMatrix(theY0NormalizedUnchanged)
 		  Else
 		    DisplayMatrix(theProd)
 		  End If
