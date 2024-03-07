@@ -8,6 +8,11 @@ Inherits Thread
 		    CaseSupervisor = New CaseSupervisorClass(CaseParameterSet)
 		    CaseSupervisor.DoSteps
 		  Next
+		  
+		  MainWindow.AllCasesDone = True 
+		  
+		  
+		  
 		End Sub
 	#tag EndEvent
 

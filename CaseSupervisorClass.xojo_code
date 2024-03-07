@@ -36,6 +36,27 @@ Protected Class CaseSupervisorClass
 		      End If
 		    Next
 		    Uncertainty = UncertaintyCalculator.Calculate(ATAMatrix, CaseParameters.Θ) // solve for the uncertainties
+		    
+		    Redim MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex + 1, 15)
+		    
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 0) = Uncertainty.OfM
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 1) = Uncertainty.Ofδ
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 2) = Uncertainty.OfT0
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 3) = Uncertainty.OfR
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 4) = Uncertainty.Ofβ
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 5) = Uncertainty.Ofψ
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 6) = Uncertainty.Ofλ0
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 7) = Uncertainty.OfΘ
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 8) = Uncertainty.OfΦ
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 9) = Uncertainty.OfΩ
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 10) = Uncertainty.Ofχ10x
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 11) = Uncertainty.Ofχ10y
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 12) = Uncertainty.Ofχ10z
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 13) = Uncertainty.Ofχ20x
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 14) = Uncertainty.Ofχ20y
+		    MainWindow.UncertaintyList(MainWindow.UncertaintyList.LastIndex, 15) = Uncertainty.Ofχ20z
+		    
+		    
 		  Catch err As RuntimeException
 		    TerminationMessage = err.Message + " at step " + N.ToString
 		  End Try

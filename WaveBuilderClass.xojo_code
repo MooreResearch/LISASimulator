@@ -1387,7 +1387,6 @@ Protected Class WaveBuilderClass
 		    W(127) =   SinApΨ(2,2)
 		    W(128) =   SinApΨ(3,2)
 		    
-		    
 		    //DWDα
 		    
 		    DWDα(47) =   -2.0*SinApΨ(2,2)

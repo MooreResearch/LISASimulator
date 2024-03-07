@@ -57,10 +57,10 @@ Begin DesktopWindow MainWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   -1
+      Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   1
+      Value           =   0
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -104,7 +104,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   1
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -139,7 +139,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   46
+         Top             =   47
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -169,7 +169,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   41
+         Top             =   42
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -208,7 +208,7 @@ Begin DesktopWindow MainWindow
          TextColor       =   &c000000
          Title           =   ""
          Tooltip         =   ""
-         Top             =   110
+         Top             =   111
          Underline       =   False
          Visible         =   True
          Width           =   960
@@ -240,7 +240,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   46
+         Top             =   47
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -281,7 +281,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   45
+         Top             =   46
          Transparent     =   False
          Underline       =   False
          ValidationMask  =   ""
@@ -315,7 +315,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   78
+         Top             =   79
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -356,7 +356,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   78
+         Top             =   79
          Transparent     =   False
          Underline       =   False
          ValidationMask  =   ""
@@ -404,7 +404,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   1
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -439,7 +439,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   47
+         Top             =   48
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -486,7 +486,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   2
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   79
+         Top             =   80
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -518,7 +518,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   2
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   36
+         Top             =   37
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -551,7 +551,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -584,7 +584,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   621
+         Top             =   622
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -616,7 +616,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   2
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -649,7 +649,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -682,7 +682,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -715,7 +715,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -748,7 +748,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   133
+         Top             =   134
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -781,7 +781,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   133
+         Top             =   134
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -814,7 +814,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   163
+         Top             =   164
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -847,7 +847,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   163
+         Top             =   164
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -880,7 +880,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   193
+         Top             =   194
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -913,7 +913,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   193
+         Top             =   194
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -946,7 +946,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   231
+         Top             =   232
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -979,7 +979,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   231
+         Top             =   232
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1012,7 +1012,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   261
+         Top             =   262
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1045,7 +1045,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   261
+         Top             =   262
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1078,7 +1078,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   291
+         Top             =   292
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1111,7 +1111,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   291
+         Top             =   292
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1144,7 +1144,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   321
+         Top             =   322
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1177,7 +1177,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   321
+         Top             =   322
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1210,7 +1210,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1243,7 +1243,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   481
+         Top             =   482
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1268,7 +1268,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   1
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   93
+         Top             =   94
          Transparent     =   True
          Value           =   0.0
          Visible         =   True
@@ -1300,7 +1300,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   1
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1347,7 +1347,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   1
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1382,7 +1382,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   504
+         Top             =   505
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1411,7 +1411,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   1
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   37
+         Top             =   38
          Transparent     =   False
          Underline       =   False
          Value           =   False
@@ -1446,7 +1446,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   69
+         Top             =   70
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1479,7 +1479,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   69
+         Top             =   70
          Transparent     =   False
          Underline       =   False
          Visible         =   False
@@ -1504,7 +1504,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   1
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   93
+         Top             =   94
          Transparent     =   True
          Value           =   0.0
          Visible         =   False
@@ -1537,7 +1537,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   556
+         Top             =   557
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1570,7 +1570,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   581
+         Top             =   582
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1599,7 +1599,7 @@ Begin DesktopWindow MainWindow
          TabStop         =   True
          TickMarkStyle   =   0
          Tooltip         =   ""
-         Top             =   46
+         Top             =   47
          Transparent     =   False
          Value           =   0
          Visible         =   True
@@ -1628,7 +1628,7 @@ Begin DesktopWindow MainWindow
          TabStop         =   True
          TickMarkStyle   =   0
          Tooltip         =   ""
-         Top             =   78
+         Top             =   79
          Transparent     =   False
          Value           =   100
          Visible         =   True
@@ -1661,7 +1661,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   46
+         Top             =   47
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1694,7 +1694,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   78
+         Top             =   79
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1722,6 +1722,23 @@ End
 		End Sub
 	#tag EndEvent
 
+
+	#tag Method, Flags = &h0
+		Sub AddToCasesList(inputString() As String)
+		  Var rows,cols as integer
+		  
+		  rows = CasesList.LastIndex
+		  cols = 19 
+		  
+		  Redim CasesList(rows+1, cols) //Adds a row to CasesList 
+		  
+		  Var j as integer 
+		  
+		  for j = 0 to cols 
+		    CasesList(rows+1,j) = inputString(j) //Populates the new row with data from InputSting
+		  next 
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ConvertToDegrees(Value As Double) As Double
@@ -1777,7 +1794,68 @@ End
 		  Var TheCases() As CaseParametersClass
 		  Var Flag As Boolean
 		  if RunFileCheckBox.Value then
-		    // Get case information from file
+		    
+		    AllCasesDone = False 
+		    
+		    Var TxtType As New FileType
+		    TxtType.Name = "Text  file"
+		    TxtType.Extensions = ".txt"
+		    OutputFile = FolderItem.ShowSaveFileDialog(TxtType, "Create Example.txt")
+		    
+		    // Case information is loaded into CasesList when box is checked 
+		    Var N As Double = CasesList.LastIndex 
+		    Var ThisCase As New CaseParametersClass
+		    Var i as integer
+		    
+		    for i = 0 to N 
+		      Var AddCase As New CaseParametersClass // Create new parameter list
+		      AddCase.M = CasesList(i,0).ToDouble
+		      AddCase.δ = CasesList(i,1).ToDouble
+		      AddCase.T0 = CasesList(i,2).ToDouble
+		      AddCase.R = CasesList(i,3).ToDouble
+		      
+		      AddCase.β = GetValueAndSolveFlag(Flag, CasesList(i,4))
+		      AddCase.SolveForβ = Flag
+		      AddCase.ψ = GetValueAndSolveFlag(Flag, CasesList(i,5))
+		      AddCase.SolveForψ = Flag
+		      AddCase.λ0 = GetValueAndSolveFlag(Flag, CasesList(i,6))
+		      AddCase.SolveForλ0 = Flag
+		      AddCase.Θ = GetValueAndSolveFlag(Flag, CasesList(i,7))
+		      AddCase.SolveForΘ = Flag
+		      AddCase.Φ = GetValueAndSolveFlag(Flag, CasesList(i,8))
+		      AddCase.SolveForΦ = Flag
+		      AddCase.χ10x = GetValueAndSolveFlag(Flag, CasesList(i,9))
+		      AddCase.SolveForχ10x = Flag
+		      AddCase.χ10y = GetValueAndSolveFlag(Flag, CasesList(i,10))
+		      AddCase.SolveForχ10y = Flag
+		      AddCase.χ10z = GetValueAndSolveFlag(Flag, CasesList(i,11))
+		      AddCase.SolveForχ10z = Flag
+		      AddCase.χ20x = GetValueAndSolveFlag(Flag, CasesList(i,12))
+		      AddCase.SolveForχ20x = Flag
+		      AddCase.χ20y = GetValueAndSolveFlag(Flag, CasesList(i,13))
+		      AddCase.SolveForχ20y = Flag
+		      AddCase.χ20z = GetValueAndSolveFlag(Flag, CasesList(i,14))
+		      AddCase.SolveForχ20z = Flag
+		      
+		      AddCase.ρ0 = CasesList(i,15).ToDouble
+		      AddCase.PNOrder = CasesList(i,16).ToDouble
+		      AddCase.Detectors = CasesList(i,17).ToDouble
+		      AddCase.ΔT = CasesList(i,18).ToDouble
+		      AddCase.RunDuration = CasesList(i,19).ToDouble
+		      
+		      AddCase.FinishConstruction
+		      TheCases.Add(AddCase)
+		      
+		    next
+		    
+		    ValueOfStatusLabel.Text = "Running"
+		    ValueOfStopReasonLabel.Text = ""
+		    ValueOfTcLabel.Text = ""
+		    MainThread.LoadCases(TheCases)
+		    MainThread.Priority = Thread.HighPriority
+		    MainThread.Start
+		    InterfaceUpdateTimer.RunMode = Timer.RunModes.Multiple
+		    
 		  Else
 		    Var ThisCase As New CaseParametersClass // Create new parameter list
 		    // Set the first four parameters
@@ -2069,6 +2147,23 @@ End
 	#tag EndMethod
 
 
+	#tag Property, Flags = &h0
+		AllCasesDone As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		CasesList(-1,-1) As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		OutputFile As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		UncertaintyList(-1,-1) As Double
+	#tag EndProperty
+
+
 #tag EndWindowCode
 
 #tag Events InterfaceUpdateTimer
@@ -2106,6 +2201,20 @@ End
 		      DisplayMatrix(TheSuper.ATAMatrix)
 		      ValueOfConditionLabel.Text = Format(TheSuper.UncertaintyCalculator.Condition, "0.000e-0##")
 		    End if
+		    
+		    if RunFileCheckBox.Value and AllCasesDone then
+		      Var t As TextOutputStream = TextOutputStream.Create(OutputFile)
+		      t.WriteLine("M"+chr(9)+"δ"+chr(9)+"T0"+chr(9)+"R"+chr(9)+"β"+chr(9)+"ψ"+chr(9)+"λ0"+chr(9)+"Θ"_
+		      +chr(9)+"Φ"+chr(9)+"Ω"+chr(9)+"χ10x"+chr(9)+"χ10y"+chr(9)+"χ10z"+chr(9)+"χ20x"+chr(9)+"χ20y"+chr(9)+"χ20z")
+		      For i as integer = 0 to UncertaintyList.LastIndex
+		        for j as integer = 0 to 15 
+		          t.Write(UncertaintyList(i,j).ToString+chr(9))
+		        next
+		        t.write(EndOfLine)
+		      next
+		      t.close
+		    end if 
+		    
 		  End if		  
 		End Sub
 	#tag EndEvent
@@ -2203,6 +2312,45 @@ End
 		    me.Caption = "Run"
 		    DoStop
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events RunFileCheckBox
+	#tag Event
+		Sub ValueChanged()
+		  //To make a txt file that can be read by this code:
+		  //Rows should be parameters, in the order shown, separated by commas,
+		  //All parameters need values,, parameters not to be solved for should have x in front of them 
+		  //Each case is on a new row 
+		  
+		  //Do not write data in text file with commas 
+		  
+		  Var TxtType As New FileType
+		  TxtType.Name = "Text  file"
+		  TxtType.Extensions = ".txt"
+		  
+		  Var f As FolderItem
+		  Var textInput As TextInputStream
+		  Var rowFromFile As String
+		  
+		  f = FolderItem.ShowOpenFileDialog(TxtType)
+		  
+		  If f <> Nil Then
+		    textInput = TextInputStream.Open(f)
+		    textInput.Encoding = Encodings.UTF8
+		    
+		    Do
+		      rowFromFile = textInput.ReadLine
+		      Var values() As String = rowFromFile.ToArray(String.Chr(9))
+		      AddToCasesList(values())
+		    Loop Until textInput.EndOfFile
+		    
+		    textInput.Close
+		  End If
+		  
+		  
+		  
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
