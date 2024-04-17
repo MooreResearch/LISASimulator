@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -155,7 +155,7 @@ Begin DesktopWindow MainWindow
          Height          =   26
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   ""
+         InitialValue    =   "H\nHP\nHX\nV\nι\nα\ndhDM\ndhDψ\ndhDλ0\ndhDΘ\ndhDΦ\ndhDβ\ndhDR\ndhDV0\ndhDδ\ndhDχ10x\ndhDχ10y\ndhDχ10z\ndhDχ20x\ndhDχ20y\ndhDχ20z\nαDotN"
          Italic          =   False
          Left            =   96
          LockBottom      =   False
@@ -164,7 +164,7 @@ Begin DesktopWindow MainWindow
          LockRight       =   False
          LockTop         =   True
          Scope           =   0
-         SelectedRowIndex=   -1
+         SelectedRowIndex=   0
          TabIndex        =   1
          TabPanelIndex   =   3
          TabStop         =   True
@@ -174,44 +174,6 @@ Begin DesktopWindow MainWindow
          Underline       =   False
          Visible         =   True
          Width           =   151
-      End
-      Begin DesktopChart MainGraphDataChart
-         AllowAutoDeactivate=   True
-         AllowFocus      =   False
-         AllowFocusRing  =   True
-         AllowPopover    =   True
-         AllowTabs       =   False
-         BackgroundColor =   &cFFFFFF
-         Bold            =   False
-         DoubleBuffer    =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   11.0
-         FontUnit        =   0
-         GridColor       =   &ca6a6a6
-         HasLegend       =   True
-         Height          =   668
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   20
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         Mode            =   6
-         Scope           =   0
-         TabIndex        =   8
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextColor       =   &c000000
-         Title           =   ""
-         Tooltip         =   ""
-         Top             =   111
-         Underline       =   False
-         Visible         =   True
-         Width           =   960
       End
       Begin DesktopLabel CaptionForStartTimeLabel
          AllowAutoDeactivate=   True
@@ -1700,6 +1662,71 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   50
       End
+      Begin DesktopButton GraphButton
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Cancel          =   False
+         Caption         =   "Graph"
+         Default         =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   167
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         MacButtonStyle  =   0
+         Scope           =   0
+         TabIndex        =   17
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   79
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   80
+      End
+      Begin Graph GraphingCanvas
+         AllowAutoDeactivate=   True
+         AllowFocus      =   False
+         AllowFocusRing  =   True
+         AllowTabs       =   False
+         Backdrop        =   0
+         CBlack          =   &c00000000
+         CGrid           =   &c00000000
+         CWhite          =   &c00000000
+         DoubleBuffer    =   False
+         Enabled         =   True
+         GXP             =   0
+         Height          =   668
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Left            =   20
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   18
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   111
+         Transparent     =   True
+         Visible         =   True
+         Width           =   960
+         XColor          =   &c00000000
+         YColor          =   &c00000000
+      End
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
@@ -1848,6 +1875,8 @@ End
 		      
 		    next
 		    
+		    
+		    
 		    ValueOfStatusLabel.Text = "Running"
 		    ValueOfStopReasonLabel.Text = ""
 		    ValueOfTcLabel.Text = ""
@@ -1904,6 +1933,10 @@ End
 		    MainThread.Start
 		    InterfaceUpdateTimer.RunMode = Timer.RunModes.Multiple
 		  End if
+		  
+		  
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -1915,6 +1948,54 @@ End
 		  ValueOfStatusLabel.Text = "Stopped"
 		  ValueOfStopReasonLabel.Text = "Manual Stop"
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetHighestValue(row as integer) As Double
+		  
+		  
+		  Var n as integer = TotSteps - 1
+		  
+		  Var StartValue As Integer = (StartSlider.Value*n) \100
+		  Var EndValue As Integer = StartValue + (DurationSlider.Value *n) \ 100
+		  
+		  If EndValue > n then 
+		    EndValue = n 
+		  end if 
+		  
+		  Var HighestValue as double = ChartArray(row,StartValue)
+		  
+		  for i as integer =  StartValue to EndValue
+		    If ChartArray(row,i) > HighestValue then 
+		      HighestValue = ChartArray(row,i)
+		    end if 
+		  next 
+		  
+		  return HighestValue
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetLowestValue(row as integer) As Double
+		  Var n as integer = TotSteps - 1
+		  
+		  Var StartValue As Integer = (StartSlider.Value*n) \ 100
+		  Var EndValue As Integer = StartValue + (DurationSlider.Value *n) \ 100
+		  
+		  If EndValue > n then 
+		    EndValue = n 
+		  end if 
+		  
+		  Var LowestValue as double = ChartArray(row,StartValue)
+		  
+		  for i as integer = StartValue to EndValue
+		    If ChartArray(row,i) < LowestValue then 
+		      LowestValue = ChartArray(row,i)
+		    end if 
+		  next 
+		  
+		  return LowestValue
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1960,6 +2041,44 @@ End
 		  End If
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Graph()
+		  GraphingCanvas.ClearFrame
+		  GraphingCanvas.SetTitle("Graph of "+GraphChoicePopupMenu.SelectedRowText+" vs time")
+		  GraphingCanvas.SetXLabel("t (time in s)")
+		  GraphingCanvas.SetYLabel(GraphChoicePopupMenu.SelectedRowText)
+		  
+		  
+		  if GraphChoicePopupMenu.SelectedRowText = "αDotN" then
+		    
+		    Var m as integer = AlphaList.LastIndex
+		    
+		    GraphingCanvas.SetGrid(true)
+		    GraphingCanvas.DefineGraph(0,m,-.001,.001)
+		    GraphingCanvas.GetContent
+		    
+		    
+		  else 
+		    
+		    Var n as integer = TotSteps - 1
+		    
+		    Var StartValue As Integer = (StartSlider.Value*n) \100
+		    Var EndValue As Integer = StartValue + (DurationSlider.Value *n) \ 100
+		    
+		    If EndValue > n then 
+		      EndValue = n 
+		    end if 
+		    
+		    Var j as integer = GraphChoicePopupMenu.SelectedRowIndex + 1
+		    
+		    GraphingCanvas.SetGrid(true)
+		    GraphingCanvas.DefineGraph(ChartArray(0,StartValue),ChartArray(0,EndValue), GetLowestValue(j), GetHighestValue(j))
+		    GraphingCanvas.GetContent
+		    
+		  end if 
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -2152,11 +2271,23 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		AlphaList() As double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		CasesList(-1,-1) As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		ChartArray(-1,-1) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		OutputFile As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		TotSteps As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2202,6 +2333,8 @@ End
 		      ValueOfConditionLabel.Text = Format(TheSuper.UncertaintyCalculator.Condition, "0.000e-0##")
 		    End if
 		    
+		    
+		    
 		    if RunFileCheckBox.Value and AllCasesDone then
 		      Var t As TextOutputStream = TextOutputStream.Create(OutputFile)
 		      t.WriteLine("M"+chr(9)+"δ"+chr(9)+"T0"+chr(9)+"R"+chr(9)+"β"+chr(9)+"ψ"+chr(9)+"λ0"+chr(9)+"Θ"_
@@ -2216,6 +2349,15 @@ End
 		    end if 
 		    
 		  End if		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events GraphChoicePopupMenu
+	#tag Event
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  //Add flag 
+		  
+		  Graph
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -2319,8 +2461,8 @@ End
 	#tag Event
 		Sub ValueChanged()
 		  //To make a txt file that can be read by this code:
-		  //Rows should be parameters, in the order shown, separated by commas,
-		  //All parameters need values,, parameters not to be solved for should have x in front of them 
+		  //Rows should be parameters, in the order shown, separated by tabs,
+		  //All parameters need values, parameters not to be solved for should have x in front of them 
 		  //Each case is on a new row 
 		  
 		  //Do not write data in text file with commas 
@@ -2358,6 +2500,68 @@ End
 	#tag Event
 		Sub Open()
 		  me.MaximumValue = 100
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events StartSlider
+	#tag Event
+		Sub ValueChanged()
+		  //Add flag
+		  Graph
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events DurationSlider
+	#tag Event
+		Sub ValueChanged()
+		  //Add flag here 
+		  Graph
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events GraphButton
+	#tag Event
+		Sub Pressed()
+		  Graph
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events GraphingCanvas
+	#tag Event
+		Sub Open()
+		  GraphingCanvas.SetTitle("Graph of "+GraphChoicePopupMenu.SelectedRowText+" vs time")
+		  GraphingCanvas.SetXLabel("t (time in s)")
+		  GraphingCanvas.SetYLabel(GraphChoicePopupMenu.SelectedRowText)
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub DrawContent()
+		  If GraphChoicePopupMenu.SelectedRowText = "αDotN" then 
+		    Var m as integer = AlphaList.LastIndex
+		    
+		    GraphingCanvas.CurveStart(0, AlphaList(0))
+		    Var k as integer
+		    
+		    For k = 1 To m
+		      GraphingCanvas.CurveTo(k, AlphaList(k))
+		    Next 
+		    
+		    
+		  else
+		    
+		    
+		    Var n as integer = TotSteps - 1
+		    Var j as integer = GraphChoicePopupMenu.SelectedRowIndex + 1
+		    
+		    GraphingCanvas.CurveStart(ChartArray(0,0), ChartArray(j,0))
+		    
+		    For i As Integer = 1 To n
+		      GraphingCanvas.CurveTo(ChartArray(0,i), ChartArray(j,i))
+		    Next 
+		    
+		  end if 
 		  
 		End Sub
 	#tag EndEvent
@@ -2594,6 +2798,14 @@ End
 		Name="MenuBarVisible"
 		Visible=true
 		Group="Deprecated"
+		InitialValue="False"
+		Type="Boolean"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="AllCasesDone"
+		Visible=false
+		Group="Behavior"
 		InitialValue="False"
 		Type="Boolean"
 		EditorType=""

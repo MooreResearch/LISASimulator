@@ -110,6 +110,8 @@ Protected Class SourceEvolverClass
 		  λP = λN
 		  ΨN = P.λ0
 		  ΨP = ΨN
+		  TotalRotations = 0
+		  
 		End Sub
 	#tag EndMethod
 
@@ -161,6 +163,7 @@ Protected Class SourceEvolverClass
 		    LYF = LYN
 		    LZF = LZN
 		    αF = αN
+		    αPold = αP //Added this line because αPold was not being set in old code
 		    ιF = ιN
 		    αDotN = 0.0
 		    χsXF = χsXN
@@ -172,7 +175,7 @@ Protected Class SourceEvolverClass
 		    αF = αN
 		    ιF = 0.0
 		  Else // spins are not strictly zero
-		    // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
+		     // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
 		    // but it is probably faster just to do the calculation
 		    // Note that we are calculating components directly rather than defining a vector class and
 		    // doing operations via operator overloading because the overhead is with the latter is huge and
@@ -219,11 +222,15 @@ Protected Class SourceEvolverClass
 		    // less than the orbital angular momentum
 		    
 		    // Calculate the future angles
+		    
+		    
+		    
+		    
 		    Var ellHF As Double = Sqrt(LXF*LXF+LYF*LYF)
 		    If ellHF > 1.0e-12 Then
 		      // The future L vector points at least some angle away from the vertical,
 		      // so α is well-defined and we can calculate it normally
-		      αF = ATan2(LYF, LXF)
+		      αF = ATan2(LYF, LXF) + 2*π*TotalRotations
 		      // To keep α from jumping in value when the L vector crosses the x axis,
 		      // we need to adjust its value from what the ATan2 function gives us
 		      If LYF < 0.0 and LYN > 0.0 Then // If we are crossing the x axis downward
@@ -242,7 +249,15 @@ Protected Class SourceEvolverClass
 		      ιF = 0.0 // we are going through vertical
 		      αF = 2*αN - αP // Guess that we are going in a reasonably straight line
 		    End If
+		    
+		    if αF - αP < -π/2.0 then
+		      TotalRotations = TotalRotations + 1
+		      αF = αF + 2*π
+		    end if 
+		    
 		    αDotN = (αF - αP)/twoDτF // Calculate the present value of αDot
+		    
+		    MainWindow.AlphaList.Add(αDotN)
 		    
 		    // Calculate future values of χs and χa
 		    χsXF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatXF + χ2*OneMinusδ*OneMinusδ*χ2HatXF)
@@ -272,6 +287,7 @@ Protected Class SourceEvolverClass
 		    λF = λP + twoDτF*(v3 - LZN*αDotN)
 		  End If
 		  ΨF = λF - 6.0*VF*VF*VF*Log(VF/V0)
+		  
 		  
 		  // The step just taken now becomes the present
 		  // (as long as it is not a test step)
@@ -320,6 +336,10 @@ Protected Class SourceEvolverClass
 		End Sub
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		AlphaDotPublic As Double
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		CL1 As Double
@@ -439,6 +459,10 @@ Protected Class SourceEvolverClass
 
 	#tag Property, Flags = &h0
 		OnePlusδ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		TotalRotations As Integer = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

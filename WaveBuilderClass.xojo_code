@@ -2186,6 +2186,7 @@ Protected Class WaveBuilderClass
 		    χsxDN = PE.χsxN
 		    χsyDN = PE.χsyN
 		    χszDN = PE.χszN
+		    AlphaDotDN = PE.AlphaDotPublic
 		  Else // if we are interpolating between the past and present source steps
 		    // NOTE: This should only happen when StepPowerP > 0 and when DetectorNow > SourcePast
 		    // so we will insert a debugging test for this condition
@@ -2205,6 +2206,8 @@ Protected Class WaveBuilderClass
 		    χsxDN = oneMinusRatio*PE.χsxP + stepRatio*PE.χsxN
 		    χsyDN = oneMinusRatio*PE.χsyP + stepRatio*PE.χsyN
 		    χszDN = oneMinusRatio*PE.χszP + stepRatio*PE.χszN
+		    
+		    AlphaDotDN = PE.AlphaDotPublic
 		  End If
 		End Sub
 	#tag EndMethod
@@ -2350,6 +2353,10 @@ Protected Class WaveBuilderClass
 
 	#tag Property, Flags = &h0
 		A(247) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		AlphaDotDN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

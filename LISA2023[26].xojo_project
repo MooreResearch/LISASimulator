@@ -19,6 +19,7 @@ Class=UncertaintyValuesClass;UncertaintyValuesClass.xojo_code;&h0000000033C2F7FF
 Class=CaseSupervisorClass;CaseSupervisorClass.xojo_code;&h0000000061970FFF;&h0000000000000000;false
 Class=DataRecord;DataRecord.xojo_code;&h000000002BDC27FF;&h0000000000000000;false
 Class=RecordArrayClass;RecordArrayClass.xojo_code;&h00000000717C27FF;&h0000000000000000;false
+Class=Graph;Graph.xojo_code;&h000000002BB7F7FF;&h0000000000000000;false
 DefaultWindow=MainWindow
 AppMenuBar=MainMenuBar
 MajorVersion=1
