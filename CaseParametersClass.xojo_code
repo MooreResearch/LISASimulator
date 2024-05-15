@@ -281,20 +281,20 @@ Protected Class CaseParametersClass
 
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
 		M
-		  δ
+		  delta
 		  T0
 		  R
-		  β
-		  ψ
-		  λ0
-		  Θ
-		  Φ
-		  χ10x
-		  χ10y
-		  χ10z
-		  χ20x
-		  χ20y
-		χ20z
+		  beta
+		  psi
+		  lambda0
+		  theta
+		  phi
+		  chi10x
+		  chi10y
+		  chi10z
+		  chi20x
+		  chi20y
+		chi20z
 	#tag EndEnum
 
 
@@ -697,6 +697,22 @@ Protected Class CaseParametersClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DZDR"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Year"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

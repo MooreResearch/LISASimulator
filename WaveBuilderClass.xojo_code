@@ -117,32 +117,32 @@ Protected Class WaveBuilderClass
 		  
 		  // Calculate the derivative with respect to ψ (this is the next easiest!)
 		  If Parameters.SolveForψ Then
-		    DHDq(Integer(Item.ψ)) = 2.0*(-fx*hpBase + fp*hxBase)
+		    DHDq(Integer(Item.psi)) = 2.0*(-fx*hpBase + fp*hxBase)
 		  Else
-		    DHDq(Integer(Item.ψ)) = 0.0
+		    DHDq(Integer(Item.psi)) = 0.0
 		  End If
 		  
 		  // in the case of λ0, DΨrDλ0 = 1, so the following is the correct total derivative.
 		  If Parameters.SolveForλ0 Then
-		    DHDq(Integer(Item.λ0)) = dHDΨr
+		    DHDq(Integer(Item.lambda0)) = dHDΨr
 		  Else
-		    DHDq(Integer(Item.λ0)) = 0.0
+		    DHDq(Integer(Item.lambda0)) = 0.0
 		  End If
 		  
 		  // We can also use the above items to calculate the derivative with respect to Θ
 		  If Parameters.SolveForΘ Then
-		    DHDq(Integer(Item.Θ)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
+		    DHDq(Integer(Item.theta)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
 		    + dHDΨr*DΨrDΘDN
 		  Else
-		    DHDq(Integer(Item.Θ)) = 0.0
+		    DHDq(Integer(Item.theta)) = 0.0
 		  End If
 		  
 		  // and the derivative with respect to Φ
 		  If Parameters.SolveForΦ Then
-		    DHDq(Integer(Item.Φ)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
+		    DHDq(Integer(Item.phi)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
 		    + dHDΨr*DΨrDΦDN
 		  Else
-		    DHDq(Integer(Item.Φ)) = 0.0
+		    DHDq(Integer(Item.phi)) = 0.0
 		  End If
 		  
 		  // Now we will start calculating derivatives that involve derivatives of the wave amplitudes
@@ -165,9 +165,9 @@ Protected Class WaveBuilderClass
 		    SumSourceH(W) // and calculate the waves
 		    Cosβ = originalValue  // restore the original values of of Cosβ, Sinβ, so that no harm is done
 		    Sinβ = originalValue2
-		    DHDq(Integer(Item.β)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
+		    DHDq(Integer(Item.beta)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
 		  Else
-		    DHDq(Integer(Item.β)) = 0.0
+		    DHDq(Integer(Item.beta)) = 0.0
 		  End If
 		  
 		  // Most of the remaining parameters require all or nearly all the following amplitude derivatives
@@ -384,11 +384,11 @@ Protected Class WaveBuilderClass
 		    dχsyDq = (χsyPlus - χsyDN)*IDεForδ
 		    dχszDq = (χszPlus - χszDN)*IDεForδ
 		    // Put it all together
-		    DHDq(Integer(Item.δ)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.delta)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ
 		  Else
-		    DHDq(Integer(Item.δ)) = 0.0
+		    DHDq(Integer(Item.delta)) = 0.0
 		  End If
 		  
 		  '// Code to display values
@@ -431,11 +431,11 @@ Protected Class WaveBuilderClass
 		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10x
 		    dχszDq = (χszPlus - χszDN)*IDεForχ10x
 		    // Put it all together
-		    DHDq(Integer(Item.χ10x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.chi10x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
 		  Else
-		    DHDq(Integer(Item.χ10x)) = 0.0
+		    DHDq(Integer(Item.chi10x)) = 0.0
 		  End If
 		  
 		  If Parameters.SolveForχ10y Then
@@ -463,11 +463,11 @@ Protected Class WaveBuilderClass
 		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10y
 		    dχszDq = (χszPlus - χszDN)*IDεForχ10y
 		    // Put it all together
-		    DHDq(Integer(Item.χ10y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.chi10y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
 		  Else
-		    DHDq(Integer(Item.χ10y)) = 0.0
+		    DHDq(Integer(Item.chi10y)) = 0.0
 		  End If
 		  
 		  If Parameters.SolveForχ10z Then
@@ -495,11 +495,11 @@ Protected Class WaveBuilderClass
 		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10z
 		    dχszDq = (χszPlus - χszDN)*IDεForχ10z
 		    // Put it all together
-		    DHDq(Integer(Item.χ10z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.chi10z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
 		  Else
-		    DHDq(Integer(Item.χ10z)) = 0.0
+		    DHDq(Integer(Item.chi10z)) = 0.0
 		  End If
 		  
 		  If Parameters.SolveForχ20x Then
@@ -527,11 +527,11 @@ Protected Class WaveBuilderClass
 		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20x
 		    dχszDq = (χszPlus - χszDN)*IDεForχ20x
 		    // Put it all together
-		    DHDq(Integer(Item.χ20x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.chi20x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
 		  Else
-		    DHDq(Integer(Item.χ20x)) = 0.0
+		    DHDq(Integer(Item.chi20x)) = 0.0
 		  End If
 		  
 		  If Parameters.SolveForχ20y Then
@@ -559,11 +559,11 @@ Protected Class WaveBuilderClass
 		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20y
 		    dχszDq = (χszPlus - χszDN)*IDεForχ20y
 		    // Put it all together
-		    DHDq(Integer(Item.χ20y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.chi20y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
 		  Else
-		    DHDq(Integer(Item.χ20y)) = 0.0
+		    DHDq(Integer(Item.chi20y)) = 0.0
 		  End If
 		  
 		  If Parameters.SolveForχ20z Then
@@ -591,11 +591,11 @@ Protected Class WaveBuilderClass
 		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20z
 		    dχszDq = (χszPlus - χszDN)*IDεForχ20z
 		    // Put it all together
-		    DHDq(Integer(Item.χ20z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		    DHDq(Integer(Item.chi20z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
 		  Else
-		    DHDq(Integer(Item.χ20z)) = 0.0
+		    DHDq(Integer(Item.chi20z)) = 0.0
 		  End If
 		  
 		End Sub
@@ -2006,8 +2006,8 @@ Protected Class WaveBuilderClass
 		  
 		  // Set up source evolvers where the value of δ is tweaked
 		  Var ε As Double = 1.0e-6
-		  SourceEvolverδMinus = New SourceEvolverClass(Tweak(Item.δ, -ε))
-		  SourceEvolverδPlus = New SourceEvolverClass(Tweak(Item.δ, ε))
+		  SourceEvolverδMinus = New SourceEvolverClass(Tweak(Item.delta, -ε))
+		  SourceEvolverδPlus = New SourceEvolverClass(Tweak(Item.delta, ε))
 		  IDεForδ = 0.5/ε
 		  
 		  // Set up source evolvers where the value of v0 is adjusted
@@ -2018,38 +2018,38 @@ Protected Class WaveBuilderClass
 		  
 		  // Set up source evolvers where the value of χ10x is adjusted
 		  ε = 1.0e-6
-		  SourceEvolverχ10xMinus = New SourceEvolverClass(Tweak(Item.χ10x, -ε))
-		  SourceEvolverχ10xPlus = New SourceEvolverClass(Tweak(Item.χ10x, ε))
+		  SourceEvolverχ10xMinus = New SourceEvolverClass(Tweak(Item.chi10x, -ε))
+		  SourceEvolverχ10xPlus = New SourceEvolverClass(Tweak(Item.chi10x, ε))
 		  IDεForχ10x = 0.5/ε
 		  
 		  // Set up source evolvers where the value of χ10y is adjusted
 		  ε = 1.0e-6
-		  SourceEvolverχ10yMinus = New SourceEvolverClass(Tweak(Item.χ10y, -ε))
-		  SourceEvolverχ10yPlus = New SourceEvolverClass(Tweak(Item.χ10y, ε))
+		  SourceEvolverχ10yMinus = New SourceEvolverClass(Tweak(Item.chi10y, -ε))
+		  SourceEvolverχ10yPlus = New SourceEvolverClass(Tweak(Item.chi10y, ε))
 		  IDεForχ10y = 0.5/ε
 		  
 		  // Set up source evolvers where the value of χ10z is adjusted
 		  ε = 1.0e-6
-		  SourceEvolverχ10zMinus = New SourceEvolverClass(Tweak(Item.χ10z, -ε))
-		  SourceEvolverχ10zPlus = New SourceEvolverClass(Tweak(Item.χ10z, ε))
+		  SourceEvolverχ10zMinus = New SourceEvolverClass(Tweak(Item.chi10z, -ε))
+		  SourceEvolverχ10zPlus = New SourceEvolverClass(Tweak(Item.chi10z, ε))
 		  IDεForχ10z = 0.5/ε
 		  
 		  // Set up source evolvers where the value of χ20x is adjusted
 		  ε = 1.0e-6
-		  SourceEvolverχ20xMinus = New SourceEvolverClass(Tweak(Item.χ20x, -ε))
-		  SourceEvolverχ20xPlus = New SourceEvolverClass(Tweak(Item.χ20x, ε))
+		  SourceEvolverχ20xMinus = New SourceEvolverClass(Tweak(Item.chi20x, -ε))
+		  SourceEvolverχ20xPlus = New SourceEvolverClass(Tweak(Item.chi20x, ε))
 		  IDεForχ20x = 0.5/ε
 		  
 		  // Set up source evolvers where the value of χ20y is adjusted
 		  ε = 1.0e-6
-		  SourceEvolverχ20yMinus = New SourceEvolverClass(Tweak(Item.χ20y, -ε))
-		  SourceEvolverχ20yPlus = New SourceEvolverClass(Tweak(Item.χ20y, ε))
+		  SourceEvolverχ20yMinus = New SourceEvolverClass(Tweak(Item.chi20y, -ε))
+		  SourceEvolverχ20yPlus = New SourceEvolverClass(Tweak(Item.chi20y, ε))
 		  IDεForχ20y = 0.5/ε
 		  
 		  // Set up source evolvers where the value of χ20z is adjusted
 		  ε = 1.0e-6
-		  SourceEvolverχ20zMinus = New SourceEvolverClass(Tweak(Item.χ20z, -ε))
-		  SourceEvolverχ20zPlus = New SourceEvolverClass(Tweak(Item.χ20z, ε))
+		  SourceEvolverχ20zMinus = New SourceEvolverClass(Tweak(Item.chi20z, -ε))
+		  SourceEvolverχ20zPlus = New SourceEvolverClass(Tweak(Item.chi20z, ε))
 		  IDεForχ20z = 0.5/ε
 		  
 		  // Calculate derivative of Z with respect to lnR
@@ -2329,21 +2329,21 @@ Protected Class WaveBuilderClass
 		Function Tweak(TheItem As Item, ε As Double) As CaseParametersClass
 		  Var P As CaseParametersClass = Parameters.Clone
 		  Select Case TheItem
-		  Case Item.δ
+		  Case Item.delta
 		    P.δ = δ + ε
 		  Case Item.V0
 		    P.V0 = P.V0*(1.0+ε)
-		  Case Item.χ10x
+		  Case Item.chi10x
 		    P.χ10x = P.χ10x + ε
-		  Case Item.χ10y
+		  Case Item.chi10y
 		    P.χ10y = P.χ10y + ε
-		  Case Item.χ10z
+		  Case Item.chi10z
 		    P.χ10z = P.χ10z + ε
-		  Case Item.χ20x
+		  Case Item.chi20x
 		    P.χ20x = P.χ20x + ε
-		  Case Item.χ20y
+		  Case Item.chi20y
 		    P.χ20y = P.χ20y + ε
-		  Case Item.χ20z
+		  Case Item.chi20z
 		    P.χ20z = P.χ20z + ε
 		  End Select
 		  Return P
@@ -2714,20 +2714,20 @@ Protected Class WaveBuilderClass
 
 	#tag Enum, Name = Item, Flags = &h0
 		M
-		  δ
+		  delta
 		  V0
 		  R
-		  β
-		  ψ
-		  λ0
-		  Θ
-		  Φ
-		  χ10x
-		  χ10y
-		  χ10z
-		  χ20x
-		  χ20y
-		χ20z
+		  beta
+		  psi
+		  lambda0
+		  theta
+		  phi
+		  chi10x
+		  chi10y
+		  chi10z
+		  chi20x
+		  chi20y
+		chi20z
 	#tag EndEnum
 
 
@@ -3241,6 +3241,22 @@ Protected Class WaveBuilderClass
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AlphaDotDN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="π"
+			Visible=false
+			Group="Behavior"
+			InitialValue="3.1415926535897"
 			Type="Double"
 			EditorType=""
 		#tag EndViewProperty

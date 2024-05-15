@@ -61,35 +61,35 @@ Protected Class RecordArrayClass
 
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
 		DhDh0
-		  DhDδ
+		  DhDdelta
 		  DhDv0
 		  DhDz
-		  DhDβ
-		  DhDψ
-		  DhDλ0
-		  DhDΘ
-		  DhDΦ
-		  DhDχ10x
-		  DhDχ10y
-		  DhDχ10z
-		  DhDχ20x
-		  DhDχ20y
-		  DhDχ20z
+		  DhDbeta
+		  DhDpsi
+		  DhDlambda0
+		  DhDtheta
+		  DhDphi
+		  DhDchi10x
+		  DhDchi10y
+		  DhDchi10z
+		  DhDchi20x
+		  DhDchi20y
+		  DhDchi20z
 		  h
 		  hp
 		  hx
 		  v
-		  Ψr
-		  α
+		  psir
+		  alpha
 		  Lx
 		  Ly
 		  Lz
-		  χ1Hatx
-		  χ1Haty
-		  χ1Hatz
-		  χ2Hatx
-		  χ2Haty
-		  χ2Hatz
+		  chi1Hatx
+		  chi1Haty
+		  chi1Hatz
+		  chi2Hatx
+		  chi2Haty
+		  chi2Hatz
 		NItems
 	#tag EndEnum
 

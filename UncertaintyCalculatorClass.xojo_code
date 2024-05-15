@@ -166,7 +166,7 @@ Protected Class UncertaintyCalculatorClass
 
 	#tag Method, Flags = &h0
 		Sub InitSolveList()
-		   // This creates an array of items to solve for. This is the canonical order
+		  // This creates an array of items to solve for. This is the canonical order
 		  // of items, by the way. This must be consistent with the order in the
 		  // enumeration "Item."
 		  SolveList(0) = Parameters.SolveForM
@@ -286,7 +286,7 @@ Protected Class UncertaintyCalculatorClass
 		  next 
 		  
 		  SolveList(WorstRow - 1) = False
-		   
+		  
 		  return WorstRow
 		  
 		End Function
@@ -348,20 +348,20 @@ Protected Class UncertaintyCalculatorClass
 
 	#tag Enum, Name = Item, Type = Integer, Flags = &h0
 		M
-		  δ
+		  delta
 		  T0
 		  R
-		  β
-		  ψ
-		  λ0
-		  Θ
-		  Φ
-		  χ10x
-		  χ10y
-		  χ10z
-		  χ20x
-		  χ20y
-		χ20z
+		  beta
+		  psi
+		  lambda0
+		  theta
+		  phi
+		  chi10x
+		  chi10y
+		  chi10z
+		  chi20x
+		  chi20y
+		chi20z
 	#tag EndEnum
 
 
