@@ -1,7 +1,7 @@
 #tag Class
 Protected Class SourceEvolverClass
 	#tag Method, Flags = &h0
-		Sub Constructor(P As CaseParametersClass)
+		Sub Constructor(P As CaseInfoClass)
 		  π = P.π
 		  // Initialize the velocity-related properties
 		  VN = P.V0
@@ -175,7 +175,7 @@ Protected Class SourceEvolverClass
 		    αF = αN
 		    ιF = 0.0
 		  Else // spins are not strictly zero
-		     // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
+		    // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
 		    // but it is probably faster just to do the calculation
 		    // Note that we are calculating components directly rather than defining a vector class and
 		    // doing operations via operator overloading because the overhead is with the latter is huge and
@@ -256,8 +256,6 @@ Protected Class SourceEvolverClass
 		    end if 
 		    
 		    αDotN = (αF - αP)/twoDτF // Calculate the present value of αDot
-		    
-		    MainWindow.AlphaList.Add(αDotN)
 		    
 		    // Calculate future values of χs and χa
 		    χsXF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatXF + χ2*OneMinusδ*OneMinusδ*χ2HatXF)
@@ -1453,6 +1451,22 @@ Protected Class SourceEvolverClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AlphaDotPublic"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TotalRotations"
+			Visible=false
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

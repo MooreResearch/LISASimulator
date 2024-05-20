@@ -1,8 +1,9 @@
 #tag Class
 Protected Class UncertaintyCalculatorClass
 	#tag Method, Flags = &h0
-		Function Calculate(ATAMatrix As Matrix, Θ As Double) As UncertaintyValuesClass
+		Sub Calculate(ATAMatrix As Matrix)
 		  ATA = ATAMatrix  // Get a local reference to the matrix
+		  Var SolveList() As Boolean = Parameters.SolveFor() // get a local reference to the solve list
 		  FindBestInvertible // Find the version of the matrix that is invertible
 		  // Now we will complile uncertainty values.
 		  Var k As Integer = 0  // Index to the actual row in the inverted matrix
@@ -27,36 +28,30 @@ Protected Class UncertaintyCalculatorClass
 		  Var degFromRad As Double = 180.0/Parameters.π
 		  Var uncT1 As Double
 		  Var uncT2 As Double
-		  Var uv As New UncertaintyValuesClass // Get a new instance of the uncertainty values class
-		  // Note that the order here is assumed to be that specified by the enumeration "Item"
-		  uv.OfM = uncList(0)*Parameters.M
-		  uv.Ofδ = uncList(1)
-		  uncT1 = Parameters.T0*uncList(0)  // portion of uncertainty of T0 from uncertainty in mass
-		  uncT2 = -3.0*Parameters.T0*Parameters.V0*Parameters.V0*uncList(2) // portion from uncertainty in lnV0
-		  uv.OfT0 = Sqrt(uncT1*uncT1 + uncT2*uncT2)  // This gives the total uncertainty
-		  uv.OfR = uncList(3)*Parameters.R
-		  uv.OfR = uv.OfR/Parameters.Year  // convert back to ly
-		  uv.Ofβ = uncList(4)*degFromRad
-		  uv.Ofψ = uncList(5)*degFromRad
-		  uv.Ofλ0 = uncList(6)*degFromRad
-		  uv.OfΘ = uncList(7)*degFromRad
-		  uv.OfΦ = uncList(8)*degFromRad
-		  uv.Ofχ10x = uncList(9)*degFromRad
-		  uv.Ofχ10y = uncList(10)*degFromRad
-		  uv.Ofχ10z = uncList(11)*degFromRad
-		  uv.Ofχ20x = uncList(12)*degFromRad
-		  uv.Ofχ20y = uncList(13)*degFromRad
-		  uv.Ofχ20z = uncList(14)*degFromRad
-		  uv.OfΩ = Sin(Θ)*uv.OfΘ*uv.OfΦ/(12.566370614359172*degFromRad*degFromRad)
-		  
-		  Return uv
-		End Function
+		  Var uv() As Double = Parameters.Uncertainties()
+		  uv(Integer(CaseInfoClass.Param.M)) = uncList(Integer(CaseInfoClass.Param.M))*Parameters.M
+		  uv(Integer(CaseInfoClass.Param.delta)) = uncList(Integer(CaseInfoClass.Param.delta))
+		  uncT1 = Parameters.T0*uncList(Integer(CaseInfoClass.Param.M))  // portion of uncertainty of T0 from uncertainty in mass
+		  uncT2 = -3.0*Parameters.T0*Parameters.V0*Parameters.V0*uncList(Integer(CaseInfoClass.Param.V0)) // portion from uncertainty in lnV0
+		  uv(Integer(CaseInfoClass.Param.V0)) = Sqrt(uncT1*uncT1 + uncT2*uncT2) // This gives the total uncertainty
+		  uv(Integer(CaseInfoClass.Param.R)) = uncList(Integer(CaseInfoClass.Param.R))*Parameters.R/Parameters.Year
+		  uv(Integer(CaseInfoClass.Param.beta)) = uncList(Integer(CaseInfoClass.Param.beta))*degFromRad
+		  uv(Integer(CaseInfoClass.Param.psi)) = uncList(Integer(CaseInfoClass.Param.psi))*degFromRad
+		  uv(Integer(CaseInfoClass.Param.lambda0)) = uncList(Integer(CaseInfoClass.Param.lambda0))*degFromRad
+		  uv(Integer(CaseInfoClass.Param.theta)) = uncList(Integer(CaseInfoClass.Param.phi))*degFromRad
+		  uv(Integer(CaseInfoClass.Param.phi)) = uncList(Integer(CaseInfoClass.Param.phi))*degFromRad
+		  uv(Integer(CaseInfoClass.Param.chi10x)) = uncList(Integer(CaseInfoClass.Param.chi10x))
+		  uv(Integer(CaseInfoClass.Param.chi10y)) = uncList(Integer(CaseInfoClass.Param.chi10y))
+		  uv(Integer(CaseInfoClass.Param.chi10z)) = uncList(Integer(CaseInfoClass.Param.chi10z))
+		  uv(Integer(CaseInfoClass.Param.chi20x)) = uncList(Integer(CaseInfoClass.Param.chi20x))
+		  uv(Integer(CaseInfoClass.Param.chi20y)) = uncList(Integer(CaseInfoClass.Param.chi20y))
+		  uv(Integer(CaseInfoClass.Param.chi20z)) = uncList(Integer(CaseInfoClass.Param.chi20z))
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(MyParameters As CaseParametersClass)
+		Sub Constructor(MyParameters As CaseInfoClass)
 		  Parameters = MyParameters
-		  InitSolveList
 		  
 		End Sub
 	#tag EndMethod
@@ -119,6 +114,7 @@ Protected Class UncertaintyCalculatorClass
 		Sub GetYToSolve()
 		  Var M(-1,-1) As Double
 		  Var Q(-1,-1) As Double
+		  Var SolveList() As Boolean = Parameters.SolveFor()
 		  
 		  Var RowsToInclude As Integer = 0
 		  For j As Integer = 0 to 14
@@ -165,33 +161,10 @@ Protected Class UncertaintyCalculatorClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub InitSolveList()
-		  // This creates an array of items to solve for. This is the canonical order
-		  // of items, by the way. This must be consistent with the order in the
-		  // enumeration "Item."
-		  SolveList(0) = Parameters.SolveForM
-		  SolveList(1) = Parameters.SolveForδ
-		  SolveList(2) = Parameters.SolveForV0
-		  SolveList(3) = Parameters.SolveForR
-		  SolveList(4) = Parameters.SolveForβ
-		  SolveList(5) = Parameters.SolveForψ
-		  SolveList(6) = Parameters.SolveForλ0
-		  SolveList(7) = Parameters.SolveForΘ
-		  SolveList(8) = Parameters.SolveForΦ
-		  SolveList(9) = Parameters.SolveForχ10x
-		  SolveList(10) = Parameters.SolveForχ10y
-		  SolveList(11) = Parameters.SolveForχ10z
-		  SolveList(12) = Parameters.SolveForχ20x
-		  SolveList(13) = Parameters.SolveForχ20y
-		  SolveList(14) = Parameters.SolveForχ20z
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub InvertY()
 		  // This method inverts the Y matrix or whatever submatrix we can invert
 		  Var badRow As Integer
+		  Var SolveList() As Boolean = Parameters.SolveFor()
 		  
 		  InvertNum = 0
 		  
@@ -206,10 +179,6 @@ Protected Class UncertaintyCalculatorClass
 		      if removedRow = -1 then 
 		        break
 		      end if
-		      
-		      
-		      
-		      
 		      
 		      'For j As Integer = 0 to 14   // Scan through the solve list
 		      'If SolveList(j) Then  // if we are solving for this item
@@ -261,7 +230,7 @@ Protected Class UncertaintyCalculatorClass
 
 	#tag Method, Flags = &h0
 		Function TrySubMatrices() As Integer
-		  
+		  Var SolveList() As Boolean = Parameters.SolveFor()
 		  Var i,j,n, badRow, Original as integer
 		  
 		  n = Y0NormUnchanged.pDim -1 
@@ -310,11 +279,7 @@ Protected Class UncertaintyCalculatorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Parameters As CaseParametersClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SolveList(14) As Boolean
+		Parameters As CaseInfoClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -344,25 +309,6 @@ Protected Class UncertaintyCalculatorClass
 	#tag Property, Flags = &h0
 		YNormalized As Matrix
 	#tag EndProperty
-
-
-	#tag Enum, Name = Item, Type = Integer, Flags = &h0
-		M
-		  delta
-		  T0
-		  R
-		  beta
-		  psi
-		  lambda0
-		  theta
-		  phi
-		  chi10x
-		  chi10y
-		  chi10z
-		  chi20x
-		  chi20y
-		chi20z
-	#tag EndEnum
 
 
 	#tag ViewBehavior
