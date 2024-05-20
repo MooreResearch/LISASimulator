@@ -38,7 +38,7 @@ Protected Class UncertaintyCalculatorClass
 		  uv(Integer(CaseInfoClass.Param.beta)) = uncList(Integer(CaseInfoClass.Param.beta))*degFromRad
 		  uv(Integer(CaseInfoClass.Param.psi)) = uncList(Integer(CaseInfoClass.Param.psi))*degFromRad
 		  uv(Integer(CaseInfoClass.Param.lambda0)) = uncList(Integer(CaseInfoClass.Param.lambda0))*degFromRad
-		  uv(Integer(CaseInfoClass.Param.theta)) = uncList(Integer(CaseInfoClass.Param.phi))*degFromRad
+		  uv(Integer(CaseInfoClass.Param.theta)) = uncList(Integer(CaseInfoClass.Param.theta))*degFromRad
 		  uv(Integer(CaseInfoClass.Param.phi)) = uncList(Integer(CaseInfoClass.Param.phi))*degFromRad
 		  uv(Integer(CaseInfoClass.Param.chi10x)) = uncList(Integer(CaseInfoClass.Param.chi10x))
 		  uv(Integer(CaseInfoClass.Param.chi10y)) = uncList(Integer(CaseInfoClass.Param.chi10y))
