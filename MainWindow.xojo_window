@@ -353,7 +353,7 @@ Begin DesktopWindow MainWindow
          InitialParent   =   "MainTabPanel"
          InitialValue    =   "Case 1\n10000\n0.1\n500\n1.0e7\n39\n24\n0\n5\n268.5\n---\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n0\n2\n50\n1.0"
          Italic          =   False
-         Left            =   115
+         Left            =   110
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1763,8 +1763,8 @@ End
 		  thisCase.ρ0 = values(15).ToDouble
 		  thisCase.PNOrder = values(16).ToInteger
 		  thisCase.Detectors = values(17).ToInteger
-		  thisCase.ΔT = values(17).ToDouble
-		  thisCase.RunDuration = values(18).ToDouble
+		  thisCase.ΔT = values(18).ToDouble
+		  thisCase.RunDuration = values(19).ToDouble
 		  thisCase.StorePlotInfo = DoPlot
 		  thisCase.FinishConstruction
 		  TheCases.Add(thisCase)
@@ -2117,8 +2117,6 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events RunFileCheckBox
-#tag EndEvents
 #tag Events FileProgressBar
 	#tag Event
 		Sub Open()
@@ -2392,6 +2390,14 @@ End
 		Visible=false
 		Group="Behavior"
 		InitialValue="False"
+		Type="Boolean"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Setting"
+		Visible=false
+		Group="Behavior"
+		InitialValue=""
 		Type="Boolean"
 		EditorType=""
 	#tag EndViewProperty

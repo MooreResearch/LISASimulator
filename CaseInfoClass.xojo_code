@@ -601,6 +601,14 @@ Protected Class CaseInfoClass
 			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StorePlotInfo"
+			Visible=false
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass
