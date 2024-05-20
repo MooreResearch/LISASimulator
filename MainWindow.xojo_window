@@ -1812,7 +1812,7 @@ End
 		  UncertaintyListBox.CellTextAt(7) = GetUncertaintyString(uTheta)
 		  UncertaintyListBox.CellTextAt(8) = GetUncertaintyString(uPhi)
 		  Var d2r As Double = CaseInfo.π/180.0
-		  Var omega As Double = uTheta*uPhi/(4*CaseInfo.π*d2r*d2r)
+		  Var omega As Double = Sin(CaseInfo.Θ)*uTheta*uPhi/(4*CaseInfo.π)*d2r*d2r
 		  UncertaintyListBox.CellTextAt(9) = GetUncertaintyString(omega)
 		  UncertaintyListBox.CellTextAt(10) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10x)))
 		  UncertaintyListBox.CellTextAt(11) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10y)))
