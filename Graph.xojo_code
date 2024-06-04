@@ -17,6 +17,12 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  
+		End Function
+	#tag EndEvent
+
+	#tag Event
 		Sub Open()
 		  // This event handler sets up default values for important properties
 		  // so that all methods have something meaningful to work with.
@@ -70,9 +76,9 @@ Inherits Canvas
 		      // Initialize various constants
 		      
 		      InvLog10 = 1/log(10)
-		      CBlack = Color.RGB(0,0,0)
-		      CWhite = Color.RGB(255,255,255)
-		      CGrid = Color.RGB(180,180,180)
+		      CBlack = RGB(0,0,0)
+		      CWhite = RGB(255,255,255)
+		      CGrid = RGB(180,180,180)
 		      
 		      // Initialize other properties
 		      
@@ -129,7 +135,7 @@ Inherits Canvas
 		      
 		      // Set the title.
 		      
-		      Title = "Graph of " + MainWindow.PMGraphMain.RowValueAt(MainWindow.PMGraphMain.SelectedRowIndex) + " vs time"
+		      Title = "" 
 		      
 		      // Clear the frame area.
 		      
@@ -166,10 +172,10 @@ Inherits Canvas
 		  // This method clears everything in the frame area to the color in CWhite.
 		  // Note that the existing foreground color is preserved and restored.
 		  
-		  Var oldColor as color
-		  oldColor = GX.DrawingColor
+		  dim oldColor as color
+		  oldColor = GX.ForeColor
 		  SetColor(CWhite)
-		  GX.FillRectangle( 0, 0, GXP.Width, GXP.Height )
+		  GX.FillRect 0, 0, GXP.Width, GXP.Height
 		  SetColor(oldColor)
 		End Sub
 	#tag EndMethod
@@ -199,14 +205,17 @@ Inherits Canvas
 		  // Call CurveStart to initialize the curve, and then CurveTo
 		  // to draw a segment from the previous point to the current point.
 		  
-		  Var XNow, YNow as integer
+		  dim XNow, YNow as integer
+		  dim oldRErr as boolean
 		  
+		  oldRErr = RErr
+		  RErr = false
 		  XNow = XCoord(x)
 		  YNow = YCoord(y)
-		  
-		  
-		  GX.DrawLine PrevCurvH, PrevCurvV, XNow, YNow
-		  
+		  if not RErr then
+		    GX.DrawLine PrevCurvH, PrevCurvV, XNow, YNow
+		  end if
+		  RErr = oldRErr or RErr 
 		  PrevCurvH = XNow
 		  PrevCurvV = YNow
 		  
@@ -225,7 +234,7 @@ Inherits Canvas
 		  // draws all the labels and then draws the axes. This method
 		  // returns a GraphError if the graph turns out to be too small.
 		  
-		  Var oldColor as color  // storage for current color
+		  dim oldColor as color  // storage for current color
 		  
 		  // Calculate the size of the graph rectangle
 		  
@@ -234,9 +243,9 @@ Inherits Canvas
 		  // Draw everything and update the screen.
 		  
 		  ClearFrame
-		  oldColor = GX.DrawingColor
+		  oldColor = GX.ForeColor
 		  SetColor(CBlack)
-		  GX.DrawRectangle(GLeft, GTop, GWidth+1, GHeight+1)
+		  GX.DrawRect(GLeft, GTop, GWidth+1, GHeight+1)
 		  zDrawLabels
 		  zDrawXAxis
 		  zDrawYAxis
@@ -264,9 +273,9 @@ Inherits Canvas
 		  // important for certain types of graphs. The parameters specify the axis
 		  // limits for the axis with the smallest pixel length.
 		  
-		  Var a, CMax, CMin as double
-		  Var newLength, adj as integer
-		  Var oldColor as color
+		  dim a, CMax, CMin as double
+		  dim newLength, adj as integer
+		  dim oldColor as color
 		  
 		  // Calculate the size of the graph rectangle
 		  
@@ -352,14 +361,45 @@ Inherits Canvas
 		  // Draw everything and update the screen.
 		  
 		  ClearFrame
-		  oldColor = GX.DrawingColor
+		  oldColor = GX.ForeColor
 		  SetColor(CBlack)
-		  GX.DrawRectangle(GLeft, GTop, GWidth, GHeight)
+		  GX.DrawRect(GLeft, GTop, GWidth, GHeight)
 		  zDrawLabels
 		  zDrawXAxis
 		  zDrawYAxis
 		  SetColor(oldColor)
 		  me.Invalidate
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DrawBar(x as double, y as double, w as double)
+		  
+		  // This method draws a bar of width w centered at x and with a vertical
+		  // height of y. This can be used to construct bar graphs or histograms.
+		  // The bar is drawn with a black boundary and filled with the current
+		  // graphics ForeColor unless the ForeColor is black, in which case a
+		  // simple outline is drawn.
+		  
+		  dim x1, x2, y1, y2 as integer
+		  dim oldColor as color
+		  
+		  x1 = XCoord(x-w/2)
+		  x2 = XCoord(x+w/2)
+		  y1 = YCoord(0)
+		  y2 = YCoord(y)
+		  if (x1 <> x2) and (y1 <> y2) then
+		    if GX.ForeColor = CBlack then
+		      GX.DrawRect x1, y1, x2-x1, y2-y1
+		    else
+		      GX.FillRect x1, y1, x2-x1, y2-y1
+		      oldColor = GX.ForeColor
+		      SetColor(CBlack)
+		      GX.DrawRect x1, y1, x2-x1, y2-y1
+		      SetColor(oldColor)
+		    end if
+		  end if
 		  
 		End Sub
 	#tag EndMethod
@@ -372,15 +412,19 @@ Inherits Canvas
 		  // Errors accumulate in RErr. The line would be incorrect if specified
 		  // points lie outside the graph, so it is not drawn.
 		  
-		  Var h1, h2, v1, v2 as integer
+		  dim h1, h2, v1, v2 as integer
+		  dim OldRErr as Boolean
 		  
+		  OldRErr = RErr
+		  RErr = false
 		  h1 = XCoord(x1)
 		  h2 = XCoord(x2)
 		  v1 = YCoord(y1)
 		  v2 = YCoord(y2)
-		  
-		  GX.DrawLine h1, v1, h2, v2
-		  
+		  if not RErr then
+		    GX.DrawLine h1, v1, h2, v2
+		  end if
+		  RErr = RErr or OldRErr
 		End Sub
 	#tag EndMethod
 
@@ -391,11 +435,104 @@ Inherits Canvas
 		  // If the point lies outside the graphics range, it is not drawn, and
 		  // the error flag is set and an error message is returned.
 		  
-		  Var x, y as integer
+		  dim x, y as integer
+		  dim oldRErr as boolean
+		  
+		  oldRErr = RErr
+		  RErr = false
 		  x = XCoord(XVal)
 		  y = YCoord(YVal)
+		  if not RErr then
+		    GX.FillOval x-2, y-2, 5, 5
+		  end if
+		  RErr = oldRErr or RErr
 		  
-		  GX.FillOval x-2, y-2, 5, 5
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DrawShape(XVal as double, YVal as double, Shape as integer)
+		  
+		  // This method draws the specified shape centered on the point
+		  // coordinates specified. The possible shapes are
+		  //
+		  //    1 = empty circle, 5 points in diameter
+		  //    2 = filled square, 5 points on a side
+		  //    3 = empty square, 5 points on a side
+		  //    4 = diagonal cross
+		  //    5 = plus sign
+		  //    6 = cross in a circle 7 points in diameter
+		  //    7 = plus in a circle 7 points in diameter
+		  //    8 = filled triangle
+		  //    9 = empty triangle
+		  //    other = a filled circle, 5 points in diameter (same as DrawPoint)
+		  //
+		  // If the specified point lies outside the graph region, then nothing
+		  // is drawn and an error is returned.
+		  
+		  dim x, y as integer
+		  dim vertex(6) as integer
+		  dim oldRErr as boolean
+		  
+		  // Check that the specified point is in bounds
+		  
+		  oldRErr = RErr
+		  RErr = false
+		  x = XCoord(XVal)
+		  y = YCoord(YVal)
+		  if not RErr then
+		    select case Shape
+		      
+		    case 1   // empty circle
+		      GX.DrawOval x-2, y-2, 5, 5
+		      
+		    case 2   // filled square
+		      GX.FillRect x-2, y-2, 5, 5
+		      
+		    case 3  // empty square
+		      GX.DrawRect x-2, y-2, 4, 4
+		      
+		    case 4  // diagonal cross
+		      GX.DrawLine x-2, y-2, x+2, y+2
+		      GX.DrawLine x-2, y+2, x+2, y-2
+		      
+		    case 5   // plus sign
+		      GX.DrawLine x, y-3, x, y+3
+		      GX.DrawLine x-3, y, x+3, y
+		      
+		    case 6   // cross inside a circle
+		      GX.DrawOval x-3, y-3, 7, 7
+		      GX.DrawLine x-2, y-2, x+2, y+2
+		      GX.DrawLine x-2, y+2, x+2, y-2
+		      
+		    case 7   // plus inside a circle
+		      GX.DrawOval x-3, y-3, 7, 7
+		      GX.DrawLine x, y-3, x, y+3
+		      GX.DrawLine x-3, y, x+3, y
+		      
+		    case 8   // filled triangle
+		      vertex(1) = x-4
+		      vertex(2) = y-3
+		      vertex(3) = x
+		      vertex(4) = y+4
+		      vertex(5) = x+4
+		      vertex(6) = y-3
+		      GX.FillPolygon vertex
+		      
+		    case 9   // empty triangle
+		      vertex(1) = x-3
+		      vertex(2) = y-2
+		      vertex(3) = x
+		      vertex(4) = y+3
+		      vertex(5) = x+3
+		      vertex(6) = y-2
+		      GX.DrawPolygon vertex
+		      
+		    else   // filled circle
+		      GX.FillOval x-2, y-2, 5, 5
+		    end select
+		  end if
+		  RErr = RErr or oldRErr
 		  
 		End Sub
 	#tag EndMethod
@@ -833,10 +970,73 @@ Inherits Canvas
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub DrawVector(x as double, y as double, vx as double, vy as double)
+		  
+		  // This method draws a vector whose tail is at the point specified
+		  // by the x, y parameters, and whose components are vx and vy.
+		  // The method will draw an arrow at the vector's head end if the
+		  // vector is more than 10 pixels long. The arrowhead is scaled according
+		  // to the vector's length. The method returns an error if either the tip or
+		  // tail lies outside the graphics region.
+		  
+		  dim xh, yh, points(6) as integer
+		  dim factor, length, dx, dy as double
+		  dim oldError as boolean
+		  
+		  oldError = RErr
+		  RErr = false
+		  
+		  // Compute the length of the vector in pixels
+		  
+		  dx = vx*XVToPix
+		  dy = vy*YVToPix
+		  length = Sqrt(dx*dx + dy*dy)
+		  
+		  // Set the arrowhead size to be 10 pixels or half the arrow's length,
+		  // whichever is smaller.
+		  
+		  if length > 20 then
+		    factor = 10/length
+		  else
+		    factor = 0.5
+		  end if
+		  
+		  // Draw the arrow shaft as long as it is long enough to draw
+		  // Report any error if we get one drawing the line.
+		  
+		  if length > 2 then
+		    GX.DrawLine x, y, x+vx, y+vy
+		  end if
+		  
+		  // If the arrow is long enough to have a head (and its head point is
+		  // in the graph region), set up the points array to specify the
+		  // vertexes of an appropriately sized and oriented triangle, and
+		  // draw the arrowhead. (This arrowhead may slop slightly out of the
+		  // graph region if the vector is close to the edge.)
+		  
+		  oldError = RErr or oldError  // remember original error flag
+		  RErr = false
+		  xh = XCoord(x+vx)
+		  yh = YCoord(y+vy)
+		  if (length > 10) and not RErr then
+		    points(1) = xh
+		    points(2) = yh
+		    points(3) = xh + Round(-factor*dx - 0.5*factor*dy)
+		    points(4) = yh - Round(-factor*dy + 0.5*factor*dx)
+		    points(5) = points(3) + Round(factor*dy)
+		    points(6) = points(4) + Round(factor*dx)
+		    GX.FillPolygon points
+		  end if
+		  RErr = oldError or RErr     // restore original error flag
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub DrawXUBar(x as double, y as double, up as double, um as double)
 		  
-		  Var xcp, ycp, xm, xp as integer
-		  Var mBad, pBad, OldRErr as boolean
+		  dim xcp, ycp, xm, xp as integer
+		  dim mBad, pBad, oldRErr as boolean
 		  
 		  // This method attaches a horizontal error bar to the point x, y
 		  // that spans an uncertainty range of up on the positive side and
@@ -893,8 +1093,8 @@ Inherits Canvas
 	#tag Method, Flags = &h0
 		Sub DrawYUBar(x as double, y as double, up as double, um as double)
 		  
-		  Var xcp, ycp, ym, yp as integer
-		  Var oldRErr, mBad, pBad as boolean
+		  dim xcp, ycp, ym, yp as integer
+		  dim oldRErr, mBad, pBad as boolean
 		  
 		  // This method attaches a vertical error bar to the point x, y
 		  // that spans an uncertainty range of up on the positive side and
@@ -967,10 +1167,10 @@ Inherits Canvas
 		  // If there is no initial data block for this string, the method
 		  // returns 0.
 		  
-		  if theSS.Middle(1,1) = "." then
-		    return Asc(theSS.Middle(2,1))*Asc(theSS.Middle(3,1))
+		  if Mid(theSS,1,1) = "." then
+		    return Asc(Mid(theSS,2,1))*Asc(Mid(theSS,3,1))
 		  else
-		    return 20
+		    return 0
 		  end if
 		End Function
 	#tag EndMethod
@@ -981,23 +1181,23 @@ Inherits Canvas
 		  // This function strips the data block (if any) from the beginning
 		  // of a styled string and returns just the basic styled string.
 		  
-		  Var nLines, i, n as integer
+		  dim lineH, ssHeight, nLines, i, n as integer
 		  // This gets enough
 		  
-		  if theSS.Middle(1,1) <> "." then
+		  if Mid(theSS,1,1) <> "." then
 		    return theSS
 		    
 		    // This part gets enough information to determine the length
 		    // of the data block, and then returns the part after the block.
 		    
 		  else
-		    nLines = Asc(theSS.Middle(2,1))
-		    if nLines < 1 or nLines*2 + 6 > theSS.Length then
+		    nLines = Asc(Mid(theSS,2,1))
+		    if nLines < 1 or nLines*2 + 6 > len(theSS) then
 		      return theSS
 		    else
 		      i = 6 + 2*nLines
-		      n = theSS.Length - i
-		      return theSS.Middle(i,n)
+		      n = len(theSS) - i
+		      return Mid(theSS,i,n)
 		    end if
 		  end if
 		  
@@ -1011,10 +1211,10 @@ Inherits Canvas
 		  // If there is no initial data block for this string, the method
 		  // returns 0.
 		  
-		  if theSS.Middle(1,1) = "." then
-		    return Asc(theSS.Middle(4,1))*256 + Asc(theSS.Middle(5,1))
+		  if Mid(theSS,1,1) = "." then
+		    return Asc(Mid(theSS,4,1))*256 + Asc(Mid(theSS,5,1))
 		  else
-		    return 20
+		    return 0
 		  end if
 		  
 		End Function
@@ -1065,7 +1265,6 @@ Inherits Canvas
 		    
 		    GXP = nil
 		    GXP = New Picture(FWidth, FHeight)
-		    
 		    if GXP = nil then
 		      // optional -- do somthing here
 		    else
@@ -1104,7 +1303,8 @@ Inherits Canvas
 		  // printed graph looks like the graph on the screen. If you are not using
 		  // any page setup information, simply pass nil as the parameter.
 		  
-		  Var oldGX as Graphics
+		  dim oldGX as Graphics
+		  dim oldColor as color
 		  if page <> nil then
 		    oldGX = GX
 		    GX = page
@@ -1144,10 +1344,10 @@ Inherits Canvas
 	#tag Method, Flags = &h0
 		Sub SetColor(theColor as color)
 		  
-		  // This method sets the DrawingColor of the target graphics object
+		  // This method sets the ForeColor of the target graphics object
 		  // to the specified color.
 		  
-		  GX.DrawingColor = theColor
+		  GX.ForeColor = theColor
 		  
 		End Sub
 	#tag EndMethod
@@ -1161,10 +1361,10 @@ Inherits Canvas
 		  // the method does not affect the style information.
 		  
 		  if fName <> "" then
-		    GX.FontName = fName
+		    GX.TextFont = fName
 		  end if
 		  if fSize <> 0 then
-		    GX.FontSize = fSize
+		    GX.TextSize = fSize
 		  end if
 		  
 		End Sub
@@ -1178,10 +1378,10 @@ Inherits Canvas
 		  // picture properties will remain what they were before.
 		  
 		  if fName <> "" then
-		    GX.FontName = fName
+		    GX.TextFont = fName
 		  end if
 		  if FSize <> 0 then
-		    GX.FontSize = fSize
+		    GX.TextSize = fSize
 		  end if
 		  GX.Bold = bFlag
 		  GX.Italic = iFlag
@@ -1205,15 +1405,15 @@ Inherits Canvas
 		  // value and returns the modified string. (If theSS doesn't
 		  // have a data block, it is given one before it is returned.
 		  
-		  Var temp as string
-		  Var n as integer
+		  dim temp as string
+		  dim n as integer
 		  
 		  temp = theSS
-		  if theSS.Middle(1,1) <> "." then  // if it does't have a data block
+		  if Mid(theSS,1,1) <> "." then  // if it does't have a data block
 		    temp = SetSString(temp)      // give it one
 		  end if
-		  n = temp.Length - 3              // number of characters after line height
-		  return temp.Middle(1,2) + Chr(BitwiseAnd(theLineH,255)) + temp.Middle(4,n)
+		  n = len(temp) - 3              // number of characters after line height
+		  return Mid(temp,1,2) + Chr(BitwiseAnd(theLineH,255)) + Mid(temp,4,n)
 		  
 		End Function
 	#tag EndMethod
@@ -1259,23 +1459,23 @@ Inherits Canvas
 		  // DrawSString will operate with out this data block, but it is
 		  // helpful to have it for a number of reasons.
 		  
-		  Var i, j, k, n, shift, oldSize, currx, cSize as integer
-		  Var achr, asup, asub, asym, aspc, atbf, aita as integer
-		  Var anwl, afnm, afsz, ainc, assp as integer
-		  Var lineH, nLines, ssWidth, lw(0) as integer
-		  Var oldFont, cFont, prev, dblock as string
-		  Var symb, fnmode, fsmode, fchange as boolean
-		  Var cBold, cItal, oldBface, oldIface as boolean
+		  dim i, j, k, n, shift, oldSize, currx, curry, cSize as integer
+		  dim achr, asup, asub, asym, aspc, atbf, aita as integer
+		  dim anwl, afnm, afsz, ainc, assp as integer
+		  dim lineH, nLines, ssWidth, justh, justv, lw(0) as integer
+		  dim oldFont, cFont, prev, jchar, dblock as string
+		  dim symb, fnmode, fsmode, fchange as boolean
+		  dim cBold, cItal, oldBface, oldIface as boolean
 		  
-		  if theSS.Length = 0 then  // A null string needs no data block.
+		  if len(theSS) = 0 then  // A null string needs no data block.
 		    return ""
 		  end if
 		  if GX <> nil then
 		    
 		    // Save old font info for later restoration.
 		    
-		    oldFont = GX.FontName
-		    oldSize = GX.FontSize
+		    oldFont = GX.TextFont
+		    oldSize = GX.TextSize
 		    oldBface = GX.Bold
 		    oldIface = GX.Italic
 		    
@@ -1306,7 +1506,7 @@ Inherits Canvas
 		    
 		    // Initialize some other basic variables
 		    
-		    n = theSS.Length    // length of text 
+		    n = Len(theSS)    // length of text 
 		    symb = false      // symbol mode flag
 		    fnmode = false    // name mode flag
 		    fsmode = false    // size mode flag
@@ -1323,8 +1523,8 @@ Inherits Canvas
 		    // begins with the sequence:
 		    //
 		    //  if i > j then
-		    //    prev = theSS.Middle(j, i-j)
-		    //    currx = currx + GX.TextWidth(prev)
+		    //    prev = Mid(theSS, j, i-j)
+		    //    currx = currx + GX.StringWidth(prev)
 		    //  end if
 		    //
 		    // This says that if the currently-detected command character
@@ -1340,24 +1540,24 @@ Inherits Canvas
 		    // going through the main loop.)
 		    
 		    do until i > n
-		      achr = Asc(theSS.Middle( i, 1))
+		      achr = Asc(Mid(theSS, i, 1))
 		      
 		      // Handle superscript command:
 		      
 		      if achr = asup then
 		        if i > j then               // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        if shift = 0 then           // if no shift currently active
-		          GX.FontSize = Round(cSize*0.72)    // reduce font size
+		          GX.TextSize = Round(cSize*0.72)    // reduce font size
 		          shift = Round(cSize*0.3)  //   set an upward shift
 		          if cItal then             // if italics, we need a bit of
 		            currx = currx + Round(cSize*0.2)  // horizontal shift as well
 		          end if
 		        else                        // otherwise...
 		          shift = 0                 //   clear shift flag
-		          GX.FontSize = cSize       //   restore previous font size
+		          GX.TextSize = cSize       //   restore previous font size
 		        end if
 		        i = i+1                     // point to the next character
 		        j = i                       // start new segment
@@ -1366,18 +1566,18 @@ Inherits Canvas
 		        
 		      elseif achr = asub then
 		        if i > j then               // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        if shift = 0 then           // if no shift currently active
-		          GX.FontSize = Round(cSize*0.72)   // reduce font size
+		          GX.TextSize = Round(cSize*0.72)   // reduce font size
 		          shift = -Round(cSize*0.3) //   set a downward shift
 		          if cItal then             // if italics, we need a bit of
 		            currx = currx - Round(cSize*0.2)  // horizontal shift as well
 		          end if
 		        else                        // if we already are shifted
 		          shift = 0                 //   clear shift flag
-		          GX.FontSize = cSize       //   restore previous font size
+		          GX.TextSize = cSize       //   restore previous font size
 		        end if
 		        i = i+1                     // point to the next character 
 		        j = i                       // start new segment
@@ -1386,16 +1586,16 @@ Inherits Canvas
 		        
 		      elseif achr = aspc and (shift <> 0 or symb) then
 		        if i > j then               // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        if shift <> 0 then          // if we have a nonzero shift
 		          shift = 0                 //   clear the shift flag
-		          GX.FontSize = cSize       //   restore the previous font size
+		          GX.TextSize = cSize       //   restore the previous font size
 		        end if
 		        if symb then                // if we are in symbol mode
 		          symb = false              //   clear the symbol flag
-		          GX.FontName = cFont       //   restore the previous font
+		          GX.TextFont = cFont       //   restore the previous font
 		        end if
 		        j = i                       // the space starts new segment
 		        i = i+1                     // point to the next character
@@ -1404,8 +1604,8 @@ Inherits Canvas
 		        
 		      elseif achr = assp then
 		        if i > j then               // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        currx = currx + 1
 		        i = i+1                     // point to the next character 
@@ -1415,15 +1615,15 @@ Inherits Canvas
 		        
 		      elseif achr = asym then
 		        if i > j then               // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        if symb then                // if the symbol flag is setÉ
-		          GX.FontName = cFont       //   restore the previous font
+		          GX.TextFont = cFont       //   restore the previous font
 		          symb = false              //   and clear the symbol flag
 		        else                        // if it is not set,
 		          symb = true               //   set it to true
-		          GX.FontName = "Symbol"    //   and set the font to "Symbol"
+		          GX.TextFont = "Symbol"    //   and set the font to "Symbol"
 		          fchange = true            // flag a font change
 		        end if
 		        i = i+1                     // point to the next character
@@ -1433,8 +1633,8 @@ Inherits Canvas
 		        
 		      elseif achr = atbf then
 		        if i > j then               // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        cBold = not cBold           // toggle the bold flag
 		        GX.Bold = cBold             // set the output to agree
@@ -1445,8 +1645,8 @@ Inherits Canvas
 		        
 		      elseif achr = aita then
 		        if i > j then               // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        cItal = not cItal          // toggle the italics flag
 		        GX.Italic = cItal          // set the target to agree
@@ -1457,13 +1657,13 @@ Inherits Canvas
 		        
 		      elseif achr = anwl then
 		        if i > j then              // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        lw(k) = currx              // save the width of last line 
 		        ssWidth = max(ssWidth, currx)  // update maximum width
 		        currx = 0                  // reset the x-position
-		        lw.Add(0)                // lengthen the line width array
+		        lw.append 0                // lengthen the line width array
 		        k = k + 1                  // update line index
 		        i = i+1                    // point to the next character
 		        j = i                      // start a new segment
@@ -1472,18 +1672,18 @@ Inherits Canvas
 		        
 		      elseif achr = afnm then
 		        if i > j then              // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        i = i+1                    // point to the next character
 		        j = i                      // start a new segment
 		        fnmode = true              // set name mode flag
 		        do until i > n or not fnmode   // scan to end of the name
-		          achr = Asc(theSS.Middle( i, 1))
+		          achr = Asc(Mid(theSS, i, 1))
 		          if achr = afnm then          // when we find the name end
 		            fnmode = false             // clear the name mode flag
-		            cFont = theSS.Middle( j, i-j)  // record the new font name
-		            GX.FontName = cFont    // and set the target to agree
+		            cFont = Mid(theSS, j, i-j)  // record the new font name
+		            GX.TextFont = cFont    // and set the target to agree
 		            fchange = true         // flag a font change
 		          end if
 		          i = i+1                  // point to the next character
@@ -1494,18 +1694,18 @@ Inherits Canvas
 		        
 		      elseif achr = afsz then  
 		        if i > j then              // measure previous characters
-		          prev = theSS.Middle( j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        i = i+1                    // point to the next character
 		        j = i                      // start a new segment
 		        fsmode = true              // set the size mode flag
 		        do until i > n or not fsmode   // scan to end of the size
-		          achr = Asc(theSS.Middle( i, 1))
+		          achr = Asc(Mid(theSS, i, 1))
 		          if achr = afsz then          // when we find the size end
 		            fsmode = false             // clear the size mode flag
-		            cSize = Round(Val(theSS.Middle(j, i-j)))   // record the size
-		            GX.FontSize = cSize    // and set the target to agree
+		            cSize = Round(Val(Mid(theSS, j, i-j)))   // record the size
+		            GX.TextSize = cSize    // and set the target to agree
 		            fchange = true         // flag a font change
 		          end if
 		          i = i+1                  // point to the next character
@@ -1516,8 +1716,8 @@ Inherits Canvas
 		        
 		      elseif achr = ainc then
 		        if i > j then              // measure previous characters
-		          prev = theSS.Middle(j, i-j)
-		          currx = currx + GX.TextWidth(prev)
+		          prev = Mid(theSS, j, i-j)
+		          currx = currx + GX.StringWidth(prev)
 		        end if
 		        j = i+1                   // start a new segment past the "&"
 		        i = i+2                   // skip over the "&" and what follows
@@ -1534,8 +1734,8 @@ Inherits Canvas
 		    // measure any characters left over
 		    
 		    if n >= j and not fnmode and not fsmode then
-		      prev = theSS.Middle(j, n-j+1)
-		      currx = currx + GX.TextWidth(prev)
+		      prev = Mid(theSS, j, n-j+1)
+		      currx = currx + GX.StringWidth(prev)
 		    end if
 		    
 		    // set the linewidth of the last line
@@ -1557,8 +1757,8 @@ Inherits Canvas
 		    
 		    // Restore the graphics target to its original font state
 		    
-		    GX.FontName = oldFont
-		    GX.FontSize = oldSize
+		    GX.TextFont = oldFont
+		    GX.TextSize = oldSize
 		    GX.Bold = oldBface
 		    GX.Italic = oldIface
 		    
@@ -1567,9 +1767,9 @@ Inherits Canvas
 		    // drawing will be consistent with the font information
 		    // assumed here.
 		    
-		    cFont = GX.FontName
-		    cSize = GX.FontSize
-		    return dblock + "@" + cFont + "@#" + cSize.ToString + "#" + theSS
+		    cFont = GX.TextFont
+		    cSize = GX.TextSize
+		    return dblock + "@" + cFont + "@#" + Str(cSize) + "#" + theSS
 		    
 		  end if  // end non-nil GX test
 		  
@@ -1892,19 +2092,16 @@ Inherits Canvas
 		  if GWidth <> 0 then  // this will do nothing if we have no graph
 		    
 		    if val < XMin - Abs(XMin)*0.00001 then
+		      RErr = true
 		      Return GLeft
-		      Var e As New GraphException
-		      e.RangeError
 		    elseif val > XMax + Abs(XMax)*0.00001 then
+		      RErr = true
 		      Return GLeft + GWidth
-		      Var e As New GraphException
-		      e.RangeError
 		    else
 		      Return Round((val-XMin)*XVToPix) + GLeft
 		    end if
 		    
 		  end if
-		  
 		End Function
 	#tag EndMethod
 
@@ -1917,16 +2114,15 @@ Inherits Canvas
 		  // and sets a GraphError if the graph is not defined, and
 		  // returns a RErr if the value is out of range.
 		  
-		  Var val as double
+		  dim val as double
 		  
 		  if GWidth <> 0  then // This method will do nothing if there is no graph
-		    val = (coord - GLeft)/XVToPix + XMin
+		     val = (coord - GLeft)/XVToPix + XMin
 		    if val > XMin - Abs(XMin)*0.00001 and val < XMax + Abs(XMin)*0.00001 then
 		      Return val
 		    else
-		      return 0
-		      Var e As GraphException
-		      Raise e
+		      RErr = true
+		      Return 0
 		    end if
 		  end if
 		  
@@ -1945,13 +2141,11 @@ Inherits Canvas
 		  
 		  if GHeight <> 0 then // This method will do nothing if there is no graph
 		    if val < YMin - Abs(YMin)*0.00001 then
+		      RErr = true
 		      Return GTop + GHeight
-		      Var e As New GraphException
-		      e.RangeError
 		    elseif val > YMax + Abs(YMax)*0.00001 then
+		      RErr = true
 		      Return GTop
-		      Var e As New GraphException
-		      e.RangeError
 		    else
 		      Return GTop + GHeight - Round((val-YMin)*YVToPix)
 		    end if
@@ -1969,19 +2163,17 @@ Inherits Canvas
 		  // and sets a UErr if the axis is not completely defined, and
 		  // returns a RErr if the value is out of range.
 		  
-		  Var val as double
+		  dim val as double
 		  
 		  if GHeight = 0  then  // This method will do nothing if the graph is not defined
 		    val = (GTop + GHeight - coord)/YVToPix + YMin
 		    if val > YMin - Abs(YMin)*0.00001 and val < YMax + Abs(YMax)*0.00001 then
 		      Return val
 		    else
-		      return 0
-		      Var e As New GraphException
-		      e.RangeError
+		      RErr = true
+		      Return 0
 		    end if
 		  end if
-		  
 		  
 		End Function
 	#tag EndMethod
@@ -1994,17 +2186,20 @@ Inherits Canvas
 		  // marks and decides how much space needs to be reserved inside the
 		  // frame for these items. It also defines the x and y axis.
 		  
-		  Var lwidth as integer  // width needed on left side for labels
-		  Var rwidth as integer  // width needed on right side
-		  Var tspace as integer  // space at top needed for title 
-		  Var bspace as integer  // space needed at bottom for labels
-		  Var hbuffer, vbuffer, vtick as integer  // see below
+		  dim lwidth as integer  // width needed on left side for labels
+		  dim rwidth as integer  // width needed on right side
+		  dim tspace as integer  // space at top needed for title 
+		  dim bspace as integer  // space needed at bottom for labels
+		  dim twidth as integer  // width of a typical tick label
+		  dim temp as integer    // holds temporary size info
+		  dim oldsize as integer // stores original font size
+		  dim hbuffer, vbuffer, vtick as integer  // see below
 		  
 		  // These constants specify the minimum white space between
 		  // horizontal and vertical elements. 
 		  
-		  hbuffer = 10
-		  vbuffer = 10
+		  hbuffer = 8
+		  vbuffer = 8
 		  
 		  // This constant specifies the vertical space to reserve for
 		  // a tick label on a horizontal axis. The value here is appropriate
@@ -2105,8 +2300,9 @@ Inherits Canvas
 		  // correspond to the minimum and maximum values to be
 		  // displayed along the axis.
 		  
-		  Var Range, mTick, Tick, fudge, TFactor as double
-		  Var MinTPix as integer
+		  dim Range, mTick, Tick, factor, fudge, TFactor as double
+		  dim i, PixPCycle, MinTPix as integer
+		  dim OK as boolean
 		  
 		  fudge = 0.00001    // fudge factor
 		  
@@ -2139,7 +2335,7 @@ Inherits Canvas
 		    
 		    minTPix = BitwiseAnd(XFlags,31)
 		    mTick = Range*MinTPix/GWidth
-		    XTickN = Ceiling(Log(mTick/TFactor)*InvLog10*3 - 0.15)
+		    XTickN = Ceil(Log(mTick/TFactor)*InvLog10*3 - 0.15)
 		    Tick = zTickSize(XTickN+2)
 		    
 		    // If the adjust flag is set, we tweak the endpoints of the
@@ -2152,7 +2348,7 @@ Inherits Canvas
 		    XMax = xmx
 		    if BitwiseAnd(XFlags,32) > 0 then
 		      XMin = Tick*Floor(XMin/(Tick*TFactor) + 0.05)*TFactor
-		      XMax = Tick*Ceiling(XMax/(Tick*TFactor) - 0.05)*TFactor
+		      XMax = Tick*Ceil(XMax/(Tick*TFactor) - 0.05)*TFactor
 		    end if
 		    
 		    // We now initialize the VToPix conversion factor and set
@@ -2176,9 +2372,9 @@ Inherits Canvas
 		  // correspond to the minimum and maximum values to be
 		  // displayed along the axis.
 		  
-		  Var Range, mTick, Tick, fudge, TFactor as double
-		  Var MinTPix as integer
-		  
+		  dim Range, mTick, Tick, factor, fudge, TFactor as double
+		  dim i, PixPCycle, MinTPix as integer
+		  dim OK as boolean
 		  
 		  fudge = 0.00001    // fudge factor
 		  
@@ -2211,7 +2407,7 @@ Inherits Canvas
 		    
 		    minTPix = BitwiseAnd(YFlags,31)
 		    mTick = Range*MinTPix/GHeight
-		    YTickN = Ceiling(Log(mTick/TFactor)*InvLog10*3 - 0.15)
+		    YTickN = Ceil(Log(mTick/TFactor)*InvLog10*3 - 0.15)
 		    Tick = zTickSize(YTickN+2)
 		    
 		    // If the adjust flag is set, we tweak the endpoints of the
@@ -2224,7 +2420,7 @@ Inherits Canvas
 		    YMax = ymx
 		    if BitwiseAnd(YFlags,32) > 0 then
 		      YMin = Tick*Floor(YMin/(Tick*TFactor) + 0.05)*TFactor
-		      YMax = Tick*Ceiling(YMax/(Tick*TFactor) - 0.05)*TFactor
+		      YMax = Tick*Ceil(YMax/(Tick*TFactor) - 0.05)*TFactor
 		    end if
 		    
 		    // We now initialize the VToPix conversion factor and set
@@ -2299,18 +2495,18 @@ Inherits Canvas
 		  // DefineGraph method and should never called directly, as it does not
 		  // do some important error checking.
 		  
-		  Var x, y, halfway as integer
-		  Var n, nmin, nmax, NbMaj, NxMaj as integer
-		  Var mh, mmh, off, poff, ins, oldSize as integer
-		  Var mTick, Tick, TFactor as double
-		  Var TLabel, oldFont as string
-		  Var oldColor as color
+		  dim x, y, halfway, backset as integer
+		  dim n, nmin, nmax, NbMaj, NxMaj as integer
+		  dim mh, mmh, off, poff, ins, oldSize as integer
+		  dim mTick, Tick, TFactor as double
+		  dim TLabel, oldFont as string
+		  dim oldColor as color
 		  
 		  // Store the color and size for future restoration.
 		  
-		  oldColor = GX.DrawingColor
-		  oldFont = GX.FontName
-		  oldSize = GX.FontSize
+		  oldColor = GX.ForeColor
+		  oldFont = GX.TextFont
+		  oldSize = GX.textSize
 		  
 		  // Define the major and minor tick sizes using the TickN
 		  // property set during the definition of the axis.
@@ -2328,9 +2524,9 @@ Inherits Canvas
 		  // calculations end up being just a bit off, a tick mark that is
 		  // supposed to be "at" VMin or VMax is not missed.
 		  
-		  nmin = Ceiling(XMin/(mTick*TFactor) - 0.05)
+		  nmin = Ceil(XMin/(mTick*TFactor) - 0.05)
 		  nmax = Floor(XMax/(mTick*TFactor) + 0.05)
-		  NxMaj = NbMaj*Ceiling(XMin/(Tick*TFactor) - 0.05)
+		  NxMaj = NbMaj*Ceil(XMin/(Tick*TFactor) - 0.05)
 		  y = GTop + GHeight
 		  
 		  // Here is the main loop for drawing the tick marks. We only
@@ -2357,14 +2553,14 @@ Inherits Canvas
 		      if n = NxMaj then
 		        GX.Drawline x, y, x, y+mh
 		        TLabel = Format(n*mTick, zTickFormat(Tick))
-		        halfway = GX.TextWidth(TLabel)/2
-		        GX.DrawText TLabel, x-halfway, y+off
+		        halfway = GX.StringWidth(TLabel)/2
+		        GX.DrawString TLabel, x-halfway, y+off
 		        NxMaj = NxMaj + NbMaj
 		        
 		        // Draw power label under last major tick label
 		        
 		        if NxMaj > nmax and XTPower <> 0 then
-		          DrawSString(SetSString("!x10^" + XTPower.ToString + "^!"), x, y+poff, 2)
+		          DrawSString(SetSString("!x10^" + Str(XTPower) + "^!"), x, y+poff, 2)
 		        end if
 		        
 		        // For minor ticks, just draw a 3-point vertical line
@@ -2383,7 +2579,7 @@ Inherits Canvas
 		  
 		  if hasGrid then
 		    SetColor(CGrid)
-		    NxMaj = NbMaj*Ceiling(XMin/(Tick*TFactor) - 0.05)
+		    NxMaj = NbMaj*Ceil(XMin/(Tick*TFactor) - 0.05)
 		    for n = nmin to nmax
 		      x = XCoord(n*mTick*TFactor)
 		      if n = NxMaj then
@@ -2399,7 +2595,7 @@ Inherits Canvas
 		  // Here is the code for drawing the Line At Zero
 		  
 		  if XMin < 0 and XMax > 0 and BitwiseAnd(XFlags,256) <> 0 then
-		    SetColor(Color.RGB(0,0,0))
+		    SetColor(RGB(0,0,0))
 		    x = XCoord(0)
 		    GX.Drawline x, y, x, GTop
 		    SetColor(oldColor)
@@ -2416,18 +2612,18 @@ Inherits Canvas
 		  // method and should never called directly, as it does not do some
 		  // important error checking.
 		  
-		  Var x, y, backset as integer
-		  Var n, nmin, nmax, NbMaj, NxMaj as integer
-		  Var mh, mmh, off, ins, oldSize as integer
-		  Var mTick, Tick, TFactor as double
-		  Var TLabel, oldFont as string
-		  Var oldColor as color
+		  dim x, y, backset as integer
+		  dim n, nmin, nmax, NbMaj, NxMaj as integer
+		  dim mh, mmh, off, ins, oldSize as integer
+		  dim mTick, Tick, TFactor as double
+		  dim TLabel, oldFont, PLabel as string
+		  dim oldColor as color
 		  
 		  // Store the color and text size for future restoration.
 		  
-		  oldColor = GX.DrawingColor
-		  oldFont = GX.FontName
-		  oldSize = GX.FontSize
+		  oldColor = GX.ForeColor
+		  oldFont = GX.TextFont
+		  oldSize = GX.TextSize
 		  
 		  // Define the major and minor tick sizes using the YTickN
 		  // property set during the definition of the axis.
@@ -2445,9 +2641,9 @@ Inherits Canvas
 		  // calculations end up being just a bit off, a tick mark that is
 		  // supposed to be "at" YMin or YMax is not missed.
 		  
-		  nmin = Ceiling(YMin/(mTick*TFactor) - 0.05)
+		  nmin = Ceil(YMin/(mTick*TFactor) - 0.05)
 		  nmax = Floor(YMax/(mTick*TFactor) + 0.05)
-		  NxMaj = NbMaj*Ceiling(YMin/(Tick*TFactor) - 0.05)
+		  NxMaj = NbMaj*Ceil(YMin/(Tick*TFactor) - 0.05)
 		  x = GLeft
 		  
 		  // Here is the main loop for drawing the tick marks. We only
@@ -2473,14 +2669,14 @@ Inherits Canvas
 		      if n = NxMaj then
 		        GX.Drawline x, y, x-mh, y
 		        TLabel = Format(n*mTick, zTickFormat(Tick))
-		        backset = GX.TextWidth(TLabel)
-		        GX.DrawText TLabel, x-backset-off, y+3
+		        backset = GX.StringWidth(TLabel)
+		        GX.DrawString TLabel, x-backset-off, y+3
 		        NxMaj = NxMaj + NbMaj
 		        
 		        // Draw power label below last major tick label
 		        
 		        if NxMaj > nmax and YTPower <> 0 then
-		          DrawSString(SetSString("!x10^"+YTPower.ToString+"^!"), x-off, y+13, 3)
+		          DrawSString(SetSString("!x10^"+Str(YTPower)+"^!"), x-off, y+13, 3)
 		        end if
 		        
 		        // For minor ticks, just draw a 3-point horizontal line
@@ -2499,7 +2695,7 @@ Inherits Canvas
 		  
 		  if hasGrid then
 		    SetColor(CGrid)
-		    NxMaj = NbMaj*Ceiling(YMin/(Tick*TFactor) - 0.05)
+		    NxMaj = NbMaj*Ceil(YMin/(Tick*TFactor) - 0.05)
 		    for n = nmin to nmax
 		      y = YCoord(n*mTick*TFactor)
 		      if n = NxMaj then
@@ -2515,7 +2711,7 @@ Inherits Canvas
 		  // Here is the code for drawing the Line At Zero
 		  
 		  if YMin < 0 and YMax > 0 and BitwiseAnd(YFlags,256) <> 0 then
-		    SetColor(Color.RGB(0,0,0))
+		    SetColor(RGB(0,0,0))
 		    y = YCoord(0)
 		    GX.Drawline x, y, GLeft+GWidth, y
 		    SetColor(oldColor)
@@ -2536,7 +2732,7 @@ Inherits Canvas
 		    
 		    // Make sure that the bar's properties are set correctly
 		    
-		    SBH.MinimumValue = 0
+		    SBH.Minimum = 0
 		    SBH.LineStep = 10    // (can be changed if desired)
 		    SBH.PageStep = 50    // (can be changed if desired)
 		    
@@ -2554,7 +2750,7 @@ Inherits Canvas
 		      
 		    else
 		      SBH.Enabled = true
-		      SBH.MaximumValue = FWidth - Width
+		      SBH.Maximum = FWidth - Width
 		    end if
 		  end if
 		End Sub
@@ -2572,7 +2768,7 @@ Inherits Canvas
 		    
 		    // Make sure that the bar's properties are set correctly
 		    
-		    SBV.MinimumValue = 0
+		    SBV.Minimum = 0
 		    SBV.LineStep = 10   // (this can be changed if desired)
 		    SBV.PageStep = 50   // (this can be changed if desired)
 		    
@@ -2590,7 +2786,7 @@ Inherits Canvas
 		      
 		    else
 		      SBV.Enabled = true
-		      SBV.MaximumValue = FHeight - Height
+		      SBV.Maximum = FHeight - Height
 		    end if
 		  end if
 		End Sub
@@ -2627,8 +2823,8 @@ Inherits Canvas
 		  // an integer that is roughly 3 times the base-ten log of
 		  // a rough estimate of the tick size. 
 		  
-		  Var ndig, npow as integer
-		  Var digit as double
+		  dim ndig, npow as integer
+		  dim digit as double
 		  
 		  if n >= 0 then
 		    ndig = n mod 3
@@ -2658,15 +2854,15 @@ Inherits Canvas
 		  // This method estimates the maximum width (in pixels) of the
 		  // y-axis tick labels.
 		  
-		  Var oldFont as string
-		  Var oldSize, maxw, maxw2 as integer
-		  Var oldBold, oldItal as boolean
-		  Var Tick, MTickVal, TFactor as double
+		  dim oldFont as string
+		  dim oldSize, maxw, maxw2 as integer
+		  dim oldBold, oldItal as boolean
+		  dim Tick, MTickVal, TFactor as double
 		  
 		  // Record original font information for later restoration
 		  
-		  oldFont = GX.FontName
-		  oldSize = GX.FontSize
+		  oldFont = GX.TextFont
+		  oldSize = GX.TextSize
 		  oldBold = GX.Bold
 		  oldItal = GX.Italic
 		  
@@ -2680,10 +2876,10 @@ Inherits Canvas
 		  
 		  TFactor = pow(10,XTPower)
 		  Tick = zTickSize(XTickN+2)
-		  MTickVal = Tick*Ceiling(XMin/(Tick*TFactor) - 0.05)
-		  maxw = GX.TextWidth(Format(MTickVal,zTickFormat(Tick)))
+		  MTickVal = Tick*Ceil(XMin/(Tick*TFactor) - 0.05)
+		  maxw = GX.StringWidth(Format(MTickVal,zTickFormat(Tick)))
 		  MTickVal = Tick*Floor(XMax/(Tick*TFactor) + 0.05)
-		  maxw2 = GX.TextWidth(Format(MTickVal,zTickFormat(Tick)))
+		  maxw2 = GX.StringWidth(Format(MTickVal,zTickFormat(Tick)))
 		  maxw = Max(maxw,maxw2)
 		  
 		  // Restore font information and return with the answer
@@ -2700,15 +2896,15 @@ Inherits Canvas
 		  // This method estimates the maximum width (in pixels) of the
 		  // y-axis tick labels.
 		  
-		  Var oldFont as string
-		  Var oldSize, maxw, maxw2 as integer
-		  Var oldBold, oldItal as boolean
-		  Var Tick, MTickVal, TFactor as double
+		  dim oldFont as string
+		  dim oldSize, maxw, maxw2 as integer
+		  dim oldBold, oldItal as boolean
+		  dim Tick, MTickVal, TFactor as double
 		  
 		  // Record original font information for later restoration
 		  
-		  oldFont = GX.FontName
-		  oldSize = GX.FontSize
+		  oldFont = GX.TextFont
+		  oldSize = GX.TextSize
 		  oldBold = GX.Bold
 		  oldItal = GX.Italic
 		  
@@ -2722,10 +2918,10 @@ Inherits Canvas
 		  
 		  TFactor = pow(10,YTPower)
 		  Tick = zTickSize(YTickN+2)
-		  MTickVal = Tick*Ceiling(YMin/(Tick*TFactor) - 0.05)
-		  maxw = GX.TextWidth(Format(MTickVal,zTickFormat(Tick)))
+		  MTickVal = Tick*Ceil(YMin/(Tick*TFactor) - 0.05)
+		  maxw = GX.StringWidth(Format(MTickVal,zTickFormat(Tick)))
 		  MTickVal = Tick*Floor(YMax/(Tick*TFactor) + 0.05)
-		  maxw2 = GX.TextWidth(Format(MTickVal,zTickFormat(Tick)))
+		  maxw2 = GX.StringWidth(Format(MTickVal,zTickFormat(Tick)))
 		  maxw = Max(maxw,maxw2)
 		  
 		  // Restore font information and return with the answer
@@ -2961,22 +3157,6 @@ Inherits Canvas
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="DoubleBuffer"
-			Visible=false
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="InitialParent"
-			Visible=false
-			Group=""
-			InitialValue=""
-			Type="String"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="AllowAutoDeactivate"
 			Visible=true
 			Group="Appearance"
@@ -3153,11 +3333,27 @@ Inherits Canvas
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="DoubleBuffer"
+			Visible=true
+			Group="Behavior"
+			InitialValue="False"
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Transparent"
 			Visible=true
 			Group="Behavior"
 			InitialValue="True"
 			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="InitialParent"
+			Visible=false
+			Group=""
+			InitialValue=""
+			Type="String"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty

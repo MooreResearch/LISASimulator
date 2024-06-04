@@ -5,12 +5,36 @@ Protected Class Matrix
 		  // Constructs a numeric Matrix object from an array of entries. 
 		  // Parameters: entries, a 2D array of doubles (presumed to be square)
 		  
-		  Var n As Integer
-		  n = entries.LastIndex     // gets dimensions of entries
+		  Var n As Integer = entries.LastIndex     // gets dimensions of entries
 		  
 		  pDim = n + 1              // since Xojo is 0-indexed, dimension is 1 more than highest entry index
 		  pData.ResizeTo(n, n)
-		  pData = entries           // stores entries as pData
+		  For i As Integer = 0 to n
+		    For j as Integer = 0 to n
+		      pData(i,j) = entries(i,j)          // stores entries as pData
+		    Next
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(NDimensions As Integer)
+		  // Initialize a zero matrix with a certain number of dimensions
+		  pDim = nDimensions     // stores dimension of matrix as property
+		  Var n As Integer = nDimensions - 1
+		  pData.ResizeTo(n, n)  // resizes matrix data array appropriately (n-1 used because of 0-indexing)
+		  // This part is probably not necessary, but just to be safe
+		  For i As Integer = 0 To n      // loop over matrix entries
+		    For j As Integer = 0 To n
+		      pData(i,j) = 0.0
+		    Next
+		  Next
 		End Sub
 	#tag EndMethod
 
@@ -47,6 +71,70 @@ Protected Class Matrix
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function EuclideanNorm() As Double
+		  Var n As Integer = pDim-1
+		  Var sum As Double
+		  For i As Integer = 0 to n
+		    For j As Integer = 0 to n
+		      sum = sum + pData(i,j)*pData(i,j)
+		    Next
+		  Next
+		  Return Sqrt(sum)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetCopyOfArray() As Double(,)
+		  Var n As Integer = pDim - 1
+		  Var a(-1,1) As Double
+		  a.ResizeTo(n,n)
+		  For i As Integer = 0 to n
+		    For j As Integer = 0 to n
+		      a(i,j) = pData(i,j)
+		    Next
+		  Next
+		  Return a
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetIdentity(nDim As Integer) As Matrix
+		  Var IM As New Matrix
+		  IM.pDim = nDim     // stores dimension of matrix as property
+		  Var n As Integer = nDim - 1
+		  IM.pData.ResizeTo(n, n)  // resizes matrix data array appropriately (n-1 used because of 0-indexing)
+		  
+		  For i As Integer = 0 To n      // loop over matrix entries
+		    For j As Integer = 0 To n
+		      If i = j Then                  // if entry is on the diagonal...
+		        IM.pData(i, j) = 1  // set entry = 1
+		      Else                             // otherwise...
+		        IM.pData(i, j) = 0  // set entry = 0
+		      End If
+		    Next
+		  Next
+		  Return IM
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetZeroMatrix(nDim As Integer) As Matrix
+		  Var ZM As New Matrix
+		  ZM.pDim = nDim     // stores dimension of matrix as property
+		  Var n As Integer = nDim-1
+		  ZM.pData.ResizeTo(n,n)  // resizes matrix data array appropriately (nDim-1 used because of 0-indexing)
+		  
+		  For i As Integer = 0 To n      // loop over matrix entries
+		    For j As Integer = 0 To n
+		      ZM.pData(i,j) = 0.0
+		    Next
+		  Next
+		  Return ZM
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GuessInverse(n As Integer) As Matrix
 		  // This method returns a "guess" for the inverse of the current matrix for use in the NumInvert method.
 		  // Parameters: n gives the "depth of inversion." Method will obtain a guess only for the inverse of the submatrix with
@@ -76,6 +164,35 @@ Protected Class Matrix
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub InverseTest()
+		  Var a1 As Double = 1.0
+		  Var a2 As Double = -2.0
+		  Var b1 As Double = 3.0
+		  Var b2 As Double = 4.0
+		  Var m(1,1) As Double
+		  m(0,0) = a1*a1 + a2*a2
+		  m(0,1) = a1*b1 + a2*b2
+		  m(1,0) = b1*a1 + b2*a2
+		  m(1,1) = b1*b1 + b2*b2
+		  Var A as New Matrix(m)
+		  Var B as New Matrix(A.GetCopyOfArray)
+		  Var br as Integer = A.LUInvert(2)
+		  If br <> 0 Then
+		    MessageBox("Unit Test on matrix inversion failed")
+		  End If
+		  Var C as Matrix = A*B
+		  Var e As Double = 1.0e-6
+		  If Abs(C.PData(0,0)-1.0) > e Or Abs(C.PData(0,1)) > e Or Abs(C.PData(1,0)) > e Or Abs(C.PData(1,1)-1.0) > e Then
+		    MessageBox("Unit Test on matrix inversion failed")
+		  End If
+		  
+		  
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function IsDiagDom() As Boolean
 		  // Returns true if the matrix is strictly diagonally dominant -- i.e., if in each row, the absolute value of the diagonal entry
 		  // is greater than the sums of the absolute values of all the other entries -- and false otherwise.
@@ -100,7 +217,7 @@ Protected Class Matrix
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub LUBackSub(n As Integer, indx() As Integer, soln() As Double)
+		Sub LUBackSub(n As Integer, indx() As Integer, ByRef soln() As Double)
 		  // This is a "backsubstitution method." Given an LU-decomposed matrix, or a matrix with an LU-decomposed upper-left
 		  // submatrix, the method solves the matrix equation LU*x = b for x.
 		  // Parameters: n is the dimension of the decomposed submatrix
@@ -153,10 +270,13 @@ Protected Class Matrix
 		  //          The method also modifies the original array a(,), overwriting its entries with the entries of the upper/lower matrices.
 		  //          (We can choose the diagonal entries of the lower matrix to be all 1; diagonal entries of the modified matrix are of the
 		  //          upper matrix.) 
+		  var pDimint as Integer = pDim
+		  
+		  //bookmark
 		  
 		  Var a(-1, -1) As Double   // initializes array for storing and updating matrix entries
 		  a.resizeTo(pDim - 1, pDim - 1)  // resizes as appropriate
-		  a = pData                 // fills with original matrix data
+		  a = GetCopyOfArray  // fills with original matrix data
 		  
 		  Var nm1 As Integer = n - 1  // "n minus 1," largest index of submatrix to be decomposed
 		  
@@ -177,6 +297,7 @@ Protected Class Matrix
 		      scale(i)=1/aamax                              // stores scaling factor for the row
 		    End If
 		  Next
+		  
 		  
 		  // SECOND LOOP: where the actual decomposition takes place
 		  For j As Integer = 0 To nm1                    // loops over columns
@@ -222,7 +343,8 @@ Protected Class Matrix
 		      next
 		    end if
 		  next
-		  pData = a
+		  pData = a   // return the data
+		   
 		  return 0   
 		End Function
 	#tag EndMethod
@@ -233,12 +355,13 @@ Protected Class Matrix
 		  // Returns: 0 if inversion proceeds as expected; if a row of the original matrix causes the inversion to fail,
 		  //          returns the 1-based index of that row.
 		  
-		  Var b(-1), inverse(-1, -1) As Double
-		  
+		  Var b(-1) As Double
+		  Var inverse(-1, -1) As Double
 		  Var ipvt() As Integer
 		  Var k As Integer = LUDecomp(n, ipvt)
+		  
 		  if k > 0 then
-		    return k
+		    return k 
 		  else
 		    //  If we get here, things are OK, so we finish the inversion.
 		    Var nm1 As Integer = n - 1
@@ -331,7 +454,7 @@ Protected Class Matrix
 		  subMx = Self.ULSubmatrix(n)
 		  
 		  Var nextGuess As Matrix            // initializes matrix variable for result of each step of iteration process
-		  Var ident As New IdentityMatrix(n) // creates identity matrix of same size as subMx
+		  Var ident As Matrix = GetIdentity(n)       // creates identity matrix of same size as subMx
 		  For i As Integer = 1 To stepNo                // iterates the process the specified number of times
 		    nextGuess = (1.0/16.0)*guess*(120*ident + Self*guess*(-393*ident + Self*guess*(735*ident + Self*guess*(-861*ident + _
 		    Self*guess*(651*ident + Self*guess*(-315*ident + Self*guess*(93*ident + Self*guess*(-15*ident + Self*guess))))))))
@@ -472,7 +595,7 @@ Protected Class Matrix
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub RemoveInds(row As Integer, col As Integer)
+		Sub RemoveRow(row As Integer)
 		  // Removes the specified (1-indexed) row and column from the matrix, reducing the dimension of the matrix by one.
 		  
 		  Var n As Integer = pDim - 1   // n is the largest (0-based) index of matrix entries in both dimensions
@@ -481,7 +604,7 @@ Protected Class Matrix
 		  newData.ResizeTo(n-1, n-1) // modified matrix is one index smaller than original in both directions
 		  
 		  Var rm1 As Integer = row - 1 // "row number minus one"
-		  Var cm1 As Integer = col - 1 // "column number minus one"
+		  Var cm1 As Integer = row- 1 // "column number minus one"
 		  For i As Integer = 0 To n // loop over rows
 		    For j As Integer = 0 To n // loop over columns
 		      If i < rm1 And j < cm1 Then  // Case 1: entry is above/to the left of deleted row and column
@@ -501,11 +624,11 @@ Protected Class Matrix
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ResizeTo(i as integer, j as integer)
+		Sub ResizeTo(NDimensions As Integer)
 		  // Resizes the matrix to the appropriate value and updates the stored dimension. Also assumes the user will input a square matrix.
-		  
-		  pData.ResizeTo(i,j)
-		  pDim = i + 1
+		  Var LastIndex As Integer = NDimensions - 1
+		  pData.ResizeTo(LastIndex, LastIndex)
+		  pDim = NDimensions
 		End Sub
 	#tag EndMethod
 
