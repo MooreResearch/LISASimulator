@@ -2,75 +2,75 @@
 Protected Class WaveAmplitudesTrigFunctions
 	#tag Method, Flags = &h0
 		Sub Constructor(ιDN As Double, β As Double)
-		  self.β = β
-		  self.ιDN = ιDN
 		  updateTrig(ιDN,β)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub updateTrig(ιDN As Double, β As Double)
+		  self.ιDN = ιDN
+		  self.β = β
 		  c2 = Cos(ιDN)
 		  s2 = Sin(ιDN)
 		  c1 = Cos(0.5*ιDN)
-		   s1   = Sin(0.5*ιDN)
-		   c3   = c2*c1 - s2*s1
-		   s3   = s2*c1 + c2*s1
-		   c4   = c2*c2-s2*s2
-		   s4   = 2*c2*s2
-		   c5   = c4*c1 - s4*s1
-		   s5   = s4*c1 + c4*s1
-		   c6   = c5*c1 - s5*s1
-		   s6   = s5*c1 + c5*s1
-		   c7   = c6*c1 - s6*s1
-		   s7   = s6*c1 + c6*s1
-		   c8   = c7*c1 - s7*s1
-		   s8   = s7*c1 + c7*s1
-		   c9   = c8*c1 - s8*s1
-		   s9   = s8*c1 + c8*s1
-		   c10   = c9*c1 - s9*s1
-		   s10   = s9*c1 + c9*s1
-		   c1p2   = c1*c1
-		   c1p3   = c1p2*c1
-		   c1p4   = c1p3*c1
-		   c1p5   = c1p4*c1
-		   c1p6   = c1p5*c1
-		   c1p7   = c1p6*c1
-		   c1p8   = c1p7*c1
-		   c1p9   = c1p8*c1
-		   c1p10   = c1p9*c1
-		   s1p2   = s1*s1
-		   s1p3   = s2*s1
-		   s1p4   = s3*s1
-		   s1p5   = s4*s1
-		   s1p6   = s5*s1
-		   s1p7   = s6*s1
-		   s1p8   = s7*s1
-		   s1p9   = s8*s1
-		   s1p10   = s9*s1
-		   c2p2   = c2*c2
-		   c2p3   = c2p2*c2
-		   c2p4   = c2p3*c2
-		   s2p2   = s2*s2
-		   s2p3   = s2p2*s2
-		   s2p4   = s2p3*s2
-		   s2p5   = s2p4*s2
+		  s1   = Sin(0.5*ιDN)
+		  c3   = c2*c1 - s2*s1
+		  s3   = s2*c1 + c2*s1
+		  c4   = c2*c2-s2*s2
+		  s4   = 2*c2*s2
+		  c5   = c4*c1 - s4*s1
+		  s5   = s4*c1 + c4*s1
+		  c6   = c5*c1 - s5*s1
+		  s6   = s5*c1 + c5*s1
+		  c7   = c6*c1 - s6*s1
+		  s7   = s6*c1 + c6*s1
+		  c8   = c7*c1 - s7*s1
+		  s8   = s7*c1 + c7*s1
+		  c9   = c8*c1 - s8*s1
+		  s9   = s8*c1 + c8*s1
+		  c10   = c9*c1 - s9*s1
+		  s10   = s9*c1 + c9*s1
+		  c1p2   = c1*c1
+		  c1p3   = c1p2*c1
+		  c1p4   = c1p3*c1
+		  c1p5   = c1p4*c1
+		  c1p6   = c1p5*c1
+		  c1p7   = c1p6*c1
+		  c1p8   = c1p7*c1
+		  c1p9   = c1p8*c1
+		  c1p10   = c1p9*c1
+		  s1p2   = s1*s1
+		  s1p3   = s2*s1
+		  s1p4   = s3*s1
+		  s1p5   = s4*s1
+		  s1p6   = s5*s1
+		  s1p7   = s6*s1
+		  s1p8   = s7*s1
+		  s1p9   = s8*s1
+		  s1p10   = s9*s1
+		  c2p2   = c2*c2
+		  c2p3   = c2p2*c2
+		  c2p4   = c2p3*c2
+		  s2p2   = s2*s2
+		  s2p3   = s2p2*s2
+		  s2p4   = s2p3*s2
+		  s2p5   = s2p4*s2
 		  
 		  // Define local β trig functions
-		   cβ   = Cos(β)
-		   sβ   = Sin(β)
-		   c2β   = cβ*cβ - sβ*sβ
-		   s2β   = 2*sβ*cβ
-		   c3β   = c2β*cβ - s2β*sβ
-		   s3β   = s2β*cβ + c2β*sβ
-		   c4β   = c3β*cβ - s3β*sβ
-		   s4β   = s3β*cβ + c3β*sβ
-		   c5β   = c4β*cβ - s4β*sβ
-		   s5β   = s4β*cβ + c4β*sβ
-		   cβ2   = cβ*cβ
-		   cβ3   = c2β*cβ
-		   sβ2   = sβ*sβ
-		   sβ3   = s2β*sβ
+		  cβ   = Cos(β)
+		  sβ   = Sin(β)
+		  c2β   = cβ*cβ - sβ*sβ
+		  s2β   = 2*sβ*cβ
+		  c3β   = c2β*cβ - s2β*sβ
+		  s3β   = s2β*cβ + c2β*sβ
+		  c4β   = c3β*cβ - s3β*sβ
+		  s4β   = s3β*cβ + c3β*sβ
+		  c5β   = c4β*cβ - s4β*sβ
+		  s5β   = s4β*cβ + c4β*sβ
+		  cβ2   = cβ*cβ
+		  cβ3   = c2β*cβ
+		  sβ2   = sβ*sβ
+		  sβ3   = s2β*sβ
 		End Sub
 	#tag EndMethod
 
@@ -787,6 +787,62 @@ Protected Class WaveAmplitudesTrigFunctions
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="sβ3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="c3β"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="c4β"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="c5β"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="s2β"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="s3β"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="s4β"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="s5β"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
