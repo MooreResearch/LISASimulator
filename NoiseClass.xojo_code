@@ -3,11 +3,61 @@ Protected Class NoiseClass
 	#tag Method, Flags = &h0
 		Sub Constructor(dT As Double)
 		  ΔT = dT
+		  b1 = 2.0654e-43
+		  b2 = 4.7315e-61
+		  b3 = 1.4125e-47
+		  fb1 = 7.08e-4
+		  fb2 = 1.778e-3
+		  fc2 = 1.0e-3
+		  sa = 2.31e-52
+		  sx = 1.257e-41
+		  
+		  // New parameters
+		  
+		  p1 = .171
+		  p2 = 292.0
+		  p3 = 1020.0
+		  p4 = 1680.0
+		  fk = .00215
+		  
+		  POMS = (1.5e-11)*(1.5e-11)
+		  PACCBASE = (3e-15)*(3e-15)
+		  A = 9e-45
+		  L = 2.5e9
+		  
+		  e = 2.7182818284
+		  pi = 3.14159265
+		  
+		  
+		  
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetNoise(fn As Double) As Double
+		  Var Sc, Sn, PACC As Double
+		  
+		  Var tanhArg As Double
+		  
+		  TanhArg = p4*(fk-fn)
+		  
+		  If fn < .015 then 
+		    Sc = A*(fn)^(-7/3) * e^(-fn*p1 + p2*fn*sin(p3*fn))*(1 + (e^TanhArg - e^-TanhArg)/(e^TanhArg + e^-TanhArg))
+		  else
+		    Sc = 0 
+		  end if 
+		  
+		  PACC = PACCBASE*(1.0+(.0004/fn)*(.0004/fn))
+		  
+		  Sn = (10.0/(3.0*L*L))*(POMS + (4.0*PACC)/((2.0*pi*fn)*(2.0*pi*fn)*(2.0*pi*fn)*(2.0*pi*fn)))*(1.0+.6*(fn/.0191)*(fn/.0191))+Sc
+		  
+		  Return Sn/(2*ΔT)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetNoiseOld(fn As Double) As Double
 		  //  Class subroutine to generate the noise in LISA at each frequency
 		  //  This dates from a very early version of the code.
 		  
@@ -17,45 +67,97 @@ Protected Class NoiseClass
 		  sb = b1/(fn^(1.9))
 		  If fn >= fb1 Then sb = b2/(fn^(7.5))
 		  If fn >= fb2 Then sb = b3/(fn^(2.6))
-		  stot = sqrt(stot^2 + 4*sb*sb)
+		  stot = sqrt(stot*stot + 4*sb*sb)
 		  
 		  //  This correction specifies the noise value that matches
 		  //  the Benacquista data at f = 0.002 Hz.  Note that this is
 		  //  ONLY valid at that frequency.
 		  
 		  Return stot/(2*ΔT) // return the calculated noise
+		  
 		End Function
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		ΔT As Double
+		A As Double
 	#tag EndProperty
 
+	#tag Property, Flags = &h0
+		b1 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = b1, Type = Double, Dynamic = False, Default = \"2.0654e-43", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		b2 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = b2, Type = Double, Dynamic = False, Default = \"4.7315e-61", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		b3 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = b3, Type = Double, Dynamic = False, Default = \"1.41254e-47", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		e As double
+	#tag EndProperty
 
-	#tag Constant, Name = fb1, Type = Double, Dynamic = False, Default = \"7.08e-4", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		fb1 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = fb2, Type = Double, Dynamic = False, Default = \"1.778e-3", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		fb2 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = fc2, Type = Double, Dynamic = False, Default = \"1.0e-4", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		fc2 As Double
+	#tag EndProperty
 
-	#tag Constant, Name = sa, Type = Double, Dynamic = False, Default = \"2.31e-52", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		fk As Double
+	#tag EndProperty
 
-	#tag Constant, Name = sx, Type = Double, Dynamic = False, Default = \"1.257e-41", Scope = Public
-	#tag EndConstant
+	#tag Property, Flags = &h0
+		L As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		p1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		p2 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		p3 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		p4 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PACCBASE As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		pi As double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		POMS As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		sa As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		sx As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		ΔT As Double
+	#tag EndProperty
 
 
 	#tag ViewBehavior
@@ -97,6 +199,166 @@ Protected Class NoiseClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ΔT"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="b1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="b2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="b3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fb1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fb2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fc2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sa"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sx"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="A"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="e"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fk"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="L"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="p1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="p2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="p3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="p4"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PACCBASE"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="pi"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="POMS"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

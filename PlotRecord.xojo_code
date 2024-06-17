@@ -1,9 +1,8 @@
 #tag Class
-Protected Class DataRecord
+Protected Class PlotRecord
 	#tag Method, Flags = &h0
-		Sub Constructor(NItems As Integer)
-		  // Do not ever create a DataRecord on your own. Use RecordArrayClass.GetNewRecord instead.
-		  Values.ResizeTo(NItems-1)
+		Sub Constructor(theValues() As Double)
+		  Values = theValues
 		End Sub
 	#tag EndMethod
 
@@ -51,14 +50,6 @@ Protected Class DataRecord
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Values()"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty

@@ -1,14 +1,35 @@
 #tag Class
 Protected Class UniverseClass
 	#tag Method, Flags = &h0
-		Function GetZFrom(RinSeconds As Double) As Double
-		  return HubbleConstant*RInSeconds
+		Sub Constructor(R As Double)
+		  Z = HubbleConstant*R
+		  DZDR = HubbleConstant
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetDZDR() As Double
+		  return DZDR
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetZ() As Double
+		  return Z
 		End Function
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
+		DZDR As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		HubbleConstant As Double = 2.2798e-18
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Z As Double
 	#tag EndProperty
 
 

@@ -1,610 +1,702 @@
 #tag Class
-Protected Class CurrentDerivativesClass
+Protected Class SourceEvolverClass
 	#tag Method, Flags = &h0
-		Sub Set2Interpolation(DN As CurrentDerivativesClass, DP As CurrentDerivativesClass, FracFromP As Double)
-		  // We use this method to get the derivatives at the main step when we are
-		  // interpolating between longer source steps. The final parameter specifies
-		  // the fraction of the whole distance between the past and present source steps
-		  // that the main step represents.
-		  Var FracFromN As Double = 1.0 - FracFromP
+		Sub Constructor(P As CaseInfoClass)
+		  π = P.π
+		  // Initialize the velocity-related properties
+		  VN = P.V0
+		  VP = VN
+		  V0 = VN
+		  // Initialize spin-replated quantities
+		  χ1 = Sqrt(P.χ10x*P.χ10x + P.χ10y*P.χ10y + P.χ10z*P.χ10z)
+		  χ2 = Sqrt(P.χ20x*P.χ20x + P.χ20y*P.χ20y + P.χ20z*P.χ20z)
+		  If χ1 <> 0.0 Then
+		    χ1HatXN = P.χ10x/χ1
+		    χ1HatYN = P.χ10y/χ1
+		    χ1HatZN = P.χ10z/χ1
+		    χ1HatXP = χ1HatXN
+		    χ1HatYP = χ1HatYN
+		    χ1HatZP = χ1HatZN
+		  End If
+		  If χ2 <> 0.0 Then
+		    χ2HatXN = P.χ20x/χ2
+		    χ2HatYN = P.χ20y/χ2
+		    χ2HatZN = P.χ20z/χ2
+		    χ2HatXP = χ2HatXN
+		    χ2HatYP = χ2HatYN
+		    χ2HatZP = χ2HatZN
+		  End If
+		  Var δ As Double = P.δ
+		  Var η As Double = 0.25*(1.0 - δ*δ)
+		  OnePlusδ = 1.0 + δ
+		  OneMinusδ = 1.0 - δ
+		  Var plusOverMinus As Double = OnePlusδ/OneMinusδ
+		  Var minusOverPlus As Double = OneMinusδ/OnePlusδ
 		  
-		  // Interpolate Dv derivatives
-		  DvDV0 = DN.DvDV0*FracFromN + DP.DvDV0*FracFromP
-		  DvDZ = DN.DvDZ*FracFromN + DP.DvDZ*FracFromP
-		  DvDδ = DN.DvDδ*FracFromN + DP.DvDδ*FracFromP
-		  DvDχ10x = DN.DvDχ10x*FracFromN + DP.DvDχ10x*FracFromP
-		  DvDχ10y = DN.DvDχ10y*FracFromN + DP.DvDχ10y*FracFromP
-		  DvDχ10z = DN.DvDχ10z*FracFromN + DP.DvDχ10z*FracFromP
-		  DvDχ20x = DN.DvDχ20x*FracFromN + DP.DvDχ20x*FracFromP
-		  DvDχ20y = DN.DvDχ20y*FracFromN + DP.DvDχ20y*FracFromP
-		  DvDχ20z = DN.DvDχ20z*FracFromN + DP.DvDχ20z*FracFromP
+		  // Cosmic redshift factor
+		  Inv1PlusZ = 1.0/(1.0 + P.Z)
 		  
-		  // Interpolate Dι derivatives
-		  DιDV0 = DN.DιDV0*FracFromN + DP.DιDV0*FracFromP
-		  DιDZ = DN.DιDZ*FracFromN + DP.DιDZ*FracFromP
-		  DιDδ = DN.DιDδ*FracFromN + DP.DιDδ*FracFromP
-		  DιDχ10x = DN.DιDχ10x*FracFromN + DP.DιDχ10x*FracFromP
-		  DιDχ10y = DN.DιDχ10y*FracFromN + DP.DιDχ10y*FracFromP
-		  DιDχ10z = DN.DιDχ10z*FracFromN + DP.DιDχ10z*FracFromP
-		  DιDχ20x = DN.DιDχ20x*FracFromN + DP.DιDχ20x*FracFromP
-		  DιDχ20y = DN.DιDχ20y*FracFromN + DP.DιDχ20y*FracFromP
-		  DιDχ20z = DN.DιDχ20z*FracFromN + DP.DιDχ20z*FracFromP
+		  // This value is the inverse magnitude of the L vector  
+		  Var B As Double = VN - (1.5 + η/6.0)*VN*VN*VN - ((27.0-19.0*η)/8.0 + η*η/24.0)*VN*VN*VN*VN
 		  
-		  // Interpolate Dα derivatives
-		  DαDV0 = DN.DαDV0*FracFromN + DP.DαDV0*FracFromP
-		  DαDZ = DN.DαDZ*FracFromN + DP.DαDZ*FracFromP
-		  DαDδ = DN.DαDδ*FracFromN + DP.DαDδ*FracFromP
-		  DαDχ10x = DN.DαDχ10x*FracFromN + DP.DαDχ10x*FracFromP
-		  DαDχ10y = DN.DαDχ10y*FracFromN + DP.DαDχ10y*FracFromP
-		  DαDχ10z = DN.DαDχ10z*FracFromN + DP.DαDχ10z*FracFromP
-		  DαDχ20x = DN.DαDχ20x*FracFromN + DP.DαDχ20x*FracFromP
-		  DαDχ20y = DN.DαDχ20y*FracFromN + DP.DαDχ20y*FracFromP
-		  DαDχ20z = DN.DαDχ20z*FracFromN + DP.DαDχ20z*FracFromP
+		  // This sets up the LHat vector according to equation 12.37 
+		  LXN = -B*(plusOverMinus*P.χ10x + minusOverPlus*P.χ20x)
+		  LYN = -B*(plusOverMinus*P.χ10y + minusOverPlus*P.χ20y)
+		  LZN = Sqrt(1.0 - LXN*LXN- LYN*LYN)
+		  LXP = LXN
+		  LYP = LYN
+		  LZP = LZN
 		  
-		  // Interpolate Dχax derivatives
-		  DχaxDV0 = DN.DχaxDV0*FracFromN + DP.DvDV0*FracFromP
-		  DχaxDZ = DN.DχaxDZ*FracFromN + DP.DχaxDZ*FracFromP
-		  DχaxDδ = DN.DχaxDδ*FracFromN + DP.DχaxDδ*FracFromP
-		  DχaxDχ10x = DN.DχaxDχ10x*FracFromN + DP.DχaxDχ10x*FracFromP
-		  DχaxDχ10y = DN.DχaxDχ10y*FracFromN + DP.DχaxDχ10y*FracFromP
-		  DχaxDχ10z = DN.DχaxDχ10z*FracFromN + DP.DχaxDχ10z*FracFromP
-		  DχaxDχ20x = DN.DχaxDχ20x*FracFromN + DP.DχaxDχ20x*FracFromP
-		  DχaxDχ20y = DN.DχaxDχ20y*FracFromN + DP.DχaxDχ20y*FracFromP
-		  DχaxDχ20z = DN.DχaxDχ20z*FracFromN + DP.DχaxDχ20z*FracFromP
+		  // Compute the symmetric and antisymmetric spin vectors and set the parameters
 		  
-		  // Interpolate Dχay derivatives
-		  DχayDV0 = DN.DχayDV0*FracFromN + DP.DχayDV0*FracFromP
-		  DχayDZ = DN.DχayDZ*FracFromN + DP.DχayDZ*FracFromP
-		  DχayDδ = DN.DχayDδ*FracFromN + DP.DχayDδ*FracFromP
-		  DχayDχ10x = DN.DχayDχ10x*FracFromN + DP.DχayDχ10x*FracFromP
-		  DχayDχ10y = DN.DχayDχ10y*FracFromN + DP.DχayDχ10y*FracFromP
-		  DχayDχ10z = DN.DχayDχ10z*FracFromN + DP.DχayDχ10z*FracFromP
-		  DχayDχ20x = DN.DχayDχ20x*FracFromN + DP.DχayDχ20x*FracFromP
-		  DχayDχ20y = DN.DχayDχ20y*FracFromN + DP.DχayDχ20y*FracFromP
-		  DχayDχ20z = DN.DχayDχ20z*FracFromN + DP.DχayDχ20z*FracFromP
+		  χsXN = 0.25*(OnePlusδ*OnePlusδ*P.χ10x + OneMinusδ*OneMinusδ*P.χ20x)
+		  χsYN = 0.25*(OnePlusδ*OnePlusδ*P.χ10y + OneMinusδ*OneMinusδ*P.χ20y)
+		  χsZN = 0.25*(OnePlusδ*OnePlusδ*P.χ10z + OneMinusδ*OneMinusδ*P.χ20z)
+		  χaXN = 0.5*(OneMinusδ*P.χ20x-OnePlusδ*P.χ10x)
+		  χaYN = 0.5*(OneMinusδ*P.χ20y-OnePlusδ*P.χ10y)
+		  χaZN = 0.5*(OneMinusδ*P.χ20z-OnePlusδ*P.χ10z)
 		  
-		  // Interpolate Dχaz derivatives
-		  DχazDV0 = DN.DχazDV0*FracFromN + DP.DχazDV0*FracFromP
-		  DχazDZ = DN.DχazDZ*FracFromN + DP.DχazDZ*FracFromP
-		  DχazDδ = DN.DχazDδ*FracFromN + DP.DχazDδ*FracFromP
-		  DχazDχ10x = DN.DχazDχ10x*FracFromN + DP.DχazDχ10x*FracFromP
-		  DχazDχ10y = DN.DχazDχ10y*FracFromN + DP.DχazDχ10y*FracFromP
-		  DχazDχ10z = DN.DχazDχ10z*FracFromN + DP.DχazDχ10z*FracFromP
-		  DχazDχ20x = DN.DχazDχ20x*FracFromN + DP.DχazDχ20x*FracFromP
-		  DχazDχ20y = DN.DχazDχ20y*FracFromN + DP.DχazDχ20y*FracFromP
-		  DχazDχ20z = DN.DχazDχ20z*FracFromN + DP.DχazDχ20z*FracFromP
+		  χsXP = χsXN
+		  χsYP = χsYN 
+		  χsZP= χsZN
+		  χaXP = χaXN
+		  χaYP = χaYN
+		  χaZP = χaZN
 		  
-		  // Interpolate Dχsx derivatives
-		  DχsxDV0 = DN.DχsxDV0*FracFromN + DP.DvDV0*FracFromP
-		  DχsxDZ = DN.DχsxDZ*FracFromN + DP.DχsxDZ*FracFromP
-		  DχsxDδ = DN.DχsxDδ*FracFromN + DP.DχsxDδ*FracFromP
-		  DχsxDχ10x = DN.DχsxDχ10x*FracFromN + DP.DχsxDχ10x*FracFromP
-		  DχsxDχ10y = DN.DχsxDχ10y*FracFromN + DP.DχsxDχ10y*FracFromP
-		  DχsxDχ10z = DN.DχsxDχ10z*FracFromN + DP.DχsxDχ10z*FracFromP
-		  DχsxDχ20x = DN.DχsxDχ20x*FracFromN + DP.DχsxDχ20x*FracFromP
-		  DχsxDχ20y = DN.DχsxDχ20y*FracFromN + DP.DχsxDχ20y*FracFromP
-		  DχsxDχ20z = DN.DχsxDχ20z*FracFromN + DP.DχsxDχ20z*FracFromP
+		  // Compute their projections on the L unit vector and set those parameters
+		  χsL = χsXN*LXN + χsYN*LYN + χsZN*LZN
+		  χaL = χaXN*LXN + χaYN*LYN + χaZN*LZN
 		  
-		  // Interpolate Dχsy derivatives
-		  DχsyDV0 = DN.DχsyDV0*FracFromN + DP.DχsyDV0*FracFromP
-		  DχsyDZ = DN.DχsyDZ*FracFromN + DP.DχsyDZ*FracFromP
-		  DχsyDδ = DN.DχsyDδ*FracFromN + DP.DχsyDδ*FracFromP
-		  DχsyDχ10x = DN.DχsyDχ10x*FracFromN + DP.DχsyDχ10x*FracFromP
-		  DχsyDχ10y = DN.DχsyDχ10y*FracFromN + DP.DχsyDχ10y*FracFromP
-		  DχsyDχ10z = DN.DχsyDχ10z*FracFromN + DP.DχsyDχ10z*FracFromP
-		  DχsyDχ20x = DN.DχsyDχ20x*FracFromN + DP.DχsyDχ20x*FracFromP
-		  DχsyDχ20y = DN.DχsyDχ20y*FracFromN + DP.DχsyDχ20y*FracFromP
-		  DχsyDχ20z = DN.DχsyDχ20z*FracFromN + DP.DχsyDχ20z*FracFromP
+		  Var LProj As Double = LXN*LXN + LYN*LYN // squared projection of LHat on xy plane
+		  If LProj > 0.0 then // If we don't have exactly zero total spin
+		    αN = Atan2(LYN,LXN) // we should be able to define alpha
+		    αP = αN  // Past is the same as the present
+		  Else // otherwise, these are the conventions for no spin evolution
+		    αN = π
+		    αP = αN
+		    LZN = 1.0
+		    LZP = 1.0
+		  End If
 		  
-		  // Interpolate Dχsz derivatives
-		  DχszDV0 = DN.DχszDV0*FracFromN + DP.DχszDV0*FracFromP
-		  DχszDZ = DN.DχszDZ*FracFromN + DP.DχszDZ*FracFromP
-		  DχszDδ = DN.DχszDδ*FracFromN + DP.DχszDδ*FracFromP
-		  DχszDχ10x = DN.DχszDχ10x*FracFromN + DP.DχszDχ10x*FracFromP
-		  DχszDχ10y = DN.DχszDχ10y*FracFromN + DP.DχszDχ10y*FracFromP
-		  DχszDχ10z = DN.DχszDχ10z*FracFromN + DP.DχszDχ10z*FracFromP
-		  DχszDχ20x = DN.DχszDχ20x*FracFromN + DP.DχszDχ20x*FracFromP
-		  DχszDχ20y = DN.DχszDχ20y*FracFromN + DP.DχszDχ20y*FracFromP
-		  DχszDχ20z = DN.DχszDχ20z*FracFromN + DP.DχszDχ20z*FracFromP
+		  // Initialize constants
+		  Var γE As Double = 0.5772156649015328606
+		  CV0 = 32.0*η/5.0
+		  CV2 = -743.0/336.0 - 11.0*η/4.0
+		  CV3 = 4.0*π - 47.0*χsL/3.0 - δ*25.0*χaL/4.0
+		  CV4 = 34103.0/18144.0 + 13661.0*η/2016.0 + 59.0*η*η/18.0
+		  CV5 = (-5861.0/144.0 + 1001.0*η/12.0)*χsL + δ*(-809.0/84.0 + 281.0*η/8.0)*χaL _
+		  + 4159.0*π/672.0 + 189.0*π*η/8.0
+		  CV6 = 16447322263.0/139708800.0 - 1712.0*γE/105.0 + 16.0*π*π/3.0 _
+		  + (-56198689.0/217728.0 + 451.0*π*π/48.0)*η _
+		  + 541.0*η*η/896.0 - 5605.0*η*η*η/2592.0
+		  CV6L = -2.0*856.0/105.0
+		  CV7 = π*(-4415.0/4032.0 + 358675.0*η/6048.0 + 91495.0*η*η/1512.0)
 		  
-		  // Interpolate Dψr derivatives
-		  DΨrDV0 = DN.DΨrDV0*FracFromN + DP.DΨrDV0*FracFromP
-		  DΨrDZ = DN.DΨrDZ*FracFromN + DP.DΨrDZ*FracFromP
-		  DΨrDδ = DN.DΨrDδ*FracFromN + DP.DΨrDδ*FracFromP
-		  DΨrDχ10x = DN.DΨrDχ10x*FracFromN + DP.DΨrDχ10x*FracFromP
-		  DΨrDχ10y = DN.DΨrDχ10y*FracFromN + DP.DΨrDχ10y*FracFromP
-		  DΨrDχ10z = DN.DΨrDχ10z*FracFromN + DP.DΨrDχ10z*FracFromP
-		  DΨrDχ20x = DN.DΨrDχ20x*FracFromN + DP.DΨrDχ20x*FracFromP
-		  DΨrDχ20y = DN.DΨrDχ20y*FracFromN + DP.DΨrDχ20y*FracFromP
-		  DΨrDχ20z = DN.DΨrDχ20z*FracFromN + DP.DΨrDχ20z*FracFromP
+		  // Initialize constants for spin evolution
+		  // Set up some constants that will be useful for the spin evolution equations.
+		  CΩ0 = 0.75 + η/2.0 - 0.75*δ
+		  CΩ1 = 0.75 + η/2.0 + 0.75*δ
+		  CΩ2 = 9.0/16.0 + 1.25*η + η*η/24.0 + (-9.0/16.0 + 0.675*η)*δ
+		  CΩ3 = 9.0/16.0 + 1.25*η + η*η/24.0 - (-9.0/16.0 + 0.675*η)*δ
+		  CΩ4 = 27.0/32.0 + 3.0*η/16.0 - 105.0*η*η/32.0 - η*η*η/48.0 + (-27.0/32.0 + 39.0*η/8.0 - 5.0*η*η/32.0)*δ
+		  CΩ5 = 27.0/32.0 + 3.0*η/16.0 - 105.0*η*η/32.0 - η*η*η/48.0 - (-27.0/32.0 + 39.0*η/8.0 - 5.0*η*η/32.0)*δ
+		  CL1 = (1.0 + δ)/(1.0 - δ)
+		  CL2 = (1.0 - δ)/(1.0 + δ)
+		  CL3 = 1.5 + η/6.0
+		  CL4 = 27.0/8.0 - 19.0*η/8.0 + η*η/24.0
+		  
+		  // Initialize phase stuff
+		  λN = P.λ0
+		  λP = λN
+		  ΨN = P.λ0
+		  ΨP = ΨN
+		  TotalRotations = 0
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SetAsCopyOf(DN As CurrentDerivativesClass)
-		  // We use this method to make the past reference a copy of the current reference
+		Sub DoStep(DτrP As Double, DτrF As Double, ByRef DτIdeal As Double)
+		  // Since a past time step less than or equal to zero is impossible, we are using that value as a flag
+		  // that this is either a test step (DτrP < 0) or a first step (DτrP = 0).
+		  // Note that these time intervals are solar system times.
+		  Var testStep As Boolean = (DτrP < 0.0)
+		  Var eulerStep As Boolean = testStep or (DτrP = 0.0)
+		  Var dτRatio As Double
+		  Var twoDτF As Double = 2.0*DτrF*Inv1PlusZ  // this is the future time step corrected for the source frame
+		  If eulerStep Then
+		    dτRatio = 1.0
+		    twoDτF = 0.5*twoDτF  // Test or first step is an Euler step, so half the usual step size
+		  Else
+		    dτRatio = DτrF/DτrP
+		  End If
 		  
-		  // Copy Dv derivatives
-		  DvDV0 = DN.DvDV0
-		  DvDZ = DN.DvDZ
-		  DvDδ = DN.DvDδ
-		  DvDχ10x = DN.DvDχ10x
-		  DvDχ10y = DN.DvDχ10y
-		  DvDχ10z = DN.DvDχ10z
-		  DvDχ20x = DN.DvDχ20x
-		  DvDχ20y = DN.DvDχ20y
-		  DvDχ20z = DN.DvDχ20z
+		  Var oneMinusRatio As Double = 1.0 - dτRatio
+		  // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
+		  // but it is probably faster just to do the calculation than to do a check and then a calculation
+		  VPold = VP // Save the old value for interpolation purposes
+		  VP = oneMinusRatio*VN + dτRatio*VP
 		  
-		  // Copy Dι derivatives
-		  DιDV0 = DN.DιDV0
-		  DιDZ = DN.DιDZ
-		  DιDδ = DN.DιDδ
-		  DιDχ10x = DN.DιDχ10x
-		  DιDχ10y = DN.DιDχ10y
-		  DιDχ10z = DN.DιDχ10z
-		  DιDχ20x = DN.DιDχ20x
-		  DιDχ20y = DN.DιDχ20y
-		  DιDχ20z = DN.DιDχ20z
+		  // Evolve the velocity forward
+		  Var v2 As Double = VN*VN
+		  Var v3 As Double = v2*VN
+		  Var v4 As Double = v2*v2
+		  Var v5 As Double = v2*v3
+		  Var v6 As Double = v3*v3
+		  Var v7 As Double = v3*v4
+		  Var v9 As Double = v4*v5
+		  Var vDotN As Double = CV0*v9*(1.0 + CV2*v2 + CV3*v3 + CV4*v4 + CV5*v5 + (CV6 + CV6L*Log(4.0*VN))*v6 + CV7*v7)
+		  VF = VP + twoDτF*vDotN
+		  Var ε As Double = VN*2.0e-3  // define what the maximum allowable change during a step should be
+		  DτIdeal = Min(DτIdeal, ε/Abs(vDotN))  // Calculate the ideal next step (we will only pay attention to the base case value)
 		  
-		  // Copy Dα derivatives
-		  DαDV0 = DN.DαDV0
-		  DαDZ = DN.DαDZ
-		  DαDδ = DN.DαDδ
-		  DαDχ10x = DN.DαDχ10x
-		  DαDχ10y = DN.DαDχ10y
-		  DαDχ10z = DN.DαDχ10z
-		  DαDχ20x = DN.DαDχ20x
-		  DαDχ20y = DN.DαDχ20y
-		  DαDχ20z = DN.DαDχ20z
+		  Var αDotN As Double
+		  // Now we will do the spin evolution
+		  If χ1 = 0.0 and χ2 = 0.0 Then // If spins are both strictly zero, then there is no evolution
+		    χ1HatXF = χ1HatXN
+		    χ2hatXF = χ2HatXN
+		    χ1HatYF = χ1HatYN
+		    χ2hatYF = χ2HatYN
+		    χ1HatZF = χ1HatZN
+		    χ2hatZF = χ2HatZN
+		    LXF = LXN
+		    LYF = LYN
+		    LZF = LZN
+		    αF = αN
+		    αPold = αP //Added this line because αPold was not being set in old code
+		    ιF = ιN
+		    αDotN = 0.0
+		    χsXF = χsXN
+		    χaXF = χaXN
+		    χsYF = χsYN
+		    χaYF = χaYN
+		    χsZF = χsZN
+		    χaZF = χaZN
+		    αF = αN
+		    ιF = 0.0
+		  Else // spins are not strictly zero
+		    // Calculate new past values using interpolation (note that this effectively does nothing if DτRatio = 1,
+		    // but it is probably faster just to do the calculation
+		    // Note that we are calculating components directly rather than defining a vector class and
+		    // doing operations via operator overloading because the overhead is with the latter is huge and
+		    // we also do not want to be creating any new objects while we are looping, as that is also slow.
+		    
+		    χ1hatXP = OneMinusRatio*χ1hatXN + dτRatio*χ1hatXP  
+		    χ1hatYP = OneMinusRatio*χ1hatYN + dτRatio*χ1hatYP
+		    χ1hatZP = OneMinusRatio*χ1hatZN + dτRatio*χ1hatZP  
+		    χ2hatXP = OneMinusRatio*χ2hatXN + dτRatio*χ2hatXP  
+		    χ2hatYP = OneMinusRatio*χ2hatYN + dτRatio*χ2hatYP
+		    χ2hatZP = OneMinusRatio*χ2hatZN + dτRatio*χ2hatZP  
+		    LXP = OneMinusRatio*LXN + dτRatio*LXP
+		    LYP = OneMinusRatio*LYN + dτRatio*LYP
+		    LZP = OneMinusRatio*LZN + dτRatio*LZP
+		    αPold = αP  // Save the old value for interpolation purposes
+		    αP = OneMinusRatio*αN + dτRatio*αP
+		    
+		    // Do the step
+		    // Evolve the two spins using the leapfrog method
+		    Var Factor As Double = v5*(CΩ0  + CΩ2*v2 + CΩ4*v4)
+		    Var χ1HatDotNx As Double = Factor*(LYN*χ1HatZN - LZN*χ1HatYN)
+		    Var χ1HatDotNy As Double = Factor*(LZN*χ1HatXN - LXN*χ1HatZN)
+		    Var χ1HatDotNz As Double = Factor*(LXN*χ1HatYN - LYN*χ1HatXN)
+		    χ1HatXF = χ1HatXP + χ1HatDotNx*twoDτF
+		    χ1HatYF = χ1HatYP + χ1HatDotNy*twoDτF
+		    χ1HatZF = χ1HatZP + χ1HatDotNz*twoDτF
+		    Factor = v5*(CΩ1  + CΩ3*v2 + CΩ5*v4)
+		    Var χ2HatDotNx As Double = Factor*(LYN*χ2HatZN - LZN*χ2HatYN)
+		    Var χ2HatDotNy As Double = Factor*(LZN*χ2HatXN - LXN*χ2HatZN)
+		    Var χ2HatDotNz As Double = Factor*(LXN*χ2HatYN - LYN*χ2HatXN)
+		    χ2HatXF = χ2HatXP + χ2HatDotNx*twoDτF
+		    χ2HatYF = χ2HatYP + χ2HatDotNy*twoDτF
+		    χ2HatZF = χ2HatZP + χ2HatDotNz*twoDτF
+		    
+		    // Calculate the future value of the orbital angular momentum
+		    Factor = -(VN-CL3*v3-CL4*v4)
+		    Var Factor1 As Double = Factor*CL1*χ1
+		    Var Factor2 As Double = Factor*CL2*χ2
+		    LXF = Factor1*χ1HatXF + Factor2*χ2HatXF
+		    LYF = Factor1*χ1HatYF + Factor2*χ2HatYF
+		    LZF = Sqrt(1.0 - LXF*LXF - LYF*LYF)
+		    // Note that the above could possibly be NaN if LXF^2 + LYF^2 > 1,
+		    // but this is not likely, as the spin angular momenta should be way
+		    // less than the orbital angular momentum
+		    
+		    // Calculate the future angles
+		    
+		    
+		    
+		    
+		    Var ellHF As Double = Sqrt(LXF*LXF+LYF*LYF)
+		    If ellHF > 1.0e-12 Then
+		      // The future L vector points at least some angle away from the vertical,
+		      // so α is well-defined and we can calculate it normally
+		      αF = ATan2(LYF, LXF) + 2*π*TotalRotations
+		      // To keep α from jumping in value when the L vector crosses the x axis,
+		      // we need to adjust its value from what the ATan2 function gives us
+		      If LYF < 0.0 and LYN > 0.0 Then // If we are crossing the x axis downward
+		        // and if the intercept with the x axis is negative, meaning we are going
+		        // from the second quadrant to the third, then ATan jumps from π to -π,
+		        // so we add 2π to compensate
+		        If (LYF*LXN - LXF*LYN)/(LYF-LYN) < 0.0 Then αF = αF + 2*π
+		      Elseif LYF > 0.0 and LYN < 0.0 Then // If we are crossing the x axis upward
+		        // and if the intercept with the x axis is negative, meaning we are going
+		        // from the third quadrant to the second, then ATan jumps from -π to π,
+		        // so we subtract2π to compensate
+		        If (LYF*LXN - LXF*LYN)/(LYF-LYN) < 0.0 Then αF = αF - 2*π
+		      End If
+		      ιF = ATan2(ellHF,LZF)  // This is the future value of iota
+		    Else
+		      ιF = 0.0 // we are going through vertical
+		      αF = 2*αN - αP // Guess that we are going in a reasonably straight line
+		    End If
+		    
+		    if αF - αP < -π/2.0 then
+		      TotalRotations = TotalRotations + 1
+		      αF = αF + 2*π
+		    end if 
+		    
+		    αDotN = (αF - αP)/twoDτF // Calculate the present value of αDot
+		    
+		    // Calculate future values of χs and χa
+		    χsXF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatXF + χ2*OneMinusδ*OneMinusδ*χ2HatXF)
+		    χsYF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatYF + χ2*OneMinusδ*OneMinusδ*χ2HatYF)
+		    χsZF = 0.25*(χ1*OnePlusδ*OnePlusδ*χ1HatZF + χ2*OneMinusδ*OneMinusδ*χ2HatZF)
+		    χaXF = 0.5*(χ2*OneMinusδ*χ2HatXF-χ1*OnePlusδ*χ1HatXF)
+		    χaYF = 0.5*(χ2*OneMinusδ*χ2HatYF-χ1*OnePlusδ*χ1HatYF)
+		    χaZF = 0.5*(χ2*oneMinusδ*χ2HatZF-χ1*OnePlusδ*χ1HatZF)
+		    
+		    // This section chooses a time step such that the change in any of the unit
+		    // vectors is less than 1/100 of its magnitude (which is 1).
+		    ε = 0.01
+		    Var χ1HatDotMag As Double = Sqrt(χ1HatDotNx*χ1HatDotNx + χ1HatDotNy*χ1HatDotNy + χ1HatDotNz*χ1HatDotNz)
+		    If χ1HatDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/χ1HatDotMag)
+		    Var χ2HatDotMag As Double = Sqrt(χ2HatDotNx*χ2HatDotNx + χ2HatDotNy*χ2HatDotNy + χ2HatDotNz*χ2HatDotNz)
+		    If χ2HatDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/χ2HatDotMag)
+		    Var ellDotMag As Double = Sqrt((LXF-LXP)*(LXF-LXP) + (LYF-LYP)+ (LZF-LZP)*(LZF-LZP))/twoDτF
+		    If ellDotMag > 0.0 Then DτIdeal= Min(DτIdeal, ε/ellDotMag)
+		  End If
 		  
-		  // Copy Dχax derivatives
-		  DχaxDV0 = DN.DχaxDV0
-		  DχaxDZ = DN.DχaxDZ
-		  DχaxDδ = DN.DχaxDδ
-		  DχaxDχ10x = DN.DχaxDχ10x
-		  DχaxDχ10y = DN.DχaxDχ10y
-		  DχaxDχ10z = DN.DχaxDχ10z
-		  DχaxDχ20x = DN.DχaxDχ20x
-		  DχaxDχ20y = DN.DχaxDχ20y
-		  DχaxDχ20z = DN.DχaxDχ20z
+		  // Now evolve the source phase
+		  If eulerStep Then  // if this an Euler step
+		    v3 = 0.5*(VN + VF)
+		    v3 = v3*v3*v3
+		    λF = λN + twoDτF*v3 - 0.5*(LZN+LZF)*(αF-αN) // (This is actually 2nd-order accurate!)
+		  Else
+		    λF = λP + twoDτF*(v3 - LZN*αDotN)
+		  End If
+		  ΨF = λF - 6.0*VF*VF*VF*Log(VF/V0)
 		  
-		  // Copy Dχay derivatives
-		  DχayDV0 = DN.DχayDV0
-		  DχayDZ = DN.DχayDZ
-		  DχayDδ = DN.DχayDδ
-		  DχayDχ10x = DN.DχayDχ10x
-		  DχayDχ10y = DN.DχayDχ10y
-		  DχayDχ10z = DN.DχayDχ10z
-		  DχayDχ20x = DN.DχayDχ20x
-		  DχayDχ20y = DN.DχayDχ20y
-		  DχayDχ20z = DN.DχayDχ20z
 		  
-		  // Copy Dχaz derivatives
-		  DχazDV0 = DN.DχazDV0
-		  DχazDZ = DN.DχazDZ
-		  DχazDδ = DN.DχazDδ
-		  DχazDχ10x = DN.DχazDχ10x
-		  DχazDχ10y = DN.DχazDχ10y
-		  DχazDχ10z = DN.DχazDχ10z
-		  DχazDχ20x = DN.DχazDχ20x
-		  DχazDχ20y = DN.DχazDχ20y
-		  DχazDχ20z = DN.DχazDχ20z
-		  
-		  // Copy Dχsx derivatives
-		  DχsxDV0 = DN.DχsxDV0
-		  DχsxDZ = DN.DχsxDZ
-		  DχsxDδ = DN.DχsxDδ
-		  DχsxDχ10x = DN.DχsxDχ10x
-		  DχsxDχ10y = DN.DχsxDχ10y
-		  DχsxDχ10z = DN.DχsxDχ10z
-		  DχsxDχ20x = DN.DχsxDχ20x
-		  DχsxDχ20y = DN.DχsxDχ20y
-		  DχsxDχ20z = DN.DχsxDχ20z
-		  
-		  // Copy Dχsy derivatives
-		  DχsyDV0 = DN.DχsyDV0
-		  DχsyDZ = DN.DχsyDZ
-		  DχsyDδ = DN.DχsyDδ
-		  DχsyDχ10x = DN.DχsyDχ10x
-		  DχsyDχ10y = DN.DχsyDχ10y
-		  DχsyDχ10z = DN.DχsyDχ10z
-		  DχsyDχ20x = DN.DχsyDχ20x
-		  DχsyDχ20y = DN.DχsyDχ20y
-		  DχsyDχ20z = DN.DχsyDχ20z
-		  
-		  // Copy Dχsz derivatives
-		  DχszDV0 = DN.DχszDV0
-		  DχszDZ = DN.DχszDZ
-		  DχszDδ = DN.DχszDδ
-		  DχszDχ10x = DN.DχszDχ10x
-		  DχszDχ10y = DN.DχszDχ10y
-		  DχszDχ10z = DN.DχszDχ10z
-		  DχszDχ20x = DN.DχszDχ20x
-		  DχszDχ20y = DN.DχszDχ20y
-		  DχszDχ20z = DN.DχszDχ20z
-		  
-		  // ICopy Dψr derivatives
-		  DΨrDV0 = DN.DΨrDV0
-		  DΨrDZ = DN.DΨrDZ
-		  DΨrDδ = DN.DΨrDδ
-		  DΨrDχ10x = DN.DΨrDχ10x
-		  DΨrDχ10y = DN.DΨrDχ10y
-		  DΨrDχ10z = DN.DΨrDχ10z
-		  DΨrDχ20x = DN.DΨrDχ20x
-		  DΨrDχ20y = DN.DΨrDχ20y
-		  DΨrDχ20z = DN.DΨrDχ20z
-		  
+		  // The step just taken now becomes the present
+		  // (as long as it is not a test step)
+		  If not testStep Then
+		    VP = VN
+		    VN = VF
+		    ιP = ιN
+		    ιN = ιF
+		    LXP = LXN
+		    LYP = LYN
+		    LZP = LZN
+		    LXN = LXF
+		    LYN = LYF
+		    LZN = LZF
+		    αP = αN
+		    αN = αF
+		    χ1HatXP =χ1HatXN
+		    χ1HatYP =χ1HatYN
+		    χ1HatZP =χ1HatZN
+		    χ1HatXN = χ1HatXF
+		    χ1HatYN = χ1HatYF
+		    χ1HatZN = χ1HatZF
+		    χ2HatXP = χ2HatXN
+		    χ2HatYP = χ2HatYN
+		    χ2HatZP = χ2HatZN
+		    χ2HatXN = χ2HatXF
+		    χ2HatYN = χ2HatYF
+		    χ2HatZN = χ2HatZF
+		    χaXP = χaXN
+		    χaYP = χaYN
+		    χaZP = χaZN
+		    χaXN = χaXF
+		    χaYN = χaYF
+		    χaZN = χaZF
+		    χsXP = χsXN
+		    χsYP = χsYN
+		    χsZP = χsZN
+		    χsXN = χsXF
+		    χsYN = χsYF
+		    χsZN = χsZF
+		    λP = λN
+		    λN = λF
+		    ΨP = ΨN
+		    ΨN = ΨF
+		  End If
 		End Sub
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		DvDV0 As Double
+		AlphaDotPublic As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DvDZ As Double
+		CL1 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DvDδ As Double
+		CL2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DvDχ10x As Double
+		CL3 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DvDχ10y As Double
+		CL4 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DvDχ10z As Double
+		CV0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DvDχ20x As Double
+		CV2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DvDχ20y As Double
+		CV3 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DvDχ20z As Double
+		CV4 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDV0 As Double
+		CV5 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDZ As Double
+		CV6 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDδ As Double
+		CV6L As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDχ10x As Double
+		CV7 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDχ10y As Double
+		CΩ0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDχ10z As Double
+		CΩ1 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDχ20x As Double
+		CΩ2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDχ20y As Double
+		CΩ3 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DιDχ20z As Double
+		CΩ4 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDV0 As Double
+		CΩ5 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDZ As Double
+		Inv1PlusZ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDδ As Double
+		LXF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDχ10x As Double
+		LXN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDχ10y As Double
+		LXP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDχ10z As Double
+		LYF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDχ20x As Double
+		LYN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDχ20y As Double
+		LYP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DαDχ20z As Double
+		LZF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDV0 As Double
+		LZN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDZ As Double
+		LZP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDδ As Double
+		OneMinusδ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDχ10x As Double
+		OnePlusδ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDχ10y As Double
+		TotalRotations As Integer = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDχ10z As Double
+		V0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDχ20x As Double
+		VF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDχ20y As Double
+		VN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχaxDχ20z As Double
+		VP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDV0 As Double
+		VPold As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDZ As Double
+		ιF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDδ As Double
+		ιN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDχ10x As Double
+		ιP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDχ10y As Double
+		αF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDχ10z As Double
+		αN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDχ20x As Double
+		αP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDχ20y As Double
+		αPold As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχayDχ20z As Double
+		λF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDV0 As Double
+		λN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDZ As Double
+		λP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDδ As Double
+		π As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDχ10x As Double
+		χ1 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDχ10y As Double
+		χ1HatXF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDχ10z As Double
+		χ1HatXN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDχ20x As Double
+		χ1HatXP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDχ20y As Double
+		χ1HatYF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχazDχ20z As Double
+		χ1HatYN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDV0 As Double
+		χ1HatYP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDZ As Double
+		χ1HatZF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDδ As Double
+		χ1HatZN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDχ10x As Double
+		χ1HatZP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDχ10y As Double
+		χ2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDχ10z As Double
+		χ2HatXF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDχ20x As Double
+		χ2HatXN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDχ20y As Double
+		χ2HatXP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsxDχ20z As Double
+		χ2HatYF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDV0 As Double
+		χ2HatYN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDZ As Double
+		χ2HatYP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDδ As Double
+		χ2HatZF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDχ10x As Double
+		χ2HatZN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDχ10y As Double
+		χ2HatZP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDχ10z As Double
+		χaL As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDχ20x As Double
+		χaXF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDχ20y As Double
+		χaXN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχsyDχ20z As Double
+		χaXP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDV0 As Double
+		χaYF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDZ As Double
+		χaYN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDδ As Double
+		χaYP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDχ10x As Double
+		χaZF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDχ10y As Double
+		χaZN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDχ10z As Double
+		χaZP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDχ20x As Double
+		χsL As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDχ20y As Double
+		χsXF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DχszDχ20z As Double
+		χsXN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDV0 As Double
+		χsXP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDZ As Double
+		χsYF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDδ As Double
+		χsYN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDΘ As Double
+		χsYP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDΦ As Double
+		χsZF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ10x As Double
+		χsZN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ10y As Double
+		χsZP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ10z As Double
+		ΨF As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ20x As Double
+		ΨN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDχ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DΨrDχ20z As Double
+		ΨP As Double
 	#tag EndProperty
 
 
@@ -650,7 +742,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDΘ"
+			Name="ιF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -658,7 +750,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDΦ"
+			Name="ιN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -666,7 +758,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDZ"
+			Name="ιP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -674,7 +766,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDδ"
+			Name="LXF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -682,7 +774,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDV0"
+			Name="LYF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -690,7 +782,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ10x"
+			Name="LZF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -698,7 +790,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ10z"
+			Name="LXN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -706,7 +798,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ10y"
+			Name="LYN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -714,7 +806,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ20x"
+			Name="LZN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -722,7 +814,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ20y"
+			Name="LXP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -730,7 +822,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DΨrDχ20z"
+			Name="LYP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -738,7 +830,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDχ10x"
+			Name="LZP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -746,7 +838,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDχ10y"
+			Name="αF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -754,7 +846,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDχ10z"
+			Name="αP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -762,7 +854,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDχ20x"
+			Name="αN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -770,7 +862,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDχ20y"
+			Name="VF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -778,7 +870,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDχ20z"
+			Name="VN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -786,7 +878,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDV0"
+			Name="VP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -794,7 +886,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDZ"
+			Name="χ1HatXF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -802,7 +894,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DvDδ"
+			Name="χ1HatXN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -810,7 +902,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDV0"
+			Name="χ1HatXP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -818,7 +910,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDZ"
+			Name="χ1HatYF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -826,7 +918,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDδ"
+			Name="χ1HatYN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -834,7 +926,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDχ10x"
+			Name="χ1HatYP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -842,7 +934,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDχ10y"
+			Name="χ1HatZF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -850,7 +942,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDχ10z"
+			Name="χ1HatZP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -858,7 +950,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDχ20x"
+			Name="χ1HatZN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -866,7 +958,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDχ20y"
+			Name="χ2HatXF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -874,7 +966,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DαDχ20z"
+			Name="χ2HatXN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -882,7 +974,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDV0"
+			Name="χ2HatXP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -890,7 +982,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDZ"
+			Name="χ2HatYF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -898,7 +990,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDδ"
+			Name="χ2HatYN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -906,7 +998,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDχ10x"
+			Name="χ2HatYP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -914,7 +1006,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDχ10y"
+			Name="χ2HatZF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -922,7 +1014,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDχ10z"
+			Name="χ2HatZN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -930,7 +1022,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDχ20x"
+			Name="χ2HatZP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -938,7 +1030,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDχ20y"
+			Name="ΨN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -946,7 +1038,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DιDχ20z"
+			Name="ΨP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -954,7 +1046,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDV0"
+			Name="CV0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -962,7 +1054,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDZ"
+			Name="CV2"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -970,7 +1062,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDδ"
+			Name="CV3"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -978,7 +1070,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDχ10x"
+			Name="CV4"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -986,7 +1078,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDχ10y"
+			Name="CV5"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -994,7 +1086,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDχ10z"
+			Name="CV6"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1002,7 +1094,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDχ20x"
+			Name="CV7"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1010,7 +1102,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDχ20y"
+			Name="CV6L"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1018,7 +1110,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχaxDχ20z"
+			Name="χ1"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1026,7 +1118,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDV0"
+			Name="χ2"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1034,7 +1126,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDZ"
+			Name="CΩ0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1042,7 +1134,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDδ"
+			Name="CΩ2"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1050,7 +1142,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDχ10x"
+			Name="CΩ4"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1058,7 +1150,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDχ10y"
+			Name="CL1"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1066,7 +1158,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDχ10z"
+			Name="CL2"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1074,7 +1166,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDχ20x"
+			Name="CL3"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1082,7 +1174,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDχ20y"
+			Name="CL4"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1090,7 +1182,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχayDχ20z"
+			Name="χaL"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1098,7 +1190,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDV0"
+			Name="χsL"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1106,7 +1198,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDZ"
+			Name="OneMinusδ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1114,7 +1206,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDδ"
+			Name="OnePlusδ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1122,7 +1214,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDχ10x"
+			Name="V0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1130,7 +1222,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDχ10y"
+			Name="π"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1138,7 +1230,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDχ10z"
+			Name="χaXF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1146,7 +1238,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDχ20x"
+			Name="χaXN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1154,7 +1246,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDχ20y"
+			Name="χaXP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1162,7 +1254,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχazDχ20z"
+			Name="χaYF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1170,7 +1262,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDV0"
+			Name="χaYN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1178,7 +1270,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDZ"
+			Name="χaYP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1186,7 +1278,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDδ"
+			Name="χaZF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1194,7 +1286,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDχ10x"
+			Name="χaZN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1202,7 +1294,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDχ10y"
+			Name="χsXF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1210,7 +1302,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDχ10z"
+			Name="χsXN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1218,7 +1310,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDχ20x"
+			Name="χsXP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1226,7 +1318,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDχ20y"
+			Name="χsYF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1234,7 +1326,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsxDχ20z"
+			Name="χsYN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1242,7 +1334,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDV0"
+			Name="χsYP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1250,7 +1342,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDZ"
+			Name="χsZF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1258,7 +1350,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDδ"
+			Name="χsZN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1266,7 +1358,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDχ10x"
+			Name="χsZP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1274,7 +1366,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDχ10y"
+			Name="ΨF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1282,7 +1374,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDχ10z"
+			Name="αPold"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1290,7 +1382,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDχ20x"
+			Name="χaZP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1298,7 +1390,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDχ20y"
+			Name="VPold"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1306,7 +1398,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχsyDχ20z"
+			Name="CΩ1"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1314,7 +1406,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχszDV0"
+			Name="CΩ3"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1322,7 +1414,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχszDZ"
+			Name="CΩ5"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1330,7 +1422,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχszDδ"
+			Name="Inv1PlusZ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1338,7 +1430,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχszDχ10x"
+			Name="λF"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1346,7 +1438,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχszDχ10y"
+			Name="λN"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1354,7 +1446,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχszDχ10z"
+			Name="λP"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1362,7 +1454,7 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχszDχ20x"
+			Name="AlphaDotPublic"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -1370,19 +1462,11 @@ Protected Class CurrentDerivativesClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DχszDχ20y"
+			Name="TotalRotations"
 			Visible=false
 			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DχszDχ20z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
+			InitialValue="0"
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

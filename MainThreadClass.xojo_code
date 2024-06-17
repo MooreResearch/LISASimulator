@@ -3,24 +3,29 @@ Protected Class MainThreadClass
 Inherits Thread
 	#tag Event
 		Sub Run()
-		  Var CaseParameterSet As CaseParametersClass
-		  For each CaseParameterSet in Cases
-		    CaseSupervisor = New CaseSupervisorClass(CaseParameterSet)
+		  Var CaseInfoet As CaseInfoClass
+		  For each CaseInfoet in Cases
+		    CaseSupervisor = New CaseSupervisorClass(CaseInfoet)
 		    CaseSupervisor.DoSteps
 		  Next
+		  
+		  MainWindow.AllCasesDone = True 
+		  
+		  
+		  
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h0
-		Sub LoadCases(TheCases() As CaseParametersClass)
+		Sub LoadCases(TheCases() As CaseInfoClass)
 		  Cases = TheCases
 		End Sub
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		Cases() As CaseParametersClass
+		Cases() As CaseInfoClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
