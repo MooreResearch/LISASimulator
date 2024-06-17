@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -86,10 +86,10 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   572
+         Height          =   596
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Parameter\nM (sols)\nδ\nT0 (s)\nR (ly)\nβ (°)	\nψ (°)\nλ0\nΘ (°)\nΦ(°)	\nΩ\nχ10x	\nχ10y	\nχ10z	\nχ20x\nχ20y\nx20z\nρ0\nPN Order\nDetectors\nΔT (s)\nDuration (y)"
+         InitialValue    =   "Parameter\nM (sols)\nδ\nTorb (s)\nTc (y)\nR (ly)\nβ (°)	\nψ (°)\nλ0\nΘ (°)\nΦ(°)	\nΩ\nχ10x	\nχ10y	\nχ10z	\nχ20x\nχ20y\nx20z\nρ0\nPN Order\nDetectors\nΔT (s)\nDuration (y)"
          Italic          =   False
          Left            =   31
          LockBottom      =   False
@@ -348,10 +348,10 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   572
+         Height          =   596
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Case 1\n10000\n0.1\n500\n1.0e7\n39\n24\n0\n5\n268.5\n---\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n0\n2\n50\n1.0"
+         InitialValue    =   "Case 1\n10000\n0.1\n500\n\n1.0e7\n39\n24\n0\n5\n268.5\n---\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n0\n2\n50\n1.0"
          Italic          =   False
          Left            =   115
          LockBottom      =   False
@@ -546,7 +546,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   622
+         Top             =   639
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1205,7 +1205,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   482
+         Top             =   501
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1291,10 +1291,10 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   441
+         Height          =   465
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Uncertainty\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?"
+         InitialValue    =   "Uncertainty\n?\n?\n---\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?"
          Italic          =   False
          Left            =   202
          LockBottom      =   False
@@ -1344,7 +1344,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   505
+         Top             =   509
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1705,27 +1705,66 @@ Begin DesktopWindow MainWindow
          CWhite          =   &c00000000
          DoubleBuffer    =   False
          Enabled         =   True
+         FDepth          =   0
+         FHeight         =   0
+         FWidth          =   0
+         GHeight         =   0
+         GLeft           =   0
+         GTop            =   0
+         GWidth          =   0
          GXP             =   0
+         HasGrid         =   False
          Height          =   668
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
+         InvLog10        =   0.0
          Left            =   20
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   True
          LockTop         =   True
+         NoGraph         =   False
+         PrevCurvH       =   0
+         PrevCurvV       =   0
+         Printing        =   False
+         RErr            =   False
          Scope           =   0
+         ScPixH          =   0
+         ScPixV          =   0
          TabIndex        =   18
          TabPanelIndex   =   3
          TabStop         =   True
+         TickFont        =   ""
+         TickFSize       =   0
+         Title           =   ""
+         TitleH          =   0
+         TitleV          =   0
          Tooltip         =   ""
          Top             =   111
          Transparent     =   True
          Visible         =   True
          Width           =   960
          XColor          =   &c00000000
+         XFlags          =   0
+         XLabel          =   ""
+         XLabelH         =   0
+         XLabelV         =   0
+         XMax            =   0.0
+         XMin            =   0.0
+         XTickN          =   0
+         XTPower         =   0
+         XVtoPix         =   0.0
          YColor          =   &c00000000
+         YFlags          =   0
+         YLabel          =   ""
+         YLabelH         =   0
+         YLabelV         =   0
+         YMax            =   0.0
+         YMin            =   0.0
+         YTickN          =   0
+         YTPower         =   0
+         YVToPix         =   0.0
       End
    End
    Begin MainThreadClass MainThread
@@ -2808,6 +2847,14 @@ End
 		Group="Behavior"
 		InitialValue="False"
 		Type="Boolean"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TotSteps"
+		Visible=false
+		Group="Behavior"
+		InitialValue=""
+		Type="Integer"
 		EditorType=""
 	#tag EndViewProperty
 #tag EndViewBehavior
