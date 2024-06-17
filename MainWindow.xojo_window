@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -155,7 +155,7 @@ Begin DesktopWindow MainWindow
          Height          =   26
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "H\nHP\nHX\nV\nι\nα\ndhDM\ndhDψ\ndhDλ0\ndhDΘ\ndhDΦ\ndhDβ\ndhDR\ndhDV0\ndhDδ\ndhDχ10x\ndhDχ10y\ndhDχ10z\ndhDχ20x\ndhDχ20y\ndhDχ20z\nαDotN"
+         InitialValue    =   ""
          Italic          =   False
          Left            =   96
          LockBottom      =   False
@@ -325,7 +325,7 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   110
       End
-      Begin DesktopListBox CasesListBox
+      Begin DesktopListBox CaseListBox
          AllowAutoDeactivate=   True
          AllowAutoHideScrollbars=   True
          AllowExpandableRows=   False
@@ -353,7 +353,7 @@ Begin DesktopWindow MainWindow
          InitialParent   =   "MainTabPanel"
          InitialValue    =   "Case 1\n10000\n0.1\n500\n1.0e7\n39\n24\n0\n5\n268.5\n---\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n0\n2\n50\n1.0"
          Italic          =   False
-         Left            =   115
+         Left            =   110
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1694,39 +1694,6 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   80
       End
-      Begin Graph GraphingCanvas
-         AllowAutoDeactivate=   True
-         AllowFocus      =   False
-         AllowFocusRing  =   True
-         AllowTabs       =   False
-         Backdrop        =   0
-         CBlack          =   &c00000000
-         CGrid           =   &c00000000
-         CWhite          =   &c00000000
-         DoubleBuffer    =   False
-         Enabled         =   True
-         GXP             =   0
-         Height          =   668
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Left            =   20
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   18
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Tooltip         =   ""
-         Top             =   111
-         Transparent     =   True
-         Visible         =   True
-         Width           =   960
-         XColor          =   &c00000000
-         YColor          =   &c00000000
-      End
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
@@ -1745,25 +1712,62 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Opening()
-		  'SetUpMainLB()
+		  // Initialize the GraphChoicePopupMenu items
+		  Var tempCase As New CaseInfoClass
+		  Setting = True
+		  GraphChoicePopupMenu.RemoveAllRows
+		  Var theNames() As String = tempCase.GetPlotNames
+		  For i As Integer = 0 To theNames.LastIndex
+		    GraphChoicePopupMenu.AddRow(theNames(i))
+		  Next
+		  Setting = False
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h0
-		Sub AddToCasesList(inputString() As String)
-		  Var rows,cols as integer
-		  
-		  rows = CasesList.LastIndex
-		  cols = 19 
-		  
-		  Redim CasesList(rows+1, cols) //Adds a row to CasesList 
-		  
-		  Var j as integer 
-		  
-		  for j = 0 to cols 
-		    CasesList(rows+1,j) = inputString(j) //Populates the new row with data from InputSting
-		  next 
+		Sub AddCase(Values() As String, DoPlot As Boolean)
+		  Var thisCase As New CaseInfoClass
+		  Var Flag As Boolean
+		  thisCase.SolveFor.ResizeTo(Integer(CaseInfoClass.Param.NItems) - 1)
+		  thisCase.M = GetValueAndSolveFlag(Flag, Values(0))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.M)) = Flag
+		  thisCase.δ = GetValueAndSolveFlag(Flag, Values(1))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.delta)) = Flag
+		  thisCase.T0 = GetValueAndSolveFlag(Flag, Values(2))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.V0)) = Flag
+		  thisCase.R = GetValueAndSolveFlag(Flag, Values(3))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.R)) = Flag
+		  thisCase.β = GetValueAndSolveFlag(Flag, Values(4))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.beta)) = Flag
+		  thisCase.ψ = GetValueAndSolveFlag(Flag, Values(5))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.psi)) = Flag
+		  thisCase.λ0 = GetValueAndSolveFlag(Flag, Values(6))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.lambda0)) = Flag
+		  thisCase.Θ = GetValueAndSolveFlag(Flag, Values(7))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.theta)) = Flag
+		  thisCase.Φ = GetValueAndSolveFlag(Flag, Values(8))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.phi)) = Flag
+		  thisCase.χ10x = GetValueAndSolveFlag(Flag, Values(9))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10x)) = Flag
+		  thisCase.χ10y = GetValueAndSolveFlag(Flag, Values(10))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10y)) = Flag
+		  thisCase.χ10z = GetValueAndSolveFlag(Flag, Values(11))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10z)) = Flag
+		  thisCase.χ20x = GetValueAndSolveFlag(Flag, Values(12))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20x)) = Flag
+		  thisCase.χ20y = GetValueAndSolveFlag(Flag, Values(13))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20y)) = Flag
+		  thisCase.χ20z = GetValueAndSolveFlag(Flag, Values(14))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20z)) = Flag
+		  thisCase.ρ0 = values(15).ToDouble
+		  thisCase.PNOrder = values(16).ToInteger
+		  thisCase.Detectors = values(17).ToInteger
+		  thisCase.ΔT = values(18).ToDouble
+		  thisCase.RunDuration = values(19).ToDouble
+		  thisCase.StorePlotInfo = DoPlot
+		  thisCase.FinishConstruction
+		  TheCases.Add(thisCase)
 		End Sub
 	#tag EndMethod
 
@@ -1795,144 +1799,55 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub DisplayUncertainties(Params As CaseParametersClass, UV As UncertaintyValuesClass)
-		  UncertaintyListBox.CellTextAt(0) = GetUncertaintyString(UV.OfM)
-		  UncertaintyListBox.CellTextAt(1) = GetUncertaintyString(UV.Ofδ)
-		  UncertaintyListBox.CellTextAt(2) = GetUncertaintyString(UV.OfT0)
-		  UncertaintyListBox.CellTextAt(3) = GetUncertaintyString(UV.OfR)
-		  UncertaintyListBox.CellTextAt(4) = GetUncertaintyString(UV.Ofβ)
-		  UncertaintyListBox.CellTextAt(5) = GetUncertaintyString(UV.Ofψ)
-		  UncertaintyListBox.CellTextAt(6) = GetUncertaintyString(UV.Ofλ0)
-		  UncertaintyListBox.CellTextAt(7) = GetUncertaintyString(UV.OfΘ)
-		  UncertaintyListBox.CellTextAt(8) = GetUncertaintyString(UV.OfΦ)
-		  UncertaintyListBox.CellTextAt(9) = GetUncertaintyString(UV.OfΩ)
-		  UncertaintyListBox.CellTextAt(10) = GetUncertaintyString(UV.Ofχ10x)
-		  UncertaintyListBox.CellTextAt(11) = GetUncertaintyString(UV.Ofχ10y)
-		  UncertaintyListBox.CellTextAt(12) = GetUncertaintyString(UV.Ofχ10z)
-		  UncertaintyListBox.CellTextAt(13) = GetUncertaintyString(UV.Ofχ20x)
-		  UncertaintyListBox.CellTextAt(14) = GetUncertaintyString(UV.Ofχ20y)
-		  UncertaintyListBox.CellTextAt(15) = GetUncertaintyString(UV.Ofχ20z)
+		Sub DisplayUncertainties(CaseInfo As CaseInfoClass)
+		  UncertaintyListBox.CellTextAt(0) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.M)))
+		  UncertaintyListBox.CellTextAt(1) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.delta)))
+		  UncertaintyListBox.CellTextAt(2) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.V0)))
+		  UncertaintyListBox.CellTextAt(3) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.R)))
+		  UncertaintyListBox.CellTextAt(4) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.beta)))
+		  UncertaintyListBox.CellTextAt(5) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.psi)))
+		  UncertaintyListBox.CellTextAt(6) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.lambda0)))
+		  Var uTheta As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.theta))
+		  Var uPhi As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.phi))
+		  UncertaintyListBox.CellTextAt(7) = GetUncertaintyString(uTheta)
+		  UncertaintyListBox.CellTextAt(8) = GetUncertaintyString(uPhi)
+		  Var d2r As Double = CaseInfo.π/180.0
+		  Var omega As Double = Sin(CaseInfo.Θ)*uTheta*uPhi/(4*CaseInfo.π)*d2r*d2r
+		  UncertaintyListBox.CellTextAt(9) = GetUncertaintyString(omega)
+		  UncertaintyListBox.CellTextAt(10) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10x)))
+		  UncertaintyListBox.CellTextAt(11) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10y)))
+		  UncertaintyListBox.CellTextAt(12) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10z)))
+		  UncertaintyListBox.CellTextAt(13) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20x)))
+		  UncertaintyListBox.CellTextAt(14) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20y)))
+		  UncertaintyListBox.CellTextAt(15) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20z)))
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub DoStart()
 		  // Start running a case or cases
-		  Var TheCases() As CaseParametersClass
-		  Var Flag As Boolean
-		  if RunFileCheckBox.Value then
-		    
-		    AllCasesDone = False 
-		    
-		    Var TxtType As New FileType
-		    TxtType.Name = "Text  file"
-		    TxtType.Extensions = ".txt"
-		    OutputFile = FolderItem.ShowSaveFileDialog(TxtType, "Create Example.txt")
-		    
-		    // Case information is loaded into CasesList when box is checked 
-		    Var N As Double = CasesList.LastIndex 
-		    Var ThisCase As New CaseParametersClass
-		    Var i as integer
-		    
-		    for i = 0 to N 
-		      Var AddCase As New CaseParametersClass // Create new parameter list
-		      AddCase.M = CasesList(i,0).ToDouble
-		      AddCase.δ = CasesList(i,1).ToDouble
-		      AddCase.T0 = CasesList(i,2).ToDouble
-		      AddCase.R = CasesList(i,3).ToDouble
-		      
-		      AddCase.β = GetValueAndSolveFlag(Flag, CasesList(i,4))
-		      AddCase.SolveForβ = Flag
-		      AddCase.ψ = GetValueAndSolveFlag(Flag, CasesList(i,5))
-		      AddCase.SolveForψ = Flag
-		      AddCase.λ0 = GetValueAndSolveFlag(Flag, CasesList(i,6))
-		      AddCase.SolveForλ0 = Flag
-		      AddCase.Θ = GetValueAndSolveFlag(Flag, CasesList(i,7))
-		      AddCase.SolveForΘ = Flag
-		      AddCase.Φ = GetValueAndSolveFlag(Flag, CasesList(i,8))
-		      AddCase.SolveForΦ = Flag
-		      AddCase.χ10x = GetValueAndSolveFlag(Flag, CasesList(i,9))
-		      AddCase.SolveForχ10x = Flag
-		      AddCase.χ10y = GetValueAndSolveFlag(Flag, CasesList(i,10))
-		      AddCase.SolveForχ10y = Flag
-		      AddCase.χ10z = GetValueAndSolveFlag(Flag, CasesList(i,11))
-		      AddCase.SolveForχ10z = Flag
-		      AddCase.χ20x = GetValueAndSolveFlag(Flag, CasesList(i,12))
-		      AddCase.SolveForχ20x = Flag
-		      AddCase.χ20y = GetValueAndSolveFlag(Flag, CasesList(i,13))
-		      AddCase.SolveForχ20y = Flag
-		      AddCase.χ20z = GetValueAndSolveFlag(Flag, CasesList(i,14))
-		      AddCase.SolveForχ20z = Flag
-		      
-		      AddCase.ρ0 = CasesList(i,15).ToDouble
-		      AddCase.PNOrder = CasesList(i,16).ToDouble
-		      AddCase.Detectors = CasesList(i,17).ToDouble
-		      AddCase.ΔT = CasesList(i,18).ToDouble
-		      AddCase.RunDuration = CasesList(i,19).ToDouble
-		      
-		      AddCase.FinishConstruction
-		      TheCases.Add(AddCase)
-		      
-		    next
-		    
-		    
-		    
-		    ValueOfStatusLabel.Text = "Running"
-		    ValueOfStopReasonLabel.Text = ""
-		    ValueOfTcLabel.Text = ""
-		    MainThread.LoadCases(TheCases)
-		    MainThread.Priority = Thread.HighPriority
-		    MainThread.Start
-		    InterfaceUpdateTimer.RunMode = Timer.RunModes.Multiple
-		    
+		  if RunFileCheckBox.Value then // if we are running cases from a file
+		    GetCasesFromFile // get the cases from the file
+		    OutputFile = FolderItem.ShowSaveFileDialog(FileTypeGroup1.Text, "Untitled.txt") // define an output file
+		    If OutputFile = Nil Then Return // bail out if the user has cancelled
 		  Else
-		    Var ThisCase As New CaseParametersClass // Create new parameter list
-		    // Set the first four parameters
-		    ThisCase.M = CasesListBox.CellTextAt(0).ToDouble
-		    ThisCase.δ = CasesListBox.CellTextAt(1).ToDouble
-		    ThisCase.T0 = CasesListBox.CellTextAt(2).ToDouble
-		    ThisCase.R = CasesListBox.CellTextAt(3).ToDouble
-		    // Specially handle cases we might not solve for
-		    ThisCase.β = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(4))
-		    ThisCase.SolveForβ = Flag
-		    ThisCase.ψ = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(5))
-		    ThisCase.SolveForψ = Flag
-		    ThisCase.λ0 = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(6))
-		    ThisCase.SolveForλ0 = Flag
-		    ThisCase.Θ = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(7))
-		    ThisCase.SolveForΘ = Flag
-		    ThisCase.Φ = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(8))
-		    ThisCase.SolveForΦ = Flag
-		    ThisCase.χ10x = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(10))
-		    ThisCase.SolveForχ10x = Flag
-		    ThisCase.χ10y = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(11))
-		    ThisCase.SolveForχ10y = Flag
-		    ThisCase.χ10z = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(12))
-		    ThisCase.SolveForχ10z = Flag
-		    ThisCase.χ20x = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(13))
-		    ThisCase.SolveForχ20x = Flag
-		    ThisCase.χ20y = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(14))
-		    ThisCase.SolveForχ20y = Flag
-		    ThisCase.χ20z = GetValueAndSolveFlag(Flag, CasesListBox.CellTextAt(15))
-		    ThisCase.SolveForχ20z = Flag
-		    // Handle the remaining case items
-		    ThisCase.ρ0 = CasesListBox.CellTextAt(16).ToDouble
-		    ThisCase.PNOrder = CasesListBox.CellTextAt(17).ToDouble
-		    ThisCase.Detectors = CasesListBox.CellTextAt(18).ToDouble
-		    ThisCase.ΔT = CasesListBox.CellTextAt(19).ToDouble
-		    ThisCase.RunDuration = CasesListBox.CellTextAt(20).ToDouble
-		    // Finish setting up the case
-		    ThisCase.FinishConstruction
-		    // Add the case to the list
-		    TheCases.Add(ThisCase)
-		    ValueOfStatusLabel.Text = "Running"
-		    ValueOfStopReasonLabel.Text = ""
-		    ValueOfTcLabel.Text = ""
-		    MainThread.LoadCases(TheCases)
-		    MainThread.Priority = Thread.HighPriority
-		    MainThread.Start
-		    InterfaceUpdateTimer.RunMode = Timer.RunModes.Multiple
+		    Var theValues() As String
+		    Var theValue As String
+		    For i As Integer = 0 to CaseListBox.LastRowIndex // for all entries in the list box
+		      theValue = CaseListBox.CellTextAt(i) // get the text entered in the list box
+		      if theValue <> "---" Then theValues.Add(theValue) // skip over the entry corresponding to Ω
+		    Next
+		    AddCase(theValues, True)
 		  End if
+		  AllCasesDone = False 
+		  ValueOfStatusLabel.Text = "Running"
+		  ValueOfStopReasonLabel.Text = ""
+		  ValueOfTcLabel.Text = ""
+		  MainThread.LoadCases(TheCases)
+		  MainThread.Priority = Thread.HighPriority
+		  MainThread.Start
+		  InterfaceUpdateTimer.RunMode = Timer.RunModes.Multiple
 		  
 		  
 		  
@@ -1951,56 +1866,35 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetHighestValue(row as integer) As Double
+		Sub GetCasesFromFile()
+		  // To make a txt file that can be read by this code:
+		  //    Rows should be parameters, in the order shown in the CaseListBox (ignoring Ω), separated by tabs.
+		  //    All parameters need values, parameters not to be solved for should have x in front of them.
+		  //    Do not write data in text file with commas.
 		  
+		  Var f As FolderItem
+		  Var textInput As TextInputStream
+		  Var rowFromFile As String
 		  
-		  Var n as integer = TotSteps - 1
+		  f = FolderItem.ShowOpenFileDialog(FileTypeGroup1.Text)
 		  
-		  Var StartValue As Integer = (StartSlider.Value*n) \100
-		  Var EndValue As Integer = StartValue + (DurationSlider.Value *n) \ 100
+		  If f <> Nil Then
+		    textInput = TextInputStream.Open(f)
+		    textInput.Encoding = Encodings.UTF8
+		    Do
+		      rowFromFile = textInput.ReadLine
+		      Var values() As String = rowFromFile.ToArray(String.Chr(9))
+		      AddCase(values, False)
+		    Loop Until textInput.EndOfFile
+		    textInput.Close
+		  End If
 		  
-		  If EndValue > n then 
-		    EndValue = n 
-		  end if 
-		  
-		  Var HighestValue as double = ChartArray(row,StartValue)
-		  
-		  for i as integer =  StartValue to EndValue
-		    If ChartArray(row,i) > HighestValue then 
-		      HighestValue = ChartArray(row,i)
-		    end if 
-		  next 
-		  
-		  return HighestValue
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetLowestValue(row as integer) As Double
-		  Var n as integer = TotSteps - 1
-		  
-		  Var StartValue As Integer = (StartSlider.Value*n) \ 100
-		  Var EndValue As Integer = StartValue + (DurationSlider.Value *n) \ 100
-		  
-		  If EndValue > n then 
-		    EndValue = n 
-		  end if 
-		  
-		  Var LowestValue as double = ChartArray(row,StartValue)
-		  
-		  for i as integer = StartValue to EndValue
-		    If ChartArray(row,i) < LowestValue then 
-		      LowestValue = ChartArray(row,i)
-		    end if 
-		  next 
-		  
-		  return LowestValue
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass) As Double
-		  Var parameters As CaseParametersClass = TheSuper.CaseParameters
+		  Var parameters As CaseInfoClass = TheSuper.CaseInfo
 		  Var δ As Double = parameters.δ
 		  Var η As Double = 0.25*(1.0 - δ*δ)
 		  Var χa𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χaL
@@ -2043,243 +1937,9 @@ End
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub Graph()
-		  GraphingCanvas.ClearFrame
-		  GraphingCanvas.SetTitle("Graph of "+GraphChoicePopupMenu.SelectedRowText+" vs time")
-		  GraphingCanvas.SetXLabel("t (time in s)")
-		  GraphingCanvas.SetYLabel(GraphChoicePopupMenu.SelectedRowText)
-		  
-		  
-		  if GraphChoicePopupMenu.SelectedRowText = "αDotN" then
-		    
-		    Var m as integer = AlphaList.LastIndex
-		    
-		    GraphingCanvas.SetGrid(true)
-		    GraphingCanvas.DefineGraph(0,m,-.001,.001)
-		    GraphingCanvas.GetContent
-		    
-		    
-		  else 
-		    
-		    Var n as integer = TotSteps - 1
-		    
-		    Var StartValue As Integer = (StartSlider.Value*n) \100
-		    Var EndValue As Integer = StartValue + (DurationSlider.Value *n) \ 100
-		    
-		    If EndValue > n then 
-		      EndValue = n 
-		    end if 
-		    
-		    Var j as integer = GraphChoicePopupMenu.SelectedRowIndex + 1
-		    
-		    GraphingCanvas.SetGrid(true)
-		    GraphingCanvas.DefineGraph(ChartArray(0,StartValue),ChartArray(0,EndValue), GetLowestValue(j), GetHighestValue(j))
-		    GraphingCanvas.GetContent
-		    
-		  end if 
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub oldCreateArrays()
-		  '//This method does the majority of the work in the main window. It feeds the necessary parameters
-		  '//to a new instance of the EvolverClass class in order to perform the DoStep method enough times to make
-		  '//sufficiently long arrays of v and each derivative of v, as well as the spin variables.
-		  '
-		  'τ.ResizeTo(-1)  // reset the time axis
-		  '
-		  'myMain = New Main(M, δ, f0, R, β, ψangle, λ0, Θ, Φ, χ1Initial, χ2Initial, PNOrder, Detectors, dτ0, K)  // instantiate the Main class
-		  '
-		  '// these lines are remnants from the spin-only program. The program now runs whether there's spin evolution or not
-		  ''GraphAllowed = myMainWaveBuilder.ReadyToGo
-		  ''if GraphAllowed then      // Checks to see if we are ready to go (i.e. if ι0 and its derivatives are nonzero)
-		  '
-		  'GraphArray = New ArrayClass  // set up a new array to help with graphing
-		  '
-		  'Var NewValues(30) As Double  // create the array to load into GraphArray
-		  '
-		  '//Stores the initial value of v. These values are set up in the EvolverClass constructor
-		  'v = myMain.v0
-		  '
-		  '//Add the initial values of τ to the τ array so that the y- and x-axes match
-		  'Var τnew As Double = 0
-		  'τ.Add(τnew)
-		  '
-		  '// Perform the adaptive stepping technique to determine the time step
-		  '
-		  'While v < .2 And (τnew*M) < 31536000
-		  'myMain.DoMainStep
-		  '
-		  'v = myMain.vF       //This updates the "current" value of v 
-		  'τnew = τnew + dτ0          //This performs a step in τ . . .
-		  'τ.Add(τnew)               //. . . and this adds it to the τ array
-		  '
-		  '// Add the new values to the graphing array
-		  'For i As Integer = 0 To 14
-		  'NewValues(i) = myMain.dzd(i)
-		  'Next
-		  '
-		  'NewValues(15) = myMain.h
-		  'NewValues(16) = myMain.hp
-		  'NewValues(17) = myMain.hc
-		  'NewValues(18) = myMainWaveBuilder.αAcc
-		  'NewValues(19) = myMain.ιF
-		  'NewValues(20) = myMain.ζ
-		  'NewValues(21) = myMainWaveBuilder.LNhatF.x
-		  'NewValues(22) = myMainWaveBuilder.LNhatF.y
-		  'NewValues(23) = myMainWaveBuilder.LNhatF.z
-		  'NewValues(24) = myMainWaveBuilder.χ1hatF.x
-		  'NewValues(25) = myMainWaveBuilder.χ1hatF.y
-		  'NewValues(26) = myMainWaveBuilder.χ1hatF.z
-		  'NewValues(27) = myMainWaveBuilder.χ2hatF.x
-		  'NewValues(28) = myMainWaveBuilder.χ2hatF.y
-		  'NewValues(29) = myMainWaveBuilder.χ2hatF.z
-		  'NewValues(30) = myMain.sn2
-		  '
-		  'GraphArray.AddAll(NewValues)
-		  'Wend
-		  ''end if 
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function oldGetHighestValue(InputArray() As Double, Min As Integer, Max As Integer) As Double
-		  //Parameters: InputArray() an array of double values
-		  '//Return: CurrentHighest as double
-		  '
-		  '//This method takes an array and finds the largest value within it
-		  '//It does this by comparing each item in the array to the current highest number, and if it is larger setting that number to the new current highest
-		  '
-		  '//Defines the current highest value and sets it equal to the first value in the input array
-		  '
-		  'Var CurrentHighest As Double = InputArray(Min)
-		  '
-		  '//For the rest of the values we check if they are higher than the current highest, if they are they become the current highest.
-		  'Var i As Integer
-		  'For i = Min + 1 to Max
-		  'if CurrentHighest < InputArray(i) then
-		  'CurrentHighest = InputArray(i)
-		  'else 
-		  'continue
-		  'end if 
-		  'next 
-		  '
-		  'return CurrentHighest
-		  '
-		  
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function oldGetIndexOfClosest(InputValue As String) As Integer
-		  '// This method helps with graphing (GetLowerBound and GetUpperBound in particular) by returning the index of the value closest to the
-		  '// input value.
-		  '
-		  'If InputValue = "Min" then
-		  'return 0
-		  'elseif InputValue = "Max" then
-		  'return τ.LastIndex - 1
-		  'else
-		  '
-		  'var i As integer 
-		  '
-		  'Var CurrentClosest As integer = 0 
-		  '
-		  'Var TargetValue As Double = InputValue.ToDouble
-		  '
-		  'Var CurrentSmallestDifference As Double = Abs(τ(0) - TargetValue)
-		  '
-		  '
-		  '
-		  '
-		  'For i = 1 to τ.LastIndex 
-		  'Var Difference as Double = Abs(τ(i) - TargetValue)
-		  'if Difference < CurrentSmallestDifference then
-		  'CurrentSmallestDifference = Difference
-		  'CurrentClosest = i
-		  'else
-		  'continue
-		  'end if
-		  'next 
-		  '
-		  '
-		  'return CurrentClosest
-		  '
-		  '
-		  'end if 
-		  
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function oldGetLowerBound() As Integer
-		  '// Returns the lower bound based on user input
-		  '
-		  'Var LowerBound As Integer = GetIndexOfClosest(StartTimeTextField.Text)
-		  '
-		  'Return LowerBound
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function oldGetLowestValue(InputArray() As Double, Min As Integer, Max As Integer) As Double
-		  '//Parameters: InputArray() an array of double values
-		  '//Return: CurrentLowest as double
-		  '
-		  '//This method takes an array and finds the lowest value within it
-		  '//It does this by comparing each item in the array to the current lowest number, and if it is lower setting that number to the new current lowest
-		  '
-		  '//Defines the current lowest value and sets it equal to the first value in the input array
-		  'Var CurrentLowest As Double = InputArray(Min)
-		  '
-		  '//For the rest of the values we check if they are lower than the current lowest, if they are they become the current lowest.
-		  '
-		  'Var i As Integer
-		  'For i = Min + 1 to Max
-		  'if CurrentLowest > InputArray(i) then
-		  'CurrentLowest = InputArray(i)
-		  'else 
-		  'continue
-		  'end if 
-		  'next 
-		  '
-		  'return CurrentLowest
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function oldGetUpperBound() As Integer
-		  '// Returns the upper bound based on user input
-		  '
-		  'Var UpperBound As Integer = GetIndexOfClosest(EndTimeTextField.Text)
-		  '
-		  'Return UpperBound
-		End Function
-	#tag EndMethod
-
 
 	#tag Property, Flags = &h0
 		AllCasesDone As Boolean = False
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		AlphaList() As double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		CasesList(-1,-1) As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ChartArray(-1,-1) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2287,11 +1947,11 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		TotSteps As Integer
+		Setting As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		UncertaintyList(-1,-1) As Double
+		TheCases() As CaseInfoClass
 	#tag EndProperty
 
 
@@ -2302,7 +1962,7 @@ End
 		Sub Action()
 		  Var TheSuper As CaseSupervisorClass = MainThread.CaseSupervisor  // Get a reference to the supervisor
 		  // Whether the thread is running or not, update these values
-		  ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseParameters.GM/TheSuper.CaseParameters.Year, "0.0000000")
+		  ValueOfSimTimeLabel.Text = Format(TheSuper.τr*TheSuper.CaseInfo.GM/TheSuper.CaseInfo.Year, "0.0000000")
 		  ValueOfVLabel.Text = Format(TheSuper.WaveBuilder.VDN,"0.000000")
 		  ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
 		  ValueOfStepNumberLabel.Text = TheSuper.N.ToString
@@ -2326,26 +1986,26 @@ End
 		    me.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped"
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
-		    If TheSuper.Uncertainty <> Nil Then
-		      DisplayUncertainties(TheSuper.CaseParameters, TheSuper.Uncertainty)
+		    If TheSuper.CaseInfo.Uncertainties <> Nil Then
+		      DisplayUncertainties(TheSuper.CaseInfo)
 		      MatrixChoicePopupMenu.SelectedRowIndex = 0
 		      DisplayMatrix(TheSuper.ATAMatrix)
 		      ValueOfConditionLabel.Text = Format(TheSuper.UncertaintyCalculator.Condition, "0.000e-0##")
 		    End if
 		    
-		    
-		    
 		    if RunFileCheckBox.Value and AllCasesDone then
 		      Var t As TextOutputStream = TextOutputStream.Create(OutputFile)
 		      t.WriteLine("M"+chr(9)+"δ"+chr(9)+"T0"+chr(9)+"R"+chr(9)+"β"+chr(9)+"ψ"+chr(9)+"λ0"+chr(9)+"Θ"_
 		      +chr(9)+"Φ"+chr(9)+"Ω"+chr(9)+"χ10x"+chr(9)+"χ10y"+chr(9)+"χ10z"+chr(9)+"χ20x"+chr(9)+"χ20y"+chr(9)+"χ20z")
-		      For i as integer = 0 to UncertaintyList.LastIndex
-		        for j as integer = 0 to 15 
-		          t.Write(UncertaintyList(i,j).ToString+chr(9))
-		        next
-		        t.write(EndOfLine)
-		      next
-		      t.close
+		      For Each caseItem As CaseInfoClass In TheCases
+		        Var theUncertainties() As String
+		        For Each unc As Double In caseItem.Uncertainties
+		          theUncertainties.Add(unc.ToString)
+		        Next
+		        Var theString As String = String.FromArray(theUncertainties, chr(9))
+		        t.WriteLine(theString)
+		      Next
+		      t.Close
 		    end if 
 		    
 		  End if		  
@@ -2355,13 +2015,13 @@ End
 #tag Events GraphChoicePopupMenu
 	#tag Event
 		Sub SelectionChanged(item As DesktopMenuItem)
-		  //Add flag 
-		  
-		  Graph
+		  If not Setting Then
+		    
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events CasesListBox
+#tag Events CaseListBox
 	#tag Event
 		Function CellKeyDown(row as Integer, column as Integer, key as String) As Boolean
 		  If key = "x" And row > 3 And row < 15 Then
@@ -2457,45 +2117,6 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events RunFileCheckBox
-	#tag Event
-		Sub ValueChanged()
-		  //To make a txt file that can be read by this code:
-		  //Rows should be parameters, in the order shown, separated by tabs,
-		  //All parameters need values, parameters not to be solved for should have x in front of them 
-		  //Each case is on a new row 
-		  
-		  //Do not write data in text file with commas 
-		  
-		  Var TxtType As New FileType
-		  TxtType.Name = "Text  file"
-		  TxtType.Extensions = ".txt"
-		  
-		  Var f As FolderItem
-		  Var textInput As TextInputStream
-		  Var rowFromFile As String
-		  
-		  f = FolderItem.ShowOpenFileDialog(TxtType)
-		  
-		  If f <> Nil Then
-		    textInput = TextInputStream.Open(f)
-		    textInput.Encoding = Encodings.UTF8
-		    
-		    Do
-		      rowFromFile = textInput.ReadLine
-		      Var values() As String = rowFromFile.ToArray(String.Chr(9))
-		      AddToCasesList(values())
-		    Loop Until textInput.EndOfFile
-		    
-		    textInput.Close
-		  End If
-		  
-		  
-		  
-		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events FileProgressBar
 	#tag Event
 		Sub Open()
@@ -2508,7 +2129,7 @@ End
 	#tag Event
 		Sub ValueChanged()
 		  //Add flag
-		  Graph
+		  'Graph
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -2516,52 +2137,14 @@ End
 	#tag Event
 		Sub ValueChanged()
 		  //Add flag here 
-		  Graph
+		  'Graph
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events GraphButton
 	#tag Event
 		Sub Pressed()
-		  Graph
-		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events GraphingCanvas
-	#tag Event
-		Sub Open()
-		  GraphingCanvas.SetTitle("Graph of "+GraphChoicePopupMenu.SelectedRowText+" vs time")
-		  GraphingCanvas.SetXLabel("t (time in s)")
-		  GraphingCanvas.SetYLabel(GraphChoicePopupMenu.SelectedRowText)
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub DrawContent()
-		  If GraphChoicePopupMenu.SelectedRowText = "αDotN" then 
-		    Var m as integer = AlphaList.LastIndex
-		    
-		    GraphingCanvas.CurveStart(0, AlphaList(0))
-		    Var k as integer
-		    
-		    For k = 1 To m
-		      GraphingCanvas.CurveTo(k, AlphaList(k))
-		    Next 
-		    
-		    
-		  else
-		    
-		    
-		    Var n as integer = TotSteps - 1
-		    Var j as integer = GraphChoicePopupMenu.SelectedRowIndex + 1
-		    
-		    GraphingCanvas.CurveStart(ChartArray(0,0), ChartArray(j,0))
-		    
-		    For i As Integer = 1 To n
-		      GraphingCanvas.CurveTo(ChartArray(0,i), ChartArray(j,i))
-		    Next 
-		    
-		  end if 
+		  'Graph
 		  
 		End Sub
 	#tag EndEvent
@@ -2807,6 +2390,14 @@ End
 		Visible=false
 		Group="Behavior"
 		InitialValue="False"
+		Type="Boolean"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Setting"
+		Visible=false
+		Group="Behavior"
+		InitialValue=""
 		Type="Boolean"
 		EditorType=""
 	#tag EndViewProperty
