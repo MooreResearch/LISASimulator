@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -189,8 +189,8 @@ Begin DesktopWindow MainWindow
          Left            =   287
          LockBottom      =   False
          LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
+         LockLeft        =   True
+         LockRight       =   False
          LockTop         =   True
          Multiline       =   False
          Scope           =   0
@@ -229,8 +229,8 @@ Begin DesktopWindow MainWindow
          Left            =   397
          LockBottom      =   False
          LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
+         LockLeft        =   True
+         LockRight       =   False
          LockTop         =   True
          MaximumCharactersAllowed=   0
          Password        =   False
@@ -264,8 +264,8 @@ Begin DesktopWindow MainWindow
          Left            =   287
          LockBottom      =   False
          LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
+         LockLeft        =   True
+         LockRight       =   False
          LockTop         =   True
          Multiline       =   False
          Scope           =   0
@@ -304,8 +304,8 @@ Begin DesktopWindow MainWindow
          Left            =   398
          LockBottom      =   False
          LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
+         LockLeft        =   True
+         LockRight       =   False
          LockTop         =   True
          MaximumCharactersAllowed=   0
          Password        =   False
@@ -486,39 +486,6 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   207
       End
-      Begin DesktopLabel CaptionForMatrixLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   747
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   30
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Text            =   "Matrix To Display:"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   339
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   136
-      End
       Begin DesktopLabel XExplanationLabel
          AllowAutoDeactivate=   True
          Bold            =   False
@@ -551,104 +518,6 @@ Begin DesktopWindow MainWindow
          Underline       =   False
          Visible         =   True
          Width           =   842
-      End
-      Begin DesktopListBox ParamNameListBox4
-         AllowAutoDeactivate=   True
-         AllowAutoHideScrollbars=   True
-         AllowExpandableRows=   False
-         AllowFocusRing  =   True
-         AllowResizableColumns=   False
-         AllowRowDragging=   False
-         AllowRowReordering=   False
-         Bold            =   False
-         ColumnCount     =   1
-         ColumnWidths    =   "75"
-         DefaultRowHeight=   40
-         DropIndicatorVisible=   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         GridLineStyle   =   3
-         HasBorder       =   True
-         HasHeader       =   True
-         HasHorizontalScrollbar=   False
-         HasVerticalScrollbar=   False
-         HeadingIndex    =   -1
-         Height          =   224
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Parameter\nρ0 (°)\nPN Order\nDetectors\nΔT (s)\nRan for (y)"
-         Italic          =   False
-         Left            =   747
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         RequiresSelection=   False
-         RowSelectionType=   0
-         Scope           =   0
-         TabIndex        =   31
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Tooltip         =   ""
-         Top             =   84
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   77
-         _ScrollOffset   =   0
-         _ScrollWidth    =   -1
-      End
-      Begin DesktopListBox ResultsListBox4
-         AllowAutoDeactivate=   True
-         AllowAutoHideScrollbars=   False
-         AllowExpandableRows=   False
-         AllowFocusRing  =   True
-         AllowResizableColumns=   False
-         AllowRowDragging=   False
-         AllowRowReordering=   False
-         Bold            =   False
-         ColumnCount     =   1
-         ColumnWidths    =   "150"
-         DefaultRowHeight=   40
-         DropIndicatorVisible=   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         GridLineStyle   =   3
-         HasBorder       =   True
-         HasHeader       =   True
-         HasHorizontalScrollbar=   False
-         HasVerticalScrollbar=   False
-         HeadingIndex    =   -1
-         Height          =   224
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Value"
-         Italic          =   False
-         Left            =   823
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         RequiresSelection=   False
-         RowSelectionType=   0
-         Scope           =   0
-         TabIndex        =   32
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Tooltip         =   ""
-         Top             =   84
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   152
-         _ScrollOffset   =   0
-         _ScrollWidth    =   -1
       End
       Begin DesktopLabel CaptionForStepRatioLabel
          AllowAutoDeactivate=   True
@@ -1045,7 +914,6 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   114
       End
-
       Begin DesktopLabel CaptionForTcLabel
          AllowAutoDeactivate=   True
          Bold            =   False
@@ -1862,7 +1730,6 @@ Begin DesktopWindow MainWindow
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
-      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
@@ -2102,23 +1969,6 @@ End
 		End Function
 	#tag EndMethod
 
-
-	#tag Property, Flags = &h0
-		AllCasesDone As Boolean = False
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		OutputFile As FolderItem
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Setting As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		TheCases() As CaseInfoClass
-	#tag EndProperty
-
 	#tag Method, Flags = &h0
 		Function SultanUncertainty(value As Double, uncertainty As Double) As String
 		  'Number Formatting:
@@ -2287,6 +2137,23 @@ End
 		  
 		End Function
 	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		AllCasesDone As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		OutputFile As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Setting As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		TheCases() As CaseInfoClass
+	#tag EndProperty
 
 
 #tag EndWindowCode
@@ -2480,23 +2347,6 @@ End
 		Sub Pressed()
 		  'Graph
 		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CopyMatrixButton
-	#tag Event
-		Sub Pressed()
-		  Var c As New Clipboard
-		  Var s As String
-		  Var delim As String
-		  For j As Integer = 0 to MatrixListBox.LastRowIndex
-		    For k As Integer = 1 to MatrixListBox.LastColumnIndex
-		      s = s+ delim + MatrixListBox.CellTextAt(j,k)
-		      delim = ", "
-		    Next
-		    delim = EndOfLine 
-		  Next
-		  c.Text = s
 		End Sub
 	#tag EndEvent
 #tag EndEvents
