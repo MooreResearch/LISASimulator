@@ -1730,6 +1730,7 @@ Begin DesktopWindow MainWindow
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
+      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
@@ -1798,7 +1799,6 @@ End
 		  thisCase.Detectors = values(17).ToInteger
 		  thisCase.ΔT = values(18).ToDouble
 		  thisCase.RunDuration = values(19).ToDouble
-		  thisCase.StorePlotInfo = DoPlot
 		  thisCase.FinishConstruction
 		  TheCases.Add(thisCase)
 		End Sub

@@ -7,7 +7,7 @@ Protected Class CaseInfoClass
 		  P.DZDR = DZDR
 		  P.GM = GM
 		  P.GMΩe = GMΩe
-		  P.OneOver1PlusZ = OneOver1PlusZ
+		  P.OneI1pZ = OneI1pZ
 		  P.M = M
 		  P.PNOrder = PNOrder
 		  P.R = R
@@ -18,7 +18,6 @@ Protected Class CaseInfoClass
 		  Next
 		  P.SolveForχ1 = SolveForχ1
 		  P.SolveForχ2 = SolveForχ2
-		  P.StorePlotInfo = StorePlotInfo
 		  P.T0 = T0
 		  P.V0 = V0
 		  P.Ve = Ve
@@ -58,7 +57,7 @@ Protected Class CaseInfoClass
 		  Var universe As New UniverseClass(R) // Create a universe class to solve the Z(R) problem
 		  Z = universe.GetZ // get the Z value for the given value of R
 		  DZDR = universe.GetDZDR // get the derivative of Z with respect to R
-		  OneOver1PlusZ = 1.0/(1.0 + Z)
+		  OneI1pZ = 1.0/(1.0 + Z)
 		  π = 3.14159265358979324  // record the value of pi so that we only have to define it once
 		  V0 = Pow(GM*2.0*π*(1.0 + Z)/T0,1/3)  // Initialize V0
 		  // convert all angles from radians to degrees
@@ -78,44 +77,6 @@ Protected Class CaseInfoClass
 		  Uncertainties.ResizeTo(Integer(Param.NItems) - 1)
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetPlotNames() As String()
-		  // Make sure that we have one entry for every item in the PlotItems enumeration.
-		  // Order is not important as long as the index agrees with the name.
-		  Var Names() As String
-		  Names.ResizeTo(PlotItem.NItems-1)
-		  Names(Integer(PlotItem.H)) = "H"
-		  Names(Integer(PlotItem.HP)) = "HP"
-		  Names(Integer(PlotItem.HX)) = "HX"
-		  Names(Integer(PlotItem.V)) = "V"
-		  Names(Integer(PlotItem.PsiR)) = "Ψr"
-		  Names(Integer(PlotItem.Iota)) = "ι"
-		  Names(Integer(PlotItem.Alpha)) = "α"
-		  Names(Integer(PlotItem.ChiSx)) = "χsx"
-		  Names(Integer(PlotItem.ChiSy)) = "χsy"
-		  Names(Integer(PlotItem.ChiSz)) = "χsz"
-		  Names(Integer(PlotItem.ChiAx)) = "χax"
-		  Names(Integer(PlotItem.ChiAy)) = "χay"
-		  Names(Integer(PlotItem.ChiAz)) = "χaz"
-		  Names(Integer(PlotItem.dHdM)) = "dHdM"
-		  Names(Integer(PlotItem.dHdDelta)) = "dHdδ"
-		  Names(Integer(PlotItem.dHdV0)) = "dHdV0"
-		  Names(Integer(PlotItem.dHdR)) = "dHdR"
-		  Names(Integer(PlotItem.dHdBeta)) = "dHdβ"
-		  Names(Integer(PlotItem.dHdPsi)) = "dHdψ"
-		  Names(Integer(PlotItem.dHdLambda0)) = "dHdλ0"
-		  Names(Integer(PlotItem.dHdTheta)) = "dHdΘ"
-		  Names(Integer(PlotItem.dHdPhi)) = "dHdΦ"
-		  Names(Integer(PlotItem.dHdChi10x)) = "dHdχ10x"
-		  Names(Integer(PlotItem.dHdChi10y)) = "dHdχ10y"
-		  Names(Integer(PlotItem.dHdChi10z)) = "dHdχ10z"
-		  Names(Integer(PlotItem.dHdChi20x)) = "dHdχ20x"
-		  Names(Integer(PlotItem.dHdChi20y)) = "dHdχ20y"
-		  Names(Integer(PlotItem.dHdChi20z)) = "dHdχ20z"
-		  Return Names
-		End Function
 	#tag EndMethod
 
 
@@ -140,11 +101,7 @@ Protected Class CaseInfoClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		OneOver1PlusZ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		PlotRecords() As PlotRecord
+		OneI1pZ As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -276,38 +233,6 @@ Protected Class CaseInfoClass
 		  chi20x
 		  chi20y
 		  chi20z
-		NItems
-	#tag EndEnum
-
-	#tag Enum, Name = PlotItem, Type = Integer, Flags = &h0
-		H
-		  HP
-		  HX
-		  V
-		  PsiR
-		  Iota
-		  Alpha
-		  ChiSx
-		  ChiSy
-		  ChiSz
-		  ChiAx
-		  ChiAy
-		  ChiAz
-		  dHdM
-		  dHdDelta
-		  dHdV0
-		  dHdR
-		  dHdBeta
-		  dHdPsi
-		  dHdLambda0
-		  dHdTheta
-		  dHdPhi
-		  dHdChi10x
-		  dHdChi10y
-		  dHdChi10z
-		  dHdChi20x
-		  dHdChi20y
-		  dHdChi20z
 		NItems
 	#tag EndEnum
 
@@ -562,7 +487,7 @@ Protected Class CaseInfoClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="OneOver1PlusZ"
+			Name="OneI1pZ"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

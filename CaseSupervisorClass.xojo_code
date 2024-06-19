@@ -42,7 +42,6 @@ Protected Class CaseSupervisorClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-
 		Sub LoadATA(DHDQ() As Double)
 		  // Add everything into the ATA matrix
 		  For j As Integer = 0 To 14

@@ -307,16 +307,16 @@ Protected Class WaveBuilderClass
 		  
 		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.R)) Then
 		    // Calculate the derivative with respect to q = lnR
-		    dαDq = -(αDN - α0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dΨrDq = -(ΨrDN - Parameters.λ0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dVDq = -(VDN - Parameters.V0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dιDq = -(ιDN - ι0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dχaxDq = -(χaxDN - χax0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dχayDq = -(χayDN - χay0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dχazDq = -(χazDN - χaz0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dχsxDq = -(χsxDN - χsx0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dχsyDq = -(χsyDN - χsy0)*Parameters.OneOver1PlusZ*DZDlnR
-		    dχszDq = -(χszDN - χsz0)*Parameters.OneOver1PlusZ*DZDlnR
+		    dαDq = -(αDN - α0)*Parameters.OneI1pZ*DZDlnR
+		    dΨrDq = -(ΨrDN - Parameters.λ0)*Parameters.OneI1pZ*DZDlnR
+		    dVDq = -(VDN - Parameters.V0)*Parameters.OneI1pZ*DZDlnR
+		    dιDq = -(ιDN - ι0)*Parameters.OneI1pZ*DZDlnR
+		    dχaxDq = -(χaxDN - χax0)*Parameters.OneI1pZ*DZDlnR
+		    dχayDq = -(χayDN - χay0)*Parameters.OneI1pZ*DZDlnR
+		    dχazDq = -(χazDN - χaz0)*Parameters.OneI1pZ*DZDlnR
+		    dχsxDq = -(χsxDN - χsx0)*Parameters.OneI1pZ*DZDlnR
+		    dχsyDq = -(χsyDN - χsy0)*Parameters.OneI1pZ*DZDlnR
+		    dχszDq = -(χszDN - χsz0)*Parameters.OneI1pZ*DZDlnR
 		    
 		    // Now, we put it all together (The first term is actually the derivative of h0 with respect to lnR).
 		    DHDq(Integer(CaseInfoClass.Param.R))  = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
@@ -596,41 +596,6 @@ Protected Class WaveBuilderClass
 		  Else
 		    DHDq(Integer(CaseInfoClass.Param.chi20z)) = 0.0
 		  End If
-		  
-		  // If we are doing single cases, plot record.
-		  // Make sure we have one item for every item in the CaseInfoClass.PlotItem enum list.
-		  Var theValues() As Double
-		  theValues.ResizeTo(Integer(CaseInfoClass.PlotItem.NItems) - 1)
-		  theValues(Integer(CaseInfoClass.PlotItem.H)) = hBase
-		  theValues(Integer(CaseInfoClass.PlotItem.HP)) = hpBase
-		  theValues(Integer(CaseInfoClass.PlotItem.HX)) = hxBase
-		  theValues(Integer(CaseInfoClass.PlotItem.V)) = VDN
-		  theValues(Integer(CaseInfoClass.PlotItem.PsiR)) = ΨrDN
-		  theValues(Integer(CaseInfoClass.PlotItem.Iota)) = ιDN
-		  theValues(Integer(CaseInfoClass.PlotItem.Alpha)) = αDN
-		  theValues(Integer(CaseInfoClass.PlotItem.ChiSx)) = χsxDN
-		  theValues(Integer(CaseInfoClass.PlotItem.ChiSy)) = χsyDN
-		  theValues(Integer(CaseInfoClass.PlotItem.ChiSz)) = χszDN
-		  theValues(Integer(CaseInfoClass.PlotItem.ChiAx)) = χsxDN
-		  theValues(Integer(CaseInfoClass.PlotItem.ChiAy)) = χsyDN
-		  theValues(Integer(CaseInfoClass.PlotItem.ChiAz)) = χszDN
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdM)) = DHDq(Integer(CaseInfoClass.Param.M))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdDelta)) = DHDq(Integer(CaseInfoClass.Param.delta))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdV0)) = DHDq(Integer(CaseInfoClass.Param.V0))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdR)) = DHDq(Integer(CaseInfoClass.Param.R))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdBeta)) = DHDq(Integer(CaseInfoClass.Param.beta))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdPsi)) = DHDq(Integer(CaseInfoClass.Param.psi))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdLambda0)) = DHDq(Integer(CaseInfoClass.Param.lambda0))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdTheta)) = DHDq(Integer(CaseInfoClass.Param.theta))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdPhi)) = DHDq(Integer(CaseInfoClass.Param.phi))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdChi10x)) = DHDq(Integer(CaseInfoClass.Param.chi20x))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdChi10y)) = DHDq(Integer(CaseInfoClass.Param.chi20y))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdChi20z)) = DHDq(Integer(CaseInfoClass.Param.chi20z))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdChi20x)) = DHDq(Integer(CaseInfoClass.Param.chi20x))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdChi20y)) = DHDq(Integer(CaseInfoClass.Param.chi20y))
-		  theValues(Integer(CaseInfoClass.PlotItem.dHdChi20z)) = DHDq(Integer(CaseInfoClass.Param.chi20z))
-		  Parameters.PlotRecords.Add(New PlotRecord(theValues))
-		  
 		End Sub
 	#tag EndMethod
 
@@ -1138,7 +1103,7 @@ Protected Class WaveBuilderClass
 		  
 		  // Calculate noise factors
 		  // This is the value of the observed orbital frequency in Hz
-		  Var fN As Double =  VDN*VDN*VDN/(2*Parameters.π*Parameters.GM)*Parameters.OneOver1PlusZ
+		  Var fN As Double =  VDN*VDN*VDN/(2*Parameters.π*Parameters.GM)*Parameters.OneI1pZ
 		  //  get the noise at various frequencies
 		  // The following array allows us to to enhance or suppress values of harmonics at various frequencies
 		  // to reflect how they may be better or more poorly received by the detector due to noise

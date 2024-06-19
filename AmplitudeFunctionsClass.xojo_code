@@ -1,19 +1,32 @@
 #tag Class
-Protected Class WaveAmplitudesTrigFunctions
+Protected Class AmplitudeFunctionsClass
 	#tag Method, Flags = &h0
-		Sub Constructor(ιDN As Double, β As Double)
-		  updateTrig(ιDN,β)
+		Sub Constructor(β As Double)
+		  // Define β trig functions
+		  
+		  cβ   = Cos(β)
+		  sβ   = Sin(β)
+		  c2β   = cβ*cβ - sβ*sβ
+		  s2β   = 2*sβ*cβ
+		  c3β   = c2β*cβ - s2β*sβ
+		  s3β   = s2β*cβ + c2β*sβ
+		  c4β   = c3β*cβ - s3β*sβ
+		  s4β   = s3β*cβ + c3β*sβ
+		  c5β   = c4β*cβ - s4β*sβ
+		  s5β   = s4β*cβ + c4β*sβ
+		  cβ2   = cβ*cβ
+		  cβ3   = c2β*cβ
+		  sβ2   = sβ*sβ
+		  sβ3   = s2β*sβ
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub updateTrig(ιDN As Double, β As Double)
-		  self.ιDN = ιDN
-		  self.β = β
-		  c2 = Cos(ιDN)
-		  s2 = Sin(ιDN)
-		  c1 = Cos(0.5*ιDN)
-		  s1   = Sin(0.5*ιDN)
+		Sub UpdateιFactors(Sinι As Double, Cosι As Double)
+		  c2 = Cosι
+		  s2 = Sinι
+		  c1 = Sqrt(0.5*(1.0+Cosι))
+		  s1   = Sinι/Sqrt(2*(1.0 + Cosι))
 		  c3   = c2*c1 - s2*s1
 		  s3   = s2*c1 + c2*s1
 		  c4   = c2*c2-s2*s2
@@ -55,22 +68,6 @@ Protected Class WaveAmplitudesTrigFunctions
 		  s2p3   = s2p2*s2
 		  s2p4   = s2p3*s2
 		  s2p5   = s2p4*s2
-		  
-		  // Define local β trig functions
-		  cβ   = Cos(β)
-		  sβ   = Sin(β)
-		  c2β   = cβ*cβ - sβ*sβ
-		  s2β   = 2*sβ*cβ
-		  c3β   = c2β*cβ - s2β*sβ
-		  s3β   = s2β*cβ + c2β*sβ
-		  c4β   = c3β*cβ - s3β*sβ
-		  s4β   = s3β*cβ + c3β*sβ
-		  c5β   = c4β*cβ - s4β*sβ
-		  s5β   = s4β*cβ + c4β*sβ
-		  cβ2   = cβ*cβ
-		  cβ3   = c2β*cβ
-		  sβ2   = sβ*sβ
-		  sβ3   = s2β*sβ
 		End Sub
 	#tag EndMethod
 
@@ -311,14 +308,6 @@ Protected Class WaveAmplitudesTrigFunctions
 		sβ3 As Double
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		ιDN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		β As Double
-	#tag EndProperty
-
 
 	#tag ViewBehavior
 		#tag ViewProperty
@@ -359,22 +348,6 @@ Protected Class WaveAmplitudesTrigFunctions
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ιDN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="β"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
