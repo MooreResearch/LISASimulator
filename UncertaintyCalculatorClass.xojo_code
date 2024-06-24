@@ -32,20 +32,20 @@ Protected Class UncertaintyCalculatorClass
 		  uv(Integer(CaseInfoClass.Param.M)) = uncList(Integer(CaseInfoClass.Param.M))*Parameters.M
 		  uv(Integer(CaseInfoClass.Param.delta)) = uncList(Integer(CaseInfoClass.Param.delta))
 		  uncT1 = Parameters.T0*uncList(Integer(CaseInfoClass.Param.M))  // portion of uncertainty of T0 from uncertainty in mass
-		  uncT2 = -3.0*Parameters.T0*Parameters.V0*Parameters.V0*uncList(Integer(CaseInfoClass.Param.V0)) // portion from uncertainty in lnV0
-		  uv(Integer(CaseInfoClass.Param.V0)) = Sqrt(uncT1*uncT1 + uncT2*uncT2) // This gives the total uncertainty
+		  'uncT2 = -3.0*Parameters.T0*Parameters.V0*Parameters.V0*uncList(Integer(CaseInfoClass.Param.V0)) // portion from uncertainty in lnV0
+		  'uv(Integer(CaseInfoClass.Param.V0)) = Sqrt(uncT1*uncT1 + uncT2*uncT2) // This gives the total uncertainty
 		  uv(Integer(CaseInfoClass.Param.R)) = uncList(Integer(CaseInfoClass.Param.R))*Parameters.R/Parameters.Year
 		  uv(Integer(CaseInfoClass.Param.beta)) = uncList(Integer(CaseInfoClass.Param.beta))*degFromRad
 		  uv(Integer(CaseInfoClass.Param.psi)) = uncList(Integer(CaseInfoClass.Param.psi))*degFromRad
 		  uv(Integer(CaseInfoClass.Param.lambda0)) = uncList(Integer(CaseInfoClass.Param.lambda0))*degFromRad
 		  uv(Integer(CaseInfoClass.Param.theta)) = uncList(Integer(CaseInfoClass.Param.theta))*degFromRad
 		  uv(Integer(CaseInfoClass.Param.phi)) = uncList(Integer(CaseInfoClass.Param.phi))*degFromRad
-		  uv(Integer(CaseInfoClass.Param.chi10x)) = uncList(Integer(CaseInfoClass.Param.chi10x))
-		  uv(Integer(CaseInfoClass.Param.chi10y)) = uncList(Integer(CaseInfoClass.Param.chi10y))
-		  uv(Integer(CaseInfoClass.Param.chi10z)) = uncList(Integer(CaseInfoClass.Param.chi10z))
-		  uv(Integer(CaseInfoClass.Param.chi20x)) = uncList(Integer(CaseInfoClass.Param.chi20x))
-		  uv(Integer(CaseInfoClass.Param.chi20y)) = uncList(Integer(CaseInfoClass.Param.chi20y))
-		  uv(Integer(CaseInfoClass.Param.chi20z)) = uncList(Integer(CaseInfoClass.Param.chi20z))
+		  'uv(Integer(CaseInfoClass.Param.chi10x)) = uncList(Integer(CaseInfoClass.Param.chi10x))
+		  'uv(Integer(CaseInfoClass.Param.chi10y)) = uncList(Integer(CaseInfoClass.Param.chi10y))
+		  'uv(Integer(CaseInfoClass.Param.chi10z)) = uncList(Integer(CaseInfoClass.Param.chi10z))
+		  'uv(Integer(CaseInfoClass.Param.chi20x)) = uncList(Integer(CaseInfoClass.Param.chi20x))
+		  'uv(Integer(CaseInfoClass.Param.chi20y)) = uncList(Integer(CaseInfoClass.Param.chi20y))
+		  'uv(Integer(CaseInfoClass.Param.chi20z)) = uncList(Integer(CaseInfoClass.Param.chi20z))
 		End Sub
 	#tag EndMethod
 
@@ -220,7 +220,7 @@ Protected Class UncertaintyCalculatorClass
 		      jj = jj + 1
 		    End If
 		  Next
-
+		  
 		  
 		End Sub
 	#tag EndMethod

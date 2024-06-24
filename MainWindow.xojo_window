@@ -60,7 +60,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   1000
       Begin DesktopListBox ParamNameListBox
@@ -86,10 +86,10 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   572
+         Height          =   595
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Parameter\nM (sols)\nδ\nT0 (s)\nR (ly)\nβ (°)	\nψ (°)\nλ0\nΘ (°)\nΦ(°)	\nΩ\nχ10x	\nχ10y	\nχ10z	\nχ20x\nχ20y\nx20z\nρ0\nPN Order\nDetectors\nΔT (s)\nDuration (y)"
+         InitialValue    =   "Parameter\nM (sols)\nδ\nTorb (s)\ntc (y)\nR (ly)\nβ (°)	\nψ (°)\nλ0\nΘ (°)\nΦ (°)	\nΩ (/sky)\nχ1	\nθ1 (°)\nφ1 (°)\nχ2\nθ2 (°)\nφ2 (°)\nρ0 (°)\nPN Order\nDetectors\nΔT (s)\nDuration (y)"
          Italic          =   False
          Left            =   31
          LockBottom      =   False
@@ -348,12 +348,12 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   572
+         Height          =   595
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Case 1\n10000\n0.1\n500\n1.0e7\n39\n24\n0\n5\n268.5\n---\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n0\n2\n50\n1.0"
+         InitialValue    =   "Case 1\n10000\n0.1\n500\n---\n1.0e7\n39\n24\n0\n5\n268.5\n---\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n0\n2\n50\n1.0"
          Italic          =   False
-         Left            =   110
+         Left            =   109
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -370,7 +370,7 @@ Begin DesktopWindow MainWindow
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   82
+         Width           =   83
          _ScrollOffset   =   0
          _ScrollWidth    =   -1
       End
@@ -493,31 +493,31 @@ Begin DesktopWindow MainWindow
          FontName        =   "System"
          FontSize        =   0.0
          FontUnit        =   0
-         Height          =   20
+         Height          =   58
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   120
+         Left            =   31
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
          LockTop         =   True
-         Multiline       =   False
+         Multiline       =   True
          Scope           =   0
          Selectable      =   False
          TabIndex        =   8
          TabPanelIndex   =   1
          TabStop         =   True
-         Text            =   "Typing 'x' in the cells for β through χ20z will toggle whether that variable's uncertainty is calculate or not (a displayed 'x' indicates 'not')."
+         Text            =   "Typing 'x' in the cells for β through φ2 will toggle whether that parameter's uncertainty is calculate or not (a displayed 'x' indicates 'not')."
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   597
+         Top             =   645
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   842
+         Width           =   306
       End
       Begin DesktopLabel CaptionForStepRatioLabel
          AllowAutoDeactivate=   True
@@ -551,39 +551,6 @@ Begin DesktopWindow MainWindow
          Underline       =   False
          Visible         =   True
          Width           =   136
-      End
-      Begin DesktopLabel XExplanationLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   39
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   31
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   True
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   8
-         TabPanelIndex   =   1
-         TabStop         =   True
-         Text            =   "Typing 'x' in a cell toggles whether that variable's uncertainty is calculated ('x' = 'not calculated')."
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   622
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   327
       End
       Begin DesktopButton CopyMatrixButton
          AllowAutoDeactivate=   True
@@ -1238,7 +1205,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   482
+         Top             =   509
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1324,10 +1291,10 @@ Begin DesktopWindow MainWindow
          HasHorizontalScrollbar=   False
          HasVerticalScrollbar=   False
          HeadingIndex    =   -1
-         Height          =   441
+         Height          =   466
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Uncertainty\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?"
+         InitialValue    =   "Uncertainty\n?\n?\n---\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?"
          Italic          =   False
          Left            =   202
          LockBottom      =   False
@@ -1377,7 +1344,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   505
+         Top             =   532
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1505,39 +1472,6 @@ Begin DesktopWindow MainWindow
          Visible         =   False
          Width           =   259
       End
-      Begin DesktopLabel CaptionForActualTimeLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   204
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   36
-         TabPanelIndex   =   1
-         TabStop         =   True
-         Text            =   "Actual Duration (y):"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   557
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   156
-      End
       Begin DesktopLabel ValueOfActualTimeLabel
          AllowAutoDeactivate=   True
          Bold            =   False
@@ -1565,7 +1499,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   582
+         Top             =   609
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1727,10 +1661,42 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   80
       End
+      Begin DesktopLabel CaptionForActualTimeLabel
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   204
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   36
+         TabPanelIndex   =   1
+         TabStop         =   True
+         Text            =   "Actual Duration (y):"
+         TextAlignment   =   0
+         TextColor       =   &c000000
+         Tooltip         =   ""
+         Top             =   582
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   156
+      End
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
-      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
@@ -1747,60 +1713,60 @@ End
 	#tag Event
 		Sub Opening()
 		  // Initialize the GraphChoicePopupMenu items
-		  Var tempCase As New CaseInfoClass
-		  Setting = True
-		  GraphChoicePopupMenu.RemoveAllRows
-		  Var theNames() As String = tempCase.GetPlotNames
-		  For i As Integer = 0 To theNames.LastIndex
-		    GraphChoicePopupMenu.AddRow(theNames(i))
-		  Next
-		  Setting = False
+		  'Var tempCase As New CaseInfoClass
+		  'Setting = True
+		  'GraphChoicePopupMenu.RemoveAllRows
+		  'Var theNames() As String = tempCase.GetPlotNames
+		  'For i As Integer = 0 To theNames.LastIndex
+		  'GraphChoicePopupMenu.AddRow(theNames(i))
+		  'Next
+		  'Setting = False
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h0
 		Sub AddCase(Values() As String, DoPlot As Boolean)
-		  Var thisCase As New CaseInfoClass
-		  Var Flag As Boolean
-		  thisCase.SolveFor.ResizeTo(Integer(CaseInfoClass.Param.NItems) - 1)
-		  thisCase.M = GetValueAndSolveFlag(Flag, Values(0))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.M)) = Flag
-		  thisCase.δ = GetValueAndSolveFlag(Flag, Values(1))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.delta)) = Flag
-		  thisCase.T0 = GetValueAndSolveFlag(Flag, Values(2))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.V0)) = Flag
-		  thisCase.R = GetValueAndSolveFlag(Flag, Values(3))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.R)) = Flag
-		  thisCase.β = GetValueAndSolveFlag(Flag, Values(4))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.beta)) = Flag
-		  thisCase.ψ = GetValueAndSolveFlag(Flag, Values(5))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.psi)) = Flag
-		  thisCase.λ0 = GetValueAndSolveFlag(Flag, Values(6))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.lambda0)) = Flag
-		  thisCase.Θ = GetValueAndSolveFlag(Flag, Values(7))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.theta)) = Flag
-		  thisCase.Φ = GetValueAndSolveFlag(Flag, Values(8))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.phi)) = Flag
-		  thisCase.χ10x = GetValueAndSolveFlag(Flag, Values(9))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10x)) = Flag
-		  thisCase.χ10y = GetValueAndSolveFlag(Flag, Values(10))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10y)) = Flag
-		  thisCase.χ10z = GetValueAndSolveFlag(Flag, Values(11))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10z)) = Flag
-		  thisCase.χ20x = GetValueAndSolveFlag(Flag, Values(12))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20x)) = Flag
-		  thisCase.χ20y = GetValueAndSolveFlag(Flag, Values(13))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20y)) = Flag
-		  thisCase.χ20z = GetValueAndSolveFlag(Flag, Values(14))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20z)) = Flag
-		  thisCase.ρ0 = values(15).ToDouble
-		  thisCase.PNOrder = values(16).ToInteger
-		  thisCase.Detectors = values(17).ToInteger
-		  thisCase.ΔT = values(18).ToDouble
-		  thisCase.RunDuration = values(19).ToDouble
-		  thisCase.FinishConstruction
-		  TheCases.Add(thisCase)
+		  'Var thisCase As New CaseInfoClass
+		  'Var Flag As Boolean
+		  'thisCase.SolveFor.ResizeTo(Integer(CaseInfoClass.Param.NItems) - 1)
+		  'thisCase.M = GetValueAndSolveFlag(Flag, Values(0))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.M)) = Flag
+		  'thisCase.δ = GetValueAndSolveFlag(Flag, Values(1))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.delta)) = Flag
+		  'thisCase.T0 = GetValueAndSolveFlag(Flag, Values(2))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.V0)) = Flag
+		  'thisCase.R = GetValueAndSolveFlag(Flag, Values(3))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.R)) = Flag
+		  'thisCase.β = GetValueAndSolveFlag(Flag, Values(4))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.beta)) = Flag
+		  'thisCase.ψ = GetValueAndSolveFlag(Flag, Values(5))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.psi)) = Flag
+		  'thisCase.λ0 = GetValueAndSolveFlag(Flag, Values(6))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.lambda0)) = Flag
+		  'thisCase.Θ = GetValueAndSolveFlag(Flag, Values(7))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.theta)) = Flag
+		  'thisCase.Φ = GetValueAndSolveFlag(Flag, Values(8))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.phi)) = Flag
+		  'thisCase.χ10x = GetValueAndSolveFlag(Flag, Values(9))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10x)) = Flag
+		  'thisCase.χ10y = GetValueAndSolveFlag(Flag, Values(10))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10y)) = Flag
+		  'thisCase.χ10z = GetValueAndSolveFlag(Flag, Values(11))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10z)) = Flag
+		  'thisCase.χ20x = GetValueAndSolveFlag(Flag, Values(12))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20x)) = Flag
+		  'thisCase.χ20y = GetValueAndSolveFlag(Flag, Values(13))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20y)) = Flag
+		  'thisCase.χ20z = GetValueAndSolveFlag(Flag, Values(14))
+		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20z)) = Flag
+		  'thisCase.ρ0 = values(15).ToDouble
+		  'thisCase.PNOrder = values(16).ToInteger
+		  'thisCase.Detectors = values(17).ToInteger
+		  'thisCase.ΔT = values(18).ToDouble
+		  'thisCase.RunDuration = values(19).ToDouble
+		  'thisCase.FinishConstruction
+		  'TheCases.Add(thisCase)
 		End Sub
 	#tag EndMethod
 
@@ -1833,26 +1799,26 @@ End
 
 	#tag Method, Flags = &h0
 		Sub DisplayUncertainties(CaseInfo As CaseInfoClass)
-		  UncertaintyListBox.CellTextAt(0) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.M)))
-		  UncertaintyListBox.CellTextAt(1) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.delta)))
-		  UncertaintyListBox.CellTextAt(2) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.V0)))
-		  UncertaintyListBox.CellTextAt(3) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.R)))
-		  UncertaintyListBox.CellTextAt(4) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.beta)))
-		  UncertaintyListBox.CellTextAt(5) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.psi)))
-		  UncertaintyListBox.CellTextAt(6) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.lambda0)))
-		  Var uTheta As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.theta))
-		  Var uPhi As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.phi))
-		  UncertaintyListBox.CellTextAt(7) = GetUncertaintyString(uTheta)
-		  UncertaintyListBox.CellTextAt(8) = GetUncertaintyString(uPhi)
-		  Var d2r As Double = CaseInfo.π/180.0
-		  Var omega As Double = Sin(CaseInfo.Θ)*uTheta*uPhi/(4*CaseInfo.π)*d2r*d2r
-		  UncertaintyListBox.CellTextAt(9) = GetUncertaintyString(omega)
-		  UncertaintyListBox.CellTextAt(10) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10x)))
-		  UncertaintyListBox.CellTextAt(11) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10y)))
-		  UncertaintyListBox.CellTextAt(12) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10z)))
-		  UncertaintyListBox.CellTextAt(13) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20x)))
-		  UncertaintyListBox.CellTextAt(14) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20y)))
-		  UncertaintyListBox.CellTextAt(15) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20z)))
+		  'UncertaintyListBox.CellTextAt(0) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.M)))
+		  'UncertaintyListBox.CellTextAt(1) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.delta)))
+		  'UncertaintyListBox.CellTextAt(2) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.V0)))
+		  'UncertaintyListBox.CellTextAt(3) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.R)))
+		  'UncertaintyListBox.CellTextAt(4) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.beta)))
+		  'UncertaintyListBox.CellTextAt(5) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.psi)))
+		  'UncertaintyListBox.CellTextAt(6) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.lambda0)))
+		  'Var uTheta As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.theta))
+		  'Var uPhi As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.phi))
+		  'UncertaintyListBox.CellTextAt(7) = GetUncertaintyString(uTheta)
+		  'UncertaintyListBox.CellTextAt(8) = GetUncertaintyString(uPhi)
+		  'Var d2r As Double = CaseInfo.π/180.0
+		  'Var omega As Double = Sin(CaseInfo.Θ)*uTheta*uPhi/(4*CaseInfo.π)*d2r*d2r
+		  'UncertaintyListBox.CellTextAt(9) = GetUncertaintyString(omega)
+		  'UncertaintyListBox.CellTextAt(10) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10x)))
+		  'UncertaintyListBox.CellTextAt(11) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10y)))
+		  'UncertaintyListBox.CellTextAt(12) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi10z)))
+		  'UncertaintyListBox.CellTextAt(13) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20x)))
+		  'UncertaintyListBox.CellTextAt(14) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20y)))
+		  'UncertaintyListBox.CellTextAt(15) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20z)))
 		End Sub
 	#tag EndMethod
 
@@ -1926,19 +1892,19 @@ End
 
 	#tag Method, Flags = &h0
 		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass) As Double
-		  Var parameters As CaseInfoClass = TheSuper.CaseInfo
-		  Var δ As Double = parameters.δ
-		  Var η As Double = 0.25*(1.0 - δ*δ)
-		  Var χa𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χaL
-		  Var χs𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χsL
-		  Var v0 As Double = parameters.V0
-		  Var Threepi As Double = 3.0*parameters.π
-		  Var c As Double = 743.0/2688.0 + (11.0/32.0)*η 
-		  Var Term2 As Double = (32.0/3.0)*c
-		  Var Term3 As Double = (64.0/3.0)*((47.0/40.0)*χs𝓁 + (15.0/32.0)*δ*χa𝓁 - Threepi/10.0)
-		  Var Term4 As Double = 64.0*c*c/9.0 + (128.0/3.0)*(1855099.0/14450688.0 + (56975.0/258048.0)*η + (371.0/2048.0)*η*η)
-		  Var A As Double = 5.0*Parameters.GM/(256.0*η*parameters.Year*v0^8)
-		  Return A*(1 + Term2*v0*v0 + Term3*v0*v0*v0 + Term4*v0*v0*v0*v0)
+		  'Var parameters As CaseInfoClass = TheSuper.CaseInfo
+		  'Var δ As Double = parameters.δ
+		  'Var η As Double = 0.25*(1.0 - δ*δ)
+		  'Var χa𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χaL
+		  'Var χs𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χsL
+		  'Var v0 As Double = parameters.V0
+		  'Var Threepi As Double = 3.0*parameters.π
+		  'Var c As Double = 743.0/2688.0 + (11.0/32.0)*η 
+		  'Var Term2 As Double = (32.0/3.0)*c
+		  'Var Term3 As Double = (64.0/3.0)*((47.0/40.0)*χs𝓁 + (15.0/32.0)*δ*χa𝓁 - Threepi/10.0)
+		  'Var Term4 As Double = 64.0*c*c/9.0 + (128.0/3.0)*(1855099.0/14450688.0 + (56975.0/258048.0)*η + (371.0/2048.0)*η*η)
+		  'Var A As Double = 5.0*Parameters.GM/(256.0*η*parameters.Year*v0^8)
+		  'Return A*(1 + Term2*v0*v0 + Term3*v0*v0*v0 + Term4*v0*v0*v0*v0)
 		  
 		End Function
 	#tag EndMethod
@@ -2316,6 +2282,16 @@ End
 		    DoStop
 		  End If
 		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events UncertaintyListBox
+	#tag Event
+		Function PaintCellBackground(g As Graphics, row As Integer, column As Integer) As Boolean
+		  If row = 3 Then
+		    g.DrawingColor = Color.LightGray
+		    g.FillRectangle(0,0, g.Width, g.Height)
+		  End If
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events FileProgressBar

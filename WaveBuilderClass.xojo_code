@@ -79,523 +79,523 @@ Protected Class WaveBuilderClass
 		  Var fp As Double = fp1 + fp2
 		  Var fx As Double = fx1 + fx2
 		  
-		  // Assemble the base case situation
-		  ΨrDP = ΨrDN // store the current received phase value as the past value before we update
-		  ΨDP = ΨDN // and the same for the source phase
-		  DΨrDΘDP = DΨrDΘDN  // and the same for the phase derivatives
-		  DΨrDΦDP = DΨrDΦDN
-		  GetDataAtDetectorStep(SourceEvolverBase) // get the data from the base case at the present step
-		  // now we need to update the phase. The method just above will get ΨDN
-		  // note that we have set up τrDN and τrDP in t DidDetectorStepOK method)he
-		  Var orbitArg As Double = Parameters.GMΩe*0.5*(τrDN + τrDP) - Parameters.Φ
-		  ΨrDN = ΨrDP + (1.0 + VeSinΘ*Sin(orbitArg))*(ΨDN - ΨDP)  // update the received phase to the present
-		  DΨrDΘDN = DΨrDΘDP + VeCosΘ*Sin(orbitArg)*(ΨDN - ΨDP)  // update the derivative with respect to Θ
-		  DΨrDΦDN = DΨrDΦDP - VeSinΘ*Cos(orbitArg)*(ΨDN - ΨDP)  // update the derivative with respect to Φ
-		  // Now that we have the current value of the received phase, we can calculate the wave factors, amplitudes, and assemble the wave
-		  CalculateWaveFactors
-		  CalculateAmplitudes
-		  SumSourceH(W)  // this will put the total plus and  cross polarizations into HP and HX
-		  
-		  // Store valuable variables for later use
-		  Var hpBase As Double = HP
-		  Var hxBase As Double = HX
-		  Var hBase As Double = fp*HP + fx*HX
-		  SumSourceH(DWDα)
-		  Var dHDα As Double = fp*HP + fx*HX
-		  SumSourceH(DWDΨ)
-		  Var dHDΨr As Double = fp*HP + fx*HX
-		  // This gets the derivative of the amplitude part of the wave with respect to V
-		  SumSourceH(W, True)
-		  Var dHDV As Double = fp*HP + fx*HX
-		  
-		  // Calculate the derivative with respect to M (this is the easy one!)
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.M)) Then
-		    DHDq(Integer(CaseInfoClass.Param.M)) = hBase
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.M)) = 0.0
-		  End If
-		  
-		  // Calculate the derivative with respect to ψ (this is the next easiest!)
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.psi)) Then
-		    DHDq(Integer(CaseInfoClass.Param.psi)) = 2.0*(-fx*hpBase + fp*hxBase)
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.psi)) = 0.0
-		  End If
-		  
-		  // in the case of λ0, DΨrDλ0 = 1, so the following is the correct total derivative.
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.lambda0)) Then
-		    DHDq(Integer(CaseInfoClass.Param.lambda0)) = dHDΨr
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.lambda0)) = 0.0
-		  End If
-		  
-		  // We can also use the above items to calculate the derivative with respect to Θ
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.theta)) Then
-		    DHDq(Integer(CaseInfoClass.Param.theta)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
-		    + dHDΨr*DΨrDΘDN
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.theta)) = 0.0
-		  End If
-		  
-		  // and the derivative with respect to Φ
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.phi)) Then
-		    DHDq(Integer(CaseInfoClass.Param.phi)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
-		    + dHDΨr*DΨrDΦDN
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.phi)) = 0.0
-		  End If
-		  
-		  // Now we will start calculating derivatives that involve derivatives of the wave amplitudes
-		  
-		  Var originalValue As Double
-		  Var originalValue2 As Double
-		  Var hPlus As Double
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.beta)) Then
-		    // First, calculate the derivative with respect to β
-		    originalValue = Cosβ // Store these values for safekeeping
-		    originalValue2 = Sinβ
-		    Cosβ = CosβPlus  // Reset their values to the plus tweaked versions
-		    Sinβ = SinβPlus
-		    CalculateAmplitudes  // calculate amplitudes using these tweaked values
-		    SumSourceH(W)  // and calculate the waves with these amplitudes
-		    hPlus= fp*HP + fx*HX  // save the results for later
-		    Cosβ = CosβMinus  // now reset the values of Cosβ, Sinβ to the minus tweaked version
-		    Sinβ = SinβMinus
-		    CalculateAmplitudes // calculate the amplitudes using these tweaked values
-		    SumSourceH(W) // and calculate the waves
-		    Cosβ = originalValue  // restore the original values of of Cosβ, Sinβ, so that no harm is done
-		    Sinβ = originalValue2
-		    DHDq(Integer(CaseInfoClass.Param.beta)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.beta)) = 0.0
-		  End If
-		  
-		  // Most of the remaining parameters require all or nearly all the following amplitude derivatives
-		  // because varying the parameters have either implicit or explicit effects on the quantities that
-		  // the wave amplitudes depend on.
-		  
-		  // Calculate amplitude derivative with respect to ι
-		  Var ε As Double = 1.0e-5
-		  originalValue = ιDN
-		  ιDN = ιDN + ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  hPlus = fp*HP + fx*HX
-		  ιDN = originalValue - ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  ιDN = originalValue
-		  Var dHDι As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
-		  
-		  // Calculate amplitude derivative with respect to δ
-		  ε = 1.0e-5  // (one can reset this for individual cases if desired without affecting others)
-		  originalValue = δ
-		  originalValue2 = η
-		  δ = δ + ε
-		  η = 0.25*(1.0-δ*δ)
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  hPlus = fp*HP + fx*HX
-		  δ = originalValue - ε
-		  η = 0.25*(1.0-δ*δ)
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  δ = originalValue
-		  η = originalValue2
-		  Var dHDδ As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
-		  
-		  // Calculate amplitude derivative with respect to χax
-		  ε = 1.0e-5
-		  originalValue = χaxDN
-		  χaxDN = χaxDN + ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  hPlus = fp*HP + fx*HX
-		  χaxDN = originalValue - ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  χaxDN = originalValue
-		  Var dHDχax As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
-		  
-		  // Calculate amplitude derivative with respect to χay
-		  ε = 1.0e-5
-		  originalValue = χayDN
-		  χayDN = χayDN + ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  hPlus = fp*HP + fx*HX
-		  χayDN = originalValue - ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  χayDN = originalValue
-		  Var dHDχay As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
-		  
-		  // Calculate amplitude derivative with respect to χaz
-		  ε = 1.0e-5
-		  originalValue = χazDN
-		  χazDN = χazDN + ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  hPlus = fp*HP + fx*HX
-		  χazDN = originalValue - ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  χazDN = originalValue
-		  Var dHDχaz As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
-		  
-		  // Calculate amplitude derivative with respect to χsx
-		  ε = 1.0e-5
-		  originalValue = χsxDN
-		  χsxDN = χsxDN + ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  hPlus = fp*HP + fx*HX
-		  χsxDN = originalValue - ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  χsxDN = originalValue
-		  Var dHDχsx As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
-		  
-		  // Calculate amplitude derivative with respect to χsy
-		  ε = 1.0e-5
-		  originalValue = χsyDN
-		  χsyDN = χsyDN + ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  hPlus = fp*HP + fx*HX
-		  χsyDN = originalValue - ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  χsyDN = originalValue
-		  Var dHDχsy As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
-		  
-		  // Calculate amplitude derivative with respect to χsz
-		  ε = 1.0e-5
-		  originalValue = χszDN
-		  χszDN = χszDN + ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  hPlus = fp*HP + fx*HX
-		  χszDN = originalValue - ε
-		  CalculateAmplitudes
-		  SumSourceH(W)
-		  χszDN = originalValue
-		  Var dHDχsz As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
-		  
-		  // We need to define a bunch of variables to be used later
-		  Var ιPlus As Double
-		  Var αPlus As Double
-		  Var ΨrPlus As Double
-		  Var VPlus As Double
-		  Var χaxPlus As Double
-		  Var χayPlus As Double
-		  Var χazPlus As Double
-		  Var χsxPlus As Double
-		  Var χsyPlus As Double
-		  Var χszPlus As Double
-		  // These variables will hold derivatives
-		  Var dαDq As Double
-		  Var dΨrDq As Double
-		  Var dVDq As Double 
-		  Var dιDq As Double
-		  Var dχaxDq As Double
-		  Var dχayDq As Double
-		  Var dχazDq As Double
-		  Var dχsxDq As Double
-		  Var dχsyDq As Double
-		  Var dχszDq As Double
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.R)) Then
-		    // Calculate the derivative with respect to q = lnR
-		    dαDq = -(αDN - α0)*Parameters.OneI1pZ*DZDlnR
-		    dΨrDq = -(ΨrDN - Parameters.λ0)*Parameters.OneI1pZ*DZDlnR
-		    dVDq = -(VDN - Parameters.V0)*Parameters.OneI1pZ*DZDlnR
-		    dιDq = -(ιDN - ι0)*Parameters.OneI1pZ*DZDlnR
-		    dχaxDq = -(χaxDN - χax0)*Parameters.OneI1pZ*DZDlnR
-		    dχayDq = -(χayDN - χay0)*Parameters.OneI1pZ*DZDlnR
-		    dχazDq = -(χazDN - χaz0)*Parameters.OneI1pZ*DZDlnR
-		    dχsxDq = -(χsxDN - χsx0)*Parameters.OneI1pZ*DZDlnR
-		    dχsyDq = -(χsyDN - χsy0)*Parameters.OneI1pZ*DZDlnR
-		    dχszDq = -(χszDN - χsz0)*Parameters.OneI1pZ*DZDlnR
-		    
-		    // Now, we put it all together (The first term is actually the derivative of h0 with respect to lnR).
-		    DHDq(Integer(CaseInfoClass.Param.R))  = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq+ dHDχsz*dχszDq
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.R))  = 0.0
-		  End If
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.V0)) Then
-		    // Calculate the derivative with respect to q = lnV0
-		    GetDataAtDetectorStep(SourceEvolverV0Plus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverV0Minus)
-		    dαDq = (αPlus - αDN)*IDεForV0
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForV0
-		    dιDq = (ιPlus - ιDN)*IDεForV0
-		    dVDq = (VPlus - VDN)*IDεForV0
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForV0
-		    dχayDq = (χayPlus - χayDN)*IDεForV0
-		    dχazDq = (χazPlus - χazDN)*IDεForV0
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForV0
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForV0
-		    dχszDq = (χszPlus - χszDN)*IDεForV0
-		    // Put it all together
-		    DHDq(Integer(CaseInfoClass.Param.V0)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.V0)) = 0.0
-		  End If
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.delta)) Then
-		    // Calculate the derivative with respect to q = δ
-		    GetDataAtDetectorStep(SourceEvolverδPlus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverδMinus)
-		    dαDq = (αPlus - αDN)*IDεForδ
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForδ
-		    dVDq = (VPlus - VDN)*IDεForδ
-		    dιDq = (ιPlus - ιDN)*IDεForδ
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForδ
-		    dχayDq = (χayPlus - χayDN)*IDεForδ
-		    dχazDq = (χazPlus - χazDN)*IDεForδ
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForδ
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForδ
-		    dχszDq = (χszPlus - χszDN)*IDεForδ
-		    // Put it all together
-		    DHDq(Integer(CaseInfoClass.Param.delta)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.delta)) = 0.0
-		  End If
-		  
-		  '// Code to display values
-		  'Var ιPlusStr as String = Format(ιPlus, "0.00000000000000e+00")
-		  'Var αPlusStr as String = Format(αPlus, "0.00000000000000e+00")
-		  'Var ΨrPlusStr as String = Format(ΨrPlus, "0.00000000000000e+00")
-		  'Var VPlusStr as String = Format(VPlus, "0.00000000000000e+00")
-		  'Var ιDNStr as String = Format(ιDN, "0.00000000000000e+00")
-		  'Var αDNStr as String = Format(αDN, "0.00000000000000e+00")
-		  'Var ΨrDNStr as String = Format(ΨrDN, "0.00000000000000e+00")
-		  'Var VDNStr as String = Format(VDN, "0.00000000000000e+00")
-		  'Var dHDιStr as String = Format(dHDι, "0.00000000000000e+00")
-		  'Var dHDαStr as String = Format(dHDα, "0.00000000000000e+00")
-		  'Var dHDΨrStr as String = Format(dHDΨr, "0.00000000000000e+00")
-		  'Var dHDVStr as String = Format(dHDV, "0.00000000000000e+00")
-		  'Var dHDM1Str as String = Format(DHDq(Integer(Item.M1)), "0.00000000000000e+00")
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi10x)) Then
-		    // Calculate the derivative with respect to q = χ10x
-		    GetDataAtDetectorStep(SourceEvolverχ10xPlus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverχ10xMinus)
-		    dαDq = (αPlus - αDN)*IDεForχ10x
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10x
-		    dVDq = (VPlus - VDN)*IDεForχ10x
-		    dιDq = (ιPlus - ιDN)*IDεForχ10x
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ10x
-		    dχayDq = (χayPlus - χayDN)*IDεForχ10x
-		    dχazDq = (χazPlus - χazDN)*IDεForχ10x
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ10x
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10x
-		    dχszDq = (χszPlus - χszDN)*IDεForχ10x
-		    // Put it all together
-		    DHDq(Integer(CaseInfoClass.Param.chi10x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.chi10x)) = 0.0
-		  End If
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi10y)) Then
-		    // Calculate the derivative with respect to q = χ10y
-		    GetDataAtDetectorStep(SourceEvolverχ10yPlus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverχ10yMinus)
-		    dαDq = (αPlus - αDN)*IDεForχ10y
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10y
-		    dVDq = (VPlus - VDN)*IDεForχ10y
-		    dιDq = (ιPlus - ιDN)*IDεForχ10y
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ10y
-		    dχayDq = (χayPlus - χayDN)*IDεForχ10y
-		    dχazDq = (χazPlus - χazDN)*IDεForχ10y
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ10y
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10y
-		    dχszDq = (χszPlus - χszDN)*IDεForχ10y
-		    // Put it all together
-		    DHDq(Integer(CaseInfoClass.Param.chi10y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.chi10y)) = 0.0
-		  End If
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi10z)) Then
-		    // Calculate the derivative with respect to q = χ10z
-		    GetDataAtDetectorStep(SourceEvolverχ10zPlus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverχ10zMinus)
-		    dαDq = (αPlus - αDN)*IDεForχ10z
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10z
-		    dVDq = (VPlus - VDN)*IDεForχ10z
-		    dιDq = (ιPlus - ιDN)*IDεForχ10z
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ10z
-		    dχayDq = (χayPlus - χayDN)*IDεForχ10z
-		    dχazDq = (χazPlus - χazDN)*IDεForχ10z
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ10z
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ10z
-		    dχszDq = (χszPlus - χszDN)*IDεForχ10z
-		    // Put it all together
-		    DHDq(Integer(CaseInfoClass.Param.chi10z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.chi10z)) = 0.0
-		  End If
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi20x)) Then
-		    // Calculate the derivative with respect to q = χ20x
-		    GetDataAtDetectorStep(SourceEvolverχ20xPlus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverχ20xMinus)
-		    dαDq = (αPlus - αDN)*IDεForχ20x
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20x
-		    dVDq = (VPlus - VDN)*IDεForχ20x
-		    dιDq = (ιPlus - ιDN)*IDεForχ20x
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ20x
-		    dχayDq = (χayPlus - χayDN)*IDεForχ20x
-		    dχazDq = (χazPlus - χazDN)*IDεForχ20x
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ20x
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20x
-		    dχszDq = (χszPlus - χszDN)*IDεForχ20x
-		    // Put it all together
-		    DHDq(Integer(CaseInfoClass.Param.chi20x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.chi20x)) = 0.0
-		  End If
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi20y)) Then
-		    // Calculate the derivative with respect to q = χ20y
-		    GetDataAtDetectorStep(SourceEvolverχ20yPlus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverχ20yMinus)
-		    dαDq = (αPlus - αDN)*IDεForχ20y
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20y
-		    dVDq = (VPlus - VDN)*IDεForχ20y
-		    dιDq = (ιPlus - ιDN)*IDεForχ20y
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ20y
-		    dχayDq = (χayPlus - χayDN)*IDεForχ20y
-		    dχazDq = (χazPlus - χazDN)*IDεForχ20y
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ20y
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20y
-		    dχszDq = (χszPlus - χszDN)*IDεForχ20y
-		    // Put it all together
-		    DHDq(Integer(CaseInfoClass.Param.chi20y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.chi20y)) = 0.0
-		  End If
-		  
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi20z)) Then
-		    // Calculate the derivative with respect to q = χ20z
-		    GetDataAtDetectorStep(SourceEvolverχ20zPlus)
-		    ιPlus = ιDN
-		    αPlus = αDN
-		    ΨrPlus = ΨrDN
-		    VPlus = VDN
-		    χaxPlus = χaxDN
-		    χayPlus = χayDN
-		    χazPlus = χazDN
-		    χsxPlus = χsxDN
-		    χsyPlus = χsyDN
-		    χszPlus = χszDN
-		    GetDataAtDetectorStep(SourceEvolverχ20zMinus)
-		    dαDq = (αPlus - αDN)*IDεForχ20z
-		    dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20z
-		    dVDq = (VPlus - VDN)*IDεForχ20z
-		    dιDq = (ιPlus - ιDN)*IDεForχ20z
-		    dχaxDq = (χaxPlus - χaxDN)*IDεForχ20z
-		    dχayDq = (χayPlus - χayDN)*IDεForχ20z
-		    dχazDq = (χazPlus - χazDN)*IDεForχ20z
-		    dχsxDq = (χsxPlus - χsxDN)*IDεForχ20z
-		    dχsyDq = (χsyPlus - χsyDN)*IDεForχ20z
-		    dχszDq = (χszPlus - χszDN)*IDεForχ20z
-		    // Put it all together
-		    DHDq(Integer(CaseInfoClass.Param.chi20z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
-		    + dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
-		    + dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
-		  Else
-		    DHDq(Integer(CaseInfoClass.Param.chi20z)) = 0.0
-		  End If
+		  '// Assemble the base case situation
+		  'ΨrDP = ΨrDN // store the current received phase value as the past value before we update
+		  'ΨDP = ΨDN // and the same for the source phase
+		  'DΨrDΘDP = DΨrDΘDN  // and the same for the phase derivatives
+		  'DΨrDΦDP = DΨrDΦDN
+		  'GetDataAtDetectorStep(SourceEvolverBase) // get the data from the base case at the present step
+		  '// now we need to update the phase. The method just above will get ΨDN
+		  '// note that we have set up τrDN and τrDP in t DidDetectorStepOK method)he
+		  'Var orbitArg As Double = Parameters.GMΩe*0.5*(τrDN + τrDP) - Parameters.Φ
+		  'ΨrDN = ΨrDP + (1.0 + VeSinΘ*Sin(orbitArg))*(ΨDN - ΨDP)  // update the received phase to the present
+		  'DΨrDΘDN = DΨrDΘDP + VeCosΘ*Sin(orbitArg)*(ΨDN - ΨDP)  // update the derivative with respect to Θ
+		  'DΨrDΦDN = DΨrDΦDP - VeSinΘ*Cos(orbitArg)*(ΨDN - ΨDP)  // update the derivative with respect to Φ
+		  '// Now that we have the current value of the received phase, we can calculate the wave factors, amplitudes, and assemble the wave
+		  'CalculateWaveFactors
+		  'CalculateAmplitudes
+		  'SumSourceH(W)  // this will put the total plus and  cross polarizations into HP and HX
+		  '
+		  '// Store valuable variables for later use
+		  'Var hpBase As Double = HP
+		  'Var hxBase As Double = HX
+		  'Var hBase As Double = fp*HP + fx*HX
+		  'SumSourceH(DWDα)
+		  'Var dHDα As Double = fp*HP + fx*HX
+		  'SumSourceH(DWDΨ)
+		  'Var dHDΨr As Double = fp*HP + fx*HX
+		  '// This gets the derivative of the amplitude part of the wave with respect to V
+		  'SumSourceH(W, True)
+		  'Var dHDV As Double = fp*HP + fx*HX
+		  '
+		  '// Calculate the derivative with respect to M (this is the easy one!)
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.M)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.M)) = hBase
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.M)) = 0.0
+		  'End If
+		  '
+		  '// Calculate the derivative with respect to ψ (this is the next easiest!)
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.psi)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.psi)) = 2.0*(-fx*hpBase + fp*hxBase)
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.psi)) = 0.0
+		  'End If
+		  '
+		  '// in the case of λ0, DΨrDλ0 = 1, so the following is the correct total derivative.
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.lambda0)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.lambda0)) = dHDΨr
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.lambda0)) = 0.0
+		  'End If
+		  '
+		  '// We can also use the above items to calculate the derivative with respect to Θ
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.theta)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.theta)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
+		  '+ dHDΨr*DΨrDΘDN
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.theta)) = 0.0
+		  'End If
+		  '
+		  '// and the derivative with respect to Φ
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.phi)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.phi)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
+		  '+ dHDΨr*DΨrDΦDN
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.phi)) = 0.0
+		  'End If
+		  '
+		  '// Now we will start calculating derivatives that involve derivatives of the wave amplitudes
+		  '
+		  'Var originalValue As Double
+		  'Var originalValue2 As Double
+		  'Var hPlus As Double
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.beta)) Then
+		  '// First, calculate the derivative with respect to β
+		  'originalValue = Cosβ // Store these values for safekeeping
+		  'originalValue2 = Sinβ
+		  'Cosβ = CosβPlus  // Reset their values to the plus tweaked versions
+		  'Sinβ = SinβPlus
+		  'CalculateAmplitudes  // calculate amplitudes using these tweaked values
+		  'SumSourceH(W)  // and calculate the waves with these amplitudes
+		  'hPlus= fp*HP + fx*HX  // save the results for later
+		  'Cosβ = CosβMinus  // now reset the values of Cosβ, Sinβ to the minus tweaked version
+		  'Sinβ = SinβMinus
+		  'CalculateAmplitudes // calculate the amplitudes using these tweaked values
+		  'SumSourceH(W) // and calculate the waves
+		  'Cosβ = originalValue  // restore the original values of of Cosβ, Sinβ, so that no harm is done
+		  'Sinβ = originalValue2
+		  'DHDq(Integer(CaseInfoClass.Param.beta)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.beta)) = 0.0
+		  'End If
+		  '
+		  '// Most of the remaining parameters require all or nearly all the following amplitude derivatives
+		  '// because varying the parameters have either implicit or explicit effects on the quantities that
+		  '// the wave amplitudes depend on.
+		  '
+		  '// Calculate amplitude derivative with respect to ι
+		  'Var ε As Double = 1.0e-5
+		  'originalValue = ιDN
+		  'ιDN = ιDN + ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'hPlus = fp*HP + fx*HX
+		  'ιDN = originalValue - ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'ιDN = originalValue
+		  'Var dHDι As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  '
+		  '// Calculate amplitude derivative with respect to δ
+		  'ε = 1.0e-5  // (one can reset this for individual cases if desired without affecting others)
+		  'originalValue = δ
+		  'originalValue2 = η
+		  'δ = δ + ε
+		  'η = 0.25*(1.0-δ*δ)
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'hPlus = fp*HP + fx*HX
+		  'δ = originalValue - ε
+		  'η = 0.25*(1.0-δ*δ)
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'δ = originalValue
+		  'η = originalValue2
+		  'Var dHDδ As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  '
+		  '// Calculate amplitude derivative with respect to χax
+		  'ε = 1.0e-5
+		  'originalValue = χaxDN
+		  'χaxDN = χaxDN + ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'hPlus = fp*HP + fx*HX
+		  'χaxDN = originalValue - ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'χaxDN = originalValue
+		  'Var dHDχax As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  '
+		  '// Calculate amplitude derivative with respect to χay
+		  'ε = 1.0e-5
+		  'originalValue = χayDN
+		  'χayDN = χayDN + ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'hPlus = fp*HP + fx*HX
+		  'χayDN = originalValue - ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'χayDN = originalValue
+		  'Var dHDχay As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  '
+		  '// Calculate amplitude derivative with respect to χaz
+		  'ε = 1.0e-5
+		  'originalValue = χazDN
+		  'χazDN = χazDN + ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'hPlus = fp*HP + fx*HX
+		  'χazDN = originalValue - ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'χazDN = originalValue
+		  'Var dHDχaz As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  '
+		  '// Calculate amplitude derivative with respect to χsx
+		  'ε = 1.0e-5
+		  'originalValue = χsxDN
+		  'χsxDN = χsxDN + ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'hPlus = fp*HP + fx*HX
+		  'χsxDN = originalValue - ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'χsxDN = originalValue
+		  'Var dHDχsx As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  '
+		  '// Calculate amplitude derivative with respect to χsy
+		  'ε = 1.0e-5
+		  'originalValue = χsyDN
+		  'χsyDN = χsyDN + ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'hPlus = fp*HP + fx*HX
+		  'χsyDN = originalValue - ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'χsyDN = originalValue
+		  'Var dHDχsy As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  '
+		  '// Calculate amplitude derivative with respect to χsz
+		  'ε = 1.0e-5
+		  'originalValue = χszDN
+		  'χszDN = χszDN + ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'hPlus = fp*HP + fx*HX
+		  'χszDN = originalValue - ε
+		  'CalculateAmplitudes
+		  'SumSourceH(W)
+		  'χszDN = originalValue
+		  'Var dHDχsz As Double = (hPlus - fp*HP - fx*HX)/(2.0*ε)
+		  '
+		  '// We need to define a bunch of variables to be used later
+		  'Var ιPlus As Double
+		  'Var αPlus As Double
+		  'Var ΨrPlus As Double
+		  'Var VPlus As Double
+		  'Var χaxPlus As Double
+		  'Var χayPlus As Double
+		  'Var χazPlus As Double
+		  'Var χsxPlus As Double
+		  'Var χsyPlus As Double
+		  'Var χszPlus As Double
+		  '// These variables will hold derivatives
+		  'Var dαDq As Double
+		  'Var dΨrDq As Double
+		  'Var dVDq As Double 
+		  'Var dιDq As Double
+		  'Var dχaxDq As Double
+		  'Var dχayDq As Double
+		  'Var dχazDq As Double
+		  'Var dχsxDq As Double
+		  'Var dχsyDq As Double
+		  'Var dχszDq As Double
+		  '
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.R)) Then
+		  '// Calculate the derivative with respect to q = lnR
+		  'dαDq = -(αDN - α0)*Parameters.OneI1pZ*DZDlnR
+		  'dΨrDq = -(ΨrDN - Parameters.λ0)*Parameters.OneI1pZ*DZDlnR
+		  ''dVDq = -(VDN - Parameters.V0)*Parameters.OneI1pZ*DZDlnR
+		  'dιDq = -(ιDN - ι0)*Parameters.OneI1pZ*DZDlnR
+		  'dχaxDq = -(χaxDN - χax0)*Parameters.OneI1pZ*DZDlnR
+		  'dχayDq = -(χayDN - χay0)*Parameters.OneI1pZ*DZDlnR
+		  'dχazDq = -(χazDN - χaz0)*Parameters.OneI1pZ*DZDlnR
+		  'dχsxDq = -(χsxDN - χsx0)*Parameters.OneI1pZ*DZDlnR
+		  'dχsyDq = -(χsyDN - χsy0)*Parameters.OneI1pZ*DZDlnR
+		  'dχszDq = -(χszDN - χsz0)*Parameters.OneI1pZ*DZDlnR
+		  '
+		  '// Now, we put it all together (The first term is actually the derivative of h0 with respect to lnR).
+		  'DHDq(Integer(CaseInfoClass.Param.R))  = -hBase + dHDα*dαDq + dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq+ dHDχsz*dχszDq
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.R))  = 0.0
+		  'End If
+		  '
+		  ''If Parameters.SolveFor(Integer(CaseInfoClass.Param.V0)) Then
+		  ''// Calculate the derivative with respect to q = lnV0
+		  ''GetDataAtDetectorStep(SourceEvolverV0Plus)
+		  ''ιPlus = ιDN
+		  ''αPlus = αDN
+		  ''ΨrPlus = ΨrDN
+		  ''VPlus = VDN
+		  ''χaxPlus = χaxDN
+		  ''χayPlus = χayDN
+		  ''χazPlus = χazDN
+		  ''χsxPlus = χsxDN
+		  ''χsyPlus = χsyDN
+		  ''χszPlus = χszDN
+		  ''GetDataAtDetectorStep(SourceEvolverV0Minus)
+		  ''dαDq = (αPlus - αDN)*IDεForV0
+		  ''dΨrDq = (ΨrPlus - ΨrDN)*IDεForV0
+		  ''dιDq = (ιPlus - ιDN)*IDεForV0
+		  ''dVDq = (VPlus - VDN)*IDεForV0
+		  ''dχaxDq = (χaxPlus - χaxDN)*IDεForV0
+		  ''dχayDq = (χayPlus - χayDN)*IDεForV0
+		  ''dχazDq = (χazPlus - χazDN)*IDεForV0
+		  ''dχsxDq = (χsxPlus - χsxDN)*IDεForV0
+		  ''dχsyDq = (χsyPlus - χsyDN)*IDεForV0
+		  ''dχszDq = (χszPlus - χszDN)*IDεForV0
+		  ''// Put it all together
+		  ''DHDq(Integer(CaseInfoClass.Param.V0)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  ''+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  ''+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  ''Else
+		  ''DHDq(Integer(CaseInfoClass.Param.V0)) = 0.0
+		  ''End If
+		  '
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.delta)) Then
+		  '// Calculate the derivative with respect to q = δ
+		  'GetDataAtDetectorStep(SourceEvolverδPlus)
+		  'ιPlus = ιDN
+		  'αPlus = αDN
+		  'ΨrPlus = ΨrDN
+		  'VPlus = VDN
+		  'χaxPlus = χaxDN
+		  'χayPlus = χayDN
+		  'χazPlus = χazDN
+		  'χsxPlus = χsxDN
+		  'χsyPlus = χsyDN
+		  'χszPlus = χszDN
+		  'GetDataAtDetectorStep(SourceEvolverδMinus)
+		  'dαDq = (αPlus - αDN)*IDεForδ
+		  'dΨrDq = (ΨrPlus - ΨrDN)*IDεForδ
+		  'dVDq = (VPlus - VDN)*IDεForδ
+		  'dιDq = (ιPlus - ιDN)*IDεForδ
+		  'dχaxDq = (χaxPlus - χaxDN)*IDεForδ
+		  'dχayDq = (χayPlus - χayDN)*IDεForδ
+		  'dχazDq = (χazPlus - χazDN)*IDεForδ
+		  'dχsxDq = (χsxPlus - χsxDN)*IDεForδ
+		  'dχsyDq = (χsyPlus - χsyDN)*IDεForδ
+		  'dχszDq = (χszPlus - χszDN)*IDεForδ
+		  '// Put it all together
+		  'DHDq(Integer(CaseInfoClass.Param.delta)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.delta)) = 0.0
+		  'End If
+		  '
+		  ''// Code to display values
+		  ''Var ιPlusStr as String = Format(ιPlus, "0.00000000000000e+00")
+		  ''Var αPlusStr as String = Format(αPlus, "0.00000000000000e+00")
+		  ''Var ΨrPlusStr as String = Format(ΨrPlus, "0.00000000000000e+00")
+		  ''Var VPlusStr as String = Format(VPlus, "0.00000000000000e+00")
+		  ''Var ιDNStr as String = Format(ιDN, "0.00000000000000e+00")
+		  ''Var αDNStr as String = Format(αDN, "0.00000000000000e+00")
+		  ''Var ΨrDNStr as String = Format(ΨrDN, "0.00000000000000e+00")
+		  ''Var VDNStr as String = Format(VDN, "0.00000000000000e+00")
+		  ''Var dHDιStr as String = Format(dHDι, "0.00000000000000e+00")
+		  ''Var dHDαStr as String = Format(dHDα, "0.00000000000000e+00")
+		  ''Var dHDΨrStr as String = Format(dHDΨr, "0.00000000000000e+00")
+		  ''Var dHDVStr as String = Format(dHDV, "0.00000000000000e+00")
+		  ''Var dHDM1Str as String = Format(DHDq(Integer(Item.M1)), "0.00000000000000e+00")
+		  '
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi10x)) Then
+		  '// Calculate the derivative with respect to q = χ10x
+		  'GetDataAtDetectorStep(SourceEvolverχ10xPlus)
+		  'ιPlus = ιDN
+		  'αPlus = αDN
+		  'ΨrPlus = ΨrDN
+		  'VPlus = VDN
+		  'χaxPlus = χaxDN
+		  'χayPlus = χayDN
+		  'χazPlus = χazDN
+		  'χsxPlus = χsxDN
+		  'χsyPlus = χsyDN
+		  'χszPlus = χszDN
+		  'GetDataAtDetectorStep(SourceEvolverχ10xMinus)
+		  'dαDq = (αPlus - αDN)*IDεForχ10x
+		  'dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10x
+		  'dVDq = (VPlus - VDN)*IDεForχ10x
+		  'dιDq = (ιPlus - ιDN)*IDεForχ10x
+		  'dχaxDq = (χaxPlus - χaxDN)*IDεForχ10x
+		  'dχayDq = (χayPlus - χayDN)*IDεForχ10x
+		  'dχazDq = (χazPlus - χazDN)*IDεForχ10x
+		  'dχsxDq = (χsxPlus - χsxDN)*IDεForχ10x
+		  'dχsyDq = (χsyPlus - χsyDN)*IDεForχ10x
+		  'dχszDq = (χszPlus - χszDN)*IDεForχ10x
+		  '// Put it all together
+		  'DHDq(Integer(CaseInfoClass.Param.chi10x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.chi10x)) = 0.0
+		  'End If
+		  '
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi10y)) Then
+		  '// Calculate the derivative with respect to q = χ10y
+		  'GetDataAtDetectorStep(SourceEvolverχ10yPlus)
+		  'ιPlus = ιDN
+		  'αPlus = αDN
+		  'ΨrPlus = ΨrDN
+		  'VPlus = VDN
+		  'χaxPlus = χaxDN
+		  'χayPlus = χayDN
+		  'χazPlus = χazDN
+		  'χsxPlus = χsxDN
+		  'χsyPlus = χsyDN
+		  'χszPlus = χszDN
+		  'GetDataAtDetectorStep(SourceEvolverχ10yMinus)
+		  'dαDq = (αPlus - αDN)*IDεForχ10y
+		  'dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10y
+		  'dVDq = (VPlus - VDN)*IDεForχ10y
+		  'dιDq = (ιPlus - ιDN)*IDεForχ10y
+		  'dχaxDq = (χaxPlus - χaxDN)*IDεForχ10y
+		  'dχayDq = (χayPlus - χayDN)*IDεForχ10y
+		  'dχazDq = (χazPlus - χazDN)*IDεForχ10y
+		  'dχsxDq = (χsxPlus - χsxDN)*IDεForχ10y
+		  'dχsyDq = (χsyPlus - χsyDN)*IDεForχ10y
+		  'dχszDq = (χszPlus - χszDN)*IDεForχ10y
+		  '// Put it all together
+		  'DHDq(Integer(CaseInfoClass.Param.chi10y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.chi10y)) = 0.0
+		  'End If
+		  '
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi10z)) Then
+		  '// Calculate the derivative with respect to q = χ10z
+		  'GetDataAtDetectorStep(SourceEvolverχ10zPlus)
+		  'ιPlus = ιDN
+		  'αPlus = αDN
+		  'ΨrPlus = ΨrDN
+		  'VPlus = VDN
+		  'χaxPlus = χaxDN
+		  'χayPlus = χayDN
+		  'χazPlus = χazDN
+		  'χsxPlus = χsxDN
+		  'χsyPlus = χsyDN
+		  'χszPlus = χszDN
+		  'GetDataAtDetectorStep(SourceEvolverχ10zMinus)
+		  'dαDq = (αPlus - αDN)*IDεForχ10z
+		  'dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ10z
+		  'dVDq = (VPlus - VDN)*IDεForχ10z
+		  'dιDq = (ιPlus - ιDN)*IDεForχ10z
+		  'dχaxDq = (χaxPlus - χaxDN)*IDεForχ10z
+		  'dχayDq = (χayPlus - χayDN)*IDεForχ10z
+		  'dχazDq = (χazPlus - χazDN)*IDεForχ10z
+		  'dχsxDq = (χsxPlus - χsxDN)*IDεForχ10z
+		  'dχsyDq = (χsyPlus - χsyDN)*IDεForχ10z
+		  'dχszDq = (χszPlus - χszDN)*IDεForχ10z
+		  '// Put it all together
+		  'DHDq(Integer(CaseInfoClass.Param.chi10z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.chi10z)) = 0.0
+		  'End If
+		  '
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi20x)) Then
+		  '// Calculate the derivative with respect to q = χ20x
+		  'GetDataAtDetectorStep(SourceEvolverχ20xPlus)
+		  'ιPlus = ιDN
+		  'αPlus = αDN
+		  'ΨrPlus = ΨrDN
+		  'VPlus = VDN
+		  'χaxPlus = χaxDN
+		  'χayPlus = χayDN
+		  'χazPlus = χazDN
+		  'χsxPlus = χsxDN
+		  'χsyPlus = χsyDN
+		  'χszPlus = χszDN
+		  'GetDataAtDetectorStep(SourceEvolverχ20xMinus)
+		  'dαDq = (αPlus - αDN)*IDεForχ20x
+		  'dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20x
+		  'dVDq = (VPlus - VDN)*IDεForχ20x
+		  'dιDq = (ιPlus - ιDN)*IDεForχ20x
+		  'dχaxDq = (χaxPlus - χaxDN)*IDεForχ20x
+		  'dχayDq = (χayPlus - χayDN)*IDεForχ20x
+		  'dχazDq = (χazPlus - χazDN)*IDεForχ20x
+		  'dχsxDq = (χsxPlus - χsxDN)*IDεForχ20x
+		  'dχsyDq = (χsyPlus - χsyDN)*IDεForχ20x
+		  'dχszDq = (χszPlus - χszDN)*IDεForχ20x
+		  '// Put it all together
+		  'DHDq(Integer(CaseInfoClass.Param.chi20x)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.chi20x)) = 0.0
+		  'End If
+		  '
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi20y)) Then
+		  '// Calculate the derivative with respect to q = χ20y
+		  'GetDataAtDetectorStep(SourceEvolverχ20yPlus)
+		  'ιPlus = ιDN
+		  'αPlus = αDN
+		  'ΨrPlus = ΨrDN
+		  'VPlus = VDN
+		  'χaxPlus = χaxDN
+		  'χayPlus = χayDN
+		  'χazPlus = χazDN
+		  'χsxPlus = χsxDN
+		  'χsyPlus = χsyDN
+		  'χszPlus = χszDN
+		  'GetDataAtDetectorStep(SourceEvolverχ20yMinus)
+		  'dαDq = (αPlus - αDN)*IDεForχ20y
+		  'dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20y
+		  'dVDq = (VPlus - VDN)*IDεForχ20y
+		  'dιDq = (ιPlus - ιDN)*IDεForχ20y
+		  'dχaxDq = (χaxPlus - χaxDN)*IDεForχ20y
+		  'dχayDq = (χayPlus - χayDN)*IDεForχ20y
+		  'dχazDq = (χazPlus - χazDN)*IDεForχ20y
+		  'dχsxDq = (χsxPlus - χsxDN)*IDεForχ20y
+		  'dχsyDq = (χsyPlus - χsyDN)*IDεForχ20y
+		  'dχszDq = (χszPlus - χszDN)*IDεForχ20y
+		  '// Put it all together
+		  'DHDq(Integer(CaseInfoClass.Param.chi20y)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.chi20y)) = 0.0
+		  'End If
+		  '
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.chi20z)) Then
+		  '// Calculate the derivative with respect to q = χ20z
+		  'GetDataAtDetectorStep(SourceEvolverχ20zPlus)
+		  'ιPlus = ιDN
+		  'αPlus = αDN
+		  'ΨrPlus = ΨrDN
+		  'VPlus = VDN
+		  'χaxPlus = χaxDN
+		  'χayPlus = χayDN
+		  'χazPlus = χazDN
+		  'χsxPlus = χsxDN
+		  'χsyPlus = χsyDN
+		  'χszPlus = χszDN
+		  'GetDataAtDetectorStep(SourceEvolverχ20zMinus)
+		  'dαDq = (αPlus - αDN)*IDεForχ20z
+		  'dΨrDq = (ΨrPlus - ΨrDN)*IDεForχ20z
+		  'dVDq = (VPlus - VDN)*IDεForχ20z
+		  'dιDq = (ιPlus - ιDN)*IDεForχ20z
+		  'dχaxDq = (χaxPlus - χaxDN)*IDεForχ20z
+		  'dχayDq = (χayPlus - χayDN)*IDεForχ20z
+		  'dχazDq = (χazPlus - χazDN)*IDεForχ20z
+		  'dχsxDq = (χsxPlus - χsxDN)*IDεForχ20z
+		  'dχsyDq = (χsyPlus - χsyDN)*IDεForχ20z
+		  'dχszDq = (χszPlus - χszDN)*IDεForχ20z
+		  '// Put it all together
+		  'DHDq(Integer(CaseInfoClass.Param.chi20z)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
+		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq
+		  'Else
+		  'DHDq(Integer(CaseInfoClass.Param.chi20z)) = 0.0
+		  'End If
 		End Sub
 	#tag EndMethod
 
@@ -1991,223 +1991,120 @@ Protected Class WaveBuilderClass
 		  Noise = New NoiseClass(Parameters.ΔT)
 		  
 		  // Set up the base case
-		  SourceEvolverBase = New SourceEvolverClass(P)
-		  // We need the following for calculating the z-derivative
-		  α0 = SourceEvolverBase.αN
-		  ι0 = SourceEvolverBase.ιN
-		  χax0 = SourceEvolverBase.χaXN
-		  χay0 = SourceEvolverBase.χaYN
-		  χaz0 = SourceEvolverBase.χaZN
-		  χsx0 = SourceEvolverBase.χsXN
-		  χsy0 = SourceEvolverBase.χsYN
-		  χsz0 = SourceEvolverBase.χsZN
-		  
-		  // Set up source evolvers where the value of δ is tweaked
-		  Var ε As Double = 1.0e-6
-		  SourceEvolverδMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.delta), -ε))
-		  SourceEvolverδPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.delta), ε))
-		  IDεForδ = 0.5/ε
-		  
-		  // Set up source evolvers where the value of v0 is adjusted
-		  ε = 1.0e-6
-		  SourceEvolverV0Minus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.v0), -ε))
-		  SourceEvolverV0Plus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.v0), ε))
-		  IDεForV0 = 0.5/ε
-		  
-		  // Set up source evolvers where the value of χ10x is adjusted
-		  ε = 1.0e-6
-		  SourceEvolverχ10xMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10x), -ε))
-		  SourceEvolverχ10xPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10x), ε))
-		  IDεForχ10x = 0.5/ε
-		  
-		  // Set up source evolvers where the value of χ10y is adjusted
-		  ε = 1.0e-6
-		  SourceEvolverχ10yMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10y), -ε))
-		  SourceEvolverχ10yPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10y), ε))
-		  IDεForχ10y = 0.5/ε
-		  
-		  // Set up source evolvers where the value of χ10z is adjusted
-		  ε = 1.0e-6
-		  SourceEvolverχ10zMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10z), -ε))
-		  SourceEvolverχ10zPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10z), ε))
-		  IDεForχ10z = 0.5/ε
-		  
-		  // Set up source evolvers where the value of χ20x is adjusted
-		  ε = 1.0e-6
-		  SourceEvolverχ20xMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20x), -ε))
-		  SourceEvolverχ20xPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20x), ε))
-		  IDεForχ20x = 0.5/ε
-		  
-		  // Set up source evolvers where the value of χ20y is adjusted
-		  ε = 1.0e-6
-		  SourceEvolverχ20yMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20y), -ε))
-		  SourceEvolverχ20yPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20y), ε))
-		  IDεForχ20y = 0.5/ε
-		  
-		  // Set up source evolvers where the value of χ20z is adjusted
-		  ε = 1.0e-6
-		  SourceEvolverχ20zMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20z), -ε))
-		  SourceEvolverχ20zPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20z), ε))
-		  IDεForχ20z = 0.5/ε
-		  
-		  // Calculate derivative of Z with respect to lnR
-		  DZDlnR = P.R*P.DZDR
-		  
-		  // Get the value of the detector time step (sampling interval)
-		  DτrD = P.ΔT/P.GM
-		  // do a trial step to get a value of DτIdeal.
-		  SourceBestDτr = 1.0e300 // Initialize this to be something huge
-		  // Note that DτIdeal is passed by reference, so each case has an opportunity to
-		  // tweak its value. This is necessary because the base case may have no spin,
-		  // while some side cases might have a spin that requires a certain step size.
-		  // A first argument of zero indicates a trial step here.
-		  SourceEvolverBase.DoStep(-1.0, DτrD, SourceBestDτr)
-		  If P.SolveFor(Integer(CaseInfoClass.Param.delta)) Then
-		    SourceEvolverδMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverδPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  End If
-		  If P.SolveFor(Integer(CaseInfoClass.Param.V0)) Then
-		    SourceEvolverV0Minus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverV0Plus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  End If
-		  If P.SolveForχ1 Then
-		    SourceEvolverχ10xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ10xPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ10yMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ10yPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ10zMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ10zPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  End If
-		  If P.SolveForχ2 Then
-		    SourceEvolverχ20xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ20xPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ20yMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ20yPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ20zMinus.DoStep(-1.0, DτrD, SourceBestDτr)
-		    SourceEvolverχ20zPlus.DoStep(-1.0, DτrD, SourceBestDτr)
-		  End If
-		  SourceBestDτr = SourceBestDτr*(1.0 + P.Z)  // get this step size in the solar system frame
-		  
-		  // Now set up the actual first time step
-		  // The ratio of the real future step will be some power of two of the detector sample step size.
-		  // Compute that power of two
-		  Var NewStepPower as Integer = Floor(Log(SourceBestDτr/DτrD)/Log(2))
-		  StepPowerF = NewStepPower // initalize the CurrentStepPower
-		  StepPowerP = NewStepPower
-		  DτrSF = DτrD*2^StepPowerF  // and initialize DτrSF (the time interval between the present and future source steps)
-		  DτrSP = 0.0 // This will indicate a first step
-		  SourceNow = 0
-		  SourcePast = 0
+		  'SourceEvolverBase = New SourceEvolverClass(P)
+		  '// We need the following for calculating the z-derivative
+		  'α0 = SourceEvolverBase.αN
+		  'ι0 = SourceEvolverBase.ιN
+		  'χax0 = SourceEvolverBase.χaXN
+		  'χay0 = SourceEvolverBase.χaYN
+		  'χaz0 = SourceEvolverBase.χaZN
+		  'χsx0 = SourceEvolverBase.χsXN
+		  'χsy0 = SourceEvolverBase.χsYN
+		  'χsz0 = SourceEvolverBase.χsZN
+		  '
+		  '// Set up source evolvers where the value of δ is tweaked
+		  'Var ε As Double = 1.0e-6
+		  'SourceEvolverδMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.delta), -ε))
+		  'SourceEvolverδPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.delta), ε))
+		  'IDεForδ = 0.5/ε
+		  '
+		  '// Set up source evolvers where the value of v0 is adjusted
+		  'ε = 1.0e-6
+		  'SourceEvolverV0Minus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.v0), -ε))
+		  'SourceEvolverV0Plus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.v0), ε))
+		  'IDεForV0 = 0.5/ε
+		  '
+		  '// Set up source evolvers where the value of χ10x is adjusted
+		  'ε = 1.0e-6
+		  'SourceEvolverχ10xMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10x), -ε))
+		  'SourceEvolverχ10xPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10x), ε))
+		  'IDεForχ10x = 0.5/ε
+		  '
+		  '// Set up source evolvers where the value of χ10y is adjusted
+		  'ε = 1.0e-6
+		  'SourceEvolverχ10yMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10y), -ε))
+		  'SourceEvolverχ10yPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10y), ε))
+		  'IDεForχ10y = 0.5/ε
+		  '
+		  '// Set up source evolvers where the value of χ10z is adjusted
+		  'ε = 1.0e-6
+		  'SourceEvolverχ10zMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10z), -ε))
+		  'SourceEvolverχ10zPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi10z), ε))
+		  'IDεForχ10z = 0.5/ε
+		  '
+		  '// Set up source evolvers where the value of χ20x is adjusted
+		  'ε = 1.0e-6
+		  'SourceEvolverχ20xMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20x), -ε))
+		  'SourceEvolverχ20xPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20x), ε))
+		  'IDεForχ20x = 0.5/ε
+		  '
+		  '// Set up source evolvers where the value of χ20y is adjusted
+		  'ε = 1.0e-6
+		  'SourceEvolverχ20yMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20y), -ε))
+		  'SourceEvolverχ20yPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20y), ε))
+		  'IDεForχ20y = 0.5/ε
+		  '
+		  '// Set up source evolvers where the value of χ20z is adjusted
+		  'ε = 1.0e-6
+		  'SourceEvolverχ20zMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20z), -ε))
+		  'SourceEvolverχ20zPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.chi20z), ε))
+		  'IDεForχ20z = 0.5/ε
+		  '
+		  '// Calculate derivative of Z with respect to lnR
+		  'DZDlnR = P.R*P.DZDR
+		  '
+		  '// Get the value of the detector time step (sampling interval)
+		  'DτrD = P.ΔT/P.GM
+		  '// do a trial step to get a value of DτIdeal.
+		  'SourceBestDτr = 1.0e300 // Initialize this to be something huge
+		  '// Note that DτIdeal is passed by reference, so each case has an opportunity to
+		  '// tweak its value. This is necessary because the base case may have no spin,
+		  '// while some side cases might have a spin that requires a certain step size.
+		  '// A first argument of zero indicates a trial step here.
+		  'SourceEvolverBase.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'If P.SolveFor(Integer(CaseInfoClass.Param.delta)) Then
+		  'SourceEvolverδMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverδPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'End If
+		  'If P.SolveFor(Integer(CaseInfoClass.Param.V0)) Then
+		  'SourceEvolverV0Minus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverV0Plus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'End If
+		  'If P.SolveForχ1 Then
+		  'SourceEvolverχ10xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ10xPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ10yMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ10yPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ10zMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ10zPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'End If
+		  'If P.SolveForχ2 Then
+		  'SourceEvolverχ20xMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ20xPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ20yMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ20yPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ20zMinus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'SourceEvolverχ20zPlus.DoStep(-1.0, DτrD, SourceBestDτr)
+		  'End If
+		  'SourceBestDτr = SourceBestDτr*(1.0 + P.Z)  // get this step size in the solar system frame
+		  '
+		  '// Now set up the actual first time step
+		  '// The ratio of the real future step will be some power of two of the detector sample step size.
+		  '// Compute that power of two
+		  'Var NewStepPower as Integer = Floor(Log(SourceBestDτr/DτrD)/Log(2))
+		  'StepPowerF = NewStepPower // initalize the CurrentStepPower
+		  'StepPowerP = NewStepPower
+		  'DτrSF = DτrD*2^StepPowerF  // and initialize DτrSF (the time interval between the present and future source steps)
+		  'DτrSP = 0.0 // This will indicate a first step
+		  'SourceNow = 0
+		  'SourcePast = 0
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DidDetectorStepOK(StepN As Integer) As Boolean
-		  // This method will execute as many steps of the source evolution code as necessary to stay ahead of
-		  // (or at least in step with) steps of the main program.
+		Function DidDetectorStepOK(StepNumber As Integer) As Boolean
 		  
-		  Var oKToContinue As Boolean = True
-		  Var stepUnitPower As Integer  = 10
-		  DetectorNow = StepN*2^stepUnitPower
-		  τrDP = τrDN // store previous step time
-		  τrDN = StepN*DτrD // this is the time of the current sample step
-		  While SourceNow < detectorNow
-		    SourcePast = SourceNow
-		    DoSourceStep
-		    SourceNow = SourceNow + 2^(StepPowerP + stepUnitPower)
-		    If StepPowerF < -10 Then
-		      oKToContinue = False
-		      Exit
-		    End If
-		  Wend
-		  If oKToContinue Then AssembleDerivatives
-		  Return oKToContinue
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub DoSourceStep()
-		  // This method performs a source step
-		  // Do the base case and side case steps
-		  SourceEvolverBase.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.delta)) Then
-		    SourceEvolverδMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverδPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  End If
-		  If Parameters.SolveFor(Integer(CaseInfoClass.Param.V0)) Then
-		    SourceEvolverV0Minus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverV0Plus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  End If
-		  If Parameters.SolveForχ1 Then
-		    SourceEvolverχ10xMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ10xPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ10yMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ10yPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ10zMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ10zPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  End If
-		  If Parameters.SolveForχ2 Then
-		    SourceEvolverχ20xMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ20xPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ20yMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ20yPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ20zMinus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		    SourceEvolverχ20zPlus.DoStep(DτrSP, DτrSF, SourceBestDτr)
-		  End If
-		  SourceBestDτr = SourceBestDτr*(1.0+Parameters.Z) // correct to solar system time
-		  // Make the source step just completed the present step
-		  StepPowerP = StepPowerF
-		  DτrSP = DτrSF
-		  // This chooses the next source step to be a multiple or fraction of a power of 2 
-		  // times the detector (sample) step
-		  // Compute that power of two
-		  Var NewStepPower as Integer = Floor(Log(SourceBestDτr*(1.0+Parameters.Z)/DτrD)/Log(2))
-		  If NewStepPower > StepPowerP Then NewStepPower = StepPowerP // This power should never increase
-		  If NewStepPower < StepPowerP Then // if the new step is smaller
-		    StepPowerF = NewStepPower // this will be the step power for the next step
-		    DτrSF = DτrD*2^StepPowerF
-		    // note that if the power is NOT smaller, everything will remain the same
-		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub GetDataAtDetectorStep(PE As SourceEvolverClass)
-		  If DetectorNow = SourceNow Then // if we are getting information about the current step,
-		    VDN = PE.VN
-		    ιDN = PE.ιN
-		    αDN = PE.αN
-		    ΨDN = PE.ΨN
-		    χaxDN = PE.χaxN
-		    χayDN = PE.χayN
-		    χazDN = PE.χazN
-		    χsxDN = PE.χsxN
-		    χsyDN = PE.χsyN
-		    χszDN = PE.χszN
-		    AlphaDotDN = PE.AlphaDotPublic
-		  Else // if we are interpolating between the past and present source steps
-		    // NOTE: This should only happen when StepPowerP > 0 and when DetectorNow > SourcePast
-		    // so we will insert a debugging test for this condition
-		    #If DebugBuild Then
-		      If Not StepPowerP > 0 or Not DetectorNow > SourcePast Then Break
-		    #Endif
-		    // Get the interpolated values and return them
-		    Var stepRatio As Double = (DetectorNow-SourcePast)/(SourceNow-SourcePast)
-		    Var oneMinusRatio As Double = 1.0 - stepRatio
-		    VDN = oneMinusRatio*PE.VPold + stepRatio*PE.VN
-		    ιDN = oneMinusRatio*PE.ιP  + stepRatio*PE.ιN
-		    αDN = oneMinusRatio*PE.αPold + stepRatio*PE.αN
-		    ΨDN = oneMinusRatio*PE.ΨP + stepRatio*PE.ΨN
-		    χaxDN = oneMinusRatio*PE.χaxP + stepRatio*PE.χaXN
-		    χayDN = oneMinusRatio*PE.χayP + stepRatio*PE.χaYN
-		    χazDN = oneMinusRatio*PE.χazP + stepRatio*PE.χazN
-		    χsxDN = oneMinusRatio*PE.χsxP + stepRatio*PE.χsxN
-		    χsyDN = oneMinusRatio*PE.χsyP + stepRatio*PE.χsyN
-		    χszDN = oneMinusRatio*PE.χszP + stepRatio*PE.χszN
-		    
-		    AlphaDotDN = PE.AlphaDotPublic
-		  End If
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -2321,31 +2218,6 @@ Protected Class WaveBuilderClass
 		  HP = h0*HP
 		  HX = h0*HX
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Tweak(TheItem As Integer, ε As Double) As CaseInfoClass
-		  Var P As CaseInfoClass = Parameters.Clone
-		  Select Case TheItem
-		  Case Integer(CaseInfoClass.Param.delta)
-		    P.δ = δ + ε
-		  Case Integer(CaseInfoClass.Param.V0)
-		    P.V0 = P.V0*(1.0+ε)
-		  Case Integer(CaseInfoClass.Param.chi10x)
-		    P.χ10x = P.χ10x + ε
-		  Case Integer(CaseInfoClass.Param.chi10y)
-		    P.χ10y = P.χ10y + ε
-		  Case Integer(CaseInfoClass.Param.chi10z)
-		    P.χ10z = P.χ10z + ε
-		  Case Integer(CaseInfoClass.Param.chi20x)
-		    P.χ20x = P.χ20x + ε
-		  Case Integer(CaseInfoClass.Param.chi20y)
-		    P.χ20y = P.χ20y + ε
-		  Case Integer(CaseInfoClass.Param.chi20z)
-		    P.χ20z = P.χ20z + ε
-		  End Select
-		  Return P
-		End Function
 	#tag EndMethod
 
 
@@ -2503,74 +2375,6 @@ Protected Class WaveBuilderClass
 
 	#tag Property, Flags = &h0
 		SourceBestDτr As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverBase As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverV0Minus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverV0Plus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverδMinus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverδPlus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ10xMinus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ10xPlus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ10yMinus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ10yPlus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ10zMinus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ10zPlus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ20xMinus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ20xPlus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ20yMinus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ20yPlus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ20zMinus As SourceEvolverClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceEvolverχ20zPlus As SourceEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

@@ -24,7 +24,7 @@ Protected Class SpinEvolverClass
 		  // Basic setup
 		  P = CInfo
 		  Var δ As Double = P.δ
-		  Var η As Double = 0.25*(1 - δ*δ)
+		  η = 0.25*(1 - δ*δ)
 		  Var η2 As Double = η*η
 		  Var η3 As Double = η2*η
 		  
@@ -101,34 +101,34 @@ Protected Class SpinEvolverClass
 		  
 		  // Calculate components of the initial spin rate of change
 		  Var Ω1 As Double = v5*(C10 + C12*v2 + C14*v4)/L0
-		  Var dχ1x|dτP As Double = Ω1*(ℓyP*χ1zP - ℓzP*χ1yP)
-		  Var dχ1y|dτP As Double = Ω1*(ℓzP*χ1xP - ℓxP*χ1zP)
-		  Var dχ1z|dτP As Double = Ω1*(ℓxP*χ1yP - ℓyP*χ1xP)
+		  Var χ1xDotP As Double = Ω1*(ℓyP*χ1zP - ℓzP*χ1yP)
+		  Var χ1yDotP As Double = Ω1*(ℓzP*χ1xP - ℓxP*χ1zP)
+		  Var χ1zDotP As Double = Ω1*(ℓxP*χ1yP - ℓyP*χ1xP)
 		  Var Ω2 As Double = v5*(C20 + C22*v2 + C24*v4)/L0
-		  Var dχ2x|dτP As Double = Ω2*(ℓyP*χ2zP - ℓzP*χ2yP)
-		  Var dχ2y|dτP As Double = Ω2*(ℓzP*χ2xP - ℓxP*χ2zP)
-		  Var dχ2z|dτP As Double = Ω2*(ℓxP*χ2yP - ℓyP*χ2xP)
+		  Var χ2xDotP As Double = Ω2*(ℓyP*χ2zP - ℓzP*χ2yP)
+		  Var χ2yDotP As Double = Ω2*(ℓzP*χ2xP - ℓxP*χ2zP)
+		  Var χ2zDotP As Double = Ω2*(ℓxP*χ2yP - ℓyP*χ2xP)
 		  
 		  // Calculate the first time step to be half the step that would
 		  // take 628 steps for the fastest spin to precess once
-		  Var s1dot As Double = Sqrt(dχ1x|dτP*dχ1x|dτP + dχ1y|dτP*dχ1y|dτP + dχ1z|dτP*dχ1z|dτP)
-		  Var s2dot As Double = Sqrt(dχ2x|dτP*dχ2x|dτP + dχ2y|dτP*dχ2y|dτP + dχ2z|dτP*dχ2z|dτP)
+		  Var s1dot As Double = Sqrt(χ1xDotP*χ1xDotP + χ1yDotP*χ1yDotP + χ1zDotP*χ1zDotP)
+		  Var s2dot As Double = Sqrt(χ2xDotP*χ2xDotP + χ2yDotP*χ2yDotP + χ2zDotP*χ2zDotP)
 		  ΔτhP = 0.5*Min(P.χ1/s1dot, P.χ2/s2dot)
 		  ΔτhF = ΔτhP
 		  
 		  // Evolve the spins using an Euler step
-		  χ1xN = χ1xP + ΔτhP*dχ1x|dτP
-		  χ1yN = χ1yP + ΔτhP*dχ1y|dτP
-		  χ1zN = χ1zP + ΔτhP*dχ1z|dτP
-		  χ2xN = χ2xP + ΔτhP*dχ2x|dτP
-		  χ2yN = χ2yP + ΔτhP*dχ2y|dτP
-		  χ2zN = χ2zP + ΔτhP*dχ2z|dτP
+		  χ1xN = χ1xP + ΔτhP*χ1xDotP
+		  χ1yN = χ1yP + ΔτhP*χ1yDotP
+		  χ1zN = χ1zP + ΔτhP*χ1zDotP
+		  χ2xN = χ2xP + ΔτhP*χ2xDotP
+		  χ2yN = χ2yP + ΔτhP*χ2yDotP
+		  χ2zN = χ2zP + ΔτhP*χ2zDotP
 		  
 		  // Evolve the orbital angular momentum using an Euler step
 		  Var ℓDotP As Double = η*(-1.0/v2 + L2 + 2*L2*v0 + 3*L4*v2)*VCalc.VDotForLastV/L0
-		  Var ℓxDotP As Double = -Opδ2I4*dχ1x|dτP - Omδ2I4*dχ2x|dτP + ℓDotP*ℓxP
-		  Var ℓyDotP As Double = -Opδ2I4*dχ1y|dτP - Omδ2I4*dχ2y|dτP + ℓDotP*ℓyP
-		  Var ℓzDotP As Double = -Opδ2I4*dχ1z|dτP - Omδ2I4*dχ2z|dτP + ℓDotP*ℓzP
+		  Var ℓxDotP As Double = -Opδ2I4*χ1xDotP - Omδ2I4*χ2xDotP + ℓDotP*ℓxP
+		  Var ℓyDotP As Double = -Opδ2I4*χ1yDotP - Omδ2I4*χ2yDotP + ℓDotP*ℓyP
+		  Var ℓzDotP As Double = -Opδ2I4*χ1zDotP - Omδ2I4*χ2zDotP + ℓDotP*ℓzP
 		  ℓxN = ℓxP + ΔτhP*ℓxDotP
 		  ℓyN = ℓyP + ΔτhP*ℓyDotP
 		  ℓzN = ℓzP + ΔτhP*ℓzDotP
@@ -144,27 +144,27 @@ Protected Class SpinEvolverClass
 		  
 		  // Calculate components of the future spin rate of change
 		  Ω1 = v5*(C10 + C12*v2 + C14*v4)/L0
-		  Var dχ1x|dτN As Double = Ω1*(ℓyN*χ1zN - ℓzN*χ1yN)
-		  Var dχ1y|dτN As Double = Ω1*(ℓzN*χ1xN - ℓxN*χ1zN)
-		  Var dχ1z|dτN As Double = Ω1*(ℓxN*χ1yN - ℓyN*χ1xN)
+		  Var χ1xDotN As Double = Ω1*(ℓyN*χ1zN - ℓzN*χ1yN)
+		  Var χ1yDotN As Double = Ω1*(ℓzN*χ1xN - ℓxN*χ1zN)
+		  Var χ1zDotN As Double = Ω1*(ℓxN*χ1yN - ℓyN*χ1xN)
 		  Ω2 = v5*(C20 + C22*v2 + C24*v4)/L0
-		  Var dχ2x|dτN As Double = Ω2*(ℓyN*χ2zN - ℓzN*χ2yN)
-		  Var dχ2y|dτN As Double = Ω2*(ℓzN*χ2xN - ℓxN*χ2zN)
-		  Var dχ2z|dτN As Double = Ω2*(ℓxN*χ2yN - ℓyN*χ2xN)
+		  Var χ2xDotN As Double = Ω2*(ℓyN*χ2zN - ℓzN*χ2yN)
+		  Var χ2yDotN As Double = Ω2*(ℓzN*χ2xN - ℓxN*χ2zN)
+		  Var χ2zDotN As Double = Ω2*(ℓxN*χ2yN - ℓyN*χ2xN)
 		  
 		  // Evolve the spins using a more correct step
-		  χ1xN = χ1xP + 0.5*ΔτhP*(dχ1x|dτP + dχ1x|dτN)
-		  χ1yN = χ1yP + 0.5*ΔτhP*(dχ1y|dτP + dχ1y|dτN)
-		  χ1zN = χ1zP + 0.5*ΔτhP*(dχ1z|dτP + dχ1z|dτN)
-		  χ2xN = χ2xP + 0.5*ΔτhP*(dχ2x|dτP + dχ2x|dτN)
-		  χ2yN = χ2yP + 0.5*ΔτhP*(dχ2y|dτP + dχ2y|dτN)
-		  χ2zN = χ2zP + 0.5*ΔτhP*(dχ2z|dτP + dχ2z|dτN)
+		  χ1xN = χ1xP + 0.5*ΔτhP*(χ1xDotP + χ1xDotN)
+		  χ1yN = χ1yP + 0.5*ΔτhP*(χ1yDotP + χ1yDotN)
+		  χ1zN = χ1zP + 0.5*ΔτhP*(χ1zDotP + χ1zDotN)
+		  χ2xN = χ2xP + 0.5*ΔτhP*(χ2xDotP + χ2xDotN)
+		  χ2yN = χ2yP + 0.5*ΔτhP*(χ2yDotP + χ2yDotN)
+		  χ2zN = χ2zP + 0.5*ΔτhP*(χ2zDotP + χ2zDotN)
 		  
 		  // Evolve the orbital angular momentum using a more correct step
 		  Var ℓDotN As Double = η*(-1.0/v2 + L2 + 2*L2*v0 + 3*L4*v2)*VCalc.VDotForLastV/L0
-		  Var ℓxDotN As Double = -Opδ2I4*dχ1x|dτN - Omδ2I4*dχ2x|dτN + ℓDotP*ℓxN
-		  Var ℓyDotN As Double = -Opδ2I4*dχ1y|dτN - Omδ2I4*dχ2y|dτN + ℓDotP*ℓyN
-		  Var ℓzDotN As Double = -Opδ2I4*dχ1z|dτN - Omδ2I4*dχ2z|dτN + ℓDotP*ℓzN
+		  Var ℓxDotN As Double = -Opδ2I4*χ1xDotN - Omδ2I4*χ2xDotN + ℓDotP*ℓxN
+		  Var ℓyDotN As Double = -Opδ2I4*χ1yDotN - Omδ2I4*χ2yDotN + ℓDotP*ℓyN
+		  Var ℓzDotN As Double = -Opδ2I4*χ1zDotN - Omδ2I4*χ2zDotN + ℓDotP*ℓzN
 		  ℓxN = ℓxP + 0.5*ΔτhP*(ℓxDotN + ℓxDotP)
 		  ℓyN = ℓyP + 0.5*ΔτhP*(ℓyDotN + ℓyDotP)
 		  ℓzN = ℓzP + 0.5*ΔτhP*(ℓzDotN + ℓzDotP)
@@ -204,36 +204,36 @@ Protected Class SpinEvolverClass
 		  Var v2 As Double = v1*v1
 		  Var v3 As Double = v2*v1
 		  Var v4 As Double = v3*v1
-		  var v5 As Double = v4*v1
+		  Var v5 As Double = v4*v1
 		  Var LN As Double = η/v1*(1.0 + L2*v2 + L3*v3 + L4*v4)
 		  
 		  // Calculate components of the initial spin rate of change
 		  Var Ω1 As Double = v5*(C10 + C12*v2 + C14*v4)/LN
-		  Var dχ1x|dτN As Double = Ω1*(ℓyN*χ1zN - ℓzN*χ1yN)
-		  Var dχ1y|dτN As Double = Ω1*(ℓzN*χ1xN - ℓxN*χ1zN)
-		  Var dχ1z|dτN As Double = Ω1*(ℓxN*χ1yN - ℓyP*χ1xN)
+		  Var χ1xDotN As Double = Ω1*(ℓyN*χ1zN - ℓzN*χ1yN)
+		  Var χ1yDotN As Double = Ω1*(ℓzN*χ1xN - ℓxN*χ1zN)
+		  Var χ1zDotN As Double = Ω1*(ℓxN*χ1yN - ℓyP*χ1xN)
 		  Var Ω2 As Double = v5*(C20 + C22*v2 + C24*v4)/LN
-		  Var dχ2x|dτN As Double = Ω2*(ℓyN*χ2zN - ℓzN*χ2yN)
-		  Var dχ2y|dτN As Double = Ω2*(ℓzN*χ2xN - ℓxN*χ2zN)
-		  Var dχ2z|dτN As Double = Ω2*(ℓxN*χ2yN - ℓyN*χ2xN)
+		  Var χ2xDotN As Double = Ω2*(ℓyN*χ2zN - ℓzN*χ2yN)
+		  Var χ2yDotN As Double = Ω2*(ℓzN*χ2xN - ℓxN*χ2zN)
+		  Var χ2zDotN As Double = Ω2*(ℓxN*χ2yN - ℓyN*χ2xN)
 		  
 		  // Evolve the spins using an leapfrog step
 		  Var TwoΔτ As Double = 2.0*ΔτhF
-		  Var χ1xF As Double = χ1xP + TwoΔτ*dχ1x|dτN
-		  Var χ1yF As Double = χ1yP + TwoΔτ*dχ1y|dτN
-		  Var χ1zF As Double = χ1zP + TwoΔτ*dχ1z|dτN
-		  Var χ2xF As Double = χ2xP + TwoΔτ*dχ2x|dτN
-		  Var χ2yF As Double = χ2yP + TwoΔτ*dχ2y|dτN
-		  Var χ2zF As Double= χ2zP + TwoΔτ*dχ2z|dτN
+		  Var χ1xF As Double = χ1xP + TwoΔτ*χ1xDotN
+		  Var χ1yF As Double = χ1yP + TwoΔτ*χ1yDotN
+		  Var χ1zF As Double = χ1zP + TwoΔτ*χ1zDotN
+		  Var χ2xF As Double = χ2xP + TwoΔτ*χ2xDotN
+		  Var χ2yF As Double = χ2yP + TwoΔτ*χ2yDotN
+		  Var χ2zF As Double= χ2zP + TwoΔτ*χ2zDotN
 		  
 		  // Evolve the orbital angular momentum using a leapfrog step
 		  Var ℓDotN As Double = η*(-1.0/v2 + L2 + 2*L2*v1 + 3*L4*v2)*VCalc.VDotForLastV/LN
-		  Var ℓxDotN As Double = -Opδ2I4*dχ1x|dτN - Omδ2I4*dχ2x|dτN + ℓDotN*ℓxN
-		  Var ℓyDotN As Double = -Opδ2I4*dχ1y|dτN - Omδ2I4*dχ2y|dτN + ℓDotN*ℓyN
-		  Var ℓzDotN As Double = -Opδ2I4*dχ1z|dτN - Omδ2I4*dχ2z|dτN + ℓDotN*ℓzN
-		  ℓxF = ℓxP + TwoΔτ*ℓxDotN
-		  ℓyF = ℓyP + TwoΔτ*ℓyDotN
-		  ℓzF = ℓzP + TwoΔτ*ℓzDotN
+		  Var ℓxDotN As Double = -Opδ2I4*χ1xDotN - Omδ2I4*χ2xDotN + ℓDotN*ℓxN
+		  Var ℓyDotN As Double = -Opδ2I4*χ1yDotN - Omδ2I4*χ2yDotN + ℓDotN*ℓyN
+		  Var ℓzDotN As Double = -Opδ2I4*χ1zDotN - Omδ2I4*χ2zDotN + ℓDotN*ℓzN
+		  Var ℓxF As Double = ℓxP + TwoΔτ*ℓxDotN
+		  Var ℓyF As Double = ℓyP + TwoΔτ*ℓyDotN
+		  Var ℓzF As Double = ℓzP + TwoΔτ*ℓzDotN
 		  
 		  // Evolve the precession phase
 		  Var αDotN As Double = (ℓyN*ℓxDotN - ℓxN*ℓyDotN)/(ℓxDotN*ℓxDotN + ℓyDotN*ℓyDotN)
@@ -282,8 +282,8 @@ Protected Class SpinEvolverClass
 		  ιN = Atan2(ℓzN,Sqrt(ℓxN*ℓxN + ℓyN*ℓyN))
 		  
 		  // Calculate the ideal next time step
-		  Var s1dot As Double = Sqrt(dχ1x|dτN*dχ1x|dτN + dχ1y|dτN*dχ1y|dτN + dχ1z|dτN*dχ1z|dτN)
-		  Var s2dot As Double = Sqrt(dχ2x|dτN*dχ2x|dτN + dχ2y|dτN*dχ2y|dτN + dχ2z|dτN*dχ2z|dτN)
+		  Var s1dot As Double = Sqrt(χ1xDotN*χ1xDotN + χ1yDotN*χ1yDotN + χ1zDotN*χ1zDotN)
+		  Var s2dot As Double = Sqrt(χ2xDotN*χ2xDotN + χ2yDotN*χ2yDotN + χ2zDotN*χ2zDotN)
 		  Var ΔτhIdeal As Double = Min(P.χ1/s1dot, P.χ2/s2dot)
 		  If ΔτhIdeal < ΔτhF Then // if we need a smaller step
 		    If ΔτhP > ΔτhF Then
@@ -307,7 +307,7 @@ Protected Class SpinEvolverClass
 		  Wend
 		  // Interpolate data to pass on to the rest of the program
 		  Var fN As Double = (τ - τP)/ΔτhP
-		  Var fP As Double = 1.0 - pN
+		  Var fP As Double = 1.0 - fN
 		  Var data As New SpinDataClass
 		  data.ι = fN*ιN + fP*ιP
 		  data.α = fN*αN + fP*αP
@@ -420,6 +420,10 @@ Protected Class SpinEvolverClass
 
 	#tag Property, Flags = &h21
 		Private ΔτhP As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		η As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
