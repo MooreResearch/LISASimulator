@@ -2093,9 +2093,21 @@ Protected Class WaveBuilderClass
 
 	#tag Method, Flags = &h0
 		Function DidDetectorStepOK(StepNumber As Integer) As Boolean
+		  // If we are within two detector steps of coalescence, bail out
+		  If (StepNumber + 2)*Δτ > Parameters.τc Then
+		     Return False
+		  End If
+		  
+		  // Otherwise, check if we can get data from the spin evolver
 		  Var spinData As SpinDataClass = SpinEvolver.GetSpinDataAtTime(StepNumber*Δτ)
-		  If spinData = Nil Then Return False  // coalescence must have happened
-		  VDN = spinData.V
+		  If spinData = Nil Then Return False  // If the method returns nothing, coalescence must have happened
+		  
+		  // We have data, so
+		  VDN = spinData.V // get the current speed
+		  // If our speed is half that of light, our approximations are breaking down, so bail out
+		  If VDN > 0.5 Then Return False
+		  
+		  // Otherwise, load the rest of the data coming from the spin evolver
 		  ιDN = spinData.ι
 		  αDN = spinData.α
 		  χaxDN = spinData.χax
@@ -2104,6 +2116,8 @@ Protected Class WaveBuilderClass
 		  χsxDN = spinData.χsx
 		  χsyDN = spinData.χsy
 		  χszDN = spinData.χsz
+		  
+		  // Calculate the wave phase
 		  Var τrm As Double = (StepNumber - 0.5)*Δτr
 		  ΨrDN = spinData.Ψ
 		  // do the following instead of the above if we want the data in the orbiting LISA frame
@@ -2111,9 +2125,13 @@ Protected Class WaveBuilderClass
 		  ΨrDP = ΨrDN
 		  ΨP = spinData.Ψ
 		  τrDN = StepNumber*Δτr
+		  
+		  // Calculate the wave
 		  CalculateAmplitudes
 		  CalculateWaveFactors
 		  SumSourceH(W)
+		  
+		  // We have completed the detector step successfully
 		  Return True
 		End Function
 	#tag EndMethod
@@ -2652,6 +2670,14 @@ Protected Class WaveBuilderClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="τrDN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
