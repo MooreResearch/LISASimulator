@@ -84,9 +84,16 @@ Protected Class CaseInfoClass
 		  Var T3 As Double = 64/3*(47/40*Sℓ + δ*15/32*Σℓ-3/10*π)
 		  Var T4 As Double = 64*(743/2688 + 11/32*η)^2 - 128/9*(1855099/14450688 + 56975/258048*η - 371/2048*η*η)
 		  τc = 5/(256*η*v0^8)*(1.0 + T2*v0^2 + T3*v0^3 + T4*v0^4)
+		  
+		  // Initialize the DataWriter class
+		  DataWriter = New DataWriterClass
 		End Sub
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		DataWriter As DataWriterClass
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		Detectors As Integer
@@ -126,10 +133,6 @@ Protected Class CaseInfoClass
 
 	#tag Property, Flags = &h0
 		SolveFor() As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		StorePlotInfo As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -500,14 +503,6 @@ Protected Class CaseInfoClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="StorePlotInfo"
-			Visible=false
-			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty

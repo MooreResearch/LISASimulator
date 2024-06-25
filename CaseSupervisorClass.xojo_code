@@ -20,6 +20,14 @@ Protected Class CaseSupervisorClass
 		  
 		  // Create The Uncertainty Calculator
 		  UncertaintyCalculator = New UncertaintyCalculatorClass(CaseInfo)
+		  
+		  // Provide a list of variable names to save. Rewrite this list to include more or other variables.
+		  Var myNames() As String = Array("HP", "HX")
+		  
+		  // Create an "internal folder" for data to plot on the Plot panel. One might also elect to save
+		  // variables to the hard drive -- if so, call CreateFolder without the NSteps parameter.
+		  CaseInfo.DataWriter.CreateFolder(myNames, NSteps)
+		  
 		End Sub
 	#tag EndMethod
 
@@ -67,6 +75,10 @@ Protected Class CaseSupervisorClass
 
 	#tag Property, Flags = &h0
 		CurrentStep As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DataWriter As DataWriterClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

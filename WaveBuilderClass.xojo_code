@@ -2131,6 +2131,10 @@ Protected Class WaveBuilderClass
 		  CalculateWaveFactors
 		  SumSourceH(W)
 		  
+		  // Write out useful information for plotting
+		  Var myValues() As Double = Array(HP, HX)
+		  Parameters.DataWriter.WriteDataToMemory(myValues)
+		  
 		  // We have completed the detector step successfully
 		  Return True
 		End Function
