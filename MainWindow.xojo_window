@@ -351,7 +351,7 @@ Begin DesktopWindow MainWindow
          Height          =   595
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Case 1\n10000\n0.1\n500\n---\n1.0e7\n39\n24\n0\n5\n268.5\n---\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n0\n2\n50\n1.0"
+         InitialValue    =   "Case 1\n10000\n0.1\n500\n\n1.0e7\n39\n24\n0\n5\n268.5\n\nx 0\nx 0\nx 0\nx 0\nx 0\nx 0\n0\n0\n2\n50\n1.0"
          Italic          =   False
          Left            =   109
          LockBottom      =   False
@@ -519,7 +519,7 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   306
       End
-      Begin DesktopLabel CaptionForStepRatioLabel
+      Begin DesktopLabel CaptionForMatrixToDisplayLabel
          AllowAutoDeactivate=   True
          Bold            =   False
          Enabled         =   True
@@ -550,7 +550,7 @@ Begin DesktopWindow MainWindow
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   136
+         Width           =   112
       End
       Begin DesktopButton CopyMatrixButton
          AllowAutoDeactivate=   True
@@ -743,7 +743,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   134
+         Top             =   132
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -809,7 +809,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   164
+         Top             =   166
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -881,72 +881,6 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   114
       End
-      Begin DesktopLabel CaptionForTcLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   401
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   18
-         TabPanelIndex   =   1
-         TabStop         =   True
-         Text            =   "Time to Coalescence (y):"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   232
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   156
-      End
-      Begin DesktopLabel ValueOfTcLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   569
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   19
-         TabPanelIndex   =   1
-         TabStop         =   True
-         Text            =   ""
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   232
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   114
-      End
       Begin DesktopLabel CaptionForVLabel
          AllowAutoDeactivate=   True
          Bold            =   False
@@ -974,7 +908,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   262
+         Top             =   225
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1007,7 +941,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   262
+         Top             =   226
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1036,15 +970,15 @@ Begin DesktopWindow MainWindow
          TabIndex        =   22
          TabPanelIndex   =   1
          TabStop         =   True
-         Text            =   "Current Step Ratio:"
+         Text            =   "Source/Display Step Ratio:"
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   292
+         Top             =   254
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   156
+         Width           =   169
       End
       Begin DesktopLabel ValueOfStepRatioLabel
          AllowAutoDeactivate=   True
@@ -1057,7 +991,7 @@ Begin DesktopWindow MainWindow
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   569
+         Left            =   573
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1073,73 +1007,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   292
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   114
-      End
-      Begin DesktopLabel CaptionForSNRLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   401
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   24
-         TabPanelIndex   =   1
-         TabStop         =   True
-         Text            =   "Current Signal-to-Noise:"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   322
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   156
-      End
-      Begin DesktopLabel ValueOfSNRLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   569
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   25
-         TabPanelIndex   =   1
-         TabStop         =   True
-         Text            =   ""
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   322
+         Top             =   254
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1294,7 +1162,7 @@ Begin DesktopWindow MainWindow
          Height          =   466
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Uncertainty\n?\n?\n---\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?"
+         InitialValue    =   "Uncertainty\n?\n?\n\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?\n?"
          Italic          =   False
          Left            =   202
          LockBottom      =   False
@@ -1712,6 +1580,8 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Opening()
+		  UpdateTc
+		  
 		  // Initialize the GraphChoicePopupMenu items
 		  'Var tempCase As New CaseInfoClass
 		  'Setting = True
@@ -1724,51 +1594,6 @@ End
 		End Sub
 	#tag EndEvent
 
-
-	#tag Method, Flags = &h0
-		Sub AddCase(Values() As String, DoPlot As Boolean)
-		  'Var thisCase As New CaseInfoClass
-		  'Var Flag As Boolean
-		  'thisCase.SolveFor.ResizeTo(Integer(CaseInfoClass.Param.NItems) - 1)
-		  'thisCase.M = GetValueAndSolveFlag(Flag, Values(0))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.M)) = Flag
-		  'thisCase.δ = GetValueAndSolveFlag(Flag, Values(1))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.delta)) = Flag
-		  'thisCase.T0 = GetValueAndSolveFlag(Flag, Values(2))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.V0)) = Flag
-		  'thisCase.R = GetValueAndSolveFlag(Flag, Values(3))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.R)) = Flag
-		  'thisCase.β = GetValueAndSolveFlag(Flag, Values(4))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.beta)) = Flag
-		  'thisCase.ψ = GetValueAndSolveFlag(Flag, Values(5))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.psi)) = Flag
-		  'thisCase.λ0 = GetValueAndSolveFlag(Flag, Values(6))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.lambda0)) = Flag
-		  'thisCase.Θ = GetValueAndSolveFlag(Flag, Values(7))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.theta)) = Flag
-		  'thisCase.Φ = GetValueAndSolveFlag(Flag, Values(8))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.phi)) = Flag
-		  'thisCase.χ10x = GetValueAndSolveFlag(Flag, Values(9))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10x)) = Flag
-		  'thisCase.χ10y = GetValueAndSolveFlag(Flag, Values(10))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10y)) = Flag
-		  'thisCase.χ10z = GetValueAndSolveFlag(Flag, Values(11))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi10z)) = Flag
-		  'thisCase.χ20x = GetValueAndSolveFlag(Flag, Values(12))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20x)) = Flag
-		  'thisCase.χ20y = GetValueAndSolveFlag(Flag, Values(13))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20y)) = Flag
-		  'thisCase.χ20z = GetValueAndSolveFlag(Flag, Values(14))
-		  'thisCase.SolveFor(Integer(CaseInfoClass.Param.chi20z)) = Flag
-		  'thisCase.ρ0 = values(15).ToDouble
-		  'thisCase.PNOrder = values(16).ToInteger
-		  'thisCase.Detectors = values(17).ToInteger
-		  'thisCase.ΔT = values(18).ToDouble
-		  'thisCase.RunDuration = values(19).ToDouble
-		  'thisCase.FinishConstruction
-		  'TheCases.Add(thisCase)
-		End Sub
-	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ConvertToDegrees(Value As Double) As Double
@@ -1825,23 +1650,17 @@ End
 	#tag Method, Flags = &h0
 		Sub DoStart()
 		  // Start running a case or cases
+		  TheCases.ResizeTo(-1)  // Clear out any pre-existing cases
 		  if RunFileCheckBox.Value then // if we are running cases from a file
 		    GetCasesFromFile // get the cases from the file
 		    OutputFile = FolderItem.ShowSaveFileDialog(FileTypeGroup1.Text, "Untitled.txt") // define an output file
 		    If OutputFile = Nil Then Return // bail out if the user has cancelled
 		  Else
-		    Var theValues() As String
-		    Var theValue As String
-		    For i As Integer = 0 to CaseListBox.LastRowIndex // for all entries in the list box
-		      theValue = CaseListBox.CellTextAt(i) // get the text entered in the list box
-		      if theValue <> "---" Then theValues.Add(theValue) // skip over the entry corresponding to Ω
-		    Next
-		    AddCase(theValues, True)
+		    TheCases.Add(GetDisplayCase)
 		  End if
 		  AllCasesDone = False 
 		  ValueOfStatusLabel.Text = "Running"
 		  ValueOfStopReasonLabel.Text = ""
-		  ValueOfTcLabel.Text = ""
 		  MainThread.LoadCases(TheCases)
 		  MainThread.Priority = Thread.HighPriority
 		  MainThread.Start
@@ -1864,6 +1683,51 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetCaseFromValues(Values() As String) As CaseInfoClass
+		  Var thisCase As New CaseInfoClass
+		  Var Flag As Boolean
+		  thisCase.SolveFor.ResizeTo(Integer(CaseInfoClass.Param.NItems) - 1)
+		  thisCase.M = GetValueAndSolveFlag(Flag, Values(0))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.M)) = Flag
+		  thisCase.δ = GetValueAndSolveFlag(Flag, Values(1))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.delta)) = Flag
+		  thisCase.T0 = GetValueAndSolveFlag(Flag, Values(2))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.tauc)) = Flag
+		  thisCase.R = GetValueAndSolveFlag(Flag, Values(3))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.R)) = Flag
+		  thisCase.β = GetValueAndSolveFlag(Flag, Values(4))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.beta)) = Flag
+		  thisCase.ψ = GetValueAndSolveFlag(Flag, Values(5))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.psi)) = Flag
+		  thisCase.λ0 = GetValueAndSolveFlag(Flag, Values(6))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.lambda0)) = Flag
+		  thisCase.Θ = GetValueAndSolveFlag(Flag, Values(7))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.theta)) = Flag
+		  thisCase.Φ = GetValueAndSolveFlag(Flag, Values(8))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.phi)) = Flag
+		  thisCase.χ1 = GetValueAndSolveFlag(Flag, Values(9))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi1)) = Flag
+		  thisCase.θ1 = GetValueAndSolveFlag(Flag, Values(10))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.theta1)) = Flag
+		  thisCase.φ1 = GetValueAndSolveFlag(Flag, Values(11))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.phi1)) = Flag
+		  thisCase.χ2 = GetValueAndSolveFlag(Flag, Values(12))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi2)) = Flag
+		  thisCase.θ2 = GetValueAndSolveFlag(Flag, Values(13))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.theta2)) = Flag
+		  thisCase.φ2 = GetValueAndSolveFlag(Flag, Values(14))
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.phi2)) = Flag
+		  thisCase.ρ0 = values(15).ToDouble
+		  thisCase.PNOrder = values(16).ToInteger
+		  thisCase.Detectors = values(17).ToInteger
+		  thisCase.ΔT = values(18).ToDouble
+		  thisCase.RunDuration = values(19).ToDouble
+		  thisCase.FinishConstruction
+		  Return thisCase
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub GetCasesFromFile()
 		  // To make a txt file that can be read by this code:
 		  //    Rows should be parameters, in the order shown in the CaseListBox (ignoring Ω), separated by tabs.
@@ -1882,7 +1746,8 @@ End
 		    Do
 		      rowFromFile = textInput.ReadLine
 		      Var values() As String = rowFromFile.ToArray(String.Chr(9))
-		      AddCase(values, False)
+		      Var thisCase As CaseInfoClass = GetCaseFromValues(values)
+		      TheCases.Add(thisCase)
 		    Loop Until textInput.EndOfFile
 		    textInput.Close
 		  End If
@@ -1891,20 +1756,14 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetTimeToCoalescence(TheSuper As CaseSupervisorClass) As Double
-		  'Var parameters As CaseInfoClass = TheSuper.CaseInfo
-		  'Var δ As Double = parameters.δ
-		  'Var η As Double = 0.25*(1.0 - δ*δ)
-		  'Var χa𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χaL
-		  'Var χs𝓁 As Double = TheSuper.WaveBuilder.SourceEvolverBase.χsL
-		  'Var v0 As Double = parameters.V0
-		  'Var Threepi As Double = 3.0*parameters.π
-		  'Var c As Double = 743.0/2688.0 + (11.0/32.0)*η 
-		  'Var Term2 As Double = (32.0/3.0)*c
-		  'Var Term3 As Double = (64.0/3.0)*((47.0/40.0)*χs𝓁 + (15.0/32.0)*δ*χa𝓁 - Threepi/10.0)
-		  'Var Term4 As Double = 64.0*c*c/9.0 + (128.0/3.0)*(1855099.0/14450688.0 + (56975.0/258048.0)*η + (371.0/2048.0)*η*η)
-		  'Var A As Double = 5.0*Parameters.GM/(256.0*η*parameters.Year*v0^8)
-		  'Return A*(1 + Term2*v0*v0 + Term3*v0*v0*v0 + Term4*v0*v0*v0*v0)
+		Function GetDisplayCase() As CaseInfoClass
+		  Var theValues() As String
+		  Var theValue As String
+		  For i As Integer = 0 to CaseListBox.LastRowIndex // for all entries in the list box
+		    theValue = CaseListBox.CellTextAt(i) // get the text entered in the list box
+		    if i <> 3 And i <> 10 Then theValues.Add(theValue) // skip over an entry corresponding to Ω or Tc
+		  Next
+		  Return GetCaseFromValues(theValues)
 		  
 		End Function
 	#tag EndMethod
@@ -2104,6 +1963,15 @@ End
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub UpdateTc()
+		  Var displayCase As CaseInfoClass = GetDisplayCase
+		  Var tc As Double = displayCase.τc*displayCase.GM/displayCase.Year
+		  Var tcString As String = Format(tc, "0.0000e#")
+		  CaseListBox.CellTextAt(3,0) = tcString
+		End Sub
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		AllCasesDone As Boolean = False
@@ -2133,18 +2001,6 @@ End
 		  ValueOfVLabel.Text = Format(TheSuper.WaveBuilder.VDN,"0.000000")
 		  ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
 		  ValueOfStepNumberLabel.Text = TheSuper.N.ToString
-		  If ValueOfTcLabel.Text = "" Then ValueOfTcLabel.Text = GetTimeToCoalescence(TheSuper).ToString
-		  Var theStepPower As Integer = TheSuper.WaveBuilder.StepPowerP
-		  Var theFactor as Integer
-		  If theStepPower < 0 Then
-		    theFactor = 2^(-theStepPower)
-		    ValueOfStepRatioLabel.Text = "1/" + theFactor.ToString
-		  Else
-		    theFactor = 2^theStepPower
-		    ValueOfStepRatioLabel.Text = theFactor.ToString
-		  End if
-		  // Var SNR As Double = 0.5*TheSuper.HCalculator.H0V2/TheSuper.HCalculator.Sn2
-		  // ValueOfSNRLabel.Text = Format(SNR, "0.000e+00")
 		  If MainThread.State = Thread.Running then  // if the thread is running
 		    CaseProgressBar.Value = Round(TheSuper.N*100/TheSuper.NSteps)  // update the progress bar
 		  Else // the thread has stopped, meaning that this case is done
@@ -2179,6 +2035,13 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events ParamNameListBox
+	#tag Event
+		Function HeaderPressed(column as Integer) As Boolean
+		  Return True  // do not allow sorting
+		End Function
+	#tag EndEvent
+#tag EndEvents
 #tag Events GraphChoicePopupMenu
 	#tag Event
 		Sub SelectionChanged(item As DesktopMenuItem)
@@ -2191,7 +2054,7 @@ End
 #tag Events CaseListBox
 	#tag Event
 		Function CellKeyDown(row as Integer, column as Integer, key as String) As Boolean
-		  If key = "x" And row > 3 And row < 15 Then
+		  If key = "x" And row > 4 And row < 16 Then
 		    If me.CellTextAt(row,column).BeginsWith("x ") Then
 		      me.ActiveTextControl.Text = me.ActiveTextControl.Text.Middle(2)
 		      Return True
@@ -2206,7 +2069,10 @@ End
 	#tag EndEvent
 	#tag Event
 		Function CellPressed(row As Integer, column As Integer, x As Integer, y As Integer) As Boolean
-		  me.EditCellAt(row, column)
+		  If row <> 3 And row <> 10 Then
+		    me.EditCellAt(row, column)
+		  End If
+		  Return True
 		  
 		End Function
 	#tag EndEvent
@@ -2214,6 +2080,31 @@ End
 		Sub Opening()
 		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextField
 		End Sub
+	#tag EndEvent
+	#tag Event
+		Function PaintCellBackground(g As Graphics, row As Integer, column As Integer) As Boolean
+		  If row = 10 Then
+		    g.DrawingColor = Color.RGB(230,230,230)
+		    g.FillRectangle(0,0,g.Width,g.Height)
+		  End If
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub CellAction(row As Integer, column As Integer)
+		  UpdateTc
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function HeaderPressed(column as Integer) As Boolean
+		  Return True // do not allow sorting
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events MatrixListBox
+	#tag Event
+		Function HeaderPressed(column as Integer) As Boolean
+		  Return True  // Do not allow sorting
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events MatrixChoicePopupMenu
@@ -2287,10 +2178,15 @@ End
 #tag Events UncertaintyListBox
 	#tag Event
 		Function PaintCellBackground(g As Graphics, row As Integer, column As Integer) As Boolean
-		  If row = 3 Then
-		    g.DrawingColor = Color.LightGray
+		  If row = 2 Then
+		    g.DrawingColor = Color.RGB(230,230,230)
 		    g.FillRectangle(0,0, g.Width, g.Height)
 		  End If
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function HeaderPressed(column as Integer) As Boolean
+		  Return True  // do not allow sorting
 		End Function
 	#tag EndEvent
 #tag EndEvents

@@ -74,11 +74,8 @@ Protected Class CaseInfoClass
 		  θ2 = radiansFromDegrees*θ2
 		  φ2 = radiansFromDegrees*φ2
 		  
-		  // Calculate τc. This won't be completely accurate, as we don't know the orbital angular momentum
-		  // orientation at this point, and so have set χsℓ to (χ10z + χ20z)/2 and χaℓ to (χ10z - χ20z)/2, as if
-		  // the orbital angular momentum was entirely in the z direction. This is only approximately true, but
-		  // it doesn't matter, as τc becomes the fundamental parameter, and its connection to T0
-		  // is only to allow the user to enter something more intuitive than the time to coalescence
+		  // Calculate τc. it doesn't matter if this is completely accurate, as τc becomes the fundamental parameter,
+		  // and its connection to T0 is only to allow the user to enter something more intuitive than the time to coalescence.
 		  Var v0 As Double = Pow(GM*2.0*π*(1.0 + Z)/T0,1/3)
 		  Var η As Double = 0.25*(1.0 - δ*δ)
 		  Var Σℓ As Double = 0.5*((1.0-δ)*χ2*Cos(θ2) - (1.0+δ)*χ1*Cos(θ1))
@@ -230,12 +227,12 @@ Protected Class CaseInfoClass
 		  lambda0
 		  theta
 		  phi
-		  chi10x
-		  chi10y
-		  chi10z
-		  chi20x
-		  chi20y
-		  chi20z
+		  chi1
+		  theta1
+		  phi1
+		  chi2
+		  theta2
+		  phi2
 		NItems
 	#tag EndEnum
 

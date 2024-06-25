@@ -1968,24 +1968,14 @@ Protected Class WaveBuilderClass
 		  Parameters = P
 		  Cosβ = Cos(P.β)
 		  Sinβ = Sin(P.β)
-		  εForβ = 1.0e-6
-		  CosβPlus = Cos(P.β+εForβ)
-		  SinβPlus = Sin(P.β+εForβ)
-		  CosβMinus = Cos(P.β-εForβ)
-		  SinβMinus = Sin(P.β-εForβ)
-		  IDεForβ = 0.5/εForβ
 		  δ = P.δ
 		  η = 0.25*(1.0 - δ*δ)
+		  π = P.π
 		  VeSinΘ = P.Ve*Sin(P.Θ)
 		  VeCosΘ = P.Ve*Cos(P.Θ)
-		  ΨDN = P.λ0
-		  ΨrDN = P.λ0
-		  ΨDP = ΨDN
-		  ΨrDP = ΨrDN
-		  DΨrDΘDN = 0.0  // These derivatives are zero at time = 0
-		  DΨrDΦDN = 0.0
-		  DΨrDΘDP = 0.0
-		  DΨrDΦDP = 0.0
+		  Δτr = P.ΔT/P.GM
+		  Δτ = Δτr/(1.0 + P.Z)
+		  SpinEvolver = New SpinEvolverClass(P)
 		  
 		  // Initialize the Noise class
 		  Noise = New NoiseClass(Parameters.ΔT)
@@ -2103,7 +2093,28 @@ Protected Class WaveBuilderClass
 
 	#tag Method, Flags = &h0
 		Function DidDetectorStepOK(StepNumber As Integer) As Boolean
-		  
+		  Var spinData As SpinDataClass = SpinEvolver.GetSpinDataAtTime(StepNumber*Δτ)
+		  If spinData = Nil Then Return False  // coalescence must have happened
+		  VDN = spinData.V
+		  ιDN = spinData.ι
+		  αDN = spinData.α
+		  χaxDN = spinData.χax
+		  χayDN = spinData.χay
+		  χazDN = spinData.χaz
+		  χsxDN = spinData.χsx
+		  χsyDN = spinData.χsy
+		  χszDN = spinData.χsz
+		  Var τrm As Double = (StepNumber - 0.5)*Δτr
+		  ΨrDN = spinData.Ψ
+		  // do the following instead of the above if we want the data in the orbiting LISA frame
+		  // ΨrDN = ΨrDP + (1.0 + Parameters.Ve*Sin(Parameters.Θ)*Sin(Parameters.GMΩe*τrm - Parameters.Φ))*(spinData.Ψ - ΨP)
+		  ΨrDP = ΨrDN
+		  ΨP = spinData.Ψ
+		  τrDN = StepNumber*Δτr
+		  CalculateAmplitudes
+		  CalculateWaveFactors
+		  SumSourceH(W)
+		  Return True
 		End Function
 	#tag EndMethod
 
@@ -2226,10 +2237,6 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		AlphaDotDN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		CosAmΨ(5,5) As Double
 	#tag EndProperty
 
@@ -2239,14 +2246,6 @@ Protected Class WaveBuilderClass
 
 	#tag Property, Flags = &h0
 		Cosβ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		CosβMinus As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		CosβPlus As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2270,31 +2269,11 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DτrD As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DτrSF As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DτrSP As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		DΨrDΘDN As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DΨrDΘDP As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		DΨrDΦDN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		DΨrDΦDP As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2303,42 +2282,6 @@ Protected Class WaveBuilderClass
 
 	#tag Property, Flags = &h0
 		HX As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForV0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForβ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForδ As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForχ10x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForχ10y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForχ10z As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForχ20x As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForχ20y As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		IDεForχ20z As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2362,35 +2305,11 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SinβMinus As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SinβPlus As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		Sn(5) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SourceBestDτr As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourceNow As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		SourcePast As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		StepPowerF As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		StepPowerP As Integer
+		SpinEvolver As SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2410,15 +2329,7 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ι0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		ιDN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		α0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2430,7 +2341,11 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		εForβ As Double
+		Δτ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Δτr As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2446,19 +2361,7 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		τrDP As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χax0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		χaxDN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χay0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2466,15 +2369,7 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χaz0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		χazDN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χsx0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2482,15 +2377,7 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χsy0 As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		χsyDN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		χsz0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2498,11 +2385,7 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ΨDN As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ΨDP As Double
+		ΨP As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2556,55 +2439,7 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DτrD"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="StepPowerF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="StepPowerP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ιDN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="VDN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="αDN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χaxDN"
+			Name="Δτr"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2676,111 +2511,7 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="CosβPlus"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CosβMinus"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Sinβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="SinβMinus"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="SinβPlus"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForδ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForV0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForχ10x"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForχ10y"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForχ10z"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForχ20x"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForχ20y"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IDεForχ20z"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2804,14 +2535,6 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="SourceBestDτr"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="DΨrDΘDN"
 			Visible=false
 			Group="Behavior"
@@ -2821,22 +2544,6 @@ Protected Class WaveBuilderClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DΨrDΦDN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="α0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ι0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -2860,123 +2567,11 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="χax0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χay0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χaz0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χsx0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χsy0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="χsz0"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="εForβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="τrDN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="DetectorNow"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="SourceNow"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="SourcePast"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ΨrDP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="τrDP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΨrDΘDP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΨrDΦDP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -2996,51 +2591,67 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ΨDN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ΨDP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DτrSF"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DτrSP"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="AlphaDotDN"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="π"
 			Visible=false
 			Group="Behavior"
 			InitialValue="3.1415926535897"
 			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χaxDN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="αDN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ιDN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="VDN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Δτ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ΨrDP"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ΨP"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
