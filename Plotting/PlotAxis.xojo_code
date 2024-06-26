@@ -156,27 +156,20 @@ Inherits Group2D
 
 	#tag Method, Flags = &h21
 		Private Sub AssembleAxis()
-		  // This method assembles all the objects that go into drawing the axis.
-		  // It ultimately sets the value of the axis's Height (which for the y axis
-		  // is actually its width). NOTE:  This method assumes that all externally
-		  // accessible axis features (such as fonts, fontsizes, flags, and axis labels)
-		  //  have been already set if changes from the defaults are desired.
-		  
-		  // This removes all objects: we will rebuild everyting from scratch
+		  // This removes all objects: we will rebuild everything from scratch
 		  While Count > 0
 		    RemoveObjectAt(Count-1)
 		  Wend
 		  TickPositions.ResizeTo(-1)  // Clear out the major tick positions array.
 		  
-		  // We  first define the deltas between
-		  // major and minor ticks using the MinorTickIndex property. nMinorPerMajor
-		  // is the number of minor ticks per major tick. tFactor is the external factor
+		  // We first define the deltas between major and minor ticks using the MinorTickIndex property.
+		  // nMinorPerMajor is the number of minor ticks per major tick. tFactor is the external factor
 		  // by which we multiply the displayed tick values to get the actual tick value.
 		  // tFormat is the format string we will use to display the ticks
 		  
 		  Var minorTickDelta As Double = GetTickDelta4Index(MinorTickIndex)
-		  Var majorTickDelta As Double = GetTickDelta4Index(MinorTickIndex+2)
-		  Var nMinorPerMajor As Integer = Round(majorTickDelta/minorTickDelta)
+		  Var majorTickDelta As Double = GetTickDelta4Index(MinorTickIndex + 2) // Increase the index for wider spacing
+		  Var nMinorPerMajor As Integer = Round(majorTickDelta / minorTickDelta)
 		  Var tFactor As Double = Pow(10, TickPower)
 		  Var tFormat As String = GetTickFormat(majorTickDelta)
 		  
@@ -187,38 +180,37 @@ Inherits Group2D
 		  // calculations end up being just a bit off, a tick mark that is
 		  // supposed to be "at" the axis minimum or maximum is not missed
 		  
-		  Var nMin As Integer = Ceiling(MyMinValue/(minorTickDelta*tFactor) - 0.05)
-		  Var nMax As Integer = Floor(MyMaxValue/(minorTickDelta*tFactor) + 0.05)
-		  Var nextMajor As Integer = nMinorPerMajor*Ceiling(MyMinValue/(majorTickDelta*tFactor) - 0.05)
+		  Var nMin As Integer = Ceiling(MyMinValue / (minorTickDelta * tFactor) - 0.05)
+		  Var nMax As Integer = Floor(MyMaxValue / (minorTickDelta * tFactor) + 0.05)
+		  Var nextMajor As Integer = nMinorPerMajor * Ceiling(MyMinValue / (majorTickDelta * tFactor) - 0.05)
 		  
 		  // We need to know the height of the tick label in order to offset the axis label correctly.
 		  // tLabelHeight will store the height of the tick-mark labels
-		  Var tLabelHeight As Double =  GetTickLabelHeight(tFormat)
+		  Var tLabelHeight As Double = GetTickLabelHeight(tFormat)
 		  
 		  // We will first add the axis and power labels. This method also sets the Height property.
 		  X = 0.0
 		  Y = 0.0
 		  AddLabels(tLabelHeight, TickPower)
 		  
-		  // Now we are ready for the loop that adds the tick marks. 
+		  // Now we are ready for the loop that adds the tick marks.
 		  // The anchor point for each axis is at the origin of the graph.
 		  
 		  For n As Integer = nMin To nMax
 		    // get the position of this particular tick along the axis
-		    Var x As Double = (n*minorTickDelta*tFactor - MyMinValue)*Value2Pixels
+		    Var x As Double = (n * minorTickDelta * tFactor - MyMinValue) * Value2Pixels
 		    
 		    If n = nextMajor Then
 		      // if this is a major tick, update TickPositions (for help drawing the grid)
 		      // and add in the major tick and its label (if allowed).
-		      If n > nMin and n < nMax Then TickPositions.Add(x) // store tick positions for drawing the grid
+		      If n > nMin And n < nMax Then TickPositions.Add(x) // store tick positions for drawing the grid
 		      If MajorTickHeight > 0.0 Then AddMajorTick(x)
-		      AddMajorTickLabel(x, Format(n*minorTickDelta, tFormat))
+		      AddMajorTickLabel(x, Format(n * minorTickDelta, tFormat))
 		      nextMajor = nextMajor + nMinorPerMajor  // update the major tick index
 		    Else // otherwise, we will draw the minor ticks if allowed
 		      If MinorTickHeight > 0.0 Then AddMinorTick(x)
 		    End If
-		    
-		  Next  // next tick position
+		  Next  // next tick position.
 		End Sub
 	#tag EndMethod
 
@@ -302,6 +294,17 @@ Inherits Group2D
 		    Var minorTickDelta As Double = range*MinPixPerTick/Length
 		    MinorTickIndex = Ceiling(3*Log(minorTickDelta/tFactor)/Log(10) - 0.15)
 		    Var majorTickDelta As Double = GetTickDelta4Index(MinorTickIndex+2)
+		    
+		    If Not YAxis Then
+		      Var theFormat As String = GetTickFormat(majorTickDelta)
+		      Var theWidth As Double = GetTickLabelWidth(theFormat)
+		      If theWidth > 4*MinPixPerTick Then
+		        Var newMinPixPerTick As Double = theWidth*1.1/4
+		        minorTickDelta = range*newMinPixPerTick/Length
+		        MinorTickIndex = Ceiling(3*Log(minorTickDelta/tFactor)/Log(10) - 0.15)
+		        majorTickDelta = GetTickDelta4Index(MinorTickIndex+2)
+		      End If
+		    End If
 		    
 		    // Depending on the value of the AxisPadding property, we
 		    // now set the actual beginning and final values for the axis.
@@ -405,17 +408,32 @@ Inherits Group2D
 		  // that the major tick size will be >= 0.0001,
 		  // which is true for all the methods calling this method.
 		  
-		  if MajorTickDelta >= 1 then
+		  If MajorTickDelta >= 1 Then
 		    Return "-#0"
-		  elseif MajorTickDelta >= 0.1 then
+		  ElseIf MajorTickDelta >= 0.1 Then
 		    Return "-#0.0"
-		  elseif MajorTickDelta >= 0.01 then
+		  ElseIf MajorTickDelta >= 0.01 Then
 		    Return "-#0.00"
-		  elseif MajorTickDelta >= 0.001 then
+		  ElseIf MajorTickDelta >= 0.001 Then
 		    Return "-#0.000"
-		  else
+		  Elseif MajorTickDelta >= 0.0001 Then
 		    Return "-#0.0000"
-		  end if
+		  Elseif MajorTickDelta >= 1e-5 Then
+		    Return "-#0.00000"
+		  Elseif MajorTickDelta >= 1e-6 Then
+		    Return "-#0.000000"
+		  Elseif MajorTickDelta >= 1e-7 Then
+		    Return "-#0.0000000"
+		  Elseif MajorTickDelta >= 1e-8 Then
+		    Return "-#0.00000000"
+		  Elseif MajorTickDelta >= 1e-9 Then
+		    Return "-#0.000000000"
+		  Elseif MajorTickDelta >= 1e-10 Then
+		    Return "-#0.0000000000"
+		  Else
+		    Return "-#0.00000000000"
+		  End If
+		  
 		End Function
 	#tag EndMethod
 
@@ -424,16 +442,16 @@ Inherits Group2D
 		  // We are going to define the height of major tick labels by constructing a
 		  // StyledTextShape object of the format and examining its height and width
 		  // parameters. We want to actually calculate the maximum value, so we
-		  // we will try both extremes.
+		  // will try both extremes.
 		  
 		  Var tFactor As Double = 1.0
 		  If TickPower <> 0 Then tFactor = Pow(10, TickPower)
 		  Var testLabel As New StyledTextShape
 		  testLabel.SetFont(TickLabelFont, TickLabelFontSize) // set the fonts
-		  testLabel.SetText(Format(-Abs(MyMaxValue)/tFactor, TickFormat)) // set the text for this value
+		  testLabel.SetText(Format(-Abs(MyMaxValue) / tFactor, TickFormat)) // set the text for this value
 		  Var theWidth As Double = testLabel.Width
 		  Var theHeight As Double = testLabel.Height
-		  testLabel.SetText(Format(-Abs(MyMinValue)/tFactor, TickFormat))
+		  testLabel.SetText(Format(-Abs(MyMinValue) / tFactor, TickFormat))
 		  
 		  // if this is the y axis, then we are going to turn the labels sideways,
 		  // so the "height" we need to reserve is actually the string's width.
@@ -442,6 +460,33 @@ Inherits Group2D
 		    Return Max(theWidth, testLabel.Width)
 		  Else
 		    Return Max(theHeight, testLabel.Height)
+		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function GetTickLabelWidth(TickFormat As String) As Double
+		  // We are going to define the height of major tick labels by constructing a
+		  // StyledTextShape object of the format and examining its height and width
+		  // parameters. We want to actually calculate the maximum value, so we
+		  // will try both extremes.
+		  
+		  Var tFactor As Double = 1.0
+		  If TickPower <> 0 Then tFactor = Pow(10, TickPower)
+		  Var testLabel As New StyledTextShape
+		  testLabel.SetFont(TickLabelFont, TickLabelFontSize) // set the fonts
+		  testLabel.SetText(Format(-Abs(MyMaxValue) / tFactor, TickFormat)) // set the text for this value
+		  Var theWidth As Double = testLabel.Width
+		  Var theHeight As Double = testLabel.Height
+		  testLabel.SetText(Format(-Abs(MyMinValue) / tFactor, TickFormat))
+		  
+		  // if this is the y axis, then we are going to turn the labels sideways,
+		  // so the "height" we need to reserve is actually the string's width.
+		  
+		  If YAxis Then
+		    Return Max(theHeight, testLabel.Height)
+		  Else
+		    Return Max(theWidth, testLabel.Width)
 		  End If
 		End Function
 	#tag EndMethod
