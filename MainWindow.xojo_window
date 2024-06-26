@@ -135,7 +135,7 @@ Begin DesktopWindow MainWindow
          TabIndex        =   0
          TabPanelIndex   =   3
          TabStop         =   True
-         Text            =   "Graph of:"
+         Text            =   "Graph This Variable:"
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
@@ -143,7 +143,7 @@ Begin DesktopWindow MainWindow
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   64
+         Width           =   129
       End
       Begin DesktopPopupMenu GraphChoicePopupMenu
          AllowAutoDeactivate=   True
@@ -157,7 +157,7 @@ Begin DesktopWindow MainWindow
          InitialParent   =   "MainTabPanel"
          InitialValue    =   ""
          Italic          =   False
-         Left            =   96
+         Left            =   20
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -169,161 +169,11 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   42
+         Top             =   75
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   151
-      End
-      Begin DesktopLabel CaptionForStartTimeLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   287
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   9
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Text            =   "Starting Time (y):"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   47
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   104
-      End
-      Begin DesktopTextField StartTimeTextField
-         AllowAutoDeactivate=   True
-         AllowFocusRing  =   True
-         AllowSpellChecking=   False
-         AllowTabs       =   False
-         BackgroundColor =   &cFFFFFF
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Format          =   ""
-         HasBorder       =   True
-         Height          =   26
-         Hint            =   ""
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   397
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         MaximumCharactersAllowed=   0
-         Password        =   False
-         ReadOnly        =   False
-         Scope           =   0
-         TabIndex        =   10
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Text            =   "0"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   46
-         Transparent     =   False
-         Underline       =   False
-         ValidationMask  =   ""
-         Visible         =   True
-         Width           =   110
-      End
-      Begin DesktopLabel CaptionForEndTimeLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   287
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   11
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Text            =   "Ending Time (y):"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   79
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   104
-      End
-      Begin DesktopTextField EndTimeTextField
-         AllowAutoDeactivate=   True
-         AllowFocusRing  =   True
-         AllowSpellChecking=   False
-         AllowTabs       =   False
-         BackgroundColor =   &cFFFFFF
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Format          =   ""
-         HasBorder       =   True
-         Height          =   26
-         Hint            =   ""
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   398
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         MaximumCharactersAllowed=   0
-         Password        =   False
-         ReadOnly        =   False
-         Scope           =   0
-         TabIndex        =   12
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Text            =   "Max"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   79
-         Transparent     =   False
-         Underline       =   False
-         ValidationMask  =   ""
-         Visible         =   True
-         Width           =   110
+         Width           =   155
       End
       Begin DesktopListBox CaseListBox
          AllowAutoDeactivate=   True
@@ -1380,14 +1230,14 @@ Begin DesktopWindow MainWindow
          Height          =   30
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         Left            =   589
+         Left            =   354
          LineStep        =   1
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
          LockTop         =   True
-         MaximumValue    =   100
+         MaximumValue    =   500
          MinimumValue    =   0
          PageStep        =   20
          Scope           =   0
@@ -1396,40 +1246,11 @@ Begin DesktopWindow MainWindow
          TabStop         =   True
          TickMarkStyle   =   0
          Tooltip         =   ""
-         Top             =   47
+         Top             =   45
          Transparent     =   False
          Value           =   0
          Visible         =   True
-         Width           =   391
-      End
-      Begin DesktopSlider DurationSlider
-         AllowAutoDeactivate=   True
-         AllowLiveScrolling=   True
-         Enabled         =   True
-         Height          =   30
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Left            =   589
-         LineStep        =   1
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         MaximumValue    =   100
-         MinimumValue    =   0
-         PageStep        =   20
-         Scope           =   0
-         TabIndex        =   14
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TickMarkStyle   =   0
-         Tooltip         =   ""
-         Top             =   79
-         Transparent     =   False
-         Value           =   100
-         Visible         =   True
-         Width           =   391
+         Width           =   500
       End
       Begin DesktopLabel CaptionForStartSliderLabel
          AllowAutoDeactivate=   True
@@ -1442,7 +1263,7 @@ Begin DesktopWindow MainWindow
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   527
+         Left            =   202
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1454,7 +1275,7 @@ Begin DesktopWindow MainWindow
          TabIndex        =   15
          TabPanelIndex   =   3
          TabStop         =   True
-         Text            =   "Start:"
+         Text            =   "Start (y):"
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
@@ -1462,72 +1283,7 @@ Begin DesktopWindow MainWindow
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   50
-      End
-      Begin DesktopLabel CaptionForLengthSliderLabel
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   527
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Multiline       =   False
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   16
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Text            =   "Length:"
-         TextAlignment   =   0
-         TextColor       =   &c000000
-         Tooltip         =   ""
-         Top             =   79
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   50
-      End
-      Begin DesktopButton GraphButton
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Cancel          =   False
-         Caption         =   "Graph"
-         Default         =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   167
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         MacButtonStyle  =   0
-         Scope           =   0
-         TabIndex        =   17
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Tooltip         =   ""
-         Top             =   79
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   80
+         Width           =   60
       End
       Begin DesktopLabel CaptionForActualTimeLabel
          AllowAutoDeactivate=   True
@@ -1561,6 +1317,296 @@ Begin DesktopWindow MainWindow
          Underline       =   False
          Visible         =   True
          Width           =   156
+      End
+      Begin PlotCanvas MyPlotCanvas
+         AllowAutoDeactivate=   True
+         AllowFocus      =   False
+         AllowFocusRing  =   True
+         AllowTabs       =   False
+         Backdrop        =   0
+         DrawGrid        =   True
+         Enabled         =   True
+         Height          =   667
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Left            =   20
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         MarginBottom    =   20.0
+         MarginLeft      =   20.0
+         MarginRight     =   40.0
+         MarginTop       =   20.0
+         Scope           =   0
+         TabIndex        =   16
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TitleFont       =   "System"
+         TitleFontSize   =   18.0
+         TitleOffset     =   15.0
+         Tooltip         =   ""
+         Top             =   113
+         Transparent     =   True
+         Visible         =   True
+         Width           =   960
+      End
+      Begin DesktopLabel ValueOfGraphStartLabel
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   263
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   17
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   "0.00000000"
+         TextAlignment   =   0
+         TextColor       =   &c000000
+         Tooltip         =   ""
+         Top             =   47
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   82
+      End
+      Begin DesktopLabel CaptionForGraphWidthLabel
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   612
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   18
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   "Graph Width / All Data:"
+         TextAlignment   =   0
+         TextColor       =   &c000000
+         Tooltip         =   ""
+         Top             =   77
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   141
+      End
+      Begin DesktopPopupMenu ScaleMenu
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         InitialValue    =   "1.0\n0.5\n0.2\n0.1\n0.05\n0.02\n0.01\n0.005\n0.002\n0.001\n0.0005\n0.0002\n0.0001\n0.00005\n0.00001\n"
+         Italic          =   False
+         Left            =   765
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         SelectedRowIndex=   0
+         TabIndex        =   9
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   79
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   91
+      End
+      Begin DesktopButton BumpUpButton
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Cancel          =   False
+         Caption         =   "Up"
+         Default         =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   283
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         MacButtonStyle  =   0
+         Scope           =   0
+         TabIndex        =   19
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   79
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   51
+      End
+      Begin DesktopLabel CaptionForBumpLabel
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   202
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   20
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   "Bump Start"
+         TextAlignment   =   0
+         TextColor       =   &c000000
+         Tooltip         =   ""
+         Top             =   79
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   77
+      End
+      Begin DesktopButton BumpDownButton
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Cancel          =   False
+         Caption         =   "Down"
+         Default         =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   346
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         MacButtonStyle  =   0
+         Scope           =   0
+         TabIndex        =   21
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   79
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   51
+      End
+      Begin DesktopLabel CaptionForBumpTypeLabel
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   409
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   22
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   "by"
+         TextAlignment   =   0
+         TextColor       =   &c000000
+         Tooltip         =   ""
+         Top             =   79
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   24
+      End
+      Begin DesktopPopupMenu BumpTypePopupMenu
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         InitialValue    =   "Single Step\nWindow Width\n10 Steps\n100 Steps\n1000 Steps\n0.001 Year\n0.1 Year"
+         Italic          =   False
+         Left            =   437
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         SelectedRowIndex=   0
+         TabIndex        =   23
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   79
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   128
       End
    End
    Begin MainThreadClass MainThread
@@ -1747,6 +1793,7 @@ End
 		      rowFromFile = textInput.ReadLine
 		      Var values() As String = rowFromFile.ToArray(String.Chr(9))
 		      Var thisCase As CaseInfoClass = GetCaseFromValues(values)
+		      thisCase.FromFile = True
 		      TheCases.Add(thisCase)
 		    Loop Until textInput.EndOfFile
 		    textInput.Close
@@ -1792,6 +1839,20 @@ End
 		  End If
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub PlotSelectedItem(TheItem As String)
+		  MyPlotData = New PlotData
+		  Var values() As Double = TheCases(0).DataWriter.GetInternalDataFor(TheItem)
+		  MyPlotData.SetPlotArrays(PlotTimes, values)
+		  MyPlotData.SetPlotIndexRange(PlotStartIndex, PlotEndIndex)
+		  MyPlotCanvas.TheTitle = "Plot of " + TheItem + " as a Function of Time"
+		  MyPlotCanvas.SetXAxisLabel("$t$ in years")
+		  MyPlotCanvas.SetYAxisLabel(TheItem)
+		  MyPlotCanvas.ClearPlotData
+		  MyPlotCanvas.AddDataToPlot(MyPlotData)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1964,6 +2025,27 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub UpdatePlot()
+		  If MyPlotData = Nil Then Return // no data to plot
+		  
+		  // Get the plot scale
+		  Var selectedScale As Double = ScaleMenu.SelectedRowText.ToDouble
+		  
+		  // Calculate the new EndTimeIndex
+		  PlotEndIndex = Round(selectedScale * PlotTimes.LastIndex) + PlotStartIndex
+		  
+		  // Ensure EndTimeIndex does not exceed the maximum index
+		  If PlotEndIndex > PlotTimes.LastIndex Then
+		    PlotEndIndex = PlotTimes.LastIndex
+		  End If
+		  
+		  MyPlotData.SetPlotIndexRange(PlotStartIndex, PlotEndIndex)
+		  MyPlotCanvas.AddDataToPlot(Nil)
+		  MyPlotCanvas.Refresh
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub UpdateTc()
 		  Var displayCase As CaseInfoClass = GetDisplayCase
 		  Var tc As Double = displayCase.τc*displayCase.GM/displayCase.Year
@@ -1978,7 +2060,23 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		MyPlotData As PlotData
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		OutputFile As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PlotEndIndex As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PlotStartIndex As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PlotTimes() As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2005,7 +2103,7 @@ End
 		    CaseProgressBar.Value = Round(TheSuper.N*100/TheSuper.NSteps)  // update the progress bar
 		  Else // the thread has stopped, meaning that this case is done
 		    CaseProgressBar.Value = 0  // set
-		    StartStopButton.Caption = "Run Cases"
+		    StartStopButton.Caption = "Run"
 		    me.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped"
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage
@@ -2018,8 +2116,8 @@ End
 		    
 		    if RunFileCheckBox.Value and AllCasesDone then
 		      Var t As TextOutputStream = TextOutputStream.Create(OutputFile)
-		      t.WriteLine("M"+chr(9)+"δ"+chr(9)+"T0"+chr(9)+"R"+chr(9)+"β"+chr(9)+"ψ"+chr(9)+"λ0"+chr(9)+"Θ"_
-		      +chr(9)+"Φ"+chr(9)+"Ω"+chr(9)+"χ10x"+chr(9)+"χ10y"+chr(9)+"χ10z"+chr(9)+"χ20x"+chr(9)+"χ20y"+chr(9)+"χ20z")
+		      t.WriteLine("M"+chr(9)+"δ"+chr(9)+"τc"+chr(9)+"R"+chr(9)+"β"+chr(9)+"ψ"+chr(9)+"λ0"+chr(9)+"Θ"_
+		      +chr(9)+"Φ"+chr(9)+"Ω"+chr(9)+"χ1"+chr(9)+"θ1"+chr(9)+"φ1"+chr(9)+"χ2"+chr(9)+"θ2"+chr(9)+"φ2")
 		      For Each caseItem As CaseInfoClass In TheCases
 		        Var theUncertainties() As String
 		        For Each unc As Double In caseItem.Uncertainties
@@ -2035,6 +2133,45 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events MainTabPanel
+	#tag Event
+		Sub PanelChanged()
+		  If Not Setting Then
+		    If StartStopButton.Caption = "Stop" Then
+		      Setting = True
+		      System.Beep
+		      me.SelectedPanelIndex = 0
+		      Setting = False
+		    ElseIf me.SelectedPanelIndex = 2 Then
+		      // If we are running files, we have nothing to graph
+		      If RunFileCheckBox.Value = True Then
+		        System.Beep
+		        // put us back to pane 0
+		        Setting = True
+		        me.SelectedPanelIndex = 0 
+		        Setting = False
+		      Else
+		        GraphChoicePopupMenu.RemoveAllRows
+		        If TheCases.LastIndex < 0 Then Return
+		        Var vNamelist() As String = TheCases(0).DataWriter.GetVarNameList
+		        If vNamelist.LastIndex > -1 and vNamelist(0) = "t-y" Then
+		          PlotTimes = TheCases(0).DataWriter.GetInternalDataFor("t-y")
+		          If PlotTimes = Nil Then Return // we have nothing to graph, so bail out
+		          PlotStartIndex = 0
+		          PlotEndIndex = PlotTimes.LastIndex
+		          Setting = True
+		          For i As Integer = 1 to vNamelist.LastIndex
+		            GraphChoicePopupMenu.AddRow(vNamelist(i))
+		          Next
+		          GraphChoicePopupMenu.SelectedRowIndex = -1
+		          Setting = False
+		        End If
+		      End If
+		    End If
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events ParamNameListBox
 	#tag Event
 		Function HeaderPressed(column as Integer) As Boolean
@@ -2046,7 +2183,7 @@ End
 	#tag Event
 		Sub SelectionChanged(item As DesktopMenuItem)
 		  If not Setting Then
-		    
+		    PlotSelectedItem(me.SelectedRowText)
 		  End If
 		End Sub
 	#tag EndEvent
@@ -2201,24 +2338,21 @@ End
 #tag Events StartSlider
 	#tag Event
 		Sub ValueChanged()
-		  //Add flag
-		  'Graph
+		  If Not Setting Then
+		    PlotStartIndex = Round(me.Value/me.MaximumValue*PlotTimes.LastIndex)
+		    UpdatePlot
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events DurationSlider
+#tag Events ScaleMenu
 	#tag Event
-		Sub ValueChanged()
-		  //Add flag here 
-		  'Graph
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events GraphButton
-	#tag Event
-		Sub Pressed()
-		  'Graph
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  // Ensure a valid selection is made
+		  //If ScaleMenu.SelectedRowIndex = -1 Then Return
 		  
+		  // Update the plot
+		  //UpdatePlot()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -2472,6 +2606,14 @@ End
 		Group="Behavior"
 		InitialValue=""
 		Type="Boolean"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="PlotStartIndex"
+		Visible=false
+		Group="Behavior"
+		InitialValue=""
+		Type="Integer"
 		EditorType=""
 	#tag EndViewProperty
 #tag EndViewBehavior

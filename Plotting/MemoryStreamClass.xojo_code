@@ -11,7 +11,9 @@ Protected Class MemoryStreamClass
 
 	#tag Method, Flags = &h0
 		Function GetData() As Double()
-		  Return Values
+		  // The last double we wrote was at Index - 1, so resize the array to be just that length
+		  Values.ResizeTo(Index-1)
+		  Return Values // return the array
 		End Function
 	#tag EndMethod
 
@@ -49,7 +51,7 @@ Protected Class MemoryStreamClass
 			Name="Index"
 			Visible=true
 			Group="ID"
-			InitialValue="-2147483648"
+			InitialValue=""
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty

@@ -2095,7 +2095,7 @@ Protected Class WaveBuilderClass
 		Function DidDetectorStepOK(StepNumber As Integer) As Boolean
 		  // If we are within two detector steps of coalescence, bail out
 		  If (StepNumber + 2)*Δτ > Parameters.τc Then
-		     Return False
+		    Return False
 		  End If
 		  
 		  // Otherwise, check if we can get data from the spin evolver
@@ -2131,9 +2131,12 @@ Protected Class WaveBuilderClass
 		  CalculateWaveFactors
 		  SumSourceH(W)
 		  
-		  // Write out useful information for plotting
-		  Var myValues() As Double = Array(HP, HX)
-		  Parameters.DataWriter.WriteDataToMemory(myValues)
+		  // Write out useful information for plotting (if this is not a case from a file)
+		  If Not Parameters.FromFile Then
+		    Var t As Double = τrDN*Parameters.GM/Parameters.Year
+		    Var myValues() As Double = Array(t, HP, HX)
+		    Parameters.DataWriter.WriteDataToMemory(myValues)
+		  End If
 		  
 		  // We have completed the detector step successfully
 		  Return True

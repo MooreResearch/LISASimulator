@@ -106,7 +106,7 @@ Protected Class DataWriterClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetNames() As String()
+		Function GetVarNameList() As String()
 		  // Create a copy of the VNames array (so the user can't mess with the protected array)
 		  Var theNames() As String
 		  theNames.ResizeTo(VNames.LastIndex)

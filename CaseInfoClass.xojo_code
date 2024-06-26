@@ -104,6 +104,10 @@ Protected Class CaseInfoClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		FromFile As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		GM As Double
 	#tag EndProperty
 
