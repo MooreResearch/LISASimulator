@@ -344,7 +344,7 @@ Protected Class Matrix
 		    end if
 		  next
 		  pData = a   // return the data
-		   
+		  
 		  return 0   
 		End Function
 	#tag EndMethod

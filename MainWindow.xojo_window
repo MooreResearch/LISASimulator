@@ -1697,6 +1697,7 @@ Begin DesktopWindow MainWindow
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
+      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5

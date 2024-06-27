@@ -82,6 +82,22 @@ Protected Class UniverseClass
 			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DZDR"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Z"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass
