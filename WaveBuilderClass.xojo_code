@@ -4000,6 +4000,37 @@ Protected Class WaveBuilderClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub CalculateV()
+		  Var γE As Double = 0.577215664901533
+		  Var χ1 As Double = SourceEvolverBase.χ1
+		  Var χ2 As Double = SourceEvolverBase.χ2
+		  Var χ1ι As Double = SourceEvolverBase.χ1 * cos( θ1)
+		  Var χ2ι As Double = SourceEvolverBase.χ2 * cos( θ2)
+		  Var b6 As Double = − 1712/315
+		  Var β3 As Double = (113/48 (1 + δ)^2 + 25/4*η)*χ1ι + (113/48*(1 − δ)^2 + 25/4*η)*χ2ι
+		  Var β5 As Double = ( (31319/4032 − 1159/96*η)*(1 + δ)^2 + 809/84*η − 281/8*η^2)*χ1ι + ((31319/4032 − 1159/96*η*(1 − δ)^2) + 809/84*η − 281/8*η^2)*χ2ι
+		  Var β6 =  (75/8*(1 + δ)^2 + 151/6*η)*π*χ1ι + (75/8*(1 − δ)^2 + 151/6*η)*π*χ2ι
+		  Var β7 As Double= ( (130325/3024 − 796069/8064*η + 100019/3456*η^2)*(1 + δ)^2+ 1195759/18144*η − 257023/1008*η^2 + 2903/32*η^3) *χ1ι + (  (130325/3024 − 796 069/8064*η + 100019/3456*η^2) *(1 − δ)^2 + 1195759/18144*η − 257023/1008*η^2 + 2903/32*η^3)* χ2ι
+		  Var σ4 As Double= 247/48*χ1*χ2 − 721/48*χ1ι*χ2ι +  (233/384*χ1^2 − 719/384*χ1ι^2) *(1 + δ)^2 +  (233/384*χ2^2 − 719/384*χ2ι^2) *(1 − δ)^2
+		  Var a0 As Double  = 96/5*η
+		  Var a2 As Double = − 743/336 − 11/4*η
+		  Var a3 As Double = 4*π − β3
+		  Var a4 As Double = 34103/18144 + 13661/2016*η + 59/18*η^2 − σ4
+		  Var a5 As Double = − 4159/672*π − 189/8*π*η − β5
+		  Var a6 As Double = 16447322263/139708800 + 16/3*π^2 − 856/105*ln(16) − 1712/105*γE − β6 + 451/48*π^2 − 56198689/217728*η + 541/896*η^2 − 5605/2592*η^3
+		  Var a7 As Double = − 4415/4032*π + 358675/6048*π*η + 91495/1512*π*η^2 − β7
+		  Var c2 As Double = a2/6
+		  Var c3 As Double = − a3/5
+		  Var c4 As Double = − a4/4 + 5/24*a2^2
+		  Var c5 As Double = − a5/3 + 3/5*a3*a2
+		  Var c6 As Double = − a6/2 − 3/4*b6 + 23/24*a4*a2 + 12/25*a3^2 − 67/144*a2^3
+		  Var c7 As Double = −a7 + 2*a5*a2 + 2*a4*a3 − 3*a3*a2^2
+		  Var ζ  As Double =  ( 5/ (256*(τc − τ ) ) )^0.125
+		  v = ζ *( 1 + c2*ζ^2 + c3*ζ^3 + c4*ζ^4 + c5*ζ^5 + c6*ζ^6 + c7*ζ^7 − 3/2*b6*ζ^6*ln ζ )
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub CalculateWaveFactors()
 		  // Calculate the received wave phase
 		  
@@ -5557,6 +5588,10 @@ Protected Class WaveBuilderClass
 
 	#tag Property, Flags = &h0
 		Trig As WaveAmplitudesTrigFunctions
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		v As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
