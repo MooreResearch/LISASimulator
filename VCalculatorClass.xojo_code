@@ -2,9 +2,9 @@
 Protected Class VCalculatorClass
 	#tag Method, Flags = &h0
 		Sub Constructor(Theτc As Double, δ As Double, χ1ℓ As Double, χ2ℓ As Double)
+		  η = (1-δ*δ)*0.25
 		  Var π As Double = 3.14159265358979324
 		  Var γE As Double = 0.577215664901533
-		  Var η As Double = (1-δ*δ)*0.25
 		  Var onepδ As Double = 1.0 + δ
 		  Var onemδ As Double = 1.0 - δ
 		  τc = Theτc
@@ -38,7 +38,7 @@ Protected Class VCalculatorClass
 		  P5 = 5*A5-10*A3*A2
 		  P6 = 5*A6-15*B6-10*A4*A2-5*A3*A3-5*A2*A2*A2
 		  P7 = 5/2*A7 - 5*A5*A2 - 5*A4*A3 + 15/2*A3*A2*A2
-		  ζ0 = (5/(256*τc))^(0.125)
+		  ζ0 = (5/(256*η*τc))^(0.125)
 		  Var ζ2 As Double = ζ0*ζ0
 		  Var ζ3 As Double = ζ2*ζ0
 		  Var ζ4 As Double = ζ3*ζ0
@@ -53,21 +53,28 @@ Protected Class VCalculatorClass
 		  V5 = V4*V
 		  V6 = V5*V
 		  V7 = V6*V
-		  Ψc = -P0/V5*(1 + P2*V2 + P3*V3 + P4*V4 +P5*V5 + P6*V6 + P7*V7)
+		  Ψc = -P0/V5*(1 + P2*V2 + P3*V3 + P4*V4 + P6*V6 + P7*V7)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function VAtTime(τ As Double) As Double
-		  Var ζ As Double = (5/(256*(τc-τ)))^0.125
+		  Var ζ As Double = (5/(256*η*(τc-τ)))^0.125
 		  Var ζ2 As Double = ζ*ζ
 		  Var ζ3 As Double = ζ2*ζ
 		  Var ζ4 As Double = ζ3*ζ
 		  Var ζ5 As Double = ζ4*ζ
 		  Var ζ6 As Double = ζ5*ζ
 		  Var ζ7 As Double = ζ6*ζ
-		  Return ζ*(1 + C2*ζ2+ C3*ζ3 + C4*ζ4 + C5*ζ5 + (C6-1.5*B6*Log(ζ))*ζ6 + C7*ζ7)
+		  V = ζ*(1 + C2*ζ2+ C3*ζ3 + C4*ζ4 + C5*ζ5 + (C6-1.5*B6*Log(ζ))*ζ6 + C7*ζ7)
+		  V2 = V*V
+		  V3 = V2*V
+		  V4 = V3*V
+		  V5 = V4*V
+		  V6 = V5*V
+		  V7 = V6*V
+		  Return V
 		End Function
 	#tag EndMethod
 
@@ -223,6 +230,10 @@ Protected Class VCalculatorClass
 
 	#tag Property, Flags = &h21
 		Private ζ0 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private η As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

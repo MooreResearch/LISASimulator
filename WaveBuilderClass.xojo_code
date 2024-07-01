@@ -116,33 +116,33 @@ Protected Class WaveBuilderClass
 		  'End If
 		  '
 		  '// Calculate the derivative with respect to ψ (this is the next easiest!)
-		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.psi)) Then
-		  'DHDq(Integer(CaseInfoClass.Param.psi)) = 2.0*(-fx*hpBase + fp*hxBase)
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.ψ)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.ψ)) = 2.0*(-fx*hpBase + fp*hxBase)
 		  'Else
-		  'DHDq(Integer(CaseInfoClass.Param.psi)) = 0.0
+		  'DHDq(Integer(CaseInfoClass.Param.ψ)) = 0.0
 		  'End If
 		  '
 		  '// in the case of λ0, DΨrDλ0 = 1, so the following is the correct total derivative.
-		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.lambda0)) Then
-		  'DHDq(Integer(CaseInfoClass.Param.lambda0)) = dHDΨr
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.λ0)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.λ0)) = dHDΨr
 		  'Else
-		  'DHDq(Integer(CaseInfoClass.Param.lambda0)) = 0.0
+		  'DHDq(Integer(CaseInfoClass.Param.λ0)) = 0.0
 		  'End If
 		  '
 		  '// We can also use the above items to calculate the derivative with respect to Θ
-		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.theta)) Then
-		  'DHDq(Integer(CaseInfoClass.Param.theta)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.Θ)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.Θ)) = dfp1dΘ*hpBase + dfp2dΘ*hpBase + dfx1dΘ*hxBase + dfx2dΘ*hxBase _
 		  '+ dHDΨr*DΨrDΘDN
 		  'Else
-		  'DHDq(Integer(CaseInfoClass.Param.theta)) = 0.0
+		  'DHDq(Integer(CaseInfoClass.Param.Θ)) = 0.0
 		  'End If
 		  '
 		  '// and the derivative with respect to Φ
-		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.phi)) Then
-		  'DHDq(Integer(CaseInfoClass.Param.phi)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.Φ)) Then
+		  'DHDq(Integer(CaseInfoClass.Param.Φ)) = dfp1dΦ*hpBase + dfp2dΦ*hpBase + dfx1dΦ*hxBase + dfx2dΦ*hxBase _
 		  '+ dHDΨr*DΨrDΦDN
 		  'Else
-		  'DHDq(Integer(CaseInfoClass.Param.phi)) = 0.0
+		  'DHDq(Integer(CaseInfoClass.Param.Φ)) = 0.0
 		  'End If
 		  '
 		  '// Now we will start calculating derivatives that involve derivatives of the wave amplitudes
@@ -150,7 +150,7 @@ Protected Class WaveBuilderClass
 		  'Var originalValue As Double
 		  'Var originalValue2 As Double
 		  'Var hPlus As Double
-		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.beta)) Then
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.β)) Then
 		  '// First, calculate the derivative with respect to β
 		  'originalValue = Cosβ // Store these values for safekeeping
 		  'originalValue2 = Sinβ
@@ -165,9 +165,9 @@ Protected Class WaveBuilderClass
 		  'SumSourceH(W) // and calculate the waves
 		  'Cosβ = originalValue  // restore the original values of of Cosβ, Sinβ, so that no harm is done
 		  'Sinβ = originalValue2
-		  'DHDq(Integer(CaseInfoClass.Param.beta)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
+		  'DHDq(Integer(CaseInfoClass.Param.β)) = (hPlus - fp*HP - fx*HX)*IDεForβ  // This gives us the complete β-derivative
 		  'Else
-		  'DHDq(Integer(CaseInfoClass.Param.beta)) = 0.0
+		  'DHDq(Integer(CaseInfoClass.Param.β)) = 0.0
 		  'End If
 		  '
 		  '// Most of the remaining parameters require all or nearly all the following amplitude derivatives
@@ -358,7 +358,7 @@ Protected Class WaveBuilderClass
 		  ''DHDq(Integer(CaseInfoClass.Param.V0)) = 0.0
 		  ''End If
 		  '
-		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.delta)) Then
+		  'If Parameters.SolveFor(Integer(CaseInfoClass.Param.δ)) Then
 		  '// Calculate the derivative with respect to q = δ
 		  'GetDataAtDetectorStep(SourceEvolverδPlus)
 		  'ιPlus = ιDN
@@ -383,11 +383,11 @@ Protected Class WaveBuilderClass
 		  'dχsyDq = (χsyPlus - χsyDN)*IDεForδ
 		  'dχszDq = (χszPlus - χszDN)*IDεForδ
 		  '// Put it all together
-		  'DHDq(Integer(CaseInfoClass.Param.delta)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
+		  'DHDq(Integer(CaseInfoClass.Param.δ)) = dHDα*dαDq+ dHDΨr*dΨrDq + dHDV*dVDq + dHDι*dιDq _
 		  '+ dHDχax*dχaxDq + dHDχay*dχayDq + dHDχaz*dχazDq _
 		  '+ dHDχsx*dχsxDq + dHDχsy*dχsyDq + dHDχsz*dχszDq + dHDδ
 		  'Else
-		  'DHDq(Integer(CaseInfoClass.Param.delta)) = 0.0
+		  'DHDq(Integer(CaseInfoClass.Param.δ)) = 0.0
 		  'End If
 		  '
 		  ''// Code to display values
@@ -1108,11 +1108,16 @@ Protected Class WaveBuilderClass
 		  // The following array allows us to to enhance or suppress values of harmonics at various frequencies
 		  // to reflect how they may be better or more poorly received by the detector due to noise
 		  // (Declaring this array as a class property reduces background memory management.)
-		  Sn(1) = 1.0/Sqrt(Noise.GetNoise(fN))
-		  Sn(2) = 1.0/Sqrt(Noise.GetNoise(2*fN))
-		  Sn(3) = 1.0/Sqrt(Noise.GetNoise(3*fN))
-		  Sn(4) = 1.0/Sqrt(Noise.GetNoise(4*fN))
-		  Sn(5) = 1.0/Sqrt(Noise.GetNoise(5*fN))
+		  'Sn(1) = 1.0/Sqrt(Noise.GetNoise(fN))
+		  'Sn(2) = 1.0/Sqrt(Noise.GetNoise(2*fN))
+		  'Sn(3) = 1.0/Sqrt(Noise.GetNoise(3*fN))
+		  'Sn(4) = 1.0/Sqrt(Noise.GetNoise(4*fN))
+		  'Sn(5) = 1.0/Sqrt(Noise.GetNoise(5*fN))
+		  Sn(1) = 1.0
+		  Sn(2) = 1.0
+		  Sn(3) = 1.0
+		  Sn(4) = 1.0
+		  Sn(5) = 1.0
 		  
 		  // Now basically calculate all possible combinations and weight according to the
 		  // noise at a given frequency
@@ -1994,8 +1999,8 @@ Protected Class WaveBuilderClass
 		  '
 		  '// Set up source evolvers where the value of δ is tweaked
 		  'Var ε As Double = 1.0e-6
-		  'SourceEvolverδMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.delta), -ε))
-		  'SourceEvolverδPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.delta), ε))
+		  'SourceEvolverδMinus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.δ), -ε))
+		  'SourceEvolverδPlus = New SourceEvolverClass(Tweak(Integer(CaseInfoClass.Param.δ), ε))
 		  'IDεForδ = 0.5/ε
 		  '
 		  '// Set up source evolvers where the value of v0 is adjusted
@@ -2052,7 +2057,7 @@ Protected Class WaveBuilderClass
 		  '// while some side cases might have a spin that requires a certain step size.
 		  '// A first argument of zero indicates a trial step here.
 		  'SourceEvolverBase.DoStep(-1.0, DτrD, SourceBestDτr)
-		  'If P.SolveFor(Integer(CaseInfoClass.Param.delta)) Then
+		  'If P.SolveFor(Integer(CaseInfoClass.Param.δ)) Then
 		  'SourceEvolverδMinus.DoStep(-1.0, DτrD, SourceBestDτr)
 		  'SourceEvolverδPlus.DoStep(-1.0, DτrD, SourceBestDτr)
 		  'End If
@@ -2132,15 +2137,24 @@ Protected Class WaveBuilderClass
 		  SumSourceH(W)
 		  
 		  // Write out useful information for plotting (if this is not a case from a file)
-		  If Not Parameters.FromFile Then
-		    Var t As Double = τrDN*Parameters.GM/Parameters.Year
-		    Var myValues() As Double = Array(t, HP, HX)
-		    Parameters.DataWriter.WriteDataToMemory(myValues)
-		  End If
+		  SaveDataForPlotting(τrDN)
 		  
 		  // We have completed the detector step successfully
 		  Return True
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SaveDataForPlotting(τr As Double)
+		  If Not Parameters.FromFile Then
+		    Var t As Double = τr*Parameters.GM/Parameters.Year
+		    Var ω As Double = VDN*VDN*VDN/Parameters.GM
+		    Var torb As Double = 2*Parameters.π/ω
+		    Var myNames() As String = Array("t-y", "HP", "HX", "Torb")
+		    Var myValues() As Double = Array(t, HP, HX, torb)
+		    Parameters.DataRecorder.WriteData(myNames, myValues, Parameters.NSteps)
+		  End If
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -2206,7 +2220,7 @@ Protected Class WaveBuilderClass
 		  sum = 0.0
 		  vpower = VDN*VDN
 		  jStart = H3PLastIndex + 1
-		  For j As Integer = jStart To H0PLastIndex
+		  For j As Integer = jStart To H0XLastIndex
 		    sum = sum + A(j)*Wave(j)
 		  Next
 		  If DoVDeriv Then
@@ -2219,7 +2233,7 @@ Protected Class WaveBuilderClass
 		  If Parameters.PNOrder > 0 Then
 		    sum = 0.0
 		    jStart = H0XLastIndex + 1
-		    For j As Integer = jStart to H1PLastIndex
+		    For j As Integer = jStart to H1XLastIndex
 		      sum = sum + A(j)*Wave(j)
 		    Next
 		    vpower = vpower*VDN
@@ -2230,7 +2244,7 @@ Protected Class WaveBuilderClass
 		  If Parameters.PNOrder > 1 Then
 		    sum = 0.0
 		    jStart = H1XLastIndex + 1
-		    For j As Integer = jStart to H2PLastIndex
+		    For j As Integer = jStart to H2XLastIndex
 		      sum = sum + A(j)*Wave(j)
 		    Next
 		    vpower = vpower*VDN

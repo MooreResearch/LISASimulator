@@ -10,7 +10,6 @@ Protected Class CaseSupervisorClass
 		  CaseInfo = currentCaseInfo // save the parameters for the current case
 		  
 		  // the following gives the number of main time steps to execute
-		  NSteps = Round(CaseInfo.RunDuration*CaseInfo.Year/CaseInfo.ΔT)
 		  Δτr = CaseInfo.ΔT/CaseInfo.GM
 		  WaveBuilder = New WaveBuilderClass(CaseInfo) // create the WaveBuilder and initialize it
 		  
@@ -21,13 +20,6 @@ Protected Class CaseSupervisorClass
 		  // Create The Uncertainty Calculator
 		  UncertaintyCalculator = New UncertaintyCalculatorClass(CaseInfo)
 		  
-		  // Provide a list of variable names to save. Rewrite this list to include more or other variables.
-		  Var myNames() As String = Array("t-y","HP", "HX")
-		  
-		  // Create an "internal folder" for data to plot on the Plot panel. One might also elect to save
-		  // variables to the hard drive -- if so, call CreateFolder without the NSteps parameter.
-		  CaseInfo.DataWriter.CreateFolder(myNames, NSteps)
-		  
 		End Sub
 	#tag EndMethod
 
@@ -35,7 +27,7 @@ Protected Class CaseSupervisorClass
 		Sub DoSteps()
 		  // This method actually executes the steps for the current case in question.
 		  Try
-		    For N = 0 to NSteps
+		    For N = 0 to CaseInfo.NSteps
 		      τr = N*Δτr // this is the current tau time (needed to update the user interface)
 		      If WaveBuilder.DidDetectorStepOK(N) Then  // If the WaveBuilder was able to execute a sample step
 		        'LoadATA(WaveBuilder.DHDq) // load the ATA matrix with the current values
@@ -78,15 +70,11 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DataWriter As DataWriterClass
+		DataRecorder As DataRecorderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		N As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		NSteps As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -161,14 +149,6 @@ Protected Class CaseSupervisorClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="NSteps"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty

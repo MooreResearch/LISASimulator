@@ -5,9 +5,11 @@ Protected Class CaseInfoClass
 		  Var P As New CaseInfoClass
 		  P.Detectors = Detectors
 		  P.DZDR = DZDR
+		  P.FromFile = FromFile
 		  P.GM = GM
 		  P.GMΩe = GMΩe
 		  P.M = M
+		  P.NSteps = NSteps
 		  P.OneI1pZ = OneI1pZ
 		  P.PNOrder = PNOrder
 		  P.R = R
@@ -55,6 +57,7 @@ Protected Class CaseInfoClass
 		  Ve = 9.936e-5   //Average orbital speed of the LISA detector in units of c
 		  GMΩe = GM*1.99213231e-7 //Unitless value of LISA's orbital frequency
 		  R = R*Year // get R in seconds
+		  NSteps = Round(RunDuration*Year/ΔT)
 		  Var universe As New UniverseClass(R) // Create a universe class to solve the Z(R) problem
 		  Z = universe.GetZ // get the Z value for the given value of R
 		  DZDR = universe.GetDZDR // get the derivative of Z with respect to R
@@ -84,15 +87,17 @@ Protected Class CaseInfoClass
 		  Var T3 As Double = 64/3*(47/40*Sℓ + δ*15/32*Σℓ-3/10*π)
 		  Var T4 As Double = 64*(743/2688 + 11/32*η)^2 - 128/9*(1855099/14450688 + 56975/258048*η - 371/2048*η*η)
 		  τc = 5/(256*η*v0^8)*(1.0 + T2*v0^2 + T3*v0^3 + T4*v0^4)
+		  Var vC As New VCalculatorClass(τc, δ, 0, 0)
+		  Var v1 As Double = vC.VAtTime(0.0)
 		  
-		  // Initialize the DataWriter class
-		  DataWriter = New DataWriterClass
+		  // Initialize the DataRecorder class
+		  DataRecorder = New DataRecorderClass
 		End Sub
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		DataWriter As DataWriterClass
+		DataRecorder As DataRecorderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -117,6 +122,10 @@ Protected Class CaseInfoClass
 
 	#tag Property, Flags = &h0
 		M As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		NSteps As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -226,20 +235,20 @@ Protected Class CaseInfoClass
 
 	#tag Enum, Name = Param, Type = Integer, Flags = &h0
 		M
-		  delta
-		  tauc
+		  δ
+		  τc
 		  R
-		  beta
-		  psi
-		  lambda0
-		  theta
-		  phi
-		  chi1
-		  theta1
-		  phi1
-		  chi2
-		  theta2
-		  phi2
+		  β
+		  ψ
+		  λ0
+		  Θ
+		  Φ
+		  χ1
+		  θ1
+		  φ1
+		  χ2
+		  θ2
+		  φ2
 		NItems
 	#tag EndEnum
 
@@ -515,6 +524,22 @@ Protected Class CaseInfoClass
 			Group="Behavior"
 			InitialValue=""
 			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FromFile"
+			Visible=false
+			Group="Behavior"
+			InitialValue="False"
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="NSteps"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior

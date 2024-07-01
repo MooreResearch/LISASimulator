@@ -221,6 +221,36 @@ Inherits DesktopCanvas
 		    
 		  End If
 		  
+		  // If the difference between the max and the min is zero,
+		  // come up with something reasonable.
+		  
+		  if xMax = 0.0 and xMin = 0.0 Then // if they are both zero
+		    xMax = 1.0
+		    xMin = 0.0
+		  ElseIf xMax = xMin Then // if they are the same but not zero
+		    xMax = 1.5*xMax  // make the maximum somewhat bigger
+		    xMin = 0.5*xMin  // and the minimum somewhat smaller
+		    If xMax < xMin Then  // but if the max is actually smaller
+		      Var temp As Double = xMax // because both are negative
+		      xMax = xMin // swap the max and min values
+		      xMin = temp
+		    End if
+		  End if
+		  
+		  // do the same for y
+		  if yMax = 0.0 and yMin = 0.0 Then
+		    yMax = 1.0
+		    yMin = 0.0
+		  ElseIf xMax = xMin Then
+		    yMax = 1.5*yMax
+		    yMin = 0.5*yMin
+		    If yMax < yMin Then
+		      Var temp As Double = yMax
+		      yMax = yMin
+		      yMin = temp
+		    End if
+		  End if
+		  
 		  YOfTopRight = MarginTop  // Reserve space at the top for the margin
 		  
 		  // Now we will rebuild the title shape in case it has changed.

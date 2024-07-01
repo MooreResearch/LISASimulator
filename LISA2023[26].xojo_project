@@ -1,5 +1,5 @@
 Type=Desktop
-RBProjectVersion=2024.011
+RBProjectVersion=2024.02
 MinIDEVersion=20210300
 OrigIDEVersion=20230101
 Class=MemoryStreamClass;Plotting/MemoryStreamClass.xojo_code;&h000000000F6F4FFF;&h000000004D924FFF;false
@@ -20,7 +20,7 @@ BuildSteps=Build Automation;Build Automation.xojo_code;&h00000000200AF7FF;&h0000
 Folder=Plotting;Plotting;&h000000004D924FFF;&h0000000000000000;false
 Class=StyledTextShape;Plotting/StyledTextShape.xojo_code;&h000000003510A7FF;&h000000004D924FFF;false
 Class=PlotAxis;Plotting/PlotAxis.xojo_code;&h000000004489DFFF;&h000000004D924FFF;false
-Class=DataWriterClass;Plotting/DataWriterClass.xojo_code;&h000000004D561FFF;&h000000004D924FFF;false
+Class=DataRecorderClass;Plotting/DataRecorderClass.xojo_code;&h000000004D561FFF;&h000000004D924FFF;false
 Class=NVector;NVector.xojo_code;&h000000004EF61FFF;&h0000000000000000;false
 Class=Matrix;Matrix.xojo_code;&h0000000064258FFF;&h0000000000000000;false
 Class=UncertaintyCalculatorClass;UncertaintyCalculatorClass.xojo_code;&h0000000063FA57FF;&h0000000000000000;false

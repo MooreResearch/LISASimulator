@@ -1343,6 +1343,7 @@ Begin DesktopWindow MainWindow
          TabIndex        =   16
          TabPanelIndex   =   3
          TabStop         =   True
+         TheTitle        =   ""
          TitleFont       =   "System"
          TitleFontSize   =   18.0
          TitleOffset     =   15.0
@@ -1588,7 +1589,7 @@ Begin DesktopWindow MainWindow
          Height          =   20
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Single Step\nWindow Width\n10 Steps\n100 Steps\n1000 Steps\n0.001 Year\n0.1 Year"
+         InitialValue    =   "Single Step\nWindow Width\n10 Steps\n100 Steps\n1000 Steps\n0.00001 Of Span\n0.0001 Of Span\n0.001 Of Span\n0.01 Of Span\n0.1 Of Span"
          Italic          =   False
          Left            =   437
          LockBottom      =   False
@@ -1602,7 +1603,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   79
+         Top             =   81
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1671,14 +1672,14 @@ End
 	#tag Method, Flags = &h0
 		Sub DisplayUncertainties(CaseInfo As CaseInfoClass)
 		  'UncertaintyListBox.CellTextAt(0) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.M)))
-		  'UncertaintyListBox.CellTextAt(1) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.delta)))
+		  'UncertaintyListBox.CellTextAt(1) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.δ)))
 		  'UncertaintyListBox.CellTextAt(2) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.V0)))
 		  'UncertaintyListBox.CellTextAt(3) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.R)))
-		  'UncertaintyListBox.CellTextAt(4) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.beta)))
-		  'UncertaintyListBox.CellTextAt(5) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.psi)))
-		  'UncertaintyListBox.CellTextAt(6) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.lambda0)))
-		  'Var uTheta As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.theta))
-		  'Var uPhi As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.phi))
+		  'UncertaintyListBox.CellTextAt(4) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.β)))
+		  'UncertaintyListBox.CellTextAt(5) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.ψ)))
+		  'UncertaintyListBox.CellTextAt(6) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.λ0)))
+		  'Var uTheta As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.Θ))
+		  'Var uPhi As Double = CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.Φ))
 		  'UncertaintyListBox.CellTextAt(7) = GetUncertaintyString(uTheta)
 		  'UncertaintyListBox.CellTextAt(8) = GetUncertaintyString(uPhi)
 		  'Var d2r As Double = CaseInfo.π/180.0
@@ -1690,6 +1691,46 @@ End
 		  'UncertaintyListBox.CellTextAt(13) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20x)))
 		  'UncertaintyListBox.CellTextAt(14) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20y)))
 		  'UncertaintyListBox.CellTextAt(15) = GetUncertaintyString(CaseInfo.Uncertainties(Integer(CaseInfoClass.Param.chi20z)))
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DoBump(Down as Boolean)
+		  Var trialStep As Integer
+		  Select Case BumpTypePopupMenu.SelectedRowText
+		  Case "Single Step"
+		    trialStep = 1
+		  Case "Window Width"
+		    Var selectedScale As Double = ScaleMenu.SelectedRowText.ToDouble
+		    trialStep = Round(selectedScale * PlotTimes.LastIndex)
+		  Case "10 Steps"
+		    trialStep = 10
+		  Case "100 Steps"
+		    trialStep = 100
+		  Case "1000 Steps"
+		    trialStep = 1000
+		  Case "0.00001 Of Span"
+		    trialStep = Round(0.00001*PlotTimes.LastIndex)
+		  Case "0.0001 Of Span"
+		    trialStep = Round(0.0001*PlotTimes.LastIndex)
+		  Case "0.001 Of Span"
+		    trialStep = Round(0.001*PlotTimes.LastIndex)
+		  Case "0.01 Of Span"
+		    trialStep = Round(0.01*PlotTimes.LastIndex)
+		  Case "0.1 of Span"
+		    trialStep = Round(0.01*PlotTimes.LastIndex)
+		  End Select
+		  If Down Then
+		    PlotStartIndex = PlotStartIndex - trialStep
+		    If PlotStartIndex < 0 Then PlotStartIndex = 0
+		  Else
+		    PlotStartIndex = PlotStartIndex + trialStep
+		    If PlotStartIndex > PlotTimes.LastIndex - 5 Then PlotStartIndex = PlotTimes.LastIndex - 5
+		  End If
+		  Setting = True
+		  StartSlider.Value = Round(PlotStartIndex/PlotTimes.LastIndex*StartSlider.MaximumValue)
+		  Setting = False
+		  UpdatePlot
 		End Sub
 	#tag EndMethod
 
@@ -1736,33 +1777,33 @@ End
 		  thisCase.M = GetValueAndSolveFlag(Flag, Values(0))
 		  thisCase.SolveFor(Integer(CaseInfoClass.Param.M)) = Flag
 		  thisCase.δ = GetValueAndSolveFlag(Flag, Values(1))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.delta)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.δ)) = Flag
 		  thisCase.T0 = GetValueAndSolveFlag(Flag, Values(2))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.tauc)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.τc)) = Flag
 		  thisCase.R = GetValueAndSolveFlag(Flag, Values(3))
 		  thisCase.SolveFor(Integer(CaseInfoClass.Param.R)) = Flag
 		  thisCase.β = GetValueAndSolveFlag(Flag, Values(4))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.beta)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.β)) = Flag
 		  thisCase.ψ = GetValueAndSolveFlag(Flag, Values(5))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.psi)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.ψ)) = Flag
 		  thisCase.λ0 = GetValueAndSolveFlag(Flag, Values(6))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.lambda0)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.λ0)) = Flag
 		  thisCase.Θ = GetValueAndSolveFlag(Flag, Values(7))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.theta)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.Θ)) = Flag
 		  thisCase.Φ = GetValueAndSolveFlag(Flag, Values(8))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.phi)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.Φ)) = Flag
 		  thisCase.χ1 = GetValueAndSolveFlag(Flag, Values(9))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi1)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.χ1)) = Flag
 		  thisCase.θ1 = GetValueAndSolveFlag(Flag, Values(10))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.theta1)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.θ1)) = Flag
 		  thisCase.φ1 = GetValueAndSolveFlag(Flag, Values(11))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.phi1)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.φ1)) = Flag
 		  thisCase.χ2 = GetValueAndSolveFlag(Flag, Values(12))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.chi2)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.χ2)) = Flag
 		  thisCase.θ2 = GetValueAndSolveFlag(Flag, Values(13))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.theta2)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.θ2)) = Flag
 		  thisCase.φ2 = GetValueAndSolveFlag(Flag, Values(14))
-		  thisCase.SolveFor(Integer(CaseInfoClass.Param.phi2)) = Flag
+		  thisCase.SolveFor(Integer(CaseInfoClass.Param.φ2)) = Flag
 		  thisCase.ρ0 = values(15).ToDouble
 		  thisCase.PNOrder = values(16).ToInteger
 		  thisCase.Detectors = values(17).ToInteger
@@ -1843,8 +1884,25 @@ End
 
 	#tag Method, Flags = &h0
 		Sub PlotSelectedItem(TheItem As String)
+		  If MyPlotData = Nil Then  // if this is the first call, then we must load the start/stop settings
+		    // Set the start of the plot
+		    PlotStartIndex = Round(StartSlider.Value/StartSlider.MaximumValue*PlotTimes.LastIndex)
+		    If PlotStartIndex > PlotTimes.LastIndex -5 Then PlotStartIndex = PlotTimes.LastIndex - 5
+		    
+		    // Get the plot scale
+		    Var selectedScale As Double = ScaleMenu.SelectedRowText.ToDouble
+		    
+		    // Calculate the new EndTimeIndex
+		    PlotEndIndex = Round(selectedScale * PlotTimes.LastIndex) + PlotStartIndex
+		    
+		    // Ensure EndTimeIndex does not exceed the maximum index
+		    If PlotEndIndex > PlotTimes.LastIndex Then
+		      PlotEndIndex = PlotTimes.LastIndex
+		    End If
+		  End If
+		  
 		  MyPlotData = New PlotData
-		  Var values() As Double = TheCases(0).DataWriter.GetInternalDataFor(TheItem)
+		  Var values() As Double = TheCases(0).DataRecorder.GetDataFor(TheItem)
 		  MyPlotData.SetPlotArrays(PlotTimes, values)
 		  MyPlotData.SetPlotIndexRange(PlotStartIndex, PlotEndIndex)
 		  MyPlotCanvas.TheTitle = "Plot of " + TheItem + " as a Function of Time"
@@ -2028,6 +2086,9 @@ End
 		Sub UpdatePlot()
 		  If MyPlotData = Nil Then Return // no data to plot
 		  
+		  // Make sure that the start index is small enough to display at least 5 steps
+		  If PlotStartIndex > PlotTimes.LastIndex - 5 Then PlotStartIndex = PlotTimes.LastIndex - 5
+		  
 		  // Get the plot scale
 		  Var selectedScale As Double = ScaleMenu.SelectedRowText.ToDouble
 		  
@@ -2060,6 +2121,10 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		LastStoreVariableIndex As Integer = 16
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		MyPlotData As PlotData
 	#tag EndProperty
 
@@ -2068,11 +2133,11 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		PlotEndIndex As Integer
+		PlotEndIndex As Integer = -1
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		PlotStartIndex As Integer
+		PlotStartIndex As Integer = -1
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2100,7 +2165,7 @@ End
 		  ValueOfRunTimeLabel.Text = Format((System.Ticks - TheSuper.StartTicks)/60.0, "###0.00")
 		  ValueOfStepNumberLabel.Text = TheSuper.N.ToString
 		  If MainThread.State = Thread.Running then  // if the thread is running
-		    CaseProgressBar.Value = Round(TheSuper.N*100/TheSuper.NSteps)  // update the progress bar
+		    CaseProgressBar.Value = Round(TheSuper.N*100/TheSuper.CaseInfo.NSteps)  // update the progress bar
 		  Else // the thread has stopped, meaning that this case is done
 		    CaseProgressBar.Value = 0  // set
 		    StartStopButton.Caption = "Run"
@@ -2153,9 +2218,9 @@ End
 		      Else
 		        GraphChoicePopupMenu.RemoveAllRows
 		        If TheCases.LastIndex < 0 Then Return
-		        Var vNamelist() As String = TheCases(0).DataWriter.GetVarNameList
+		        Var vNamelist() As String = TheCases(0).DataRecorder.GetVariableNames
 		        If vNamelist.LastIndex > -1 and vNamelist(0) = "t-y" Then
-		          PlotTimes = TheCases(0).DataWriter.GetInternalDataFor("t-y")
+		          PlotTimes = TheCases(0).DataRecorder.GetDataFor("t-y")
 		          If PlotTimes = Nil Then Return // we have nothing to graph, so bail out
 		          PlotStartIndex = 0
 		          PlotEndIndex = PlotTimes.LastIndex
@@ -2340,6 +2405,7 @@ End
 		Sub ValueChanged()
 		  If Not Setting Then
 		    PlotStartIndex = Round(me.Value/me.MaximumValue*PlotTimes.LastIndex)
+		    ValueOfGraphStartLabel.Text = Format(me.Value/me.MaximumValue*PlotTimes(PlotTimes.LastIndex), "0.00000000")
 		    UpdatePlot
 		  End If
 		End Sub
@@ -2348,11 +2414,21 @@ End
 #tag Events ScaleMenu
 	#tag Event
 		Sub SelectionChanged(item As DesktopMenuItem)
-		  // Ensure a valid selection is made
-		  //If ScaleMenu.SelectedRowIndex = -1 Then Return
-		  
-		  // Update the plot
-		  //UpdatePlot()
+		  UpdatePlot
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events BumpUpButton
+	#tag Event
+		Sub Pressed()
+		  DoBump(False)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events BumpDownButton
+	#tag Event
+		Sub Pressed()
+		  DoBump(True)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -2610,6 +2686,14 @@ End
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="PlotStartIndex"
+		Visible=false
+		Group="Behavior"
+		InitialValue=""
+		Type="Integer"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="PlotEndIndex"
 		Visible=false
 		Group="Behavior"
 		InitialValue=""
