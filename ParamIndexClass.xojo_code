@@ -114,7 +114,135 @@ Protected Class ParamIndexClass
 			Name="M"
 			Visible=false
 			Group="Behavior"
-			InitialValue=""
+			InitialValue="9"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue="14"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="R"
+			Visible=false
+			Group="Behavior"
+			InitialValue="12"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SpinLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue="7"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="β"
+			Visible=false
+			Group="Behavior"
+			InitialValue="10"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="δ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="6"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Θ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="13"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="θ1"
+			Visible=false
+			Group="Behavior"
+			InitialValue="1"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="θ2"
+			Visible=false
+			Group="Behavior"
+			InitialValue="4"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="λ0"
+			Visible=false
+			Group="Behavior"
+			InitialValue="8"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="τc"
+			Visible=false
+			Group="Behavior"
+			InitialValue="7"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Φ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="14"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="φ1"
+			Visible=false
+			Group="Behavior"
+			InitialValue="2"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="φ2"
+			Visible=false
+			Group="Behavior"
+			InitialValue="5"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χ1"
+			Visible=false
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="χ2"
+			Visible=false
+			Group="Behavior"
+			InitialValue="3"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="11"
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty

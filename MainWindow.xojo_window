@@ -25,7 +25,6 @@ Begin DesktopWindow MainWindow
    Visible         =   True
    Width           =   1000
    Begin Timer InterfaceUpdateTimer
-      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Period          =   500
@@ -2167,16 +2166,12 @@ Begin DesktopWindow MainWindow
       End
    End
    Begin MainThreadClass MainThread
-      DebugIdentifier =   ""
-      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
       Scope           =   0
       StackSize       =   0
       TabPanelIndex   =   0
-      ThreadID        =   0
-      ThreadState     =   0
       Type            =   0
    End
 End

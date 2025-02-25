@@ -37,7 +37,7 @@ Protected Class WaveBuilderClass
 		  // These static variables provide index numbers for the various derivatives
 		  // that match the established indices in the ParamIndexClass
 		  Static dδ As Integer = Parameters.Indices.δ
-		  Static dτc As Integer = Parameters.Indices.τc
+		  //Static dτc As Integer = Parameters.Indices.τc
 		  Static dχ1 As Integer = Parameters.Indices.χ1
 		  Static dθ1 As Integer = Parameters.Indices.θ1
 		  Static dφ1 As Integer = Parameters.Indices.φ1
