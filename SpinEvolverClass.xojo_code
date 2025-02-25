@@ -1194,15 +1194,15 @@ Protected Class SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Dδ As Integer = 0
+		Private Dδ As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Dθ1 As Integer = 3
+		Private Dθ1 As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Dθ2 As Integer = 6
+		Private Dθ2 As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1210,19 +1210,19 @@ Protected Class SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Dτc As Integer = 1
+		Private Dτc As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Dφ1 As Integer = 4
+		Private Dφ1 As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Dφ2 As Integer = 7
+		Private Dφ2 As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Dχ1 As Integer = 2
+		Private Dχ1 As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1242,7 +1242,7 @@ Protected Class SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Dχ2 As Integer = 5
+		Private Dχ2 As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1516,6 +1516,14 @@ Protected Class SpinEvolverClass
 			Visible=true
 			Group="Position"
 			InitialValue="0"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty

@@ -9,7 +9,7 @@ Class NecdetsClass
 	#tag Method, Flags = &h0
 		Sub SetValues(Wavebuilders() As WaveBuilderClass, ep As Double)
 		  If Wavebuilders.Ubound >= 1 Then
-		    For i As Integer = 0 To 249  // Assuming 250 elements
+		    For i As Integer = 0 To 250  // Assuming 250 elements
 		      nA(i) = (Wavebuilders(1).A(i) - Wavebuilders(2).A(i)) / (2.0 * ep)
 		    Next
 		  Else

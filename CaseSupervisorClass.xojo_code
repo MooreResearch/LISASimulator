@@ -8,8 +8,6 @@ Protected Class CaseSupervisorClass
 		  // the following gives the number of main time steps to execute
 		  Δτr = CaseInfo.ΔT/CaseInfo.GM
 		  
-		  Var ep As Double = 1e-6
-		  
 		  necdet = New NecdetsClass
 		  
 		  ' Create and initialize cases with time shifts
@@ -22,8 +20,7 @@ Protected Class CaseSupervisorClass
 		  WaveBuilders(0) = New WaveBuilderClass(CaseInfo)
 		  WaveBuilders(1) = New WaveBuilderClass(CaseList(1))
 		  WaveBuilders(2) = New WaveBuilderClass(CaseList(2))
-		  
-		  necdet.SetValues(WaveBuilders, ep)
+		  WaveBuilders(0).necdet = necdet
 		  
 		  For i As Integer = 0 To 2
 		    CaseList(i).DataRecorder.SetDataSource(WaveBuilders(i)) ' Connect data source for recording
@@ -43,6 +40,7 @@ Protected Class CaseSupervisorClass
 	#tag Method, Flags = &h0
 		Sub DoSteps()
 		  TerminationMessage = ""
+		  ep = 1e-6
 		  TrY
 		    For N = 0 to CaseInfo.NSteps
 		      τr = N*Δτr // this is the current tau time (needed to update the user interface)
@@ -54,6 +52,7 @@ Protected Class CaseSupervisorClass
 		          Exit  // Abort the loop
 		        End If
 		      Next
+		      necdet.SetValues(WaveBuilders, ep)
 		      If TerminationMessage <> "" Then Exit
 		      // Set up Wavebuilders(0).necdet with data
 		    Next
@@ -100,11 +99,15 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		ep As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		N As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Shared necdet As NecdetsClass
+		necdet As NecdetsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
