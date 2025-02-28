@@ -143,6 +143,10 @@ Protected Class BetaFuncsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		cβ2s2β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		cβ2sβ As Double
 	#tag EndProperty
 
@@ -466,6 +470,22 @@ Protected Class BetaFuncsClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="sβ3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="c2β2sβ3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="c3β"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
