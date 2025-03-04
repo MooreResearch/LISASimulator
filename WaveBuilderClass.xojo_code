@@ -37,14 +37,14 @@ Protected Class WaveBuilderClass
 		  // These static variables provide index numbers for the various derivatives
 		  // that match the established indices in the ParamIndexClass
 		  Static dδ As Integer = Parameters.Indices.δ
-		  //Static dτc As Integer = Parameters.Indices.τc
-		  Static dχ1 As Integer = Parameters.Indices.χ1
-		  Static dθ1 As Integer = Parameters.Indices.θ1
-		  Static dφ1 As Integer = Parameters.Indices.φ1
-		  Static dχ2 As Integer = Parameters.Indices.χ2
-		  Static dθ2 As Integer = Parameters.Indices.θ2
-		  Static dφ2 As Integer = Parameters.Indices.φ2
-		  Static dλ0 As Integer = Parameters.Indices.λ0
+		  'Static dτc As Integer = Parameters.Indices.τc
+		  'Static dχ1 As Integer = Parameters.Indices.χ1
+		  'Static dθ1 As Integer = Parameters.Indices.θ1
+		  'Static dφ1 As Integer = Parameters.Indices.φ1
+		  'Static dχ2 As Integer = Parameters.Indices.χ2
+		  'Static dθ2 As Integer = Parameters.Indices.θ2
+		  'Static dφ2 As Integer = Parameters.Indices.φ2
+		  'Static dλ0 As Integer = Parameters.Indices.λ0
 		  Static dlnM As Integer = Parameters.Indices.M
 		  Static dβ As Integer = Parameters.Indices.β
 		  Static dψ As Integer = Parameters.Indices.ψ
@@ -558,6 +558,8 @@ Protected Class WaveBuilderClass
 		  Var c2βsβ As Double = βfs.c2βsβ
 		  Var c2βsβ2 As Double = βfs.c2βsβ2
 		  Var c2βsβ3 As Double = βfs.c2βsβ3
+		  Var c2β2sβ3 As Double = βfs.c2β2sβ3
+		  Var c3β As Double = βfs.c3β
 		  Var c3βsβ2 As Double = βfs.c3βsβ2
 		  Var c4β As Double = βfs.c4β
 		  Var c4βsβ As Double = βfs.c4βsβ
@@ -565,6 +567,7 @@ Protected Class WaveBuilderClass
 		  Var cβ As Double = βfs.cβ
 		  Var cβ2 As Double = βfs.cβ2
 		  Var cβ2sβ As Double = βfs.cβ2sβ
+		  Var cβ2s2β As Double =  βfs.cβ2s2β
 		  Var cβ3sβ As Double = βfs.cβ3sβ
 		  Var cβc2β As Double = βfs.cβc2β
 		  Var cβc2βsβ2 As Double = βfs.cβc2βsβ2
@@ -629,6 +632,7 @@ Protected Class WaveBuilderClass
 		  Var c2c14 As Double = ιfs.c2c14
 		  Var c2c14s12 As Double = ιfs.c2c14s12
 		  Var c2c15s1 As Double = ιfs.c2c15s1
+		  Var c2c15s12 As Double = ιfs.c2c15s12
 		  Var c2c15s13 As Double = ιfs.c2c15s13
 		  Var c2c16 As Double = ιfs.c2c16
 		  Var c2c17s1 As Double = ιfs.c2c17s1
@@ -637,6 +641,7 @@ Protected Class WaveBuilderClass
 		  Var c2s16 As Double = ιfs.c2s16
 		  Var c2s2 As Double = ιfs.c2s2
 		  Var c2s22 As Double = ιfs.c2s22
+		  Var c2s23 As Double = ιfs.c2s23
 		  Var c3s13 As Double = ιfs.c3s13
 		  Var c4 As Double = ιfs.c4
 		  Var c4c12 As Double = ιfs.c4c12
@@ -707,154 +712,261 @@ Protected Class WaveBuilderClass
 		    
 		    If PNOrder > 0 Then
 		      // Amplitude factors for H1P
-		      theA(5) = 0
-		      theA(6) = 0
-		      theA(7) = 0
-		      theA(8) = 0
-		      theA(9) = 0
-		      theA(10) = 0
-		      theA(11) = 0
-		      theA(12) = 0
-		      theA(13) = 0
-		      theA(14) = 0
-		      theA(15) = 0
-		      theA(16) = 0
-		      theA(17) = 0
-		      theA(18) = 0
+		      theA(5) = -45/32*δ*sβ*c16 - 9/32*δ*s3β*c16
+		      theA(6) = -175/256*δ*sβ*c12 + 87/64*δ*sβ*c2c12 - 5/64*δ*s3β*c2c12 _
+		      - 5/256*δ*sβ*c4c12 + 15/256*δ*s3β*c4c12 + 13/256*δ*s3β*c12
+		      theA(7) = 175/256*δ*sβ*s12 + 87/64*δ*sβ*c2s12 - 5/64*δ*s3β*c2s12 _
+		      + 5/256*δ*sβ*c4s12 - 15/256*δ*s3β*c4s12 - 13/256*δ*s3β*s12
+		      theA(8) = -5/32*δ*sβ*c14s12 - 1/32*δ*s3β*c14s12
+		      theA(9) = -45/32*δ*sβ*c14s12 + 135/32*δ*s3β*c14s12
+		      theA(10) = 45/32*δ*sβ*c12s14 - 135/32*δ*s3β*c12s14
+		      theA(11) = 5/32*δ*sβ*c12s14 + 1/32*δ*s3β*c12s14
+		      theA(12) = 27/16*δ*sβ*s16 + 9/16*δ*c2βsβ*s16
+		      theA(13) = 45/16*δ*cβsβ2*s23
+		      theA(14) = -85/256*δ*cβ*s2 - 1/128*δ*cβc2β*s2 - 1/32*δ*cβc2β*c2s2 _
+		      - 3/128*δ*cβc2β*c4s2 - 11/64*δ*cβ*s4 - 1/256*δ*cβ*s6
+		      theA(15) = 45/256*δ*cβ*s2 + 81/128*δ*cβc2β*s2 + 27/32*δ*cβc2β*c2s2 _
+		      + 27/128*δ*cβc2β*c4s2 + 9/64*δ*cβ*s4 + 9/256*δ*cβ*s6
+		      theA(16) = 1/256*δ*cβc2β*s2 - 85/256*δ*cβ*s2 + 11/64*δ*cβ*s4 _
+		      + 1/64*δ*cβc2β*s4 - 1/256*δ*cβ*s6 + 3/256*δ*cβc2β*s6
+		      theA(17) = 45/256*δ*cβ*s2 + 135/256*δ*cβc2β*s2 - 9/64*δ*cβ*s4 _
+		      - 27/64*δ*cβc2β*s4 + 9/256*δ*cβ*s6 + 27/256*δ*cβc2β*s6
+		      theA(18) = 1/64*δ*cβsβ2*s2 + 5/64*δ*cβsβ2*s6
 		      
 		      // Order 1/2, Cross polarization
-		      theA(136) = 0
-		      theA(137) = 0
-		      theA(138) = 0
-		      theA(139) = 0
-		      theA(140) = 0
-		      theA(141) = 0
-		      theA(142) = 0
-		      theA(143) = 0
-		      theA(144) = 0
-		      theA(145) = 0
-		      theA(146) = 0
-		      theA(147) = 0
-		      theA(148) = 0
+		      theA(136) = -1/64*δ*cβsβ*c0 + 43/128*δ*cβsβ*c2 - 23/128*δ*s2β*c4 + 5/256*δ*s2β*c6
+		      theA(137) = 1/4*δ*c2β*c1c2s13 - 1/4*δ*c2β*c1s13 - δ*c1s13
+		      theA(138) = 1/8*δ*s2β*c12s14
+		      theA(139) = 1/2*δ*sβ2*s4
+		      theA(140) = 1/64*δ*cβsβ*c0 + 43/128*δ*cβsβ*c2 + 23/128*δ*s2β*c4 + 5/256*δ*s2β*c6
+		      theA(141) = 1/4*δ*c2β*c2c13s1 - 1/4*δ*c2β*c13s1 - δ*c0β*c13s1
+		      theA(142) = -1/8*δ*s2β*c14s12
+		      theA(143) = 45/8*δ*s2β*c14s12
+		      theA(144) = 9/2*δ*c2β*c15s1
+		      theA(145) = -9/8*δ*s2β*c16
 		      
 		    End If
 		    If PNOrder > 1 Then
 		      // Order 2/2, Plus polarization
-		      theA(19) = 0
-		      theA(20) = 0
-		      theA(21) = 0
-		      theA(22) = 0
-		      theA(23) = 0
-		      theA(24) = 0
-		      theA(25) = 0
-		      theA(26) = 0            
-		      theA(27) = 0
-		      theA(29) = 0
-		      theA(30) = 0
-		      theA(31) = 0
-		      theA(32) = 0
-		      theA(33) = 0
-		      theA(34) = 0
-		      theA(35) = 0
-		      theA(36) = 0
+		      theA(19) = 59/16*δ0*c0β*c14 + 5/2*δ0*c2β*c14 - 25/16*η*c0β*c14 _
+		      - 13/3*η*c2β*c14 + 9/16*η3*c4β*c14 - 5/8*η3*c0β*c2c14 _
+		      + 11/2*η3*c2β*c2c14 - 7/8*η3*c4β*c2c14 + 5/16*η3*c0β*c4c14 _
+		      + 1/4*η3*c2β*c4c14 + 7/16*η3*c4β*c4c14
+		      theA(20) = 6*η3*sβ2*c0β*c18 + 2*η3*c2βsβ2*c18
+		      theA(21) = -32*η3*cβ3sβ*c17s1
+		      theA(22) = 5/2*η3*s2β*c15s1 - 1/2*η3*c2βs2β*c15s1 + 2*η3*cβ2s2β*c2c15s1
+		      theA(23) = 10*η3*c0β*c16s12 + 8*η3*c2β*c16s12 + 14*η3*c4β*c16s12
+		      theA(24) = 3/2*η3*sβ2*c16s12 + 1/2*η3*c2βsβ2*c16s12
+		      theA(25) = 56*η*c2βs2β*c15s13 - 8*η*s2β*c15s13
+		      theA(26) = 16/3*η*s2β*c1s13 + 31/4*η3*s2β*c1c2s13 + 1/4*η3*s2β*c1c4s13 _
+		      - 19/16*η3*s4β*c1s13 - 7/8*η3*s4β*c3s13 - 7/16*η3*s4β*c5s13 - 6*s2β*c1s13
+		      theA(27) = 59/16*δ0*c0β*s14 + 5/2*δ0*c2β*s14 - 25/16*η*c0β*s14 _
+		      - 13/3*η*c2β*s14 + 9/16*η3*c4β*s14 + 5/8*η3*c0β*c2s14 _
+		      - 11/2*η3*c2β*c2s14 + 7/8*η3*c4β*c2s14 + 5/16*η3*c0β*c4s14 _
+		      + 1/4*η3*c2β*c4s14 + 7/16*η3*c4β*c4s14
+		      theA(28) = 8*η3*s2β*c13s15 - 56*η3*c2βs2β*c13s15
+		      theA(29) = -5/2*η3*s2β*c1s15 + 1/2*η3*c2βs2β*c1s15 + 2*η3*cβ2s2β*c1c2s15
+		      theA(30) = 10*η3*c0β*c12s16 + 8*η3*c2β*c12s16 + 14*η3*c4β*c12s16
+		      theA(31) = 3/2*η3*sβ2*c12s16 + 1/2*η3*c2βsβ2*c12s16
+		      theA(32) = 32*η3*cβ3sβ*c1s17
+		      theA(33) = 6*η3*sβ2*s18 + 2*η3*c2βsβ2*s18
+		      theA(34) = 349/96*δ0*sβ2*s22 + 25/32*η3*c2βsβ2*s22 - 45/32*η*sβ2*s22 _
+		      + 25/32*η3*sβ2*c4s22 + 35/32*η3*c2βsβ2*c4s22
+		      theA(35) = 25/4*η3*sβ2*s24 + 35/4*η3*c2βsβ2*s24
+		      theA(36) = 6*δ0*s2β*c13s1 - 16/3*η*s2β*c13s1 + 31/4*η3*s2β*c2c13s1 _
+		      - 1/4*η3*s2β*c4c13s1 + 19/16*η3*s4β*c13s1 - 7/8*η3*s4β*c13s3 + 7/16*η3*s4β*c13s5
 		      
 		      //Order 2/2, Cross polarization
-		      theA(146) = 0
-		      theA(147) = 0
-		      theA(148) = 0
-		      theA(149) = 0
-		      theA(150) = 0
-		      theA(151) = 0
-		      theA(152) = 0
-		      theA(153) = 0
-		      theA(154) = 0
-		      theA(155) = 0
-		      theA(156) = 0
-		      theA(157) = 0
-		      theA(158) = 0
-		      theA(159) = 0
-		      theA(160) = 0
-		      theA(161) = 0
-		      theA(162) = 0
+		      theA(146) = -28*η3*s3β*c13s15 - 12*η3*sβ*c13s15
+		      theA(147) = -4*η3*c3β*c12s16 + 28*η3*cβ*c12s16
+		      theA(148) = 12*η3*s3β*c1s17 - 4*η3*sβ*c1s17
+		      theA(149) = 8*η3*cβsβ*s18
+		      theA(150) = 19/4*η3*s3β*c1c2s13 - 9/4*η3*sβ*c1c2s13 - 7/8*η3*s3β*c1c4s13 _
+		      - 3/8*η3*sβ*c1c4s13 + 9/8*η3*s3β*c1s13 + 103/24*η*sβ*c1s13 - 79/8*δ0*sβ*c1s13
+		      theA(151) = -1/2*η3*c3β*c2s14 - 7/2*η3*cβ*c2s14 + 7/8*η3*c3β*c4s14 _
+		      - 3/8*η3*c3β*s14 + 1/8*η3*cβ*c4s14 - 119/24*η*cβ*s14 + 47/8*δ0*cβ*s14
+		      theA(152) = 3*η3*c2βsβ*c1c2s15 + η3*sβ*c1c2s15 - 4*η3*sβ*c1s15
+		      theA(153) = 2*η3*cβsβ2*c12s16
+		      theA(154) = 15/2*η3*cβsβ2*c2s22
+		      theA(155) = 19/4*η3*s3β*c2c13s1 - 9/4*η3*sβ*c2c13s1 + 7/8*η3*s3β*c4c13s1 _
+		      + 3/8*η3*sβ*c4c13s1 - 9/8*η3*s3β*c13s1 - 103/24*η*sβ*c13s1 + 79/8*δ0*sβ*c13s1
+		      theA(156) = 1/2*η3*c3β*c2c14 + 7/2*η3*cβ*c2c14 + 7/8*η3*c3β*c4c14 _
+		      - 3/8*η3*c3β*c14 + 1/8*η3*cβ*c4c14 - 119/24*η*cβ*c14 + 47/8*δ0*cβ*c14
+		      theA(157) = 3*η3*c2βsβ*c2c15s1 + η3*sβ*c2c15s1 + 4*η3*sβ*c15s1
+		      theA(158) = 2*η3*cβsβ2*c16s12
+		      theA(159) = 28*η3*s3β*c15s13 + 12*η3*sβ*c15s13
+		      theA(160) = 28*η3*c3β*c16s12 + 4*η3*cβ*c16s12
+		      theA(161) = -24*η3*c2βsβ*c17s1 - 8*η3*sβ*c17s1
+		      theA(162) = 8*η3*cβsβ2*c18
 		    End If
 		    
 		    If PNOrder > 2 then
 		      // Order 3/2, Plus Polarization
-		      theA(47) = 0
-		      theA(48) = 0
-		      theA(49) = 0
-		      theA(50) = 0
-		      theA(51) = 0
-		      theA(52) = 0
-		      theA(53) = 0
-		      theA(54) = 0
-		      theA(55) = 0
-		      theA(56) = 0
-		      theA(57) = 0
-		      theA(58) = 0
-		      theA(59) = 0
-		      theA(60) = 0
-		      theA(61) = 0
-		      theA(62) = 0
-		      theA(63) = 0
-		      theA(64) = 0
-		      theA(65) = 0
-		      theA(66) = 0
-		      theA(67) = 0
-		      theA(68) = 0
-		      theA(69) = 0
-		      theA(70) = 0
-		      theA(71) = 0
-		      theA(73) = 0
-		      theA(74) = 0
-		      theA(75) = 0
-		      theA(76) = 0
-		      theA(77) = 0
-		      theA(78) = 0
-		      theA(79) = 0
-		      theA(80) = 0
-		      theA(81) = 0
-		      theA(82) = 0
-		      theA(83) = 0
-		      theA(84) = 0
+		      theA(47) = -3*π*δ0*c0β*c14 - π*δ0*c2β*c14
+		      theA(48) = -4*π*δ0*s2β*c13s1
+		      theA(49) = 4*π*δ0*s2β*c1s13
+		      theA(50) = -3*π*δ0*c0β*s14 - π*δ0*c2β*s14
+		      theA(51) = -3*π*δ0*sβ2*s22
+		      theA(52) = 625/128*δ2*sβ3*c110 + 625/384*δ2*c2β2sβ3*c110
+		      theA(53) = 19/4096*δ2*s3β*c2c12 + 35/12288*δ2*s5β*c2c12 + 1873/2048*δ1*sβ*c2c12 _
+		      + 1901/8192*δ*s3β*c2c12 - 10675/12288*δ*sβ*c2c12 - 47/8192*δ1*s3β*c4c12 _
+		      - 21/8192*δ2*s5β*c4c12 - 2833/16384*δ*s3β*c4c12 + 337/12288*δ1*sβ*c4c12 _
+		      + 1103/24576*δ*sβ*c4c12 - 91/4096*δ2*s3β*c6c12 + 7/4096*δ2*s5β*c6c12 _
+		      - 59/6144*δ2*sβ*c6c12 + 7/32768*δ2*s3β*c8c12 - 35/32768*δ2*s5β*c8c12 _
+		      + 7/49152*δ2*sβ*c8c12 - 331/32768*δ1*s3β*c12 - 155/98304*δ2*s5β*c12 _
+		      - 7449/16384*δ1*sβ*c12 - 9653/65536*δ*s3β*c12 + 43723/98304*δ*sβ*c12
+		      theA(54) = 6399/2048*δ2*s3β*c2c16 - 2187/2048*δ2*s5β*c2c16 - 2403/1024*δ2*sβ*c2c16 _
+		      + 3159/8192*δ2*s3β*c4c16 + 3645/8192*δ2*s5β*c4c16 + 1701/4096*δ2*sβ*c4c16 _
+		      - 24507/8192*δ1*s3β*c16 + 5751/8192*δ2*s5β*c16 - 4689/4096*δ1*sβ*c16 _
+		      + 38331/16384*δ*s3β*c16 + 39249/8192*δ*sβ*c16
+		      theA(55) = -11875/384*δ2*cβsβ2*c19s1 - 3125/384*δ2*c3βsβ2*c19s1
+		      theA(56) = 351/128*δ2*cβsβ2*c17s1 - 243/128*δ2*cβc2βsβ2*c17s1 + 567/128*δ2*cβsβ2*c2c17s1 _
+		      + 405/128*δ2*cβc2βsβ2*c2c17s1
+		      theA(57) = 243/128*δ2*sβ3*c18s12 + 81/128*δ2*c2βsβ3*c18s12
+		      theA(58) = 1901/8192*δ*s3β*c2s12 - 10675/12288*δ*sβ*c2s12 + 2833/16384*δ*s3β*c4s12 _
+		      - 1103/24576*δ*sβ*c4s12 + 9653/65536*δ*s3β*s12 - 43723/98304*δ*sβ*s12 _
+		      + 19/4096*δ1*s3β*c2s12 + 35/12288*δ2*s5β*c2s12 + 1873/2048*δ1*sβ*c2s12 _
+		      + 47/8192*δ1*s3β*c4s12 + 21/8192*δ2*s5β*c4s12 - 337/12288*δ1*sβ*c4s12 _
+		      - 91/4096*δ2*s3β*c6s12 + 7/4096*δ2*s5β*c6s12 - 59/6144*δ2*sβ*c6s12 _
+		      - 7/32768*δ2*s3β*c8s12 + 35/32768*δ2*s5β*c8s12 - 7/49152*δ2*sβ*c8s12 _
+		      + 331/32768*δ1*s3β*s12 + 155/98304*δ2*s5β*s12 + 7449/16384*δ1*sβ*s12
+		      theA(59) = 151/1024*δ2*s3β*c2c14s12 - 3/1024*δ2*s5β*c2c14s12 - 27/512*δ2*sβ*c2c14s12 _
+		      + 13/4096*δ2*s3β*c4c14s12 + 15/4096*δ2*s5β*c4c14s12 + 7/2048*δ2*sβ*c4c14s12 _
+		      - 57/4096*δ1*s3β*c14s12 + 13/4096*δ2*s5β*c14s12 + 245/2048*δ1*sβ*c14s12 _
+		      + 825/8192*δ*s3β*c14s12 + 1675/4096*δ*sβ*c14s12
+		      theA(60) = 4375/512*δ2*sβ*c18s12 + 8125/1024*δ2*s3β*c18s12 + 9375/1024*δ2*s5β*c18s12
+		      theA(61) = 20475/4096*δ*sβ*c14s12 - 149391/8192*δ*s3β*c14s12 - 3195/2048*δ1*sβ*c14s12 _
+		      + 45711/4096*δ1*s3β*c14s12 + 567/2048*δ2*sβ*c4c14s12 + 1701/4096*δ2*s3β*c4c14s12 _
+		      - 8505/4096*δ2*s5β*c4c14s12 - 7371/4096*δ2*s5β*c14s12 - 2187/512*δ2*sβ*c2c14s12 _
+		      - 10017/1024*δ2*s3β*c2c14s12 + 1701/1024*δ2*s5β*c2c14s12
+		      theA(62) = -4375/192*δ2*cβ*c17s13 - 625/128*δ2*c3β*c17s13 - 3125/128*δ2*c5β*c17s13
+		      theA(63) = 5/192*δ2*cβc2βsβ2*c2c15s13 + 7/192*δ2*cβsβ2*c2c15s13 + 37/192*δ2*cβsβ2*c15s13
+		      theA(64) = 1/64*δ2*sβ3*c16s14 + 1/192*δ2*c2βsβ3*c16s14
+		      theA(65) = 151/1024*δ2*s3β*c2c12s14 - 3/1024*δ2*s5β*c2c12s14 - 27/512*δ2*sβ*c2c12s14 _
+		      - 13/4096*δ2*s3β*c4c12s14 - 15/4096*δ2*s5β*c4c12s14 - 7/2048*δ2*sβ*c4c12s14 _
+		      + 57/4096*δ1*s3β*c12s14 - 13/4096*δ2*s5β*c12s14 - 245/2048*δ1*sβ*c12s14 _
+		      - 825/8192*δ*s3β*c12s14 - 1675/4096*δ*sβ*c12s14
+		      theA(66) = 4375/512*δ2*s3β*c16s14 - 21875/512*δ2*s5β*c16s14 + 4375/768*δ2*sβ*c16s14
+		      theA(67) = -10017/1024*δ2*s3β*c2c12s14 + 1701/1024*δ2*s5β*c2c12s14 - 2187/512*δ2*sβ*c2c12s14 _
+		      - 1701/4096*δ2*s3β*c4c12s14 + 8505/4096*δ2*s5β*c4c12s14 - 567/2048*δ2*sβ*c4c12s14 _
+		      - 45711/4096*δ1*s3β*c12s14 + 7371/4096*δ2*s5β*c12s14 + 3195/2048*δ1*sβ*c12s14 _
+		      + 149391/8192*δ*s3β*c12s14 - 20475/4096*δ*sβ*c12s14
+		      theA(68) = -5/192*δ1*cβc2βsβ2*c2c13s15 - 1/192*δ2*cβc2βsβ2*c13s15 - 7/192*δ2*cβsβ2*c2c13s15 _
+		      + 37/192*δ2*cβsβ2*c13s15
+		      theA(69) = -1/192*δ2*c2βsβ3*c14s16 - 1/64*δ2*sβ3*c14s16
+		      theA(70) = -8145/2048*δ*c2βsβ*s16 - 55539/8192*δ*sβ*s16 + 1053/256*δ2*c2βsβ*c2s16 _
+		      - 1701/1024*δ1*c2βsβ*c4s16 + 4689/1024*δ1*c2βsβ*s16 - 2187/1024*δ2*c4βsβ*c2s16 _
+		      - 297/1024*δ2*sβ*c2s16 - 3645/4096*δ2*c4βsβ*c4s16 - 5751/4096*δ2*c4βsβ*s16 _
+		      - 5103/4096*δ2*sβ*c4s16 + 14067/4096*δ1*sβ*s16
+		      theA(71) = -4375/512*δ2*s3β*c14s16 + 21875/512*δ2*s5β*c14s16 - 4375/768*δ2*sβ*c14s16
+		      theA(72) = -625/128*δ2*c3β*c13s17 - 3125/128*δ2*c5β*c13s17 - 4375/192*δ2*cβ*c13s17
+		      theA(73) = -405/128*δ2*cβc2βsβ2*c1c2s17 - 243/128*δ2*cβc2βsβ2*c1s17 - 567/128*δ2*cβsβ2*c1c2s17 _
+		      + 351/128*δ2*cβsβ2*c1s17
+		      theA(74) = -243/128*δ2*sβ3*c12s18 - 81/128*δ2*c2βsβ3*c12s18
+		      theA(75) = -8125/1024*δ2*s3β*c12s18 - 9375/1024*δ2*s5β*c12s18 - 4375/512*δ2*sβ*c12s18
+		      theA(76) = -3125/384*δ2*c3βsβ2*c1s19 - 11875/384*δ2*cβsβ2*c1s19
+		      theA(77) = -625/384*δ2*c2βsβ3*s110 - 625/128*δ2*sβ3*s110
+		      theA(78) = -5103/2048*δ2*cβc2βsβ2*c4s23 - 3969/2048*δ2*cβc2βsβ2*s23 - 1701/2048*δ2*cβsβ2*c4s23 _
+		      + 10197/2048*δ1*cβsβ2*s23 - 44757/4096*δ*cβsβ2*s23
+		      theA(79) = -13125/2048*δ2*c3βsβ2*s25 - 21875/2048*δ2*cβsβ2*s25
+		      theA(80) = 243/512*δ1*cβc2β*c2s2 - 2835/1024*δ*cβc2β*c2s2 - 5319/4096*δ1*cβc2β*c4s2 _
+		      + 135/8192*δ*cβc2β*c4s2 + 5967/8192*δ1*cβc2β*s2 - 37071/16384*δ*cβc2β*s2 _
+		      + 4005/4096*δ1*cβ*c2s2 - 10917/8192*δ*cβ*c2s2 - 243/65536*δ2*c3β*s10 _
+		      - 2565/16384*δ2*c3β*s8 - 567/16384*δ2*cβc4β*s2 + 81/4096*δ2*cβc4β*s4 _
+		      - 1053/32768*δ2*cβc4β*s6 + 6633/8192*δ1*cβ*c4s2 - 10089/16384*δ*cβ*c4s2 _
+		      - 1215/65536*δ2*c5β*s10 - 729/16384*δ2*c5β*s8 - 513/4096*δ2*cβ*c6s2 _
+		      - 567/16384*δ2*cβ*c8s2 + 2457/4096*δ1*cβ*s2 - 7641/8192*δ*cβ*s2
+		      theA(81) = 5643/4096*δ2*cβc2β*s2 - 18603/8192*δ*cβc2β*s2 + 2835/2048*δ*cβc2β*s4 _
+		      + 135/16384*δ*cβc2β*s6 - 243/65536*δ2*c3β*s10 + 2565/16384*δ2*c3β*s8 _
+		      - 567/16384*δ1*cβc4β*s2 + 81/4096*cβc4β*s4 - 1053/32768*cβc4β*s6 _
+		      - 1215/65536*δ2*c5β*s10 + 729/16384*δ2*c5β*s8 - 567/32768*δ2*cβ*s10 _
+		      + 3195/16384*δ1*cβ*s2 + 513/8192*δ2*cβ*s8 - 20475/32768*δ*cβ*s2 _
+		      + 5715/8192*δ*cβ*s4 - 20745/65536*δ*cβ*s6 - 2259/4096*δ1*cβ*s4 _
+		      - 243/1024*δ1*cβc2β*s4 + 13833/32768*δ1*cβ*s6 - 5319/8198*δ1*cβc2β*s6
+		      theA(82) = 11/768*δ1*cβc2β*c2s2 + 133/1536*δ*cβc2β*c2s2 + 77/2048*δ1*cβc2β*c4s2 _
+		      + 211/4096*δ*cβc2β*c4s2 + 257/12288*δ1*cβc2β*s2 + 319/24576*δ*cβc2β*s2 _
+		      + 933/4096*δ*cβ*c2s2 - 1391/6144*δ1*cβ*c2s2 + 1/32768*δ2*c3β*s10 _
+		      + 45/8192*δ2*c3β*s8 - 1/24576*δ2*cβc4β*s2 + 1/6144*δ2*cβc4β*s4 _
+		      - 1/16384*δ2*cβc4β*s6 - 49/12288*δ1*cβ*c4s2 + 625/24576*δ*cβ*c4s2 _
+		      + 5/32768*δ2*c5β*s10 + 1/8192*δ2*c5β*s8 + 11/6144*δ2*cβ*c6s2 _
+		      + 7/24576*δ2*cβ*c8s2 - 1493/6144*δ1*cβ*s2 + 871/4096*δ*cβ*s2
+		      theA(83) = 13/6144*δ1*cβc2β*s2 - 11/1536*δ1*cβc2β*s4 + 77/4096*δ1*cβc2β*s6 _
+		      - 157/12288*δ*cβc2β*s2 - 133/3072*δ*cβc2β*s4 + 211/8192*δ*cβc2β*s6 _
+		      + 1/32768*δ2*c3β*s10 - 45/8192*δ2*c3β*s8 - 1/24576*δ2*cβc4β*s2 _
+		      - 1/6144*δ2*cβc4β*s4 - 1/16384*δ2*cβc4β*s6 + 5/32768*δ2*c5β*s10 _
+		      - 1/8192*δ2*c5β*s8 + 7/49152*δ2*cβ*s10 - 5923/24576*δ1*cβ*s2 _
+		      + 701/6144*δ1*cβ*s4 - 35/16384*δ1*cβ*s6 - 11/12288*δ2*cβ*s8 _
+		      + 9827/49152*δ*cβ*s2 - 1405/12288*δ*cβ*s4 + 419/32768*δ*cβ*s6
+		      theA(84) = -429/8192*δ1*cβsβ2*s6 - 1/4096*δ2*cβc2βsβ2*s2 + 7/8192*δ2*cβc2βsβ2*s2 _
+		      - 21/16384*δ2*c3βsβ2*s10 - 35/16384*δ2*cβsβ2*s10 - 43/4096*δ1*cβsβ2*s2 _
+		      - 341/8192*δ*cβsβ2*s2 - 3411/16384*δ*cβsβ2*s6
 		      
 		      // Order 3/2, cross polarization
-		      theA(173) = 0
-		      theA(174) = 0
-		      theA(175) = 0
-		      theA(176) = 0
-		      theA(177) = 0
-		      theA(178) = 0
-		      theA(179) = 0
-		      theA(180) = 0
-		      theA(181) = 0
-		      theA(182) = 0
-		      theA(183) = 0
-		      theA(184) = 0
-		      theA(185) = 0
-		      theA(186) = 0
-		      theA(187) = 0
-		      theA(188) = 0
-		      theA(189) = 0
-		      theA(190) = 0
-		      theA(191) = 0
-		      theA(192) = 0
-		      theA(193) = 0
-		      theA(194) = 0
-		      theA(195) = 0
-		      theA(196) = 0
-		      theA(197) = 0
-		      theA(198) = 0
-		      theA(199) = 0
-		      theA(200) = 0
-		      theA(201) = 0
-		      theA(202) = 0
-		      theA(203) = 0
-		      theA(204) = 0
-		      theA(205) = 0
-		      theA(206) = 0
-		      theA(207) = 0
-		      theA(208) = 0
+		      theA(173) = 8*π*δ0*sβ*c1s13
+		      theA(174) = -4*π*δ0*cβ*s14
+		      theA(175) = -8*π*δ0*sβ*c13s1
+		      theA(176) = -4*π*δ0*cβ*c14
+		      theA(177) = 4375/192*δ2*s2β*c14s16 + 4375/128*δ2*s4β*c14s16
+		      theA(178) = -625/48*δ2*c2β*c13s17 - 625/16*δ2*c4β*c13s17
+		      theA(179) = 625/128*δ2*s2β*c12s18 - 5625/256*δ2*s4β*c12s18
+		      theA(180) = -625/24*δ2*c2βsβ2*c1s19 - 625/48*δ2*sβ2*c1s19
+		      theA(181) = -625/96*δ2*cβ*sβ3*s110
+		      theA(182) = 459/128*δ2*s2β*c2c12s14 - 2079/256*δ2*s4β*c2c12s14 + 567/512*δ2*s2β*c4c12s14 _
+		      + 1701/1024*δ2*s4β*c4c12s14 - 4923/512*δ1*s2β*c12s14 - 945/1024*δ2*s4β*c12s14 _
+		      + 22203/1024*δ*s2β*c12s14
+		      theA(183) = 27/16*δ2*c2β*c1c2s15 - 81/128*δ2*c2β*c1c4s15 + 1233/128*δ1*c2β*c1s15 _
+		      - 4689/256*δ*c2β*c1s15 + 27/16*δ2*c4β*c1c2s15 + 27/8*δ2*c1c2s15 _
+		      - 243/128*δ2*c4β*c1c4s15 + 27/128*δ2*c4β*c1s15 + 27/16*δ2*c0β*c1s15
+		      theA(184) = -621/256*δ2*c2βs2β*c2s16 - 2187/1024*δ2*c2βs2β*c4s16 - 1377/1024*δ2*c2βs2β*s16 _
+		      + 837/256*δ2*s2β*c2s16 + 243/1024*δ2*s2β*c4s16 + 4761/1024*δ1*s2β*s16 - 11673/2048*δ*s2β*s16
+		      theA(185) = -81/16*δ2*c2βsβ2*c1c2s17 - 27/16*δ2*c2βsβ2*c1s17 - 81/32*δ2*sβ2*c1c2s17 + 81/32*δ2*sβ2*c1s17
+		      theA(186) = -81/32*δ2*cβsβ3*c12s18
+		      theA(187) = -7/49152*δ2*s2β*c10 - 7/32768*δ2*s4β*c10 + 11/6144*δ2*c2βs2β*c4 _
+		      - 91/16384*δ2*c2βs2β*c6 - 173/24576*δ2*cβs3β*c2 + 6031/24576*δ1*cβsβ*c2 _
+		      - 10511/49152*δ*cβsβ*c2 - 679/6144*δ1*s2β*c4 + 557/4096*δ*s2β*c4 _
+		      - 201/16384*δ1*s2β*c6 - 1719/32768*δ*s2β*c6 - 37/24576*δ2*s2β*c8 _
+		      + 91/16384*δ2*s4β*c8 + 1/8192*δ2*cβs3β*c0 + 85/8192*δ1*cβsβ*c0 + 683/16384*δ*cβsβ*c0
+		      theA(188) = -37/256*δ1*c2β*c1c2s13 - 347/512*δ*c2β*c1c2s13 + 3/128*δ2*c2β*c1c4s13 _
+		      - 1/768*δ2*c2β*c1c6s13 - 35/128*δ1*c2β*c1s13 - 23/768*δ*c2β*c1s13 + 1/32*δ2*c0β*c1c2s13 _
+		      + 79/1536*δ2*c4β*c1s13 + 1/32*δ2*c0β*c1c4s13 - 11/16*δ1*c0β*c1s13 + 19/32*δ*c0β*c1s13 _
+		      + 19/512*δ2*c4β*c3s13 + 9/512*δ2*c4β*c5s13 - 1/512*δ2*c4β*c7s13
+		      theA(189) = 13/128*δ2*s2β*c2c12s14 + 11/256*δ2*s4β*c2c12s14 + 1/512*δ2*s2β*c4c12s14 _
+		      - 9/1024*δ2*s4β*c4c12s14 - 29/512*δ1*s2β*c12s14 + 5/1024*δ2*s4β*c12s14 - 355/1024*δ*s2β*c12s14
+		      theA(190) = -1/24*δ2*c2βsβ2*c2c13s15 + 1/24*δ2*c2βsβ2*c13s15 - 1/48*δ2*sβ2*c2c13s15 + 7/48*δ2*sβ2*c13s15
+		      theA(191) = -1/48*δ2*cβsβ3*c14s16
+		      theA(192) = -1/128*δ2*c2βsβ2*s4 - 7/256*δ2*c2βsβ2*s8 + 45/128*δ1*sβ2*s4 _
+		      - 5/256*δ2*sβ2*s8 - 77/256*δ*sβ2*s4
+		      theA(193) = -189/32*δ2*c2βsβ2*c2s23 - 135/32*δ2*sβ2*c2s23
+		      theA(194) = -7/49152*δ2*s2β*c10 - 7/32768*δ2*s4β*c10 - 11/6144*δ2*c2βs2β*c4 _
+		      - 91/16384*δ2*c2βs2β*c6 - 173/24576*δ2*cβs3β*c2 + 6031/24576*δ1*cβsβ*c2 _
+		      - 10511/49152*δ*cβsβ*c2 + 679/6144*δ1*s2β*c4 - 557/4096*δ*s2β*c4 _
+		      - 201/16384*δ1*s2β*c6 - 1719/32768*δ*s2β*c6 + 37/24576*δ2*s2β*c8 _
+		      - 91/16384*δ2*s4β*c8 - 1/8192*δ2*cβs3β*c0 - 85/8192*δ1*cβsβ*c0 - 683/16384*δ*cβsβ*c0
+		      theA(195) = 37/256*δ1*c2β*c2c13s1 + 347/512*δ*c2β*c2c13s1 + 3/128*δ2*c2β*c4c13s1 _
+		      + 1/768*δ2*c2β*c6c13s1 - 35/128*δ1*c2β*c13s1 - 23/768*δ*c2β*c13s1 _
+		      - 1/32*δ2*c0β*c2c13s1 + 79/1536*δ2*c4β*c13s1 - 19/512*δ2*c4β*c13s3 _
+		      + 9/512*δ2*c4β*c13s5 + 1/512*δ2*c4β*c13s7 + 1/32*δ2*c0β*c4c13s1 _
+		      - 11/16*δ1*c0β*c13s1 + 19/32*δ*c0β*c13s1
+		      theA(196) = 13/128*δ2*s2β*c2c14s12 + 11/246*δ2*s4β*c2c14s12 - 1/512*δ2*s2β*c4c14s12 _
+		      + 9/1024*δ2*s4β*c4c14s12 - 5/1024*δ2*s4β*c14s12 + 355/1024*δ*s2β*c14s12 _
+		      + 29/512*δ1*s2β*c14s12
+		      theA(197) = 7/48*δ2*sβ2*c15s12 + 1/24*δ2*c2βsβ2*c15s12 + 1/48*δ2*sβ2*c2c15s12 + 1/24*δ2*c2βsβ2*c2c15s12
+		      theA(198) = 1/48*δ2*cβsβ3*c16s14
+		      theA(199) = 459/128*δ2*s2β*c2c14s12 - 2079/512*δ2*s4β*c2c14s12 - 567/512*δ2*s2β*c4c14s12 _
+		      - 1701/1024*δ2*s4β*c4c14s12 + 945/1024*δ2*s4β*c14s12 + 4923/512*δ1*s2β*c14s12 _
+		      - 22203/1024*δ*s2β*c14s12
+		      theA(200) = -27/16*δ2*c2β*c2c15s1 - 81/128*δ2*c2β*c4c15s1 - 27/16*δ2*c4β*c2c15s1 _
+		      - 27/8*δ2*c0β*c2c15s1 - 243/128*δ2*c4β*c4c15s1 + 27/128*δ2*c4β*c15s1 _
+		      + 27/16*δ2*c0β*c15s1 + 1233/128*δ1*c2β*c15s1 - 4689/256*δ*c2β*c15s1
+		      theA(201) = 837/256*δ2*s2β*c2c16 - 621/512*δ2*s4β*c2c16 - 243/1024*δ2*s2β*c4c16 _
+		      + 2187/2048*δ2*s4β*c4c16 + 1377/2048*δ2*s4β*c16 - 4761/1024*δ1*s2β*c16 + 11673/2048*δ*s2β*c16
+		      theA(202) = 81/16*δ2*c2βsβ2*c2c17s1 - 27/16*δ2*c2βsβ2*c17s1 + 81/32*δ2*sβ2*c2c17s1 + 81/32*δ2*sβ2*c17s1
+		      theA(203) = 81/32*δ2*cβsβ3*c18s12
+		      theA(204) = -4375/192*δ2*s2β*c16s14 - 4375/128*δ2*s4β*c16s14
+		      theA(205) = -625/48*δ2*c2β*c17s13 - 625/16*δ2*c4β*c17s13
+		      theA(206) = -625/128*δ2*s2β*c18s12 + 5625/256*δ2*s4β*c18s12
+		      theA(207) = -625/24*δ2*c2βsβ2*c19s1 - 625/48*δ2*sβ2*c19s1
+		      theA(208) = 625/96*δ2*cβsβ3*c110
 		    End If
 		  End If
 		  
@@ -862,118 +974,142 @@ Protected Class WaveBuilderClass
 		  
 		  If PNOrder > 1 Then
 		    // Order 2/2, SO, Plus polarization
-		    theA(37) = 0
-		    theA(38) = 0
-		    theA(39) = 0
-		    theA(40) = 0
-		    theA(41) = 0
-		    theA(42) = 0
-		    theA(43) = 0
-		    theA(44) = 0
-		    theA(45) =0
-		    theA(46) = 0
+		    theA(37) = δ0*cβ*c12*χax - δ0*sβ*c12*χaz
+		    theA(38) = 1/2*δ0*cβ*c0*χax - 1/2*δ0*cβ*c2*χax - δ0*sβ*s12*χaz
+		    theA(39) = -δ0*cβ*s12*χay
+		    theA(40) = -δ0*sβ*s2*χay
+		    theA(41) = -δ0*cβ*c12*χay
+		    theA(42) = δ*cβ*c12*χsx - δ*sβ*c12*χsz
+		    theA(43) = 1/2*δ*cβ*χsx - 1/2*δ*cβ*c2*χsx - δ*sβ*s12*χsz
+		    theA(44) = -δ*cβ*s12*χsy
+		    theA(45) = -δ*sβ*s2*χsy
+		    theA(46) = -δ*cβ*c12*χsy
 		    
 		    // Order 2/2, SO, Cross polarization
-		    theA(163) = 0
-		    theA(164) = 0
-		    theA(165) = 0
-		    theA(166) = 0
-		    theA(167) = 0
-		    theA(168) = 0
-		    theA(169) = 0
-		    theA(170) = 0
-		    theA(171) = 0
-		    theA(172) = 0
+		    theA(163) = 1/2*δ0*c0β*c0*χay + 1/2*δ0*c0β*c2*χay
+		    theA(164) = δ0*c0β*s12*χay
+		    theA(165) = 1/2*δ0*cβ2*c0*χax - 1/2*δ0*cβ2*c2*χax - 1/2*δ0*cβsβ*c0*χaz + 1/2*δ0*cβsβ*c2*χaz
+		    theA(166) = δ0*cβsβ*s2*χax - δ0*sβ2*s2*χaz
+		    theA(167) = 1/2*δ0*cβ2*c0*χax + 1/2*δ0*cβ2*c2*χax - 1/2*δ0*cβsβ*c0*χaz - 1/2*δ0*cβsβ*c2*χaz
+		    theA(168) = 1/2*δ*c0β*c0*χsy + 1/2*δ*c0β*c2*χsy
+		    theA(169) = δ*c0β*s12*χsy
+		    theA(170) = -1/2*δ*cβ2*c2*χsx + 1/2*δ*cβ2*c0*χsx + 1/2*δ*cβsβ*c2*χsz - 1/2*δ*cβsβ*c0*χsz
+		    theA(171) = δ*cβsβ*s2*χsx - δ*sβ2*s2*χsz
+		    theA(172) = 1/2*δ*cβ2*c2*χsx + 1/2*δ*cβ2*c0*χsx - 1/2*δ*cβsβ*c2*χsz - 1/2*δ*cβsβ*c0*χsz
 		    
 		    If PNOrder > 2 Then
 		      // Order 3/2, SO, plus polarization
-		      theA(85) = 0
-		      theA(86) = 0
-		      theA(87) = 0
-		      theA(88) = 0
-		      theA(89) = 0
-		      theA(90) = 0
-		      theA(92) = 0
-		      theA(93) = 0
-		      theA(94) = 0
-		      theA(95) = 0
-		      theA(96) = 0
-		      theA(97) = 0
-		      theA(98) = 0
-		      theA(99) = 0
-		      theA(100) = 0
-		      theA(101) = 0
-		      theA(102) = 0
-		      theA(103) = 0
-		      theA(104) = 0
-		      theA(105) =0
-		      theA(106) = 0
-		      theA(107) = 0
-		      theA(108) = 0
-		      theA(109) = 0
-		      theA(110) = 0
-		      theA(111) = 0
-		      theA(112) = 0
-		      theA(113) = 0
-		      theA(114) = 0
-		      theA(115) = 0
-		      theA(116) = 0
-		      theA(117) = 0
-		      theA(118) = 0
-		      theA(119) = 0
-		      theA(120) = 0
-		      theA(121) = 0
-		      theA(122) = 0
-		      theA(123) = 0
-		      theA(124) = 0
-		      theA(125) = 0
-		      theA(126) = 0
-		      theA(127) = 0
-		      theA(128) = 0
+		      theA(85) = η2*cβsβ*c23*χsx
+		      theA(86) = 1/6*η10*c2β*c2c14*χsz - 7/2*η*c2β*c14*χsz - δ0*c2β*c14*χsz _
+		      - 1/3*η10*s2β*c2c14*χsx + 1/2*η10*c0β*c2c14*χsz - 19/6*η*s2β*c14*χsx _
+		      - 5/2*η*c0β*c14*χsz + 7/3*δ0*s2β*c14*χsx - 3*δ0*c0β*c14*χsz
+		      theA(87) = 1/2*η10*c0β*c15s1*χsx + 1/6*η10*c2β*c15s1*χsx
+		      theA(88) = 1/2*η10*c0β*c1s15*χsx + 1/6*η10*c2β*c1s15*χsx
+		      theA(89) = 7/12*η10*c2β*c2c13s1*χsx + 79/12*η*c2β*c13s1*χsx - 13/6*δ0*c2β*c13s1*χsx _
+		      - 1/4*η10*c0β*c2c13s1*χsx + 2/3*η10*s2β*c2c13s1*χsz - 17/4*η*c0β*c13s1*χsx _
+		      - 7*η*s2β*c13s1*χsz + 3/2*δ0*c0β*c13s1*χsx - 2*δ0*s2β*c13s1*χsz
+		      theA(90) = -7/12*η10*c2β*c1c2s13*χsx + 79/12*η*c2β*c1s13*χsx - 13/6*δ0*c2β*c1s13*χsx _
+		      + 1/4*η10*c0β*c1c2s13*χsx + 2/3*η10*s2β*c1c2s13*χsz - 17/4*η*c0β*c1s13*χsx _
+		      + 3/2*δ0*c0β*c1s13*χsx - 7*η*s2β*c1s13*χsz - 2*δ0*s2β*c1s13*χsz
+		      theA(91) = 1/6*η10*c2β*c2s14*χsz + 7/2*η*c2β*s14*χsz + δ0*c2β*s14*χsz - 1/3*η10*s2β*c2s14*χsx _
+		      + 1/2*η10*c0β*c2s14*χsz + 19/6*η*s2β*s14*χsx - 7/3*δ0*s2β*s14*χsx _
+		      + 5/2*η*c0β*s14*χsz + 3*δ0*c0β*s14*χsz
+		      theA(92) = -3/2*η2*sβ2*c2s22*χsz
+		      theA(93) = 3/8*η2*c0β*s23*χsx + 1/8*η2*c2β*s23*χsx
+		      theA(94) = 1/3*η10*cβsβ*c2s22*χsx + 1/2*η10*sβ2*c2s22*χsz
+		      theA(95) = 3/4*η2*c0β*c2s22*χsz + 1/4*η2*c2β*c2s22*χsz - 1/2*η2*s2β*c2s22*χsx
+		      theA(96) = -11/32*η2*c2β*s2*χsx - 3/8*η2*c0β*s23*χsx - 7/32*η2*c2β*s6*χsx _
+		      + 1/4*η2*s2β*s2*χsz - 1/4*η2*s2β*s6*χsz
+		      theA(97) = 15/16*η2*c0β*s2*χsy - 3/16*η2*c2β*s2*χsy + 9/16*η2*c0β*c4s2*χsy - 5/16*η2*c2β*c4s2*χsy
+		      theA(98) = -η2*cβsβ*c2s22*χsy
+		      theA(99) = 3/8*η2*c0β*s23*χsy + 1/8*η2*c2β*s23*χsy
+		      theA(100) = -5/12*η10*c2β*c1c2s13*χsy + 3/4*η10*c0β*c1c2s13*χsy + 1/4*η10*c0β*c1s13*χsy _
+		      - 31/12*η*c2β*c1s13*χsy - 11/6*δ0*c2β*c1s13*χsy
+		      theA(101) = -7/3*δ0*s2β*s14*χsy - 5/6*η*s2β*s14*χsy - 1/3*η10*s2β*c2s14*χsy
+		      theA(102) = 1/2*η10*c0β*c1s15*χsy + 1/6*η10*c2β*c1s15*χsy
+		      theA(103) = -1/3*δ0*cβsβ*s22*χsy - 11/6*η*cβsβ*s22*χsy
+		      theA(104) = 1/4*η10*c0β*c13s1*χsy - 3/4*η10*c0β*c2c13s1*χsy + 5/12*η10*c2β*c2c13s1*χsy _
+		      - 31/12*η*c2β*c13s1*χsy - 11/6*δ0*c2β*c13s1*χsy
+		      theA(105) = 7/3*δ0*s2β*c14*χsy + 5/6*η*s2β*c14*χsy - 1/3*η10*s2β*c2c14*χsy
+		      theA(106) = 1/2*η10*c0β*c15s1*χsy + 1/6*η10*c2β*c15s1*χsy
+		      theA(107) = 2*δ*cβsβ*c23*χax
+		      theA(108) = -3*δ*c0β*c14*χaz - δ*c2β*c14*χaz + 5*δ*c0β*c2c14*χaz _
+		      + 5/3*δ*c2β*c2c14*χaz + 7/3*δ*s2β*c14*χax - 10/3*δ*s2β*c2c14*χax
+		      theA(109) = 5*δ*c0β*c15s1*χax + 5/3*δ*c2β*c15s1*χax
+		      theA(110) = 5*δ*c0β*c1s15*χax + 5/3*δ*c2β*c1s15*χax
+		      theA(111) = 35/6*δ*c2β*c2c13s1*χax - 13/6*δ*c2β*c13s1*χax - 5/2*δ*c0β*c2c13s1*χax _
+		      + 20/3*δ*s2β*c2c13s1*χaz + 3/2*δ*c0β*c13s1*χax - 2*δ*s2β*c13s1*χaz
+		      theA(112) = -35/6*δ*c2β*c1c2s13*χax - 13/6*δ*c2β*c1s13*χax + 5/2*δ*c0β*c1c2s13*χax _
+		      - 20/3*δ*s2β*c1c2s13*χaz + 3/2*δ*c0β*c1s13*χax - 2*δ*s2β*c1s13*χaz
+		      theA(113) = 5/3*δ*c2β*c2s14*χaz + δ*c2β*s14*χaz - 10/3*δ*s2β*c2s14*χax _
+		      + 5*δ*c0β*c2s14*χaz - 7/3*δ*s2β*s14*χax + 3*δ*c0β*s14*χaz
+		      theA(114) = -3*δ*sβ2*c2s22*χaz
+		      theA(115) = 3/4*δ*c0β*s23*χax + 1/4*δ*c2β*s23*χax
+		      theA(116) = 10/3*δ*cβsβ*c2s22*χax + 5*δ*sβ2*c2s22*χaz
+		      theA(117) = 3/2*δ*c0β*c2s22*χaz + 1/2*δ*c2β*c2s22*χaz - δ*s2β*c2s22*χax
+		      theA(118) = -11/16*δ*c2β*s2*χax - 7/16*δ*c2β*s6*χax - 3/4*δ*c0β*s23*χax + 1/2*δ*s2β*s2*χaz - 1/2*δ*s2β*s6*χaz
+		      theA(119) = -5/8*δ*c2β*c4s2*χay - 3/8*δ*c2β*s2*χay + 9/8*δ*c0β*c4s2*χay + 15/8*δ*c0β*s2*χay
+		      theA(120) = -2*δ*cβsβ*c2s22*χay
+		      theA(121) = 3/4*δ*c0β*s23*χay + 1/4*δ*c2β*s23*χay
+		      theA(122) = -25/6*δ*c2β*c1c2s13*χay - 11/6*δ*c2β*c1s13*χay + 15/2*δ*c0β*c1c2s13*χay + 5/2*δ*c0β*c1s13*χay
+		      theA(123) = -7/3*δ*s2β*s14*χay - 10/3*δ*s2β*c2s14*χay
+		      theA(124) = 5*δ*c0β*c1s15*χay + 5/3*δ*c2β*c1s15*χay
+		      theA(125) = -1/3*δ*cβsβ*s22*χay
+		      theA(126) = 25/6*δ*c2β*c2c13s1*χay - 11/6*δ*c2β*c13s1*χay - 15/2*δ*c0β*c2c13s1*χay + 5/2*δ*c0β*c13s1*χay
+		      theA(127) = 7/3*δ*s2β*c14*χay - 10/3*δ*s2β*c2c14*χay
+		      theA(128) = 5*δ*c0β*c15s1*χay + 5/3*δ*c2β*c15s1*χay
 		      
 		      // Order 3/2, SO, cross polarization
-		      theA(209) =0
-		      theA(210) = 0
-		      theA(211) = 0
-		      theA(212) = 0
-		      theA(213) = 0
-		      theA(214) = 0
-		      theA(215) = 0
-		      theA(216) = 0
-		      theA(217) = 0
-		      theA(218) = 0
-		      theA(219) = 0
-		      theA(220) = 0
-		      theA(221) = 0
-		      theA(222) = 0
-		      theA(223) = 0
-		      theA(224) = 0
-		      theA(225) = 0
-		      theA(226) = 0
-		      theA(227) = 0
-		      theA(228) = 0
-		      theA(229) = 0
-		      theA(230) = 0
-		      theA(231) = 0
-		      theA(232) = 0
-		      theA(233) = 0
-		      theA(234) = 0
-		      theA(235) = 0
-		      theA(236) = 0
-		      theA(237) = 0
-		      theA(238) = 0
-		      theA(239) = 0
-		      theA(240) = 0
-		      theA(241) = 0
-		      theA(242) = 0
-		      theA(243) = 0
-		      theA(244) = 0
-		      theA(245) = 0
-		      theA(246) = 0
-		      theA(247) = 0
-		      theA(248) = 0
-		      theA(249) = 0
-		      theA(250) = 0
+		      theA(209) = η2*sβ*c23*χsy
+		      theA(210) = 2/3*η10*sβ*c2c14*χsy - 5/3*η*sβ*c14*χsy - 14/3*δ0*sβ*c14*χsy
+		      theA(211) = -2/3*η10*cβ*c15s1*χsy
+		      theA(212) = 1/3*η10*cβ*c2c13s1*χsy + 7/3*η*cβ*c13s1*χsy - 2/3*δ0*cβ*c13s1*χsy
+		      theA(213) = -1/3*η10*cβ*c1c2s13*χsy + 7/3*η*cβ*c1s13*χsy - 2/3*δ0*cβ*c1s13*χsy
+		      theA(214) = 2/3*η10*sβ*c2s14*χsy + 5/3*η*sβ*s14*χsy + 14/3*δ0*sβ*s14*χsy
+		      theA(215) = -2/3*η10*cβ*c1s15*χsy
+		      theA(216) = η2*sβ*c2s22*χsy
+		      theA(217) = 1/3*η10*sβ*c2s22*χsy
+		      theA(218) = -1/2*η2*cβ*s23*χsy
+		      theA(219) = -5/8*η2*cβ*s2*χsy - 1/8*η2*cβ*s6*χsy
+		      theA(220) = -3/4*η2*cβ*s2*χsx - 1/4*η2*cβ*c4s2*χsx - η2*sβ*c4s2*χsz
+		      theA(221) = η2*cβ*c2s22*χsz - η2*sβ*c2s22*χsx
+		      theA(222) = 2*η2*cβ*s23*χsx
+		      theA(223) = -2/3*δ0*cβ*c1s13*χsx - 10/3*δ0*cβ*c1c2s13*χsx - 5/3*η*cβ*c1s13*χsx _
+		      + 4*η*c3β*c1s13*χsx - 1/3*δ0*cβ*c1c2s13*χsx - 4*δ0*sβ*c1s13*χsz _
+		      - 40/3*δ0*sβ*c1c2s13*χsz - 2*η*sβ*c1s13*χsz - 4*η*s3β*c1s13*χsz - 4/3*δ0*sβ*c1c2s13*χsz
+		      theA(224) = 4*δ0*cβ*s14*χsz + 20/3*δ0*cβ*c2s14*χsz + 5*η*cβ*s14*χsz _
+		      + 4*η*c3β*s14*χsz + 2/3*δ0*cβ*c2s14*χsz - 14/3*δ0*sβ*s14*χsx _
+		      - 20/3*δ0*sβ*c2s14*χsx + 10/3*η*sβ*s14*χsx + η*s3β*s14*χsx - 2/3*δ0*sβ*c2s14*χsx
+		      theA(225) = 2/3*η10*cβ*c1s15*χsx
+		      theA(226) = -6*η*cβsβ2*s22*χsz + 1/3*δ0*sβ*s22*χsx - 7/6*η*sβ*s22*χsx + 3*η*c2βsβ*s22*χsx
+		      theA(227) = -5/3*η*cβ*c13s1*χsx + 4*η*c3β*c13s1*χsx + 1/3*η*cβ*c2c13s1*χsx _
+		      - 2/3*δ0*cβ*c13s1*χsx + 10/3*δ0*cβ*c2c13s1*χsx - 4*δ0*sβ*c13s1*χsz _
+		      + 40/3*δ0*sβ*c2c13s1*χsz - 2*η*sβ*c13s1*χsz + 4/3*η*sβ*c2c13s1*χsz - 4*η*s3β*c13s1*χsz
+		      theA(228) = -5*η*cβ*c14*χsz - η*c3β*c14*χsz + 2/3*η*cβ*c2c14*χsz _
+		      - 4*δ0*cβ*c14*χsz + 20/3*δ0*cβ*c2c14*χsz + 14/3*δ0*sβ*c14*χsx _
+		      - 20/3*δ0*sβ*c2c14*χsx - 10/3*η*sβ*c14*χsx - 2/3*η*sβ*c2c14*χsx - η*s3β*c14*χsx
+		      theA(229) = 2/3*η10*cβ*c15s1*χsx
+		      theA(230) = 2*δ*sβ*c23*χay
+		      theA(231) = -14/3*δ*sβ*c14*χay + 20/3*δ*sβ*c2c14*χay
+		      theA(232) = -2/3*δ*cβ*c13s1*χay + 10/3*δ*cβ*c2c13s1*χay
+		      theA(233) = -20/3*δ*cβ*c15s1*χay
+		      theA(234) = -10/3*δ*cβ*c1c2s13*χay - 2/3*δ*cβ*c1s13*χay
+		      theA(235) = 20/3*δ*sβ*c2s14*χay + 14/3*δ*sβ*s14*χay
+		      theA(236) = -20/3*δ*cβ*c1s15*χay
+		      theA(237) = 2*δ*sβ*c2s22*χay
+		      theA(238) = 10/3*δ*sβ*c2s22*χay
+		      theA(239) = -δ*cβ*s13*χay
+		      theA(240) = -5/4*δ*cβ*s2*χay - 1/4*δ*cβ*s6*χay
+		      theA(241) = -1/2*δ*cβ*c4s2*χax - 2*δ*sβ*c4s2*χaz - 3/2*δ*cβ*s2*χax
+		      theA(242) = 2*δ*cβ*c2s22*χaz - 2*δ*sβ*c2s22*χax
+		      theA(243) = δ*cβ*s23*χax
+		      theA(244) = -10/3*δ*cβ*c1c2s13*χax - 40/3*δ*sβ*c1c2s13*χaz - 2/3*δ*cβ*c1s13*χax - 4*δ*sβ*c1s13*χaz
+		      theA(245) = 20/3*δ*cβ*c2s14*χaz - 20/3*δ*sβ*c2s14*χax + 4*δ*cβ*s14*χaz - 14/3*δ*sβ*s14*χax
+		      theA(246) = 20/3*δ*cβ*c1s15*χax
+		      theA(247) = 1/3*δ*sβ*s22*χax
+		      theA(248) = 10/3*δ*cβ*c2c13s1*χax - 2/3*δ*cβ*c13s1*χax + 40/3*δ*sβ*c2c13s1*χaz - 4*δ*sβ*c13s1*χaz
+		      theA(249) = 20/3*δ*cβ*c2c14*χaz - 4*δ*cβ*c14*χaz + 14/3*δ*sβ*c14*χax - 20/3*δ*sβ*c2c14*χax
+		      theA(250) = 20/3*δ*cβ*c15s1*χax
 		    End If
 		  End If
 		  
@@ -1112,9 +1248,6 @@ Protected Class WaveBuilderClass
 		    ιFunDerivs = New IotaFuncsClass
 		    
 		  End If
-		  
-		  
-		  
 		End Sub
 	#tag EndMethod
 
@@ -1270,23 +1403,20 @@ Protected Class WaveBuilderClass
 
 	#tag Method, Flags = &h0
 		Function GetNamedValue(theName As String) As Double
-		  // Handle non-array properties first
 		  If theName = "t-y" Then 
 		    If Parameters = Nil Then
 		      Return 0
 		    Else
-		      Return τrDN * Parameters.GM / Parameters.Year
+		      Return τrDN*Parameters.GM/Parameters.Year
 		    End If
 		  End If
-		  
 		  If theName = "t-s" Then
 		    If Parameters = Nil Then
 		      Return 0
 		    Else
-		      Return τrDN * Parameters.GM
+		      Return τrDN*Parameters.GM
 		    End If
 		  End If
-		  
 		  If theName = "H" Then Return H
 		  If theName = "V" Then Return SpinResults.V
 		  If theName = "α" Then Return SpinResults.α
@@ -1300,15 +1430,13 @@ Protected Class WaveBuilderClass
 		  If theName = "χ2z" Then Return SpinResults.χsz - SpinResults.χaz
 		  
 		  // This part handles a request for a value in an array. (Handle all non-array possibilities first.)
-		  Var parts() As String = theName.Split("(")
-		  Var arrayName As String = parts(0)
+		  Var parts() As String = theName.Split("(") // split the name into parts at the open parenthesis
+		  Var arrayName As String = parts(0) // we are always going to have this part
 		  If parts.LastIndex = 0 Then Raise New RuntimeException("No Open Parenthesis")
 		  If Not parts(1).EndsWith(")") Then Raise New RuntimeException("No Close Parenthesis")
-		  parts = parts(1).Split(")")
-		  If parts.LastIndex > 1 Or Not parts(1).IsEmpty Then Raise New RuntimeException("Characters After Close Parenthesis")
-		  parts = parts(0).Split(",")
-		  
-		  // Extract indices
+		  parts = parts(1).Split(")") // split at the close parenthesis
+		  If parts.LastIndex > 1 or Not parts(1).IsEmpty Then Raise New RuntimeException("Characters After Close Parenthesis")
+		  parts = parts(0).Split(",") // split at a comma, if there is one
 		  Var index1 As Integer = -1
 		  If parts(0).ToInteger.ToString <> parts(0) Then
 		    Raise New RuntimeException("Index Not An Integer")
@@ -1316,7 +1444,6 @@ Protected Class WaveBuilderClass
 		    index1 = parts(0).ToInteger
 		    If index1 < 0 Then Raise New RuntimeException("Index Negative")
 		  End If
-		  
 		  Var index2 As Integer = -1
 		  If parts.LastIndex > 0 Then
 		    If parts.LastIndex > 1 Then Raise New RuntimeException("Too Many Indices")
@@ -1353,13 +1480,11 @@ Protected Class WaveBuilderClass
 		    If index1 <= UBound(necdet.nA) Then Return necdet.nA(index1)
 		  End Select
 		  
-		  // Handle arrays W and A
+		  // note that index2 will be -1 if a second index is not specified by the name, but positive if it is
 		  If arrayName = "W" And IndicesCheck(index1, 250, index2, -1) Then Return W(index1)
-		  If arrayName = "A" And IndicesCheck(index1, 250, index2, -1) Then Return A(index1)
+		  If arrayName = "A" And IndicesCheck(index1, 250, index2, -1) Then Return A(index2)
 		  
-		  // If nothing matched
 		  Raise New RuntimeException("Name Not Found")
-		  
 		End Function
 	#tag EndMethod
 
@@ -1438,10 +1563,6 @@ Protected Class WaveBuilderClass
 
 	#tag Property, Flags = &h0
 		H As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		necdet As NecdetsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
