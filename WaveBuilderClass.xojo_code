@@ -1566,6 +1566,10 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		necdet As NecdetsClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Noise As NoiseClass
 	#tag EndProperty
 
