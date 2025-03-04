@@ -91,6 +91,7 @@ Protected Class IotaFuncsClass
 		  c2c14 = -s2*c14 - 2.0*c2*c13*s1
 		  c2c14s12 = -s2*c14*s12 - 2.0*c2*c13*s1*s12 + c2*c14*s1*c1
 		  c2c15s1 = -s2*c15*s1 - 2.5*c2*c14*s1*s1 + 0.5*c2*c15*c1
+		  c2c15s12 = -s2*c15*s12 + 2.5*c2*c14*s1*s12 + c2*c15*s1*c1
 		  c2c15s13 = -s2*c15*s13 - 2.5*c2*c14*s1*s13 + 1.5*c2*c15*s12
 		  c2c16 = -s2*c16 - 3.0*c2*c15*s1
 		  c2c17s1 = -s2*c17*s1 - 3.5*c2*c16*s1*s1 + 0.5*c2*c17*c1
@@ -99,6 +100,7 @@ Protected Class IotaFuncsClass
 		  c2s16 =  -s2*s16 + 4.0*c2*s15*c1
 		  c2s2 = -s2*s2 + c2*c2
 		  c2s22 = -s2*s22 + 2.0*c2*s2*c2
+		  c2s23 = -s2*s23 + 3.0*c2*s22*c2
 		  c3s13 = -1.5*s3*s13 + 1.6*c3*s12*c1
 		  c4c12 = -2.0*s4*c12 - c4*c1*s1
 		  c4c12s14 = -2.0*s4*c12*s14 - c4*c1*s1*s14 + 2.0*c4*c12*s13*c1
@@ -172,7 +174,124 @@ Protected Class IotaFuncsClass
 
 	#tag Method, Flags = &h0
 		Sub SetValues(theIota As Double)
+		  // Set up basic frequencies
+		  c2 = Cos(theIota)
+		  s2 = Sin(theIota)
+		  c1 = Cos(0.5*theIota)
+		  s1 = Sin(0.5*theIota)
+		  Var c3 As Double = c2*c1 - s2*s1
+		  Var s3 As Double = s2*c1 + c2*s1
+		  c4 = c2*c2-s2*s2
+		  s4 = 2*c2*s2
+		  Var c5 As Double = c4*c1 - s4*s1
+		  Var s5 As Double = s4*c1 + c4*s1
+		  c6 = c5*c1 - s5*s1
+		  s6  = s5*c1 + c5*s1
+		  Var c7 As Double = c6*c1 - s6*s1
+		  Var s7 As Double = s6*c1 + c6*s1
+		  c8 = c7*c1 - s7*s1
+		  s8 = s7*c1 + c7*s1
+		  Var c9 As Double = c8*c1 - s8*s1
+		  Var s9 As Double = s8*c1 + c8*s1
+		  Var c10 As Double = c9*c1 - s9*s1
+		  Var s10 As Double = s9*c1 + c9*s1
 		  
+		  // set up basic powers
+		  c12 = c1*c1
+		  Var c13 As Double = c12*c1
+		  c14 = c13*c1
+		  Var c15 As Double = c14*c1
+		  c16 = c15*c1
+		  Var c17 As Double = c16*c1
+		  c18 = c17*c1
+		  Var c19 As Double = c18*c1
+		  c110 = c19*c1
+		  c23 = c2*c2*c2
+		  s12 = s1*s1
+		  s13 = s12*s1
+		  s14 = s13*s1
+		  Var s15 As Double = s14*s1
+		  s16 = s15*s1
+		  Var s17 As Double = s16*s1
+		  s18 = s17*s1
+		  Var s19 As Double = s18*s1
+		  s110 = s19*s1
+		  s22 = s2*s2
+		  s23 = s22*s2
+		  s24 = s23*s2
+		  s25 = s24*s2
+		  
+		  // Now set up values for functions not listed above
+		  
+		  c12s14 = c12*s14
+		  c12s16 = c12*s16
+		  c12s18 = c12*s18
+		  c13s1 = c13*s1
+		  c13s15 = c13*s15
+		  c13s17 = c13*s17
+		  c13s3 = c13*s3
+		  c13s5 = c13*s5
+		  c13s7 = c13*s7
+		  c14s12 = c14*s12
+		  c14s16 = c14*s16
+		  c15s1 = c15*s1
+		  c15s12 = c15*s12
+		  c15s13 = c15*s13
+		  c16s12 = c16*s12
+		  c16s14 = c16*s14
+		  c17s1 = c17*s1
+		  c17s13 = c17*s13
+		  c18s12 = c18*s12
+		  c19s1 = c19*s1
+		  c1c2s13 = c1*c2*s13
+		  c1c2s15 = c1*c2*s15
+		  c1c2s17 = c1*c2*s17
+		  c1c4s13 = c1*c4*s13
+		  c1c4s15 = c1*c4*s15
+		  c1c6s13 = c1*c6*s13
+		  c1s13 = c1*s13
+		  c1s15 = c1*s15
+		  c1s17 = c1*s17
+		  c1s19 = c1*s19
+		  c2c12 = c2*c12
+		  c2c12s14 = c2*c12*s14
+		  c2c13s1 = c2*c13*s1
+		  c2c13s15 = c2*c13*s15
+		  c2c14 = c2*c14
+		  c2c14s12 = c2*c14*s12
+		  c2c15s1 = c2*c15*s1
+		  c2c15s12 = c2*c15*s12
+		  c2c15s13 = c2*c15*s13
+		  c2c16 = c2*c16
+		  c2c17s1 = c2*c17*s1
+		  c2s12 = c2*s12
+		  c2s14 =  c2*s14
+		  c2s16 =  c2*s16
+		  c2s2 = c2*s2
+		  c2s22 = c2*s22
+		  c2s23 = c2*s23
+		  c3s13 = c3*s13
+		  c4c12 = c4*c12
+		  c4c12s14 = c4*c12*s14
+		  c4c13s1 = c4*c13*s1
+		  c4c14 = c4*c14
+		  c4c14s12 = c4*c14*s12
+		  c4c15s1 = c4*c15*s1
+		  c4c16 = c4*c16
+		  c4s12 = c4*s12
+		  c4s14 = -c4*s14
+		  c4s16 = c4*s16
+		  c4s2 = c4*s2
+		  c4s22 = c4*s22
+		  c4s23 = c4*s23
+		  c5s13 = c5*s13
+		  c6c12 = c6*c12
+		  c6c13s1 = c6*c13*s1
+		  c6s12 = c6*s12
+		  c6s2 = c6*s2
+		  c7s13 = c7*s13
+		  c8c12 = c8*c12
+		  c8s2 = c8*s2
 		End Sub
 	#tag EndMethod
 
@@ -366,6 +485,10 @@ Protected Class IotaFuncsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		c2c15s12 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		c2c15s13 As Double
 	#tag EndProperty
 
@@ -395,6 +518,10 @@ Protected Class IotaFuncsClass
 
 	#tag Property, Flags = &h0
 		c2s22 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		c2s23 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1377,6 +1504,22 @@ Protected Class IotaFuncsClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="s110"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="c2c15s12"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="c2s23"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

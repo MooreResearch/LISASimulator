@@ -1652,3 +1652,5 @@ Protected Class WaveBuilderClass
 	#tag EndViewBehavior
 End Class
 #tag EndClass
+		  // called and retain their values during future calls.)
+		  

@@ -143,6 +143,10 @@ Protected Class BetaFuncsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		cβ2s2β As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		cβ2sβ As Double
 	#tag EndProperty
 
