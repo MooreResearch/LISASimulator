@@ -34,27 +34,6 @@ Protected Class WaveBuilderClass
 		  Static cross As Boolean = True
 		  Static plus As Boolean = False
 		  
-		  // These static variables provide index numbers for the various derivatives
-		  // that match the established indices in the ParamIndexClass
-		  Static dδ As Integer = Parameters.Indices.δ
-		  'Static dτc As Integer = Parameters.Indices.τc
-		  'Static dχ1 As Integer = Parameters.Indices.χ1
-		  'Static dθ1 As Integer = Parameters.Indices.θ1
-		  'Static dφ1 As Integer = Parameters.Indices.φ1
-		  'Static dχ2 As Integer = Parameters.Indices.χ2
-		  'Static dθ2 As Integer = Parameters.Indices.θ2
-		  'Static dφ2 As Integer = Parameters.Indices.φ2
-		  'Static dλ0 As Integer = Parameters.Indices.λ0
-		  Static dlnM As Integer = Parameters.Indices.M
-		  Static dβ As Integer = Parameters.Indices.β
-		  Static dψ As Integer = Parameters.Indices.ψ
-		  Static dlnR As Integer = Parameters.Indices.R
-		  Static dΘ As Integer = Parameters.Indices.Θ
-		  Static dΦ As Integer = Parameters.Indices.Φ
-		  
-		  // These static variables provide index numbers for the 15 source parameters
-		  // that are consistent
-		  
 		  // Local variables to hold cross and plus polarizations
 		  Var hp As Double
 		  Var hx As Double

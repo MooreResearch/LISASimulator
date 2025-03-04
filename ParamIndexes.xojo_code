@@ -1,71 +1,71 @@
-#tag Class
-Protected Class ParamIndexClass
+#tag Module
+Protected Module ParamIndexes
 	#tag Property, Flags = &h0
-		LastIndex As Integer = 14
+		DLastIndex As Integer = 14
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		M As Integer = 9
+		DLastSpinIndex As Integer = 7
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		R As Integer = 12
+		DM As Integer = 9
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SpinLastIndex As Integer = 7
+		DR As Integer = 12
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		β As Integer = 10
+		Dβ As Integer = 10
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		δ As Integer = 6
+		Dδ As Integer = 6
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Θ As Integer = 13
+		DΘ As Integer = 13
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		θ1 As Integer = 1
+		Dθ1 As Integer = 1
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		θ2 As Integer = 4
+		Dθ2 As Integer = 4
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		λ0 As Integer = 8
+		Dλ0 As Integer = 8
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		τc As Integer = 7
+		Dτc As Integer = 7
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Φ As Integer = 14
+		DΦ As Integer = 14
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		φ1 As Integer = 2
+		Dφ1 As Integer = 2
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		φ2 As Integer = 5
+		Dφ2 As Integer = 5
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ1 As Integer = 0
+		Dχ1 As Integer = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		χ2 As Integer = 3
+		Dχ2 As Integer = 3
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ψ As Integer = 11
+		Dψ As Integer = 11
 	#tag EndProperty
 
 
@@ -110,14 +110,6 @@ Protected Class ParamIndexClass
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
-		#tag ViewProperty
-			Name="M"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
 	#tag EndViewBehavior
-End Class
-#tag EndClass
+End Module
+#tag EndModule
