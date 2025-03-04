@@ -25,6 +25,7 @@ Begin DesktopWindow MainWindow
    Visible         =   True
    Width           =   1000
    Begin Timer InterfaceUpdateTimer
+      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Period          =   500
@@ -2166,18 +2167,28 @@ Begin DesktopWindow MainWindow
       End
    End
    Begin MainThreadClass MainThread
+      DebugIdentifier =   ""
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
       Scope           =   0
       StackSize       =   0
       TabPanelIndex   =   0
+      ThreadID        =   0
+      ThreadState     =   0
       Type            =   0
    End
 End
 #tag EndDesktopWindow
 
 #tag WindowCode
+	#tag Event
+		Sub Opening()
+		  Necdet = New NecdetsClass
+		End Sub
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Function ConvertToDegrees(Value As Double) As Double
 		  Var degFromRad As Double = 180.0/3.14159265358979
@@ -2509,6 +2520,7 @@ End
 		Function IsValidVariableName(theName As String) As Boolean
 		  Try
 		    Var w As New WaveBuilderClass
+		    w.necdet = Necdet
 		    Var value As Double = w.GetNamedValue(theName)
 		    Return True
 		  Catch e As RuntimeException
@@ -2839,6 +2851,10 @@ End
 
 	#tag Property, Flags = &h0
 		MyPlotData As PlotData
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Necdet As NecdetsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
