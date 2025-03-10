@@ -2,29 +2,32 @@
 Protected Class CaseSupervisorClass
 	#tag Method, Flags = &h0
 		Sub Constructor(currentCaseInfo As CaseInfoClass)
-		  ' The CaseSupervisor class handles running multiple cases
+		  // The CaseSupervisor class handles running multiple cases
 		  StartTicks = System.Ticks
 		  CaseInfo = currentCaseInfo // save the parameters for the current case
 		  // the following gives the number of main time steps to execute
 		  Δτr = CaseInfo.ΔT/CaseInfo.GM
-		  
+		  // Define the Necdet class to store data from side cases
 		  necdet = New NecdetsClass
-		  
-		  ' Create and initialize cases with time shifts
-		  CaseList(0) = CaseInfo
-		  CaseList(1) = CaseInfo.clone ' Case before central case
-		  CaseList(2) = CaseInfo.clone ' Case after central case
+		  // Define the parameter shift
+		  ep = 1.0e-6
+		  // Create and initialize cases with the shift in the parameter
+		  CaseList(0) = CaseInfo // this is an identity equality: CaseList(0) *is* CaseInfo
+		  // create clones for side cases. Clones are different objects but with the same parameters
+		  CaseList(1) = CaseInfo.clone
+		  CaseList(2) = CaseInfo.clone
+		  // Adjust the parameter for the side cases
 		  CaseList(1).β = CaseInfo.β + ep
 		  CaseList(2).β = CaseInfo.β - ep
 		  
+		  // Create Wavebuilders for each side case
 		  WaveBuilders(0) = New WaveBuilderClass(CaseInfo)
+		  WaveBuilder = WaveBuilders(0)  // make double reference to the center case
+		  // The center case will provide data for the graphs (side cases report to the necdet class)
+		  CaseList(0).DataRecorder.SetDataSource(WaveBuilder)
 		  WaveBuilders(1) = New WaveBuilderClass(CaseList(1))
 		  WaveBuilders(2) = New WaveBuilderClass(CaseList(2))
-		  WaveBuilders(0).necdet = necdet
-		  
-		  For i As Integer = 0 To 2
-		    CaseList(i).DataRecorder.SetDataSource(WaveBuilders(i)) ' Connect data source for recording
-		  Next
+		  WaveBuilder.necdet = necdet
 		  
 		  // Pass the WaveBuilders array and ep to calculate nA
 		  
@@ -40,7 +43,6 @@ Protected Class CaseSupervisorClass
 	#tag Method, Flags = &h0
 		Sub DoSteps()
 		  TerminationMessage = ""
-		  ep = 1e-6
 		  TrY
 		    For N = 0 to CaseInfo.NSteps
 		      τr = N*Δτr // this is the current tau time (needed to update the user interface)

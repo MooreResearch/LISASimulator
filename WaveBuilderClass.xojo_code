@@ -1124,7 +1124,7 @@ Protected Class WaveBuilderClass
 		  AssembleDerivatives
 		  
 		  // Write out useful information for plotting (if this is not a case from a file)
-		  Parameters.DataRecorder.WriteData
+		  If Parameters.DataRecorder <> Nil Then Parameters.DataRecorder.WriteData
 		  
 		  // We have completed the detector step successfully
 		  Return True

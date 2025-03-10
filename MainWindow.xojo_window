@@ -2749,12 +2749,12 @@ End
 		    InterfaceUpdateTimer.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped" // let the user know we have stopped
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage // update the termination message
-		    If TheSuper.CaseInfo.Uncertainties <> Nil Then  // if we have uncertainties to display
-		      DisplayUncertainties(theCase) // display them
-		      MatrixChoicePopupMenu.SelectedRowIndex = 0 // reset the matrix chooser to display the ATA matrix
-		      DisplayMatrix(TheSuper.ATAMatrix) // display that matrix
-		      ValueOfConditionLabel.Text = Format(TheSuper.UncertaintyCalculator.Condition, "0.000e-0##") // and condition number
-		    End if
+		    'If TheSuper.CaseInfo.Uncertainties <> Nil Then  // if we have uncertainties to display
+		    'DisplayUncertainties(theCase) // display them
+		    'MatrixChoicePopupMenu.SelectedRowIndex = 0 // reset the matrix chooser to display the ATA matrix
+		    'DisplayMatrix(TheSuper.ATAMatrix) // display that matrix
+		    'ValueOfConditionLabel.Text = Format(TheSuper.UncertaintyCalculator.Condition, "0.000e-0##") // and condition number
+		    'End if
 		    
 		    // If we had been running cases from a file, then write out the results
 		    if RunFileCheckBox.Value and AllCasesDone Then WriteUncertaintyFiles
