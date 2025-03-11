@@ -9,9 +9,19 @@ Class NecdetsClass
 	#tag Method, Flags = &h0
 		Sub SetValues(Wavebuilders() As WaveBuilderClass, ep As Double)
 		  If Wavebuilders.Ubound >= 1 Then
+		    Var inv2ep As Double = 1/(2.0*ep)
 		    For i As Integer = 0 To 250  // Assuming 250 elements
-		      nA(i) = (Wavebuilders(1).A(i) - Wavebuilders(2).A(i)) / (2.0 * ep)
+		      nA(1,i) = Wavebuilders(1).A(i)
+		      nA(2,i) = Wavebuilders(2).A(i)
+		      nW(1,i) = Wavebuilders(1).W(i)
+		      nW(2,i) = Wavebuilders(2).W(i)
 		    Next
+		    nDVI(Dβ) = (Wavebuilders(1).SpinResults.V - Wavebuilders(2).SpinResults.V)*inv2ep
+		    // etc
+		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
+		    nV(1) = WaveBuilders(1).SpinResults.V
+		    nV(2) = WaveBuilders(2).SpinResults.V
+		    // etc
 		  Else
 		    Raise New RuntimeException("Not enough Wavebuilders instances to calculate nA(i).")
 		  End If
@@ -20,43 +30,11 @@ Class NecdetsClass
 
 
 	#tag Property, Flags = &h0
-		nA(250) As Double
+		nA(2,250) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		ndAdι(250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ndAdβ(250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ndAdδ(250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ndAdχax(250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ndAdχay(250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ndAdχaz(250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ndAdχsx(250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ndAdχsy(250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		ndAdχsz(250) As Double
+		nDHDq(14) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -100,15 +78,19 @@ Class NecdetsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		nVDN As Double
+		nV(2) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		nιDN As Double
+		nW(2,250) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		nαDN As Double
+		nι(2) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		nα(2) As Double
 	#tag EndProperty
 
 
@@ -154,7 +136,7 @@ Class NecdetsClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="nVDN"
+			Name="nV(2)"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -162,7 +144,7 @@ Class NecdetsClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="nιDN"
+			Name="nι(2)"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
@@ -170,7 +152,7 @@ Class NecdetsClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="nαDN"
+			Name="nα(2)"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

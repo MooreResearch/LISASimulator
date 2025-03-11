@@ -1332,31 +1332,19 @@ Protected Class WaveBuilderClass
 		  End If
 		  
 		  Select Case arrayName
-		  Case "ndAdι"
-		    If index1 <= UBound(necdet.ndAdι) Then Return necdet.ndAdι(index1)
-		  Case "ndAdβ"
-		    If index1 <= UBound(necdet.ndAdβ) Then Return necdet.ndAdβ(index1)
-		  Case "ndAdδ"
-		    If index1 <= UBound(necdet.ndAdδ) Then Return necdet.ndAdδ(index1)
-		  Case "ndAdχax"
-		    If index1 <= UBound(necdet.ndAdχax) Then Return necdet.ndAdχax(index1)
-		  Case "ndAdχay"
-		    If index1 <= UBound(necdet.ndAdχay) Then Return necdet.ndAdχay(index1)
-		  Case "ndAdχaz"
-		    If index1 <= UBound(necdet.ndAdχaz) Then Return necdet.ndAdχaz(index1)
-		  Case "ndAdχsx"
-		    If index1 <= UBound(necdet.ndAdχsx) Then Return necdet.ndAdχsx(index1)
-		  Case "ndAdχsy"
-		    If index1 <= UBound(necdet.ndAdχsy) Then Return necdet.ndAdχsy(index1)
-		  Case "ndAdχsz"
-		    If index1 <= UBound(necdet.ndAdχsz) Then Return necdet.ndAdχsz(index1)
+		  Case "nDHDq"
+		    If index1 <= UBound(necdet.nDHDq) Then Return necdet.nDHDq(index1)
+		  Case "nDVI"
+		    If index1 <= UBound(necdet.nDVI) Then Return necdet.nDVI(index1)  // ect
 		  Case "nA"
-		    If index1 <= UBound(necdet.nA) Then Return necdet.nA(index1)
+		    If index1 <= UBound(necdet.nA,1) And index2 <= UBound(necdet.nA, 2) Then Return necdet.nA(index1, index2)
+		  Case "nW"
+		    If index1 <= UBound(necdet.nW,1) And index2 <= UBound(necdet.nW, 2) Then Return necdet.nW(index1, index2)
 		  End Select
 		  
 		  // Handle arrays W and A
 		  If arrayName = "W" And IndicesCheck(index1, 250, index2, -1) Then Return W(index1)
-		  If arrayName = "A" And IndicesCheck(index1, 250, index2, -1) Then Return A(index2)
+		  If arrayName = "A" And IndicesCheck(index1, 250, index2, -1) Then Return A(index1)
 		  
 		  Raise New RuntimeException("Name Not Found")
 		End Function
