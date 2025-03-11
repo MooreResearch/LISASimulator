@@ -31,8 +31,10 @@ Protected Class WaveBuilderClass
 		  Static dh0dlnR As Double = -h0
 		  
 		  // These static variables indicate which polarization we are calculating
+		  // or whether we are calculating a derivative with respect to v.
 		  Static cross As Boolean = True
 		  Static plus As Boolean = False
+		  Static vderiv As Boolean = True
 		  
 		  // Local variables to hold cross and plus polarizations
 		  Var hp As Double
@@ -138,7 +140,30 @@ Protected Class WaveBuilderClass
 		  hx = GetHSum(DADβ,W,cross)
 		  DHDq(dβ) = h0*(fp*hp + fx*hx)
 		  
-		  // Calculate other derivatives...
+		  // Calculate the δ derivative, which is the worst
+		  Var dhp As Double = GetHSum(DADδ,W,plus) _
+		  + GetHSum(DADι,W,plus)*SpinResults.DιI(Dδ) _
+		  + GetHSum(DADχax,W,plus)*SpinResults.DχaxI(Dδ) _
+		  + GetHSum(DADχay,W,plus)*SpinResults.DχayI(Dδ) _
+		  + GetHSum(DADχaz,W,plus)*SpinResults.DχazI(Dδ) _
+		  + GetHSum(DADχsx,W,plus)*SpinResults.DχsxI(Dδ) _
+		  + GetHSum(DADχsy,W,plus)*SpinResults.DχsyI(Dδ) _
+		  + GetHSum(DADχsz,W,plus)*SpinResults.DχszI(Dδ) _
+		  + GetHSum(A,DWDα,plus)*SpinResults.DαI(Dδ) _
+		  + GetHSum(A,DWDΨ,plus)*SpinResults.DΨI(Dδ) _
+		  + GetHSum(A,W,plus,vderiv)*SpinResults.DVI(Dδ)
+		  Var dhx As Double = GetHSum(DADδ,W,cross) _
+		  + GetHSum(DADι,W,cross)*SpinResults.DιI(Dδ) _
+		  + GetHSum(DADχax,W,cross)*SpinResults.DχaxI(Dδ) _
+		  + GetHSum(DADχay,W,cross)*SpinResults.DχayI(Dδ) _
+		  + GetHSum(DADχaz,W,cross)*SpinResults.DχazI(Dδ) _
+		  + GetHSum(DADχsx,W,cross)*SpinResults.DχsxI(Dδ) _
+		  + GetHSum(DADχsy,W,cross)*SpinResults.DχsyI(Dδ) _
+		  + GetHSum(DADχsz,W,cross)*SpinResults.DχszI(Dδ) _
+		  + GetHSum(A,DWDα,cross)*SpinResults.DαI(Dδ) _
+		  + GetHSum(A,DWDΨ,cross)*SpinResults.DΨI(Dδ) _
+		  + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dδ)
+		  DHDq(Dδ) = h0*(fp*dhp+fx*dhx) + dh0dδ*(fp*hp+fx*hx)
 		  
 		  
 		End Sub
@@ -1060,6 +1085,7 @@ Protected Class WaveBuilderClass
 		  AssignWaveFactors(wfs,W)
 		  AssignWaveFactors(dwfdα,DWDα)
 		  AssignWaveFactors(dwfdΨ,DWDΨ)
+		  
 		End Sub
 	#tag EndMethod
 
@@ -1095,9 +1121,6 @@ Protected Class WaveBuilderClass
 		    ιFunDerivs = New IotaFuncsClass
 		    
 		  End If
-		  
-		  
-		  
 		End Sub
 	#tag EndMethod
 
@@ -1128,7 +1151,7 @@ Protected Class WaveBuilderClass
 		  AssembleDerivatives
 		  
 		  // Write out useful information for plotting (if this is not a case from a file)
-		  If Parameters.DataRecorder <> Nil Then Parameters.DataRecorder.WriteData
+		  Parameters.DataRecorder.WriteData
 		  
 		  // We have completed the detector step successfully
 		  Return True
@@ -1253,7 +1276,6 @@ Protected Class WaveBuilderClass
 
 	#tag Method, Flags = &h0
 		Function GetNamedValue(theName As String) As Double
-		  // Handle non-array properties first
 		  If theName = "t-y" Then 
 		    If Parameters = Nil Then
 		      Return 0
@@ -1261,7 +1283,6 @@ Protected Class WaveBuilderClass
 		      Return τrDN * Parameters.GM / Parameters.Year
 		    End If
 		  End If
-		  
 		  If theName = "t-s" Then
 		    If Parameters = Nil Then
 		      Return 0
@@ -1269,7 +1290,6 @@ Protected Class WaveBuilderClass
 		      Return τrDN * Parameters.GM
 		    End If
 		  End If
-		  
 		  If theName = "H" Then Return H
 		  If theName = "V" Then Return SpinResults.V
 		  If theName = "α" Then Return SpinResults.α
@@ -1283,15 +1303,13 @@ Protected Class WaveBuilderClass
 		  If theName = "χ2z" Then Return SpinResults.χsz - SpinResults.χaz
 		  
 		  // This part handles a request for a value in an array. (Handle all non-array possibilities first.)
-		  Var parts() As String = theName.Split("(")
-		  Var arrayName As String = parts(0)
+		  Var parts() As String = theName.Split("(") // split the name into parts at the open parenthesis
+		  Var arrayName As String = parts(0) // we are always going to have this part
 		  If parts.LastIndex = 0 Then Raise New RuntimeException("No Open Parenthesis")
 		  If Not parts(1).EndsWith(")") Then Raise New RuntimeException("No Close Parenthesis")
-		  parts = parts(1).Split(")")
-		  If parts.LastIndex > 1 Or Not parts(1).IsEmpty Then Raise New RuntimeException("Characters After Close Parenthesis")
-		  parts = parts(0).Split(",")
-		  
-		  // Extract indices
+		  parts = parts(1).Split(")") // split at the close parenthesis
+		  If parts.LastIndex > 1 or Not parts(1).IsEmpty Then Raise New RuntimeException("Characters After Close Parenthesis")
+		  parts = parts(0).Split(",") // split at a comma, if there is one
 		  Var index1 As Integer = -1
 		  If parts(0).ToInteger.ToString <> parts(0) Then
 		    Raise New RuntimeException("Index Not An Integer")
@@ -1299,7 +1317,6 @@ Protected Class WaveBuilderClass
 		    index1 = parts(0).ToInteger
 		    If index1 < 0 Then Raise New RuntimeException("Index Negative")
 		  End If
-		  
 		  Var index2 As Integer = -1
 		  If parts.LastIndex > 0 Then
 		    If parts.LastIndex > 1 Then Raise New RuntimeException("Too Many Indices")
@@ -1338,11 +1355,9 @@ Protected Class WaveBuilderClass
 		  
 		  // Handle arrays W and A
 		  If arrayName = "W" And IndicesCheck(index1, 250, index2, -1) Then Return W(index1)
-		  If arrayName = "A" And IndicesCheck(index1, 250, index2, -1) Then Return A(index1)
+		  If arrayName = "A" And IndicesCheck(index1, 250, index2, -1) Then Return A(index2)
 		  
-		  // If nothing matched
 		  Raise New RuntimeException("Name Not Found")
-		  
 		End Function
 	#tag EndMethod
 
