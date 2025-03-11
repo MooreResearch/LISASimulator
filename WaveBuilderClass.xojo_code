@@ -31,8 +31,10 @@ Protected Class WaveBuilderClass
 		  Static dh0dlnR As Double = -h0
 		  
 		  // These static variables indicate which polarization we are calculating
+		  // or whether we are calculating a derivative with respect to v.
 		  Static cross As Boolean = True
 		  Static plus As Boolean = False
+		  Static vderiv As Boolean = True
 		  
 		  // Local variables to hold cross and plus polarizations
 		  Var hp As Double
@@ -138,7 +140,30 @@ Protected Class WaveBuilderClass
 		  hx = GetHSum(DADβ,W,cross)
 		  DHDq(dβ) = h0*(fp*hp + fx*hx)
 		  
-		  // Calculate other derivatives...
+		  // Calculate the δ derivative, which is the worst
+		  Var dhp As Double = GetHSum(DADδ,W,plus) _
+		  + GetHSum(DADι,W,plus)*SpinResults.DιI(Dδ) _
+		  + GetHSum(DADχax,W,plus)*SpinResults.DχaxI(Dδ) _
+		  + GetHSum(DADχay,W,plus)*SpinResults.DχayI(Dδ) _
+		  + GetHSum(DADχaz,W,plus)*SpinResults.DχazI(Dδ) _
+		  + GetHSum(DADχsx,W,plus)*SpinResults.DχsxI(Dδ) _
+		  + GetHSum(DADχsy,W,plus)*SpinResults.DχsyI(Dδ) _
+		  + GetHSum(DADχsz,W,plus)*SpinResults.DχszI(Dδ) _
+		  + GetHSum(A,DWDα,plus)*SpinResults.DαI(Dδ) _
+		  + GetHSum(A,DWDΨ,plus)*SpinResults.DΨI(Dδ) _
+		  + GetHSum(A,W,plus,vderiv)*SpinResults.DVI(Dδ)
+		  Var dhx As Double = GetHSum(DADδ,W,cross) _
+		  + GetHSum(DADι,W,cross)*SpinResults.DιI(Dδ) _
+		  + GetHSum(DADχax,W,cross)*SpinResults.DχaxI(Dδ) _
+		  + GetHSum(DADχay,W,cross)*SpinResults.DχayI(Dδ) _
+		  + GetHSum(DADχaz,W,cross)*SpinResults.DχazI(Dδ) _
+		  + GetHSum(DADχsx,W,cross)*SpinResults.DχsxI(Dδ) _
+		  + GetHSum(DADχsy,W,cross)*SpinResults.DχsyI(Dδ) _
+		  + GetHSum(DADχsz,W,cross)*SpinResults.DχszI(Dδ) _
+		  + GetHSum(A,DWDα,cross)*SpinResults.DαI(Dδ) _
+		  + GetHSum(A,DWDΨ,cross)*SpinResults.DΨI(Dδ) _
+		  + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dδ)
+		  DHDq(Dδ) = h0*(fp*dhp+fx*dhx) + dh0dδ*(fp*hp+fx*hx)
 		  
 		  
 		End Sub

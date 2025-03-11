@@ -1952,7 +1952,7 @@ Begin DesktopWindow MainWindow
          Height          =   132
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "0\n3, 7\n2\n20\n1.0"
+         InitialValue    =   "0\n3, 7\n0\n20\n1.0"
          Italic          =   False
          Left            =   259
          LockBottom      =   False
@@ -2168,7 +2168,6 @@ Begin DesktopWindow MainWindow
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
-      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
