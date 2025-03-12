@@ -1335,7 +1335,25 @@ Protected Class WaveBuilderClass
 		  Case "nDHDq"
 		    If index1 <= UBound(necdet.nDHDq) Then Return necdet.nDHDq(index1)
 		  Case "nDVI"
-		    If index1 <= UBound(necdet.nDVI) Then Return necdet.nDVI(index1)  // ect
+		    If index1 <= UBound(necdet.nDVI) Then Return necdet.nDVI(index1)
+		  Case "nDιI"
+		    If index1 <= UBound(necdet.nDιI) Then Return necdet.nDιI(index1)
+		  Case "nDαI"
+		    If index1 <= UBound(necdet.nDαI) Then Return necdet.nDαI(index1)
+		  Case "nDχaxI"
+		    If index1 <= UBound(necdet.nDχaxI) Then Return necdet.nDχaxI(index1)
+		  Case "nDχayI"
+		    If index1 <= UBound(necdet.nDχayI) Then Return necdet.nDχayI(index1)
+		  Case "nDχazI"
+		    If index1 <= UBound(necdet.nDχazI) Then Return necdet.nDχazI(index1)
+		  Case "nDχsxI"
+		    If index1 <= UBound(necdet.nDχsxI) Then Return necdet.nDχsxI(index1)
+		  Case "nDχsyI"
+		    If index1 <= UBound(necdet.nDχsyI) Then Return necdet.nDχsyI(index1)
+		  Case "nDχszI"
+		    If index1 <= UBound(necdet.nDχszI) Then Return necdet.nDχszI(index1)
+		  Case "nDΨI"
+		    If index1 <= UBound(necdet.nDΨI) Then Return necdet.nDΨI(index1)
 		  Case "nA"
 		    If index1 <= UBound(necdet.nA,1) And index2 <= UBound(necdet.nA, 2) Then Return necdet.nA(index1, index2)
 		  Case "nW"

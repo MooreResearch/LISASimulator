@@ -17,13 +17,25 @@ Class NecdetsClass
 		      nW(2,i) = Wavebuilders(2).W(i)
 		    Next
 		    nDVI(Dβ) = (Wavebuilders(1).SpinResults.V - Wavebuilders(2).SpinResults.V)*inv2ep
-		    // etc
+		    nDιI(Dβ) = (Wavebuilders(1).SpinResults.ι - Wavebuilders(2).SpinResults.ι)*inv2ep
+		    nDαI(Dβ) = (Wavebuilders(1).SpinResults.α - Wavebuilders(2).SpinResults.α)*inv2ep
+		    nDαI(Dβ) = (Wavebuilders(1).SpinResults.α - Wavebuilders(2).SpinResults.α)*inv2ep
+		    nDχaxI(Dβ) = (Wavebuilders(1).SpinResults.χax - Wavebuilders(2).SpinResults.χax)*inv2ep
+		    nDχayI(Dβ) = (Wavebuilders(1).SpinResults.χay - Wavebuilders(2).SpinResults.χay)*inv2ep
+		    nDχazI(Dβ) = (Wavebuilders(1).SpinResults.χaz - Wavebuilders(2).SpinResults.χaz)*inv2ep
+		    nDχsxI(Dβ) = (Wavebuilders(1).SpinResults.χsx - Wavebuilders(2).SpinResults.χsx)*inv2ep
+		    nDχsyI(Dβ) = (Wavebuilders(1).SpinResults.χsy - Wavebuilders(2).SpinResults.χsy)*inv2ep
+		    nDχszI(Dβ) = (Wavebuilders(1).SpinResults.χsz - Wavebuilders(2).SpinResults.χsz)*inv2ep
+		    nDΨI(Dβ) = (Wavebuilders(1).SpinResults.Ψ - Wavebuilders(2).SpinResults.Ψ)*inv2ep
 		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
 		    nV(1) = WaveBuilders(1).SpinResults.V
 		    nV(2) = WaveBuilders(2).SpinResults.V
-		    // etc
+		    nι(1) = WaveBuilders(1).SpinResults.ι
+		    nι(2) = WaveBuilders(2).SpinResults.ι
+		    nα(1) = WaveBuilders(1).SpinResults.α
+		    nα(2) = WaveBuilders(2).SpinResults.α
 		  Else
-		    Raise New RuntimeException("Not enough Wavebuilders instances to calculate nA(i).")
+		    Raise New RuntimeException("Not enough Wavebuilders instances.")
 		  End If
 		End Sub
 	#tag EndMethod
@@ -133,30 +145,6 @@ Class NecdetsClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="nV(2)"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="nι(2)"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="nα(2)"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
