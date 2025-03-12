@@ -25,6 +25,7 @@ Begin DesktopWindow MainWindow
    Visible         =   True
    Width           =   1000
    Begin Timer InterfaceUpdateTimer
+      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Period          =   500
@@ -1059,7 +1060,7 @@ Begin DesktopWindow MainWindow
          Height          =   414
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
-         InitialValue    =   "Case 1\n10000\n0.1\n500\n0\n0\n0\n0\n0\n0\n0\n39\n24\n1.0e7\n5\n268.5"
+         InitialValue    =   "Case 1\n10000\n0.1\n500\n0\n0\n0\n0\n0\n0\n0\n39\n0\n1.0e7\n5\n268.5"
          Italic          =   False
          Left            =   259
          LockBottom      =   False
@@ -2166,12 +2167,15 @@ Begin DesktopWindow MainWindow
       End
    End
    Begin MainThreadClass MainThread
+      DebugIdentifier =   ""
       Index           =   -2147483648
       LockedInPosition=   False
       Priority        =   5
       Scope           =   0
       StackSize       =   0
       TabPanelIndex   =   0
+      ThreadID        =   0
+      ThreadState     =   0
       Type            =   0
    End
 End
@@ -2747,12 +2751,12 @@ End
 		    InterfaceUpdateTimer.RunMode = Timer.RunModes.Off // and we need no more updates
 		    ValueOfStatusLabel.Text = "Stopped" // let the user know we have stopped
 		    ValueOfStopReasonLabel.Text = TheSuper.TerminationMessage // update the termination message
-		    If TheSuper.CaseInfo.Uncertainties <> Nil Then  // if we have uncertainties to display
-		      DisplayUncertainties(theCase) // display them
-		      MatrixChoicePopupMenu.SelectedRowIndex = 0 // reset the matrix chooser to display the ATA matrix
-		      DisplayMatrix(TheSuper.ATAMatrix) // display that matrix
-		      ValueOfConditionLabel.Text = Format(TheSuper.UncertaintyCalculator.Condition, "0.000e-0##") // and condition number
-		    End if
+		    'If TheSuper.CaseInfo.Uncertainties <> Nil Then  // if we have uncertainties to display
+		    'DisplayUncertainties(theCase) // display them
+		    'MatrixChoicePopupMenu.SelectedRowIndex = 0 // reset the matrix chooser to display the ATA matrix
+		    'DisplayMatrix(TheSuper.ATAMatrix) // display that matrix
+		    'ValueOfConditionLabel.Text = Format(TheSuper.UncertaintyCalculator.Condition, "0.000e-0##") // and condition number
+		    'End if
 		    
 		    // If we had been running cases from a file, then write out the results
 		    if RunFileCheckBox.Value and AllCasesDone Then WriteUncertaintyFiles
