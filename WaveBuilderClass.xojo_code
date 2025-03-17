@@ -1223,6 +1223,7 @@ Protected Class WaveBuilderClass
 	#tag Method, Flags = &h0
 		Sub Constructor(P As CaseInfoClass = Nil)
 		  // If P is Nil we are just creating the class to check variable names
+		  SpinResults = New SpinResultsClass
 		  If P <> Nil Then
 		    // Initialize constants
 		    Parameters = P

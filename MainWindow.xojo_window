@@ -33,6 +33,18 @@ Begin DesktopWindow MainWindow
       Scope           =   0
       TabPanelIndex   =   0
    End
+   Begin MainThreadClass MainThread
+      DebugIdentifier =   ""
+      Index           =   -2147483648
+      LockedInPosition=   False
+      Priority        =   5
+      Scope           =   0
+      StackSize       =   0
+      TabPanelIndex   =   0
+      ThreadID        =   0
+      ThreadState     =   0
+      Type            =   0
+   End
    Begin DesktopTabPanel MainTabPanel
       AllowAutoDeactivate=   True
       Bold            =   False
@@ -60,7 +72,7 @@ Begin DesktopWindow MainWindow
       Top             =   0
       Transparent     =   False
       Underline       =   False
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   1000
       Begin DesktopRectangle RectForSave
@@ -309,7 +321,7 @@ Begin DesktopWindow MainWindow
             Hint            =   ""
             Index           =   -2147483648
             InitialParent   =   "RectForSave"
-            InitialValue    =   "\nH+\nHx\nv\nα\nι\nψ\nχ1x\nχ1y\nχ1z\nχ2x\nχ2y\nχ2z"
+            InitialValue    =   "\nH\nv\nα\nι\nψ\nχ1x\nχ1y\nχ1z\nχ2x\nχ2y\nχ2z"
             Italic          =   False
             Left            =   645
             LockBottom      =   False
@@ -982,7 +994,7 @@ Begin DesktopWindow MainWindow
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   20
+         Left            =   211
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -994,45 +1006,15 @@ Begin DesktopWindow MainWindow
          TabIndex        =   0
          TabPanelIndex   =   3
          TabStop         =   True
-         Text            =   "Graph This Variable:"
+         Text            =   "Graph:"
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   66
+         Top             =   42
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   129
-      End
-      Begin DesktopPopupMenu GraphChoicePopupMenu
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Enabled         =   True
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   26
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         InitialValue    =   ""
-         Italic          =   False
-         Left            =   20
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Scope           =   0
-         SelectedRowIndex=   0
-         TabIndex        =   1
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Tooltip         =   ""
-         Top             =   90
-         Transparent     =   False
-         Underline       =   False
-         Visible         =   True
-         Width           =   126
+         Width           =   47
       End
       Begin DesktopListBox CaseListBoxParams
          AllowAutoDeactivate=   True
@@ -1596,7 +1578,7 @@ Begin DesktopWindow MainWindow
          TabStop         =   True
          TickMarkStyle   =   2
          Tooltip         =   ""
-         Top             =   62
+         Top             =   71
          Transparent     =   False
          Value           =   0
          Visible         =   True
@@ -1629,7 +1611,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   64
+         Top             =   73
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1643,7 +1625,7 @@ Begin DesktopWindow MainWindow
          Backdrop        =   0
          DrawGrid        =   True
          Enabled         =   True
-         Height          =   652
+         Height          =   640
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Left            =   20
@@ -1665,7 +1647,7 @@ Begin DesktopWindow MainWindow
          TitleFontSize   =   18.0
          TitleOffset     =   15.0
          Tooltip         =   ""
-         Top             =   128
+         Top             =   140
          Transparent     =   True
          Visible         =   True
          Width           =   960
@@ -1697,7 +1679,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   64
+         Top             =   73
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1730,11 +1712,66 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   91
+         Top             =   104
          Transparent     =   False
          Underline       =   False
          Visible         =   True
          Width           =   141
+      End
+      Begin DesktopRectangle GraphColorRect1
+         AllowAutoDeactivate=   True
+         BorderColor     =   &c000000
+         BorderThickness =   0.0
+         CornerSize      =   0.0
+         Enabled         =   True
+         FillColor       =   &c00000000
+         Height          =   26
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Left            =   267
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   34
+         TabPanelIndex   =   3
+         Tooltip         =   ""
+         Top             =   41
+         Transparent     =   True
+         Visible         =   True
+         Width           =   126
+         Begin DesktopPopupMenu GraphVert1PopupMenu
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Enabled         =   True
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "GraphColorRect1"
+            InitialValue    =   ""
+            Italic          =   False
+            Left            =   270
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            SelectedRowIndex=   0
+            TabIndex        =   0
+            TabPanelIndex   =   3
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   44
+            Transparent     =   False
+            Underline       =   False
+            Visible         =   True
+            Width           =   120
+         End
       End
       Begin DesktopPopupMenu ScaleMenu
          AllowAutoDeactivate=   True
@@ -1760,7 +1797,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   94
+         Top             =   106
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1792,7 +1829,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   91
+         Top             =   105
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1825,7 +1862,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   91
+         Top             =   105
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1857,7 +1894,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   91
+         Top             =   105
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1890,7 +1927,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   91
+         Top             =   104
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1920,7 +1957,7 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   94
+         Top             =   106
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -1986,7 +2023,7 @@ Begin DesktopWindow MainWindow
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   154
+         Left            =   836
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -2002,7 +2039,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   94
+         Top             =   42
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -2020,7 +2057,7 @@ Begin DesktopWindow MainWindow
          InitialParent   =   "MainTabPanel"
          InitialValue    =   "t-y"
          Italic          =   False
-         Left            =   181
+         Left            =   860
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -2032,42 +2069,11 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   95
+         Top             =   44
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   126
-      End
-      Begin DesktopCheckBox AddToGraphCheckBox
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Caption         =   "Add To Previous"
-         Enabled         =   False
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   160
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   26
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Tooltip         =   ""
-         Top             =   66
-         Transparent     =   False
-         Underline       =   False
-         Value           =   False
-         Visible         =   True
-         VisualState     =   0
-         Width           =   131
+         Width           =   120
       End
       Begin DesktopLabel CaptionForGraphSourceLabel
          AllowAutoDeactivate=   True
@@ -2096,7 +2102,7 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   34
+         Top             =   42
          Transparent     =   False
          Underline       =   False
          Visible         =   True
@@ -2126,11 +2132,11 @@ Begin DesktopWindow MainWindow
          TabPanelIndex   =   3
          TabStop         =   True
          Tooltip         =   ""
-         Top             =   36
+         Top             =   44
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   104
+         Width           =   82
       End
       Begin DesktopLabel GraphSourceFolderLabel
          AllowAutoDeactivate=   True
@@ -2143,7 +2149,7 @@ Begin DesktopWindow MainWindow
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Italic          =   False
-         Left            =   226
+         Left            =   100
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -2159,24 +2165,210 @@ Begin DesktopWindow MainWindow
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
-         Top             =   36
+         Top             =   105
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   269
+         Width           =   238
       End
-   End
-   Begin MainThreadClass MainThread
-      DebugIdentifier =   ""
-      Index           =   -2147483648
-      LockedInPosition=   False
-      Priority        =   5
-      Scope           =   0
-      StackSize       =   0
-      TabPanelIndex   =   0
-      ThreadID        =   0
-      ThreadState     =   0
-      Type            =   0
+      Begin DesktopLabel CaptionForGraphFolderLabel1
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Italic          =   False
+         Left            =   20
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   33
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   "Data Folder:"
+         TextAlignment   =   0
+         TextColor       =   &c000000
+         Tooltip         =   ""
+         Top             =   71
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   87
+      End
+      Begin DesktopRectangle GraphColorRect2
+         AllowAutoDeactivate=   True
+         BorderColor     =   &c000000
+         BorderThickness =   0.0
+         CornerSize      =   0.0
+         Enabled         =   True
+         FillColor       =   &c0433FF00
+         Height          =   26
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Left            =   405
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   36
+         TabPanelIndex   =   3
+         Tooltip         =   ""
+         Top             =   41
+         Transparent     =   False
+         Visible         =   True
+         Width           =   126
+         Begin DesktopPopupMenu GraphVert2PopupMenu
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Enabled         =   True
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "GraphColorRect2"
+            InitialValue    =   ""
+            Italic          =   False
+            Left            =   408
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            SelectedRowIndex=   0
+            TabIndex        =   0
+            TabPanelIndex   =   3
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   44
+            Transparent     =   False
+            Underline       =   False
+            Visible         =   True
+            Width           =   120
+         End
+      End
+      Begin DesktopRectangle GraphColorRect3
+         AllowAutoDeactivate=   True
+         BorderColor     =   &c000000
+         BorderThickness =   0.0
+         CornerSize      =   0.0
+         Enabled         =   True
+         FillColor       =   &c008F0000
+         Height          =   26
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Left            =   541
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   37
+         TabPanelIndex   =   3
+         Tooltip         =   ""
+         Top             =   41
+         Transparent     =   False
+         Visible         =   True
+         Width           =   126
+         Begin DesktopPopupMenu GraphVert3PopupMenu
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Enabled         =   True
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "GraphColorRect3"
+            InitialValue    =   ""
+            Italic          =   False
+            Left            =   544
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            SelectedRowIndex=   0
+            TabIndex        =   0
+            TabPanelIndex   =   3
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   44
+            Transparent     =   False
+            Underline       =   False
+            Visible         =   True
+            Width           =   120
+         End
+      End
+      Begin DesktopRectangle GraphColorRect4
+         AllowAutoDeactivate=   True
+         BorderColor     =   &c000000
+         BorderThickness =   0.0
+         CornerSize      =   0.0
+         Enabled         =   True
+         FillColor       =   &cFF260000
+         Height          =   26
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Left            =   679
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   38
+         TabPanelIndex   =   3
+         Tooltip         =   ""
+         Top             =   41
+         Transparent     =   False
+         Visible         =   True
+         Width           =   126
+         Begin DesktopPopupMenu GraphVert4PopupMenu
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Enabled         =   True
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "GraphColorRect4"
+            InitialValue    =   ""
+            Italic          =   False
+            Left            =   682
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            SelectedRowIndex=   0
+            TabIndex        =   0
+            TabPanelIndex   =   3
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   44
+            Transparent     =   False
+            Underline       =   False
+            Visible         =   True
+            Width           =   120
+         End
+      End
    End
 End
 #tag EndDesktopWindow
@@ -2854,6 +3046,10 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Plots(3) As PlotData
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		PlotStartIndex As Integer = -1
 	#tag EndProperty
 
@@ -2890,7 +3086,10 @@ End
 		      me.SelectedPanelIndex = 0 // set us back to the run panel
 		      Setting = False // and clear the setting flag
 		    ElseIf me.SelectedPanelIndex = 2 Then // If we are going to the graphing panel
-		      GraphChoicePopupMenu.RemoveAllRows // delete all rows in the graph choice menu
+		      GraphVert1PopupMenu.RemoveAllRows // delete all rows in the graph choice menus
+		      GraphVert2PopupMenu.RemoveAllRows
+		      GraphVert3PopupMenu.RemoveAllRows
+		      GraphVert4PopupMenu.RemoveAllRows
 		      If TheCases.LastIndex < 0 Then Return // if we have not run any cases, then abort: nothing to graph
 		      Var vNamelist() As String = TheCases(0).DataRecorder.GetVariableNames  // get the list of items to graph
 		      If vNamelist.LastIndex > 0 Then // if we actually have data to graph
@@ -2899,10 +3098,20 @@ End
 		        PlotStartIndex = 0 // we start plotting at the beginning
 		        PlotEndIndex = PlotTimes.LastIndex // and end at the end
 		        Setting = True // avoid loops as we add stuff to the popup menu
+		        GraphVert1PopupMenu.AddRow("")  // add a blank row that means "no choice"
+		        GraphVert2PopupMenu.AddRow("")
+		        GraphVert3PopupMenu.AddRow("")
+		        GraphVert4PopupMenu.AddRow("")
 		        For i As Integer = 1 to vNamelist.LastIndex // add all other graphable variables to the popup menu
-		          GraphChoicePopupMenu.AddRow(vNamelist(i))
+		          GraphVert1PopupMenu.AddRow(vNamelist(i))
+		          GraphVert2PopupMenu.AddRow(vNamelist(i))
+		          GraphVert3PopupMenu.AddRow(vNamelist(i))
+		          GraphVert4PopupMenu.AddRow(vNamelist(i))
 		        Next
-		        GraphChoicePopupMenu.SelectedRowIndex = -1 // initially plot nothing
+		        GraphVert1PopupMenu.SelectedRowIndex = 0 // initially plot nothing
+		        GraphVert2PopupMenu.SelectedRowIndex = 0
+		        GraphVert3PopupMenu.SelectedRowIndex = 0
+		        GraphVert4PopupMenu.SelectedRowIndex = 0
 		        Setting = False // clear the flag
 		      End If
 		    End If
@@ -3008,15 +3217,6 @@ End
 		Function HeaderPressed(column as Integer) As Boolean
 		  Return True  // do not allow sorting
 		End Function
-	#tag EndEvent
-#tag EndEvents
-#tag Events GraphChoicePopupMenu
-	#tag Event
-		Sub SelectionChanged(item As DesktopMenuItem)
-		  If not Setting Then
-		    PlotSelectedItem(me.SelectedRowText)
-		  End If
-		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events CaseListBoxParams
@@ -3133,6 +3333,15 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events GraphVert1PopupMenu
+	#tag Event
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  If not Setting Then
+		    PlotSelectedItem(me.SelectedRowText)
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events ScaleMenu
 	#tag Event
 		Sub SelectionChanged(item As DesktopMenuItem)
@@ -3170,6 +3379,33 @@ End
 		Function HeaderPressed(column as Integer) As Boolean
 		  Return True // do not allow sorting
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events GraphVert2PopupMenu
+	#tag Event
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  If not Setting Then
+		    PlotSelectedItem(me.SelectedRowText)
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events GraphVert3PopupMenu
+	#tag Event
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  If not Setting Then
+		    PlotSelectedItem(me.SelectedRowText)
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events GraphVert4PopupMenu
+	#tag Event
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  If not Setting Then
+		    PlotSelectedItem(me.SelectedRowText)
+		  End If
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag ViewBehavior
