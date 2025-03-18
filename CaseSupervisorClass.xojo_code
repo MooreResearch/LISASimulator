@@ -17,8 +17,12 @@ Protected Class CaseSupervisorClass
 		  CaseList(1) = CaseInfo.clone
 		  CaseList(2) = CaseInfo.clone
 		  // Adjust the parameter for the side cases
-		  CaseList(1).β = CaseInfo.β + ep
-		  CaseList(2).β = CaseInfo.β - ep
+		  
+		  //CaseList(1).β = CaseInfo.β + ep
+		  //CaseList(2).β = CaseInfo.β - ep
+		  
+		  CaseList(1).δ = CaseInfo.δ + ep
+		  CaseList(2).δ = CaseInfo.δ - ep
 		  
 		  // Create Wavebuilders for each side case
 		  WaveBuilders(0) = New WaveBuilderClass(CaseInfo)

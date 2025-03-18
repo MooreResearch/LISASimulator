@@ -10,12 +10,16 @@ Class NecdetsClass
 		Sub SetValues(Wavebuilders() As WaveBuilderClass, ep As Double)
 		  If Wavebuilders.Ubound >= 1 Then
 		    Var inv2ep As Double = 1/(2.0*ep)
+		    Var sumDHDq As Double = 0
 		    For i As Integer = 0 To 250  // Assuming 250 elements
 		      nA(1,i) = Wavebuilders(1).A(i)
 		      nA(2,i) = Wavebuilders(2).A(i)
 		      nW(1,i) = Wavebuilders(1).W(i)
 		      nW(2,i) = Wavebuilders(2).W(i)
+		      sumDHDq = sumDHDq + (((nA(1, i) - nA(2, i)) * inv2ep) * WaveBuilders(0).W(i)) + (WaveBuilders(0).A(i) * ((nW(1, i) - nW(2, i)) * inv2ep))
 		    Next
+		    nDHDq(Dδ) = sumDHDq
+		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
 		    nDVI(Dδ) = (Wavebuilders(1).SpinResults.V - Wavebuilders(2).SpinResults.V)*inv2ep
 		    nDιI(Dδ) = (Wavebuilders(1).SpinResults.ι - Wavebuilders(2).SpinResults.ι)*inv2ep
 		    nDαI(Dδ) = (Wavebuilders(1).SpinResults.α - Wavebuilders(2).SpinResults.α)*inv2ep
@@ -27,8 +31,6 @@ Class NecdetsClass
 		    nDχsyI(Dδ) = (Wavebuilders(1).SpinResults.χsy - Wavebuilders(2).SpinResults.χsy)*inv2ep
 		    nDχszI(Dδ) = (Wavebuilders(1).SpinResults.χsz - Wavebuilders(2).SpinResults.χsz)*inv2ep
 		    nDΨI(Dδ) = (Wavebuilders(1).SpinResults.Ψ - Wavebuilders(2).SpinResults.Ψ)*inv2ep
-		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
-		    nDHDq(Dδ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
 		    nV(1) = WaveBuilders(1).SpinResults.V
 		    nV(2) = WaveBuilders(2).SpinResults.V
 		    nι(1) = WaveBuilders(1).SpinResults.ι

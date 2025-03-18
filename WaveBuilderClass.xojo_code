@@ -1332,6 +1332,8 @@ Protected Class WaveBuilderClass
 		  End If
 		  
 		  Select Case arrayName
+		  Case "fdiff"
+		    If index1 <= UBound(necdet.nDHDq) Then Return (necdet.nDHDq(index1) - DHDq(index1)) / (DHDq(index1))
 		  Case "nDHDq"
 		    If index1 <= UBound(necdet.nDHDq) Then Return necdet.nDHDq(index1)
 		  Case "nDVI"
