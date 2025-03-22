@@ -165,6 +165,28 @@ Protected Class WaveBuilderClass
 		  + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dδ)
 		  DHDq(Dδ) = h0*(fp*dhp+fx*dhx) + dh0dδ*(fp*hp+fx*hx)
 		  
+		  Var hp1, hp2, hx1, hx2 As Double
+		  
+		  If necdet <> Nil Then
+		    // Get plus polarization product rule terms
+		    hp1 = GetHSum(necdet.A1, W, plus)
+		    hp1 = (hp1 - GetHSum(necdet.A2, W, plus))*necdet.inv2ep
+		    hp2 = GetHSum(A, necdet.W1, plus)
+		    hp2 = (hp2 - GetHSum(A, necdet.W2, plus))*necdet.inv2ep
+		    dhp = hp1 + hp2
+		    
+		    // Get cross polarization product rule terms
+		    hx1 = GetHSum(necdet.A1, W, cross)
+		    hx1 = (hx1 - GetHSum(necdet.A2, W, cross))*necdet.inv2ep
+		    hx2 = GetHSum(A, necdet.W1, cross)
+		    hx2 = (hx2 - GetHSum(A, necdet.W2, plus))*necdet.inv2ep
+		    dhx = hx1 + hx2
+		    
+		    // Perform the weighted sum of the polarizations
+		    // Note that h0 also depends on delta, so we need to include its derivative
+		    necdet.nDHDq(Dδ) = h0*(dhp*fp + dhx*fx) + dh0dδ*H
+		  End IF
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -1333,7 +1355,8 @@ Protected Class WaveBuilderClass
 		  
 		  Select Case arrayName
 		  Case "fdiff"
-		    If index1 <= UBound(necdet.nDHDq) Then Return (necdet.nDHDq(index1) - DHDq(index1)) / (DHDq(index1))
+		    //If index1 <= UBound(necdet.nDHDq) Then Return ((necdet.nDHDq(index1) - DHDq(index1)) / DHDq(index1)) / necdet.h0diff
+		    If index1 <= UBound(necdet.nDHDq) Then Return (necdet.nDHDq(index1) - DHDq(index1)) / necdet.h0diff
 		  Case "nDHDq"
 		    If index1 <= UBound(necdet.nDHDq) Then Return necdet.nDHDq(index1)
 		  Case "nDVI"
@@ -1356,10 +1379,6 @@ Protected Class WaveBuilderClass
 		    If index1 <= UBound(necdet.nDχszI) Then Return necdet.nDχszI(index1)
 		  Case "nDΨI"
 		    If index1 <= UBound(necdet.nDΨI) Then Return necdet.nDΨI(index1)
-		  Case "nA"
-		    If index1 <= UBound(necdet.nA,1) And index2 <= UBound(necdet.nA, 2) Then Return necdet.nA(index1, index2)
-		  Case "nW"
-		    If index1 <= UBound(necdet.nW,1) And index2 <= UBound(necdet.nW, 2) Then Return necdet.nW(index1, index2)
 		  End Select
 		  
 		  // Handle arrays W and A

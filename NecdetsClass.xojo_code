@@ -9,17 +9,16 @@ Class NecdetsClass
 	#tag Method, Flags = &h0
 		Sub SetValues(Wavebuilders() As WaveBuilderClass, ep As Double)
 		  If Wavebuilders.Ubound >= 1 Then
-		    Var inv2ep As Double = 1/(2.0*ep)
-		    Var sumDHDq As Double = 0
-		    For i As Integer = 0 To 250  // Assuming 250 elements
-		      nA(1,i) = Wavebuilders(1).A(i)
-		      nA(2,i) = Wavebuilders(2).A(i)
-		      nW(1,i) = Wavebuilders(1).W(i)
-		      nW(2,i) = Wavebuilders(2).W(i)
-		      sumDHDq = sumDHDq + (((nA(1, i) - nA(2, i)) * inv2ep) * WaveBuilders(0).W(i)) + (WaveBuilders(0).A(i) * ((nW(1, i) - nW(2, i)) * inv2ep))
-		    Next
-		    nDHDq(Dδ) = sumDHDq
+		    inv2ep = 1/(2.0*ep)
+		    h0diff = 0.5 * WaveBuilders(0).Parameters.M * (1 - WaveBuilders(0).Parameters.δ * WaveBuilders(0).Parameters.δ) / WaveBuilders(0).Parameters.R
+		    
+		    A1 =  WaveBuilders(1).A
+		    A2 =  WaveBuilders(2).A
+		    W1 =  WaveBuilders(1).W
+		    W2 =  WaveBuilders(2).W
+		    
 		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
+		    
 		    nDVI(Dδ) = (Wavebuilders(1).SpinResults.V - Wavebuilders(2).SpinResults.V)*inv2ep
 		    nDιI(Dδ) = (Wavebuilders(1).SpinResults.ι - Wavebuilders(2).SpinResults.ι)*inv2ep
 		    nDαI(Dδ) = (Wavebuilders(1).SpinResults.α - Wavebuilders(2).SpinResults.α)*inv2ep
@@ -45,7 +44,19 @@ Class NecdetsClass
 
 
 	#tag Property, Flags = &h0
-		nA(2,250) As Double
+		A1(250) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		A2(250) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		h0diff As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		inv2ep As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -97,15 +108,19 @@ Class NecdetsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		nW(2,250) As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		nι(2) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		nα(2) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		W1(250) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		W2(250) As Double
 	#tag EndProperty
 
 
@@ -148,6 +163,22 @@ Class NecdetsClass
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="inv2ep"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="h0diff"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
