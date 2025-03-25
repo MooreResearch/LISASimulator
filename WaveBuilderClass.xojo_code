@@ -25,9 +25,9 @@ Protected Class WaveBuilderClass
 		  // These static variables help with the calculation of the wave amplitude
 		  // and its derivatives
 		  Static η As Double = 0.25*(1.0-Parameters.δ*Parameters.δ)
-		  Static h0 As Double = 2.0*Parameters.M*η/Parameters.R
+		  h0 = 2.0*Parameters.M*η/Parameters.R
 		  Static dh0dlnM As Double = h0
-		  Static dh0dδ As Double = -0.5*h0*Parameters.δ/η
+		  dh0dδ = -0.5*h0*Parameters.δ/η
 		  Static dh0dlnR As Double = -h0
 		  
 		  // These static variables indicate which polarization we are calculating
@@ -60,8 +60,8 @@ Protected Class WaveBuilderClass
 		  // to the line of sight. This will be selected if Parameters.Detectors = 0.
 		  // To get the plus polarization in the source frame, choose ψ = 0.
 		  // To get the cross polarization, choose ψ = π/4.
-		  Var fp As Double = cos2ψ
-		  Var fx As Double = sin2ψ
+		  fp = cos2ψ
+		  fx = sin2ψ
 		  
 		  // Otherwise, we will calculate these factors for the LISA detector,
 		  // which requires a more complicated calculation
@@ -164,28 +164,6 @@ Protected Class WaveBuilderClass
 		  + GetHSum(A,DWDΨ,cross)*SpinResults.DΨI(Dδ) _
 		  + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dδ)
 		  DHDq(Dδ) = h0*(fp*dhp+fx*dhx) + dh0dδ*(fp*hp+fx*hx)
-		  
-		  Var hp1, hp2, hx1, hx2 As Double
-		  
-		  If necdet <> Nil Then
-		    // Get plus polarization product rule terms
-		    hp1 = GetHSum(necdet.A1, W, plus)
-		    hp1 = (hp1 - GetHSum(necdet.A2, W, plus))*necdet.inv2ep
-		    hp2 = GetHSum(A, necdet.W1, plus)
-		    hp2 = (hp2 - GetHSum(A, necdet.W2, plus))*necdet.inv2ep
-		    dhp = hp1 + hp2
-		    
-		    // Get cross polarization product rule terms
-		    hx1 = GetHSum(necdet.A1, W, cross)
-		    hx1 = (hx1 - GetHSum(necdet.A2, W, cross))*necdet.inv2ep
-		    hx2 = GetHSum(A, necdet.W1, cross)
-		    hx2 = (hx2 - GetHSum(A, necdet.W2, plus))*necdet.inv2ep
-		    dhx = hx1 + hx2
-		    
-		    // Perform the weighted sum of the polarizations
-		    // Note that h0 also depends on delta, so we need to include its derivative
-		    necdet.nDHDq(Dδ) = h0*(dhp*fp + dhx*fx) + dh0dδ*H
-		  End IF
 		  
 		  
 		End Sub
@@ -1181,8 +1159,8 @@ Protected Class WaveBuilderClass
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Function GetHSum(Amp() As Double, Wave() As Double, Cross As Boolean, DoVDeriv As Boolean = False) As Double
+	#tag Method, Flags = &h0
+		Function GetHSum(Amp() As Double, Wave() As Double, Cross As Boolean, DoVDeriv As Boolean = False) As Double
 		  // These constants define static variables indicating the endpoints of
 		  // polarizations and post-newtonian orders. Remember that
 		  Static H0PLastIndex As Integer = 4
@@ -1439,6 +1417,10 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Dh0dδ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		DHDq(14) As Double
 	#tag EndProperty
 
@@ -1463,7 +1445,19 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		FP As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		FX As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		H As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		H0 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

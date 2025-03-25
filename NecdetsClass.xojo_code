@@ -12,10 +12,34 @@ Class NecdetsClass
 		    inv2ep = 1/(2.0*ep)
 		    h0diff = 0.5 * WaveBuilders(0).Parameters.M * (1 - WaveBuilders(0).Parameters.δ * WaveBuilders(0).Parameters.δ) / WaveBuilders(0).Parameters.R
 		    
-		    A1 =  WaveBuilders(1).A
-		    A2 =  WaveBuilders(2).A
-		    W1 =  WaveBuilders(1).W
-		    W2 =  WaveBuilders(2).W
+		    //A1 =  WaveBuilders(1).A
+		    //A2 =  WaveBuilders(2).A
+		    //W1 =  WaveBuilders(1).W
+		    //W2 =  WaveBuilders(2).W
+		    
+		    Var hp1, hp2, hx1, hx2, dhp, dhx As Double
+		    Static cross As Boolean = True
+		    Static plus As Boolean = False
+		    
+		    // Get plus polarization product rule terms
+		    hp1 = Wavebuilders(0).GetHSum(WaveBuilders(1).A, WaveBuilders(0).W, plus)
+		    hp1 = (hp1 - Wavebuilders(0).GetHSum(WaveBuilders(2).A, WaveBuilders(0).W, plus))*inv2ep
+		    hp2 = Wavebuilders(0).GetHSum(WaveBuilders(0).A, WaveBuilders(1).W, plus)
+		    hp2 = (hp2 - Wavebuilders(0).GetHSum(WaveBuilders(0).A, WaveBuilders(2).W, plus))*inv2ep
+		    dhp = hp1 + hp2
+		    
+		    // Get cross polarization product rule terms
+		    hx1 = Wavebuilders(0).GetHSum(WaveBuilders(1).A, WaveBuilders(0).W, cross)
+		    hx1 = (hx1 - Wavebuilders(0).GetHSum(WaveBuilders(2).A, WaveBuilders(0).W, cross))*inv2ep
+		    hx2 = Wavebuilders(0).GetHSum(WaveBuilders(0).A, WaveBuilders(1).W, cross)
+		    hx2 = (hx2 - Wavebuilders(0).GetHSum(WaveBuilders(0).A, WaveBuilders(2).W, plus))*inv2ep
+		    dhx = hx1 + hx2
+		    
+		    // Perform the weighted sum of the polarizations
+		    // Note that h0 also depends on delta, so we need to include its derivative
+		    
+		    //nDHDq(Dδ) = H0*(dhp*fp + dhx*fx) + dh0dδ*H
+		    nDHDq(Dδ) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX) + WaveBuilders(0).Dh0dδ*WaveBuilders(0).H
 		    
 		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
 		    
