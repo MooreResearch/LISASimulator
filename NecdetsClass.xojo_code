@@ -12,6 +12,7 @@ Class NecdetsClass
 		    inv2ep = 1/(2.0*ep)
 		    h0diff = 0.5 * WaveBuilders(0).Parameters.M * (1 - WaveBuilders(0).Parameters.δ * WaveBuilders(0).Parameters.δ) / WaveBuilders(0).Parameters.R
 		    
+		    
 		    //A1 =  WaveBuilders(1).A
 		    //A2 =  WaveBuilders(2).A
 		    //W1 =  WaveBuilders(1).W
@@ -39,7 +40,7 @@ Class NecdetsClass
 		    // Note that h0 also depends on delta, so we need to include its derivative
 		    
 		    //nDHDq(Dδ) = H0*(dhp*fp + dhx*fx) + dh0dδ*H
-		    nDHDq(Dδ) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX) + WaveBuilders(0).Dh0dδ*WaveBuilders(0).H
+		    nDHDq(Dδ) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX) + WaveBuilders(0).Dh0dδ * WaveBuilders(0).H / WaveBuilders(0).H0
 		    
 		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
 		    
