@@ -10,6 +10,7 @@ Begin DesktopWindow MainWindow
    HasFullScreenButton=   False
    HasMaximizeButton=   True
    HasMinimizeButton=   True
+   HasTitleBar     =   True
    Height          =   800
    ImplicitInstance=   True
    MacProcID       =   0
@@ -1023,7 +1024,7 @@ Begin DesktopWindow MainWindow
          LockRight       =   False
          LockTop         =   True
          Scope           =   0
-         SelectedRowIndex=   0
+         SelectedRowIndex=   -1
          TabIndex        =   1
          TabPanelIndex   =   3
          TabStop         =   True
@@ -2394,8 +2395,8 @@ End
 		  thisCase.Θ = Values(13).ToDouble
 		  thisCase.Φ = Values(14).ToDouble
 		  thisCase.ρ0 = values(15).ToDouble
-		  thisCase.PNOrder = values(16).NthField(",",0).ToInteger
-		  thisCase.PNForV = values(16).NthField(",",1).ToInteger
+		  thisCase.PNOrder = values(16).NthField(",",1).ToInteger
+		  thisCase.PNForV = values(16).NthField(",",2).ToInteger
 		  thisCase.Detectors = values(17).ToInteger
 		  thisCase.ΔT = values(18).ToDouble
 		  thisCase.RunDuration = values(19).ToDouble
@@ -3187,6 +3188,14 @@ End
 	#tag EndEvent
 #tag EndEvents
 #tag ViewBehavior
+	#tag ViewProperty
+		Name="HasTitleBar"
+		Visible=true
+		Group="Frame"
+		InitialValue="True"
+		Type="Boolean"
+		EditorType=""
+	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Name"
 		Visible=true

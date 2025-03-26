@@ -141,31 +141,52 @@ Protected Class WaveBuilderClass
 		  DHDq(dβ) = h0*(fp*hp + fx*hx)
 		  
 		  // Calculate the δ derivative, which is the worst
-		  Var dhp As Double = GetHSum(DADδ,W,plus) _
-		  + GetHSum(DADι,W,plus)*SpinResults.DιI(Dδ) _
-		  + GetHSum(DADχax,W,plus)*SpinResults.DχaxI(Dδ) _
-		  + GetHSum(DADχay,W,plus)*SpinResults.DχayI(Dδ) _
-		  + GetHSum(DADχaz,W,plus)*SpinResults.DχazI(Dδ) _
-		  + GetHSum(DADχsx,W,plus)*SpinResults.DχsxI(Dδ) _
-		  + GetHSum(DADχsy,W,plus)*SpinResults.DχsyI(Dδ) _
-		  + GetHSum(DADχsz,W,plus)*SpinResults.DχszI(Dδ) _
-		  + GetHSum(A,DWDα,plus)*SpinResults.DαI(Dδ) _
-		  + GetHSum(A,DWDΨ,plus)*SpinResults.DΨI(Dδ) _
-		  + GetHSum(A,W,plus,vderiv)*SpinResults.DVI(Dδ)
-		  Var dhx As Double = GetHSum(DADδ,W,cross) _
-		  + GetHSum(DADι,W,cross)*SpinResults.DιI(Dδ) _
-		  + GetHSum(DADχax,W,cross)*SpinResults.DχaxI(Dδ) _
-		  + GetHSum(DADχay,W,cross)*SpinResults.DχayI(Dδ) _
-		  + GetHSum(DADχaz,W,cross)*SpinResults.DχazI(Dδ) _
-		  + GetHSum(DADχsx,W,cross)*SpinResults.DχsxI(Dδ) _
-		  + GetHSum(DADχsy,W,cross)*SpinResults.DχsyI(Dδ) _
-		  + GetHSum(DADχsz,W,cross)*SpinResults.DχszI(Dδ) _
-		  + GetHSum(A,DWDα,cross)*SpinResults.DαI(Dδ) _
-		  + GetHSum(A,DWDΨ,cross)*SpinResults.DΨI(Dδ) _
-		  + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dδ)
+		  Var dhp As Double = GetHSum(DADδ,W,plus) 
+		  dhp = dhp + GetHSum(DADι,W,plus)*SpinResults.DιI(Dδ)
+		  dhp = dhp + GetHSum(DADχax,W,plus)*SpinResults.DχaxI(Dδ)
+		  dhp = dhp + GetHSum(DADχay,W,plus)*SpinResults.DχayI(Dδ)
+		  dhp = dhp + GetHSum(DADχaz,W,plus)*SpinResults.DχazI(Dδ)
+		  dhp = dhp + GetHSum(DADχsx,W,plus)*SpinResults.DχsxI(Dδ)
+		  dhp = dhp + GetHSum(DADχsy,W,plus)*SpinResults.DχsyI(Dδ)
+		  dhp = dhp + GetHSum(DADχsz,W,plus)*SpinResults.DχszI(Dδ)
+		  dhp = dhp + GetHSum(A,DWDα,plus)*SpinResults.DαI(Dδ)
+		  dhp = dhp + GetHSum(A,DWDΨ,plus)*SpinResults.DΨI(Dδ)
+		  dhp = dhp + GetHSum(A,W,plus,vderiv)*SpinResults.DVI(Dδ)
+		  Var dhx As Double = GetHSum(DADδ,W,cross)
+		  dhx = dhx + GetHSum(DADι,W,cross)*SpinResults.DιI(Dδ) 
+		  dhx = dhx + GetHSum(DADχax,W,cross)*SpinResults.DχaxI(Dδ)
+		  dhx = dhx + GetHSum(DADχay,W,cross)*SpinResults.DχayI(Dδ)
+		  dhx = dhx + GetHSum(DADχaz,W,cross)*SpinResults.DχazI(Dδ)
+		  dhx = dhx + GetHSum(DADχsx,W,cross)*SpinResults.DχsxI(Dδ)
+		  dhx = dhx + GetHSum(DADχsy,W,cross)*SpinResults.DχsyI(Dδ)
+		  dhx = dhx + GetHSum(DADχsz,W,cross)*SpinResults.DχszI(Dδ)
+		  dhx = dhx + GetHSum(A,DWDα,cross)*SpinResults.DαI(Dδ)
+		  dhx = dhx + GetHSum(A,DWDΨ,cross)*SpinResults.DΨI(Dδ)
+		  dhx = dhx + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dδ)
 		  DHDq(Dδ) = h0*(fp*dhp+fx*dhx) + dh0dδ*(fp*hp+fx*hx)
 		  
-		  
+		  // Calculate the τc derivative
+		  dhp = GetHSum(DADι,W,plus)*SpinResults.DιI(Dτc)
+		  dhp = dhp + GetHSum(DADχax,W,plus)*SpinResults.DχaxI(Dτc)
+		  dhp = dhp + GetHSum(DADχay,W,plus)*SpinResults.DχayI(Dτc)
+		  dhp = dhp + GetHSum(DADχaz,W,plus)*SpinResults.DχazI(Dτc)
+		  dhp = dhp + GetHSum(DADχsx,W,plus)*SpinResults.DχsxI(Dτc)
+		  dhp = dhp + GetHSum(DADχsy,W,plus)*SpinResults.DχsyI(Dτc)
+		  dhp = dhp + GetHSum(DADχsz,W,plus)*SpinResults.DχszI(Dτc)
+		  dhp = dhp + GetHSum(A,DWDα,plus)*SpinResults.DαI(Dτc)
+		  dhp = dhp + GetHSum(A,DWDΨ,plus)*SpinResults.DΨI(Dτc)
+		  dhp = dhp + GetHSum(A,W,plus,vderiv)*SpinResults.DVI(Dτc)
+		  dhx = GetHSum(DADι,W,cross)*SpinResults.DιI(Dτc) 
+		  dhx = dhx + GetHSum(DADχax,W,cross)*SpinResults.DχaxI(Dτc)
+		  dhx = dhx + GetHSum(DADχay,W,cross)*SpinResults.DχayI(Dτc)
+		  dhx = dhx + GetHSum(DADχaz,W,cross)*SpinResults.DχazI(Dτc)
+		  dhx = dhx + GetHSum(DADχsx,W,cross)*SpinResults.DχsxI(Dτc)
+		  dhx = dhx + GetHSum(DADχsy,W,cross)*SpinResults.DχsyI(Dτc)
+		  dhx = dhx + GetHSum(DADχsz,W,cross)*SpinResults.DχszI(Dτc)
+		  dhx = dhx + GetHSum(A,DWDα,cross)*SpinResults.DαI(Dτc)
+		  dhx = dhx + GetHSum(A,DWDΨ,cross)*SpinResults.DΨI(Dτc)
+		  dhx = dhx + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dτc)
+		  DHDq(Dτc) = h0*(fp*dhp+fx*dhx)
 		End Sub
 	#tag EndMethod
 
@@ -1684,6 +1705,38 @@ Protected Class WaveBuilderClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="τrDN"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dh0dδ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FP"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FX"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="H0"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""
