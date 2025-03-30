@@ -251,7 +251,13 @@ Protected Class SpinEvolverClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub CalculateVAndℓAtTime(τ As Double)
+		Private Sub CalculateStuffAtTime(τ As Double)
+		  // This method calculates the following at the time in question:
+		  //   V, its powers, and its derivatives
+		  //   ℓ and its derivatives,
+		  //   Ψorb and its derivatives, and
+		  //   Ψtail and its derivatives
+		  
 		  // Calculate v and its powers at the given time
 		  VN = VCalc.VAtTime(τ)
 		  V2 = VN*VN
@@ -262,54 +268,66 @@ Protected Class SpinEvolverClass
 		  V7 = V6*VN
 		  
 		  // Calculate derivatives of V at the time in question
-		  DvI(Dδ) = VCalc.DVIdδForLastV
-		  DvI(Dτc) = VCalc.DVIdτcForLastV
-		  Var dvIdχ1ℓ As Double = VCalc.DVIdχ1ℓForLastV
-		  DvI(Dχ1) = dvIdχ1ℓ*Cos(θ1)
-		  DvI(Dθ1) = -dvIdχ1ℓ*χ1*Sin(θ1)
-		  DvI(Dφ1) = 0.0
-		  Var dvIdχ2ℓ As Double = VCalc.DVIdχ2ℓForLastV
-		  DvI(Dχ2) = dvIdχ2ℓ*Cos(θ2)
-		  DvI(Dθ2) = -dvIdχ2ℓ*χ2*Sin(θ2)
-		  DvI(Dφ2) = 0.0
+		  DVI(Dδ) = VCalc.DVDδForLastV
+		  DVI(Dτc) = VCalc.DVDτcForLastV
+		  Var dvIdχ1ℓ As Double = VCalc.DVDχ1ℓForLastV
+		  DVI(Dχ1) = dvIdχ1ℓ*Cos(θ1)
+		  DVI(Dθ1) = -dvIdχ1ℓ*χ1*Sin(θ1)
+		  DVI(Dφ1) = 0.0
+		  Var dvIdχ2ℓ As Double = VCalc.DVDχ2ℓForLastV
+		  DVI(Dχ2) = dvIdχ2ℓ*Cos(θ2)
+		  DVI(Dθ2) = -dvIdχ2ℓ*χ2*Sin(θ2)
+		  DVI(Dφ2) = 0.0
 		  
 		  // Calculate the orbital angular momentum magnitude and its derivatives
 		  // at the given time
 		  ℓ = L0/V0*(1.0 + L2*V2 + L3*V3 + L4*V4)
-		  DℓIdv = L0*(-1.0/V2 + L2 + 2.0*L3*V0 + 3.0*L4*V2)
+		  DℓIDV = L0*(-1.0/V2 + L2 + 2.0*L3*V0 + 3.0*L4*V2)
 		  For dq As Integer = 0 To DLastSpinIndex
 		    DℓI(dq) = dL0I(dq)/V0*(1.0 + L2*V2 + L3*V3 + L4*V4) _
 		    + L0/V0*(DL2I(dq)*V2 + DL3I(dq)*V3 + DL4I(dq)*V4) _
-		    + DℓIdv*DvI(dq)
+		    + DℓIDV*DVI(dq)
 		  Next
 		  
 		  // Calculate the orbital phase and its derivatives at the time in question
-		  Ψmp = VCalc.ΨmpForLastV
-		  DΨmpI(Dδ) = VCalc.DΨmpIdδForLastV
-		  DΨmpI(Dτc) = VCalc.DΨmpIdτcForLastV
-		  Var dΨmpIdχ1ℓ As Double = VCalc.DΨmpIdχ1ℓForLastV
-		  DΨmpI(Dχ1) = dΨmpIdχ1ℓ*Cos(θ1)
-		  DΨmpI(Dθ1) = -dΨmpIdχ1ℓ*χ1*Sin(θ1)
-		  Var dΨmpIχ2ℓ As Double = VCalc.DΨmpIdχ2ℓForLastV
-		  DΨmpI(Dφ1) = 0.0
-		  DΨmpI(Dχ2) = dΨmpIχ2ℓ*Cos(θ2)
-		  DΨmpI(Dθ2) = -dΨmpIχ2ℓ*χ2*Sin(θ2)
-		  DΨmpI(Dφ2) = 0.0
+		  Ψorb = VCalc.ΨorbForLastV
+		  DΨorbI(Dδ) = VCalc.DΨorbDδForLastV
+		  DΨorbI(Dτc) = VCalc.DΨorbDτcForLastV
+		  Var dΨorbIdχ1ℓ As Double = VCalc.DΨorbDχ1ℓForLastV
+		  DΨorbI(Dχ1) = dΨorbIdχ1ℓ*Cos(θ1)
+		  DΨorbI(Dθ1) = -dΨorbIdχ1ℓ*χ1*Sin(θ1)
+		  Var dΨorbIχ2ℓ As Double = VCalc.DΨorbDχ2ℓForLastV
+		  DΨorbI(Dφ1) = 0.0
+		  DΨorbI(Dχ2) = dΨorbIχ2ℓ*Cos(θ2)
+		  DΨorbI(Dθ2) = -dΨorbIχ2ℓ*χ2*Sin(θ2)
+		  DΨorbI(Dφ2) = 0.0
+		  
+		  // Calculate the phase tail and its derivatives at the time in question
+		  Ψtail = VCalc.ΨtailForLastV
+		  DΨtailI(Dδ) = VCalc.DΨtailDδForLastV
+		  DΨtailI(Dτc) = VCalc.DΨtailDτcForLastV
+		  Var dΨtailIdχ1ℓ As Double = VCalc.DΨtailDχ1ℓForLastV
+		  DΨtailI(Dχ1) = dΨtailIdχ1ℓ*Cos(θ1)
+		  DΨtailI(Dθ1) = -dΨtailIdχ1ℓ*χ1*Sin(θ1)
+		  Var dΨtailIχ2ℓ As Double = VCalc.DΨtailDχ2ℓForLastV
+		  DΨtailI(Dφ1) = 0.0
+		  DΨtailI(Dχ2) = dΨtailIχ2ℓ*Cos(θ2)
+		  DΨtailI(Dθ2) = -dΨtailIχ2ℓ*χ2*Sin(θ2)
+		  DΨtailI(Dφ2) = 0.0
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor(CaseInfo As CaseInfoClass)
-		  If (CaseInfo.χ1 = 0 And CaseInfo.χ2 = 0) Or (CaseInfo.θ1 = 0 And CaseInfo.θ2 = 0) Then
+		  InitializeConstants(CaseInfo)
+		  VCalc = New VCalculatorClass(CaseInfo.τc, δ, χ1*Cos(θ1), χ2*Cos(θ2), CaseInfo.λ0)
+		  CalculateStuffAtTime(0.0)
+		  V0 = VN
+		  CalculateInitialSpins
+		  If (χ1 = 0 And χ2 = 0) Or (θ1 = 0 And θ2 = 0) Then
 		    NoPrecession = True
-		    VCalc = New VCalculatorClass(CaseInfo.τc, CaseInfo.δ, CaseInfo.χ1*Cos(CaseInfo.θ1), CaseInfo.χ2*Cos(CaseInfo.θ2), CaseInfo.λ0)
 		  Else
 		    NoPrecession = False
-		    InitializeConstants(CaseInfo)
-		    VCalc = New VCalculatorClass(CaseInfo.τc, δ, χ1*Cos(θ1), χ2*Cos(θ2), CaseInfo.λ0)
-		    CalculateVAndℓAtTime(0.0)
-		    V0 = VN
-		    CalculateInitialSpins
 		    TakeTheFirstStep
 		  End If
 		End Sub
@@ -331,7 +349,7 @@ Protected Class SpinEvolverClass
 		    data.χsx = 0.0
 		    data.χsy = 0.0
 		    data.χsz = 0.5*(χ1+χ2)
-		    CalculateVAndℓAtTime(τ)
+		    CalculateStuffAtTime(τ)
 		    data.V = VN
 		    For dq As Integer = 0 To DLastSpinIndex
 		      data.DιI(dq) = 0.0
@@ -350,10 +368,10 @@ Protected Class SpinEvolverClass
 		        data.DχazI(dq) = 0.0
 		        data.DχszI(dq) = 0.0
 		      End If
-		      data.DvI(dq) = DvI(dq)
-		      data.DΨI(dq) = DΨmpI(dq)
+		      data.DVI(dq) = DVI(dq)
+		      data.DΨI(dq) = DΨorbI(dq) + DΨtailI(dq)
 		    Next
-		    data.Ψ = Ψmp
+		    data.Ψ = Ψorb + Ψtail
 		    Return data
 		  Else // If we have at least one nonzero spin, then we need to evolve
 		    // Cycle through steps until we get beyond the requested time
@@ -372,8 +390,7 @@ Protected Class SpinEvolverClass
 		    data.χsx = 0.5*(fN*(χ1x(1) + χ2x(1)) + fP*(χ1x(0) + χ2x(0)))
 		    data.χsy = 0.5*(fN*(χ1y(1) + χ2y(1)) + fP*(χ1y(0) + χ2y(0)))
 		    data.χsz = 0.5*(fN*(χ1z(1) + χ2z(1)) + fP*(χ1z(0) + χ2z(0)))
-		    data.Ψ = fN*Ψpr(1) + fP*Ψpr(0) + Ψmp
-		    CalculateVAndℓAtTime(τ)
+		    CalculateStuffAtTime(τ)
 		    data.V = VN
 		    For dq As Integer = 0 To DLastSpinIndex
 		      data.DιI(dq) = fN*DιI(dq,1) + fP*DιI(dq,0)
@@ -384,9 +401,10 @@ Protected Class SpinEvolverClass
 		      data.DχsxI(dq) = 0.5*(fN*(Dχ1xI(dq,1) + Dχ2xI(dq,1)) + fP*(Dχ1xI(dq,0) + Dχ2xI(dq,0)))
 		      data.DχsyI(dq) = 0.5*(fN*(Dχ1yI(dq,1) + Dχ2yI(dq,1)) + fP*(Dχ1yI(dq,0) + Dχ2yI(dq,0)))
 		      data.DχszI(dq) = 0.5*(fN*(Dχ1zI(dq,1) + Dχ2zI(dq,1)) + fP*(Dχ1zI(dq,0) + Dχ2zI(dq,0)))
-		      data.DvI(dq) = DvI(dq)
-		      data.DΨI(dq) = fN*DΨprI(dq,1) + fP*DΨprI(dq,0) + DΨmpI(dq)
+		      data.DVI(dq) = DVI(dq)
+		      data.DΨI(dq) = fN*DΨprI(dq,1) + fP*DΨprI(dq,0) + DΨorbI(dq) + DΨtailI(dq)
 		    Next
+		    data.Ψ = fN*Ψpr(1) + fP*Ψpr(0) + Ψorb + Ψtail
 		    Return data
 		  End If
 		  
@@ -406,12 +424,12 @@ Protected Class SpinEvolverClass
 		  Var χ1ℓ As Double = χ1*Cos(θ1)
 		  Var χ2ℓ As Double = χ2*Cos(θ2)
 		  η = 0.25*(1.0 - δ*δ)
+		  Var η2 As Double = η*η
+		  Var η3 As Double = η2*η
 		  μ1 = 0.5*(1.0 + δ)
 		  μ12 = μ1*μ1
 		  μ2 = 0.5*(1.0 - δ)
 		  μ22 = μ2*μ2
-		  Var η2 As Double = η*η
-		  Var η3 As Double = η2*η
 		  
 		  // Calculate spin evolution coefficients
 		  C10 = 0.75*(1.0 - δ) + 0.5*η
@@ -548,7 +566,7 @@ Protected Class SpinEvolverClass
 		  End If
 		  
 		  // Calculate the current orbital angular momentum magnitude
-		  CalculateVAndℓAtTime(τN)
+		  CalculateStuffAtTime(τN)
 		  
 		  // Calculate components of the initial spin rate of change
 		  Var Ω1 As Double = V5*(C10 + C12*V2 + C14*V4)/ℓ
@@ -613,13 +631,13 @@ Protected Class SpinEvolverClass
 		  
 		  // Get values of the derivatives of vDot at the present time
 		  Var dvDotI(7) As Double
-		  dvDotI(Dδ)  = VCalc.DVDotIdδForLastV
-		  dvDotI(Dτc) = VCalc.DVDotIdτcForLastV
-		  Var dvDotIdχ1ℓ As Double = VCalc.DVDotIdχ1ℓForLastV
+		  dvDotI(Dδ)  = VCalc.DVDotDδForLastV
+		  dvDotI(Dτc) = VCalc.DVDotDτcForLastV
+		  Var dvDotIdχ1ℓ As Double = VCalc.DVDotDχ1ℓForLastV
 		  dvDotI(Dχ1) = dvDotIdχ1ℓ*Cos(θ1)
 		  dvDotI(Dθ1) = -dvDotIdχ1ℓ*χ1*Sin(θ1)
 		  dvDotI(Dφ1) = 0.0
-		  Var dvDotIdχ2ℓ As Double = VCalc.DVDotIdχ2ℓForLastV
+		  Var dvDotIdχ2ℓ As Double = VCalc.DVDotDχ2ℓForLastV
 		  dvDotI(Dχ2) = dvDotIdχ2ℓ*Cos(θ2)
 		  dvDotI(Dθ2) = -dvDotIdχ2ℓ*χ2*Sin(θ2)
 		  dvDotI(Dφ2) = 0.0
@@ -628,12 +646,12 @@ Protected Class SpinEvolverClass
 		  For dq As Integer = 0 To DLastSpinIndex
 		    
 		    // Calculate derivatives of the spin-dot quantities
-		    dΩ1I(dq) = V4*(5.0*C10 + 7.0*C12*V2 + 9.0*C14*V4)*DvI(dq)/ℓ _
+		    dΩ1I(dq) = V4*(5.0*C10 + 7.0*C12*V2 + 9.0*C14*V4)*DVI(dq)/ℓ _
 		    + V5*(DC10I(dq) + DC12I(dq)*V2 + DC14I(dq)*V4)/ℓ
 		    dΩ1xI(dq) = dΩ1I(dq)*ℓx(1) + Ω1*(DℓxI(dq,1) - ℓx(1)*DℓI(dq)/ℓ)
 		    dΩ1yI(dq) = dΩ1I(dq)*ℓy(1) + Ω1*(DℓyI(dq,1) - ℓy(1)*DℓI(dq)/ℓ)
 		    dΩ1zI(dq) = dΩ1I(dq)*ℓz(1) + Ω1*(DℓzI(dq,1) - ℓz(1)*DℓI(dq)/ℓ)
-		    dΩ2I(dq) = V4*(5.0*C20 + 7.0*C22*V2 + 9.0*C24*V4)*DvI(dq)/ℓ _
+		    dΩ2I(dq) = V4*(5.0*C20 + 7.0*C22*V2 + 9.0*C24*V4)*DVI(dq)/ℓ _
 		    + V5*(DC20I(dq) + DC22I(dq)*V2 + DC24I(dq)*V4)/ℓ
 		    dΩ2xI(dq) = dΩ2I(dq)*ℓx(1) + Ω2*(DℓxI(dq,1) - ℓx(1)*DℓI(dq)/ℓ)
 		    dΩ2yI(dq) = dΩ2I(dq)*ℓy(1) + Ω2*(DℓyI(dq,1) - ℓy(1)*DℓI(dq)/ℓ)
@@ -652,7 +670,7 @@ Protected Class SpinEvolverClass
 		    
 		    // Calculate derivatives of angular momenta time derivatives
 		    dℓDotI(dq) = DL0I(dq)*(-1.0/V2 + L2 + 2.0*L3*VN + 3.0*L4*V2)*vDotN _
-		    + L0*(2.0/V3 + 2.0*L3 + 6.0*L4*VN)*DvI(dq) + DℓIdv*dvDotI(dq) _
+		    + L0*(2.0/V3 + 2.0*L3 + 6.0*L4*VN)*DVI(dq) + DℓIDV*dvDotI(dq) _
 		    + L0*(DL2I(dq) + 2.0*DL3I(dq)*VN + 3.0*DL4I(dq)*V2)*vDotN
 		    dℓxDotI(dq) = -μ12*dχ1xDotI(dq) - μ22*dχ2xDotI(dq) _
 		    + dℓDotI(dq)*ℓx(1)/ℓ - ℓDotN*DℓI(dq)*ℓx(1)/(ℓ*ℓ) + ℓDotN/ℓ*DℓxI(dq,1)
@@ -867,13 +885,13 @@ Protected Class SpinEvolverClass
 		  
 		  // Get values of the derivatives of vDot at t = 0
 		  Var dvDotI(7) As Double
-		  dvDotI(Dδ) = VCalc.DVDotIdδForLastV
-		  dvDotI(Dτc) = VCalc.DVDotIdτcForLastV
-		  Var dvDotIdχ1ℓ As Double = VCalc.DVDotIdχ1ℓForLastV
+		  dvDotI(Dδ) = VCalc.DVDotDδForLastV
+		  dvDotI(Dτc) = VCalc.DVDotDτcForLastV
+		  Var dvDotIdχ1ℓ As Double = VCalc.DVDotDχ1ℓForLastV
 		  dvDotI(Dχ1) = dvDotIdχ1ℓ*Cos(θ1)
 		  dvDotI(Dθ1) = -dvDotIdχ1ℓ*χ1*Sin(θ1)
 		  dvDotI(Dφ1) = 0.0
-		  Var dvDotIdχ2ℓ As Double = VCalc.DVDotIdχ2ℓForLastV
+		  Var dvDotIdχ2ℓ As Double = VCalc.DVDotDχ2ℓForLastV
 		  dvDotI(Dχ2) = dvDotIdχ2ℓ*Cos(θ2)
 		  dvDotI(Dθ2) = -dvDotIdχ2ℓ*χ2*Sin(θ2)
 		  dvDotI(Dφ2) = 0.0
@@ -881,12 +899,12 @@ Protected Class SpinEvolverClass
 		  For dq As Integer = 0 To DLastSpinIndex
 		    
 		    // Calculate derivatives of spin time-derivatives
-		    dΩ1I(dq,0) = V4*(5.0*C10 + 7.0*C12*V2 + 9.0*C14*V4)*DvI(dq)/ℓ _
+		    dΩ1I(dq,0) = V4*(5.0*C10 + 7.0*C12*V2 + 9.0*C14*V4)*DVI(dq)/ℓ _
 		    + V5*(DC10I(dq) + DC12I(dq)*v2 + DC14I(dq)*V4)/ℓ
 		    dΩ1xI(dq,0) = dΩ1I(dq,0)*ℓx(0) + Ω1*(DℓxI(dq,0) - ℓx(0)*DℓI(dq)/ℓ)
 		    dΩ1yI(dq,0) = dΩ1I(dq,0)*ℓy(0) + Ω1*(DℓyI(dq,0) - ℓy(0)*DℓI(dq)/ℓ)
 		    dΩ1zI(dq,0) = dΩ1I(dq,0)*ℓz(0) + Ω1*(DℓzI(dq,0) - ℓz(0)*DℓI(dq)/ℓ)
-		    dΩ2I(dq,0) = V4*(5.0*C20 + 7.0*C22*V2 + 9.0*C24*V4)*DvI(dq)/ℓ _
+		    dΩ2I(dq,0) = V4*(5.0*C20 + 7.0*C22*V2 + 9.0*C24*V4)*DVI(dq)/ℓ _
 		    + V5*(DC20I(dq) + DC22I(dq)*V2 + DC24I(dq)*V4)/ℓ
 		    dΩ2xI(dq,0) = dΩ2I(dq,0)*ℓx(0) + Ω2*(DℓxI(dq,0) - ℓx(0)*DℓI(dq))/ℓ
 		    dΩ2yI(dq,0) = dΩ2I(dq,0)*ℓy(0) + Ω2*(DℓyI(dq,0) - ℓy(0)*DℓI(dq))/ℓ
@@ -908,7 +926,7 @@ Protected Class SpinEvolverClass
 		    
 		    // Calculate derivatives of angular momenta time derivatives
 		    dℓDotI(dq,0) = DL0I(dq)*(-1.0/V2 + L2 + 2.0*L3*V0  + 3.0*L4*v2)*vDot0 _
-		    + L0*(2.0/V3 + 2.0*L3 + 6.0*L4*V0)*dvI(dq) + DℓIdv*dvDotI(dq) _
+		    + L0*(2.0/V3 + 2.0*L3 + 6.0*L4*V0)*dvI(dq) + DℓIDV*dvDotI(dq) _
 		    + L0*(DL2I(dq) + 2.0*DL3I(dq)*V0 + 3.0*DL4I(dq)*V2)*vDot0
 		    dℓxDotI(dq,0) = -μ12*dχ1xDotI(dq,0) - μ22*dχ2xDotI(dq,0) _
 		    + dℓDotI(dq,0)*ℓx(0)/ℓ - ℓDot0*DℓI(dq)*ℓx(0)/(ℓ*ℓ) + ℓDot0/ℓ*DℓxI(dq,0)
@@ -943,7 +961,7 @@ Protected Class SpinEvolverClass
 		    - (ℓy(0)*ℓxDot0 - ℓx(0)*ℓyDot0)/(ℓxy2*ℓxy2)*2.0*(ℓx(0)*DℓxI(dq,0) + ℓy(0)*DℓyI(dq,0))
 		  Next
 		  
-		  CalculateVAndℓAtTime(ΔτhP)
+		  CalculateStuffAtTime(ΔτhP)
 		  
 		  // Calculate components of the future spin rate of change
 		  Ω1 = V5*(C10 + C12*V2 + C14*V4)/ℓ
@@ -976,13 +994,13 @@ Protected Class SpinEvolverClass
 		  ι(1) = Atan2(Sqrt(ℓx(1)*ℓx(1) + ℓy(1)*ℓy(1)), ℓz(1))
 		  
 		  // Get values of the derivatives of vDot at the new step
-		  dvDotI(Dδ) = VCalc.DVDotIdδForLastV
-		  dvDotI(Dτc) = VCalc.DVDotIdτcForLastV
-		  dvDotIdχ1ℓ = VCalc.DVDotIdχ1ℓForLastV
+		  dvDotI(Dδ) = VCalc.DVDotDδForLastV
+		  dvDotI(Dτc) = VCalc.DVDotDτcForLastV
+		  dvDotIdχ1ℓ = VCalc.DVDotDχ1ℓForLastV
 		  dvDotI(Dχ1) = dvDotIdχ1ℓ*Cos(θ1)
 		  dvDotI(Dθ1) = -dvDotIdχ1ℓ*χ1*Sin(θ1)
 		  dvDotI(Dφ1) = 0.0
-		  dvDotIdχ2ℓ = VCalc.DVDotIdχ2ℓForLastV
+		  dvDotIdχ2ℓ = VCalc.DVDotDχ2ℓForLastV
 		  dvDotI(Dχ2) = dvDotIdχ2ℓ*Cos(θ2)
 		  dvDotI(Dθ2) = -dvDotIdχ2ℓ*χ2*Sin(θ2)
 		  dvDotI(Dφ2) = 0.0
@@ -991,12 +1009,12 @@ Protected Class SpinEvolverClass
 		  For dq As Integer = 0 To DLastSpinIndex
 		    
 		    // Calculate derivatives of the spin-dot quantities
-		    dΩ1I(dq,1) = V4*(5.0*C10 + 7.0*C12*V2 + 9.0*C14*V4)*DvI(dq)/ℓ _
+		    dΩ1I(dq,1) = V4*(5.0*C10 + 7.0*C12*V2 + 9.0*C14*V4)*DVI(dq)/ℓ _
 		    + V5*(DC10I(dq) + DC12I(dq)*V2 + DC14I(dq)*V4)/ℓ
 		    dΩ1xI(dq,1) = dΩ1I(dq,1)*ℓx(1) + Ω1*(DℓxI(dq,1) - ℓx(1)*DℓI(dq)/ℓ)
 		    dΩ1yI(dq,1) = dΩ1I(dq,1)*ℓy(1) + Ω1*(DℓyI(dq,1) - ℓy(1)*DℓI(dq)/ℓ)
 		    dΩ1zI(dq,1) = dΩ1I(dq,1)*ℓz(1) + Ω1*(DℓzI(dq,1) - ℓz(1)*DℓI(dq)/ℓ)
-		    dΩ2I(dq,1) = V4*(5.0*C20 + 7.0*C22*V2 + 9.0*C24*V4)*DvI(dq)/ℓ _
+		    dΩ2I(dq,1) = V4*(5.0*C20 + 7.0*C22*V2 + 9.0*C24*V4)*DVI(dq)/ℓ _
 		    + V5*(DC20I(dq) + DC22I(dq)*V2 + DC24I(dq)*V4)/ℓ
 		    dΩ2xI(dq,1) = dΩ2I(dq,1)*ℓx(1) + Ω2*(DℓxI(dq,1) - ℓx(1)*DℓI(dq)/ℓ)
 		    dΩ2yI(dq,1) = dΩ2I(dq,1)*ℓy(1) + Ω2*(DℓyI(dq,1) - ℓy(1)*DℓI(dq)/ℓ)
@@ -1019,7 +1037,7 @@ Protected Class SpinEvolverClass
 		    // Calculate derivatives of angular momenta time derivatives
 		    
 		    dℓDotI(dq,1) = DL0I(dq)*(-1.0/V2 + L2 + 2.0*L3*VN + 3.0*L4*V2)*vDot1 _
-		    + L0*(2.0/V3 + 2.0*L3 + 6.0*L4*VN)*DvI(dq) + DℓIdv*dvDotI(dq) _
+		    + L0*(2.0/V3 + 2.0*L3 + 6.0*L4*VN)*DVI(dq) + DℓIDV*dvDotI(dq) _
 		    + L0*(DL2I(dq) + 2.0*DL3I(dq)*VN + 3.0*DL4I(dq)*V2)*vDot1
 		    dℓxDotI(dq,1) = -μ12*dχ1xDotI(dq,1) - μ22*dχ2xDotI(dq,1) _
 		    + dℓDotI(dq,1)*ℓx(1)/ℓ - ℓDot1*DℓI(dq)*ℓx(1)/(ℓ*ℓ) + ℓDot1/ℓ*DℓxI(dq,1)
@@ -1151,7 +1169,7 @@ Protected Class SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private DvI(7) As Double
+		Private DVI(7) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1215,7 +1233,7 @@ Protected Class SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private DΨmpI(7) As Double
+		Private DΨorbI(7) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1223,11 +1241,15 @@ Protected Class SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private DΨtailI(7) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private DℓI(7) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private DℓIdv As Double
+		Private DℓIDV As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1407,11 +1429,15 @@ Protected Class SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Ψmp As Double
+		Private Ψorb As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private Ψpr(1) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Ψtail As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
