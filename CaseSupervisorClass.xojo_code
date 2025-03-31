@@ -24,6 +24,9 @@ Protected Class CaseSupervisorClass
 		  //CaseList(1).δ = CaseInfo.δ + ep
 		  //CaseList(2).δ = CaseInfo.δ - ep
 		  
+		  //CaseList(1).τc = CaseInfo.τc + ep
+		  //CaseList(2).τc = CaseInfo.τc - ep
+		  
 		  // Create Wavebuilders for each side case
 		  WaveBuilders(0) = New WaveBuilderClass(CaseInfo)
 		  WaveBuilder = WaveBuilders(0)  // make double reference to the center case
