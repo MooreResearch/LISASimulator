@@ -11,11 +11,9 @@ Class NecdetsClass
 	#tag Method, Flags = &h0
 		Sub SetValues(Wavebuilders() As WaveBuilderClass)
 		  If Wavebuilders.Ubound >= 1 Then
-<<<<<<< HEAD
-=======
-		    inv2ep = 1/(2.0*ep)
-		    h0diff = 0.5 * WaveBuilders(0).Parameters.M * (1 - WaveBuilders(0).Parameters.δ * WaveBuilders(0).Parameters.δ) / WaveBuilders(0).Parameters.R
->>>>>>> 485c512276dec47f8a6e01cdbc6d8769c5dc6026
+		    //Var ep as Double = 1.0e-6
+		    //inv2ep = 1/(2.0*ep)
+		    //h0diff = 0.5 * WaveBuilders(0).Parameters.M * (1 - WaveBuilders(0).Parameters.δ * WaveBuilders(0).Parameters.δ) / WaveBuilders(0).Parameters.R
 		    
 		    //A1 =  WaveBuilders(1).A
 		    //A2 =  WaveBuilders(2).A
