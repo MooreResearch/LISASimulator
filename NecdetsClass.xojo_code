@@ -11,6 +11,11 @@ Class NecdetsClass
 	#tag Method, Flags = &h0
 		Sub SetValues(Wavebuilders() As WaveBuilderClass)
 		  If Wavebuilders.Ubound >= 1 Then
+<<<<<<< HEAD
+=======
+		    inv2ep = 1/(2.0*ep)
+		    h0diff = 0.5 * WaveBuilders(0).Parameters.M * (1 - WaveBuilders(0).Parameters.δ * WaveBuilders(0).Parameters.δ) / WaveBuilders(0).Parameters.R
+>>>>>>> 485c512276dec47f8a6e01cdbc6d8769c5dc6026
 		    
 		    //A1 =  WaveBuilders(1).A
 		    //A2 =  WaveBuilders(2).A
@@ -40,6 +45,9 @@ Class NecdetsClass
 		    
 		    //nDHDq(Dδ) = H0*(dhp*fp + dhx*fx) + dh0dδ*H/H0
 		    nDHDq(Dδ) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX) + WaveBuilders(0).Dh0dδ * WaveBuilders(0).H / WaveBuilders(0).H0
+		    
+		    //DHDq(Dτc) = h0*(fp*dhp+fx*dhx)
+		    nDHDq(Dτc) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX)
 		    
 		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
 		    
