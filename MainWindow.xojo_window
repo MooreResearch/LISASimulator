@@ -2185,7 +2185,7 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Opening()
-		  Necdet = New NecdetsClass
+		  Necdet = New NecdetsClass(Nil,1)
 		End Sub
 	#tag EndEvent
 

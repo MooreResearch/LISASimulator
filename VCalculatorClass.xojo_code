@@ -283,7 +283,7 @@ Protected Class VCalculatorClass
 		  DVDχ1ℓ = ζ*(DC3dχ1ℓ*ζ3 + DC5dχ1ℓ*ζ5 + DC6dχ1ℓ*ζ6 + DC7dχ1ℓ*ζ7)
 		  DVDχ2ℓ = ζ*(DC3dχ2ℓ*ζ3 + DC5dχ2ℓ*ζ5 + DC6dχ2ℓ*ζ6 + DC7dχ2ℓ*ζ7)
 		  LogV = Log(V)
-		  LogVIV0 = Log(V/V0)
+		  If V0 > 0 Then LogVIV0 = Log(V/V0) // If V0 is not yet set, then leave LogVIV0 at default value of 0
 		  DΨtailDV = -6*V*V*(3*LogVIV0-1.0)
 		  DVDotDV = A0/3*V8*(9 + 11*A2*V2 + 12*A3*V3 + 13*A4*V4 + 14*A5*V5 _
 		  + 15*A6*V6 + 15*B6*Log(V)*V6 + B6*V5 + 16*A7*V7)

@@ -7,10 +7,10 @@ Protected Class CaseSupervisorClass
 		  CaseInfo = currentCaseInfo // save the parameters for the current case
 		  // the following gives the number of main time steps to execute
 		  Δτr = CaseInfo.ΔT/CaseInfo.GM
-		  // Define the Necdet class to store data from side cases
-		  necdet = New NecdetsClass
 		  // Define the parameter shift
 		  ep = 1.0e-6
+		  // Define the Necdet class to store data from side cases
+		  necdet = New NecdetsClass(CaseInfo, ep)
 		  // Create and initialize cases with the shift in the parameter
 		  CaseList(0) = CaseInfo // this is an identity equality: CaseList(0) *is* CaseInfo
 		  // create clones for side cases. Clones are different objects but with the same parameters
@@ -18,11 +18,11 @@ Protected Class CaseSupervisorClass
 		  CaseList(2) = CaseInfo.clone
 		  // Adjust the parameter for the side cases
 		  
-		  //CaseList(1).β = CaseInfo.β + ep
-		  //CaseList(2).β = CaseInfo.β - ep
+		  CaseList(1).β = CaseInfo.β + ep
+		  CaseList(2).β = CaseInfo.β - ep
 		  
-		  CaseList(1).δ = CaseInfo.δ + ep
-		  CaseList(2).δ = CaseInfo.δ - ep
+		  //CaseList(1).δ = CaseInfo.δ + ep
+		  //CaseList(2).δ = CaseInfo.δ - ep
 		  
 		  // Create Wavebuilders for each side case
 		  WaveBuilders(0) = New WaveBuilderClass(CaseInfo)
@@ -58,7 +58,7 @@ Protected Class CaseSupervisorClass
 		          Exit  // Abort the loop
 		        End If
 		      Next
-		      necdet.SetValues(WaveBuilders, ep)
+		      necdet.SetValues(WaveBuilders)
 		      If TerminationMessage <> "" Then Exit
 		      // Set up Wavebuilders(0).necdet with data
 		    Next
