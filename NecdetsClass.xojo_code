@@ -42,10 +42,10 @@ Class NecdetsClass
 		    // Note that h0 also depends on delta, so we need to include its derivative
 		    
 		    //nDHDq(Dδ) = H0*(dhp*fp + dhx*fx) + dh0dδ*H/H0
-		    nDHDq(Dδ) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX) + WaveBuilders(0).Dh0dδ * WaveBuilders(0).H / WaveBuilders(0).H0
+		    nDHDq(Dδ) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX) + WaveBuilders(0).DH0(Dδ) * WaveBuilders(0).H / WaveBuilders(0).H0
 		    
 		    //DHDq(Dτc) = h0*(fp*dhp+fx*dhx)
-		    nDHDq(Dτc) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX)
+		    nDHDq(Dlnτc) = WaveBuilders(0).H0*(dhp * WaveBuilders(0).FP + dhx * WaveBuilders(0).FX)
 		    
 		    nDHDq(Dβ) = (WaveBuilders(1).H - WaveBuilders(2).H)*inv2ep
 		    

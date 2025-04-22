@@ -71,7 +71,7 @@ Begin DesktopWindow MainWindow
          CornerSize      =   0.0
          Enabled         =   True
          FillColor       =   &cFFFFFFFF
-         Height          =   184
+         Height          =   279
          Index           =   -2147483648
          InitialParent   =   "MainTabPanel"
          Left            =   506
@@ -84,7 +84,7 @@ Begin DesktopWindow MainWindow
          TabIndex        =   41
          TabPanelIndex   =   1
          Tooltip         =   ""
-         Top             =   487
+         Top             =   490
          Transparent     =   False
          Visible         =   True
          Width           =   305
@@ -115,7 +115,7 @@ Begin DesktopWindow MainWindow
             TextAlignment   =   0
             TextColor       =   &c000000
             Tooltip         =   ""
-            Top             =   498
+            Top             =   501
             Transparent     =   False
             Underline       =   False
             Visible         =   True
@@ -145,7 +145,7 @@ Begin DesktopWindow MainWindow
             TabPanelIndex   =   1
             TabStop         =   True
             Tooltip         =   ""
-            Top             =   499
+            Top             =   502
             Transparent     =   False
             Underline       =   False
             Visible         =   True
@@ -174,7 +174,7 @@ Begin DesktopWindow MainWindow
             HasHorizontalScrollbar=   False
             HasVerticalScrollbar=   True
             HeadingIndex    =   -1
-            Height          =   89
+            Height          =   177
             Index           =   -2147483648
             InitialParent   =   "RectForSave"
             InitialValue    =   ""
@@ -186,13 +186,13 @@ Begin DesktopWindow MainWindow
             LockRight       =   False
             LockTop         =   True
             RequiresSelection=   False
-            RowSelectionType=   1
+            RowSelectionType=   0
             Scope           =   0
             TabIndex        =   4
             TabPanelIndex   =   1
             TabStop         =   True
             Tooltip         =   ""
-            Top             =   530
+            Top             =   568
             Transparent     =   False
             Underline       =   False
             Visible         =   True
@@ -223,22 +223,19 @@ Begin DesktopWindow MainWindow
             TabIndex        =   5
             TabPanelIndex   =   1
             TabStop         =   True
-            Text            =   "Variables To Save:"
+            Text            =   "Saved Items List:"
             TextAlignment   =   0
             TextColor       =   &c000000
             Tooltip         =   ""
-            Top             =   530
+            Top             =   568
             Transparent     =   False
             Underline       =   False
             Visible         =   True
-            Width           =   115
+            Width           =   114
          End
-         Begin DesktopButton ClearSaveDataButton
+         Begin DesktopPopupMenu ChooseVariablePopupMenu
             AllowAutoDeactivate=   True
             Bold            =   False
-            Cancel          =   False
-            Caption         =   "Clear All"
-            Default         =   False
             Enabled         =   True
             FontName        =   "System"
             FontSize        =   0.0
@@ -246,71 +243,7 @@ Begin DesktopWindow MainWindow
             Height          =   20
             Index           =   -2147483648
             InitialParent   =   "RectForSave"
-            Italic          =   False
-            Left            =   526
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            MacButtonStyle  =   0
-            Scope           =   0
-            TabIndex        =   6
-            TabPanelIndex   =   1
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   575
-            Transparent     =   False
-            Underline       =   False
-            Visible         =   True
-            Width           =   107
-         End
-         Begin DesktopButton AddVariableButton
-            AllowAutoDeactivate=   True
-            Bold            =   False
-            Cancel          =   False
-            Caption         =   "Add To Above:"
-            Default         =   False
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   20
-            Index           =   -2147483648
-            InitialParent   =   "RectForSave"
-            Italic          =   False
-            Left            =   526
-            LockBottom      =   False
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   True
-            MacButtonStyle  =   0
-            Scope           =   0
-            TabIndex        =   7
-            TabPanelIndex   =   1
-            TabStop         =   True
-            Tooltip         =   ""
-            Top             =   631
-            Transparent     =   False
-            Underline       =   False
-            Visible         =   True
-            Width           =   107
-         End
-         Begin DesktopComboBox ChooseVariableComboBox
-            AllowAutoComplete=   False
-            AllowAutoDeactivate=   True
-            AllowFocusRing  =   True
-            Bold            =   False
-            Enabled         =   True
-            FontName        =   "System"
-            FontSize        =   0.0
-            FontUnit        =   0
-            Height          =   20
-            Hint            =   ""
-            Index           =   -2147483648
-            InitialParent   =   "RectForSave"
-            InitialValue    =   "\nH+\nHx\nv\nα\nι\nψ\nχ1x\nχ1y\nχ1z\nχ2x\nχ2y\nχ2z"
+            InitialValue    =   ""
             Italic          =   False
             Left            =   645
             LockBottom      =   False
@@ -319,16 +252,49 @@ Begin DesktopWindow MainWindow
             LockRight       =   False
             LockTop         =   True
             Scope           =   0
-            SelectedRowIndex=   0
-            TabIndex        =   8
+            SelectedRowIndex=   -1
+            TabIndex        =   9
             TabPanelIndex   =   1
             TabStop         =   True
             Tooltip         =   ""
-            Top             =   631
+            Top             =   534
             Transparent     =   False
             Underline       =   False
             Visible         =   True
             Width           =   146
+         End
+         Begin DesktopLabel CaptionForChooseSaveLabel
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Enabled         =   True
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "RectForSave"
+            Italic          =   False
+            Left            =   526
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Multiline       =   False
+            Scope           =   0
+            Selectable      =   False
+            TabIndex        =   10
+            TabPanelIndex   =   1
+            TabStop         =   True
+            Text            =   "Choose To Save:"
+            TextAlignment   =   0
+            TextColor       =   &c000000
+            Tooltip         =   ""
+            Top             =   533
+            Transparent     =   False
+            Underline       =   False
+            Visible         =   True
+            Width           =   107
          End
       End
       Begin DesktopRectangle RectForRunState
@@ -995,7 +961,7 @@ Begin DesktopWindow MainWindow
          TabIndex        =   0
          TabPanelIndex   =   3
          TabStop         =   True
-         Text            =   "Graph This Variable:"
+         Text            =   "Graph The Checked Variables:"
          TextAlignment   =   0
          TextColor       =   &c000000
          Tooltip         =   ""
@@ -1003,7 +969,7 @@ Begin DesktopWindow MainWindow
          Transparent     =   False
          Underline       =   False
          Visible         =   True
-         Width           =   129
+         Width           =   194
       End
       Begin DesktopPopupMenu GraphChoicePopupMenu
          AllowAutoDeactivate=   True
@@ -2039,37 +2005,6 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   126
       End
-      Begin DesktopCheckBox AddToGraphCheckBox
-         AllowAutoDeactivate=   True
-         Bold            =   False
-         Caption         =   "Add To Previous"
-         Enabled         =   False
-         FontName        =   "System"
-         FontSize        =   0.0
-         FontUnit        =   0
-         Height          =   20
-         Index           =   -2147483648
-         InitialParent   =   "MainTabPanel"
-         Italic          =   False
-         Left            =   160
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   26
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Tooltip         =   ""
-         Top             =   66
-         Transparent     =   False
-         Underline       =   False
-         Value           =   False
-         Visible         =   True
-         VisualState     =   0
-         Width           =   131
-      End
       Begin DesktopLabel CaptionForGraphSourceLabel
          AllowAutoDeactivate=   True
          Bold            =   False
@@ -2166,6 +2101,155 @@ Begin DesktopWindow MainWindow
          Visible         =   True
          Width           =   269
       End
+      Begin DesktopRectangle RectForSideCases
+         AllowAutoDeactivate=   True
+         BorderColor     =   &c000000
+         BorderThickness =   1.0
+         CornerSize      =   0.0
+         Enabled         =   True
+         FillColor       =   &cFFFFFFFF
+         Height          =   84
+         Index           =   -2147483648
+         InitialParent   =   "MainTabPanel"
+         Left            =   181
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   42
+         TabPanelIndex   =   1
+         Tooltip         =   ""
+         Top             =   685
+         Transparent     =   False
+         Visible         =   True
+         Width           =   304
+         Begin DesktopCheckBox SideCasesCheckbox
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Caption         =   "Execute Side Cases For:"
+            Enabled         =   True
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "RectForSideCases"
+            Italic          =   False
+            Left            =   201
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            TabIndex        =   0
+            TabPanelIndex   =   1
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   695
+            Transparent     =   False
+            Underline       =   False
+            Value           =   False
+            Visible         =   True
+            VisualState     =   0
+            Width           =   173
+         End
+         Begin DesktopPopupMenu SideCaseParamMenu
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Enabled         =   False
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "RectForSideCases"
+            InitialValue    =   "χ1\nθ1\nφ1\nχ2\nθ2\nφ1\nδ\nτc\nλ0\nM\nβ\nψ\nR\nΘ\nΦ\n"
+            Italic          =   False
+            Left            =   375
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            SelectedRowIndex=   -1
+            TabIndex        =   1
+            TabPanelIndex   =   1
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   695
+            Transparent     =   False
+            Underline       =   False
+            Visible         =   True
+            Width           =   90
+         End
+         Begin DesktopLabel SideCaseεLabel
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Enabled         =   True
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "RectForSideCases"
+            Italic          =   False
+            Left            =   205
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Multiline       =   False
+            Scope           =   0
+            Selectable      =   False
+            TabIndex        =   2
+            TabPanelIndex   =   1
+            TabStop         =   True
+            Text            =   "ε Value:"
+            TextAlignment   =   0
+            TextColor       =   &c000000
+            Tooltip         =   ""
+            Top             =   726
+            Transparent     =   False
+            Underline       =   False
+            Visible         =   True
+            Width           =   53
+         End
+         Begin DesktopPopupMenu SideCasesEpMenu
+            AllowAutoDeactivate=   True
+            Bold            =   False
+            Enabled         =   False
+            FontName        =   "System"
+            FontSize        =   0.0
+            FontUnit        =   0
+            Height          =   20
+            Index           =   -2147483648
+            InitialParent   =   "RectForSideCases"
+            InitialValue    =   "1e-3\n3e-4\n1e-4\n3e-5\n1e-5\n3e-6\n1e-6\n3e-7\n1e-7\n3e-8\n1e-8\n3e-9\n1e-9\n"
+            Italic          =   False
+            Left            =   262
+            LockBottom      =   False
+            LockedInPosition=   False
+            LockLeft        =   True
+            LockRight       =   False
+            LockTop         =   True
+            Scope           =   0
+            SelectedRowIndex=   -1
+            TabIndex        =   3
+            TabPanelIndex   =   1
+            TabStop         =   True
+            Tooltip         =   ""
+            Top             =   727
+            Transparent     =   False
+            Underline       =   False
+            Visible         =   True
+            Width           =   97
+         End
+      End
    End
    Begin MainThreadClass MainThread
       DebugIdentifier =   ""
@@ -2185,7 +2269,9 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Opening()
-		  Necdet = New NecdetsClass(Nil,1)
+		  //Necdet = New NecdetsClass(Nil,1)
+		  LoadPlotItemsList
+		  UpdateChooseVarMenu
 		End Sub
 	#tag EndEvent
 
@@ -2222,6 +2308,57 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub CustomizeChosenPlotItem(TheName As String, TheXScript As String)
+		  Var selectedVariableName As String = TheName
+		  Var selectedVariableXScript As String = TheXScript
+		  Var chosenParameter As String
+		  If selectedVariableName.Contains("j") Then
+		    SelectComponentDialog.ShowModal
+		    chosenParameter = SelectComponentDialog.Component
+		    If chosenParameter = "(Cancel)" Then
+		      selectedVariableName = ""
+		    Else
+		      selectedVariableName = selectedVariableName.ReplaceAll("j", chosenParameter)
+		      selectedVariableXScript = selectedVariableXScript.ReplaceAll("j", chosenParameter)
+		    End If
+		  End If
+		  If selectedVariableName.Contains("q") Then
+		    SelectParameterDialog.ShowModal
+		    chosenParameter = SelectParameterDialog.Param
+		    If chosenParameter = "(Cancel)" Then
+		      selectedVariableName = ""
+		    Else
+		      selectedVariableName = selectedVariableName.ReplaceAll("@", chosenParameter)
+		      selectedVariableName = selectedVariableName.ReplaceAll("q", chosenParameter)
+		    End If
+		  End If
+		  If selectedVariableName.Contains("$") Then
+		    SelectOrbitParameterDialog.ShowModal
+		    chosenParameter = SelectParameterDialog.Param
+		    If chosenParameter = "(Cancel)" Then
+		      selectedVariableName = ""
+		    Else
+		      selectedVariableName = selectedVariableName.ReplaceAll("$", chosenParameter)
+		      selectedVariableName = selectedVariableName.ReplaceAll("q", chosenParameter)
+		    End If
+		  End If
+		  If selectedVariableName.Contains("#") Then
+		    SelectIndexDialog.ShowModal
+		    chosenParameter = SelectIndexDialog.SubmittedIndex
+		    If chosenParameter.IsEmpty Then
+		      selectedVariableName = ""
+		    Else
+		      selectedVariableName = selectedVariableName.ReplaceAll("#", chosenParameter)
+		    End If
+		  End If
+		  If Not selectedVariableName.IsEmpty Then
+		    PlotItemsListBox.AddRow(selectedVariableName)
+		    PlotItemsListBox.RowTagAt(PlotItemsListBox.LastAddedRowIndex) = selectedVariableXScript
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub DisableInterface()
 		  // This method prevents the user from doing anything except stop while cases are running
 		  RunFileCheckBox.Enabled = False
@@ -2229,10 +2366,11 @@ End
 		  CaseListBoxDetData.Enabled = False
 		  UncertaintyListBox.Enabled = False
 		  DataDestinationMenu.Enabled = False
-		  ChooseVariableComboBox.Enabled = False
-		  ClearSaveDataButton.Enabled = False
-		  AddVariableButton.Enabled = False
+		  ChooseVariablePopupMenu.Enabled = False
 		  PlotItemsListBox.Enabled = False
+		  SideCasesCheckbox.Enabled = False
+		  SideCaseParamMenu.Enabled = False
+		  SideCasesEpMenu.Enabled = False
 		End Sub
 	#tag EndMethod
 
@@ -2364,10 +2502,12 @@ End
 		  CaseListBoxDetData.Enabled = True
 		  UncertaintyListBox.Enabled = True
 		  DataDestinationMenu.Enabled = True
-		  ChooseVariableComboBox.Enabled = True
-		  ClearSaveDataButton.Enabled = True
-		  AddVariableButton.Enabled = True
+		  ChooseVariablePopupMenu.Enabled = True
 		  PlotItemsListBox.Enabled = True
+		  SideCasesCheckbox.Enabled = True
+		  SideCaseParamMenu.Enabled = SideCasesCheckbox.Value
+		  SideCasesEpMenu.Enabled = SideCasesCheckbox.Value
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -2379,27 +2519,32 @@ End
 		  // the order of parameters here is the same as in the user interface or
 		  // data from the file.
 		  Var thisCase As New CaseInfoClass
+		  thisCase.π = 3.14159265358979324  // record the value of pi so that we only have to define it once
+		  Var radiansFromDegrees As Double = thisCase.π/180.0
+		  thisCase.Year = 3.15576e7  // length of the year in seconds
 		  thisCase.M = Values(0).ToDouble
 		  thisCase.δ = Values(1).ToDouble
 		  thisCase.T0 = Values(2).ToDouble
-		  thisCase.λ0 = Values(3).ToDouble
+		  thisCase.λ0 = Values(3).ToDouble*radiansFromDegrees
 		  thisCase.χ1 = Values(4).ToDouble
-		  thisCase.θ1 = Values(5).ToDouble
-		  thisCase.φ1 = Values(6).ToDouble
+		  thisCase.θ1 = Values(5).ToDouble*radiansFromDegrees
+		  thisCase.φ1 = Values(6).ToDouble*radiansFromDegrees
 		  thisCase.χ2 = Values(7).ToDouble
-		  thisCase.θ2 = Values(8).ToDouble
-		  thisCase.φ2 = Values(9).ToDouble
-		  thisCase.β = Values(10).ToDouble
-		  thisCase.ψ = Values(11).ToDouble
-		  thisCase.R = Values(12).ToDouble
-		  thisCase.Θ = Values(13).ToDouble
-		  thisCase.Φ = Values(14).ToDouble
-		  thisCase.ρ0 = values(15).ToDouble
+		  thisCase.θ2 = Values(8).ToDouble*radiansFromDegrees
+		  thisCase.φ2 = Values(9).ToDouble*radiansFromDegrees
+		  thisCase.β = Values(10).ToDouble*radiansFromDegrees
+		  thisCase.ψ = Values(11).ToDouble*radiansFromDegrees
+		  thisCase.R = Values(12).ToDouble*thisCase.Year
+		  thisCase.Θ = Values(13).ToDouble*radiansFromDegrees
+		  thisCase.Φ = Values(14).ToDouble*radiansFromDegrees
+		  thisCase.ρ0 = values(15).ToDouble*radiansFromDegrees
 		  thisCase.PNOrder = values(16).NthField(",",1).ToInteger
 		  thisCase.PNForV = values(16).NthField(",",2).ToInteger
 		  thisCase.Detectors = values(17).ToInteger
 		  thisCase.ΔT = values(18).ToDouble
 		  thisCase.RunDuration = values(19).ToDouble
+		  thisCase.SideVariable = values(20)
+		  thisCase.ε = Values(21).ToDouble
 		  thisCase.FinishConstruction
 		  thisCase.SolveFor = theSolveList
 		  thisCase.ID = theID
@@ -2436,9 +2581,9 @@ End
 		      If values.LastIndex > 0 Then // ignore any blank lines
 		        Var theID As String = values(0) // get the ID value
 		        values.RemoveAt(0) // and remove that value from the list
-		        If values.LastIndex <> 19 Then Raise New RuntimeException("Case file format is incorrect.")  // must have 20 parameter values
+		        If values.LastIndex <> 21 Then Raise New RuntimeException("Case file format is incorrect.")  // must have 22 parameter values
 		        Var solveList(14) As Boolean // create a new list of flags telling whether we are solving for a parameter uncertainty or not
-		        For i As Integer = 0 to values.LastIndex // go through 20 parameter values we have obtained
+		        For i As Integer = 0 to values.LastIndex // go through 22 parameter values we have obtained
 		          // but note that only the first 15 correspond to actual binary parameters we might solve for
 		          If i < 15 Then solveList(i) = True  // the default for whether we solve for a parameter's uncertainty is True
 		          If values(i).Contains("x") Then // But if we have an "x" anywhere in the item except for the ID
@@ -2469,6 +2614,13 @@ End
 		    theValue = CaseListBoxDetData.CellTextAt(i) // get the text entered in the list box
 		    theValues.Add(theValue) // put the values into the array
 		  Next
+		  If SideCasesCheckbox.Value Then
+		    theValues.Add(SideCaseParamMenu.SelectedRowText)
+		    theValues.Add(SideCasesEpMenu.SelectedRowText)
+		  Else
+		    theValues.Add("")
+		    theValues.Add("0")
+		  End If
 		  Var theSolveList() As Boolean
 		  For i As Integer = 0 To UncertaintyListBox.LastRowIndex - 1
 		    theSolveList.Add(Not UncertaintyListBox.RowTagAt(i).BooleanValue)
@@ -2518,19 +2670,82 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IsValidVariableName(theName As String) As Boolean
-		  Try
-		    Var w As New WaveBuilderClass
-		    w.necdet = Necdet
-		    Var value As Double = w.GetNamedValue(theName)
-		    Return True
-		  Catch e As RuntimeException
-		    System.Beep
-		    Return False
-		  End Try
+		Sub LoadPlotItemsList()
+		  // This method creates a dictionary of possible variables that we might plot.
+		  // Each item consists of a display value for the ChooseVariablePopupMenu,
+		  // and a XojoScript for computing that item in the context of the main WaveBuilder
+		  // A "q" symbol signals that the user must select a parameter for the derivative
+		  // when choosing from the menu, and the selected parameter should replace "q"
+		  // wherever it appears. A "$" in the XojoScript signals that this parameter
+		  // must be from the orbit parameters χ1, θ1, φ1, χ2, θ2, φ2, δ, τc, and should be
+		  // erased when the user makes that selection.  A "#" signals that the user must
+		  // select an index from 0 to 250, which will replace the "#" in both the name and
+		  // the script. A "j" signals that the user must select a component from x, y, z,
+		  // which will replace the "j" in both the name and the script.
 		  
+		  PlotItemsList.Add(New PlotItemClass("t-y", "τrDN*Parameters.GM/Parameters.Year"))
+		  PlotItemsList.Add(New PlotItemClass("H", "H"))
+		  PlotItemsList.Add(New PlotItemClass("dH/dq", "DHDQ(Dq)"))
+		  PlotItemsList.Add(New PlotItemClass("A(#)", "A(#)"))
+		  PlotItemsList.Add(New PlotItemClass("dA/dι(#)", "DADι(#)"))
+		  PlotItemsList.Add(New PlotItemClass("dA/dβ(#)", "DADβ(#)"))
+		  PlotItemsList.Add(New PlotItemClass("dA/dδ(#)", "DADδ(#)"))
+		  PlotItemsList.Add(New PlotItemClass("dA/dχaj(#)", "DADχaj(#)"))
+		  PlotItemsList.Add(New PlotItemClass("dA/dχsj(#)", "DADχsj(#)"))
+		  PlotItemsList.Add(New PlotItemClass("W(#)", "W(#)"))
+		  PlotItemsList.Add(New PlotItemClass("dW/dα(#)", "DWDα(#)"))
+		  PlotItemsList.Add(New PlotItemClass("dW/dψ(#)", "DWDψ(#)"))
+		  PlotItemsList.Add(New PlotItemClass("V", "SpinResults.V"))
+		  PlotItemsList.Add(New PlotItemClass("ι", "SpinResults.ι"))
+		  PlotItemsList.Add(New PlotItemClass("α", "SpinResults.α"))
+		  PlotItemsList.Add(New PlotItemClass("ψ", "SpinResults.ψ"))
+		  PlotItemsList.Add(New PlotItemClass("χ1j", "0.5*(SpinResults.χsj+SpinResults.χaj)"))
+		  PlotItemsList.Add(New PlotItemClass("χ2j", "0.5*(SpinResults.χsj-SpinResults.χaj)"))
+		  PlotItemsList.Add(New PlotItemClass("χaj", "SpinResults.χaj"))
+		  PlotItemsList.Add(New PlotItemClass("χsj", "SpinResults.χsj"))
+		  PlotItemsList.Add(New PlotItemClass("dV/dq$", "SpinResults.DVI(Dq)"))
+		  PlotItemsList.Add(New PlotItemClass("dι/dq$", "SpinResults.DιI(Dq)"))
+		  PlotItemsList.Add(New PlotItemClass("dα/dq$", "SpinResults.DαI(Dq"))
+		  PlotItemsList.Add(New PlotItemClass("dχaj/dq$", "SpinResults.DχajI(Dq)"))
+		  PlotItemsList.Add(New PlotItemClass("dχsj/dq$", "SpinResults.DχsjI(Dq)"))
 		  
-		End Function
+		  // This part creates a dictionary of possible numerical derivatives we might plot.
+		  // Any "@" symbol should be filled (when the variable-selection menu is constructed)
+		  // with whatever the user has selected in the side-case box as the parameter to vary, and
+		  // any "$" symbol by that parameter if it is in the list of orbit parameters
+		  // χ1, θ1, φ1, χ2, θ2, φ2, δ, τc. A "#" signals that the user must select an index
+		  // from 0 to 250 when selecting from the ChooseVariablePopupMenu, and the result
+		  // should replace the "#" in both the name and the script. A "j" signals that the user
+		  // must select a component from x, y, z, which will replace the "j" in both the name
+		  // and the script. The XojoScript for the first item depends on the choice of parameter, so the
+		  // script for this particular item must be updated when the ChooseVariablePopupMenu is
+		  // constructed (see the following list).
+		  
+		  // To make the scripts shorter and more readable, we will at the end globally replace 
+		  //      "sbpr" with "SideBuilderPlus.SpinResults"
+		  //      "sbmr" with "SideBuilderMinus.SpinResults"
+		  //      "/2ε" with "*Parameters.OneI2ε"
+		  
+		  PlotNumItemsList.Add(New PlotItemClass("ndH/d@", ""))
+		  PlotNumItemsList.Add(New PlotItemClass("ndA/d@(#)", "(sbpr.A(#)-sbmr.A(#))/2ε"))
+		  PlotNumItemsList.Add(New PlotItemClass("ndW/d@(#)", "(sbpr.W(#) - sbmr.W(#))/2ε"))
+		  PlotNumItemsList.Add(New PlotItemClass("ndV/d$",  "(sbpr.V - sbmr.V)/2ε"))
+		  PlotNumItemsList.Add(New PlotItemClass("ndι/d$", "(sbpr.ι - sbmr.ι)/2ε"))
+		  PlotNumItemsList.Add(New PlotItemClass("ndα/d$", "(sbpr.α - sbmr.α)/2ε"))
+		  PlotNumItemsList.Add(New PlotItemClass("ndχaj/d$", "(sbpr.χaj - sbmr.χaj)/2ε"))
+		  PlotNumItemsList.Add(New PlotItemClass("ndχsj/d$", "(sbpr.χsj - sbmr.χsj)/2ε"))
+		  
+		  For Each item As PlotItemClass In PlotNumItemsList
+		    Var theScript As String = item.XScript
+		    theScript = theScript.Replace("sbpr", "SideBuilderPlus.SpinResults")
+		    theScript = theScript.Replace("sbmr", "SideBuilderMinus.SpinResults")
+		    theScript = theScript.Replace("/2ε", "*Parameters.OneI2ε")
+		  Next
+		  
+		  // Finally, this part creates a dictionary of ndH/dq scripts.
+		  
+		  PlotNHItemsList.Add(New PlotItemClass("ndH/dχ1", ""))
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -2734,6 +2949,33 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub UpdateChooseVarMenu()
+		  Setting = True
+		  ChooseVariablePopupMenu.RemoveAllRows
+		  For Each plotitem As PlotItemClass in PlotItemsList
+		    ChooseVariablePopupMenu.AddRow(plotitem.Name)
+		  Next
+		  If SideCasesCheckbox.Value = True Then
+		    Var sideCaseParameter As String = SideCaseParamMenu.SelectedRowText
+		    Var parameterIsOrbit As Boolean = SideCaseParamMenu.SelectedRowIndex < 8
+		    For Each plotitem As PlotItemClass in PlotNumItemsList
+		      If plotitem.Name.Contains("@") Then
+		        plotitem.Name = plotitem.Name.ReplaceAll("@",sideCaseParameter)
+		        ChooseVariablePopupMenu.AddRow(plotitem.Name)
+		        ChooseVariablePopupMenu.RowTagAt(ChooseVariablePopupMenu.LastAddedRowIndex) = GetXScriptFor(plotitem)
+		      Elseif plotitem.Name.Contains("$") And parameterIsOrbit Then
+		        plotitem.Name = plotitem.Name.ReplaceAll("$", sideCaseParameter)
+		        ChooseVariablePopupMenu.AddRow(plotitem.Name)
+		      End If
+		    Next
+		  End If
+		  ChooseVariablePopupMenu.SelectedRowIndex = -1
+		  Setting = False
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub UpdateInterface()
 		  // This method is called by the InterfaceUpdateTimer when it is running
 		  Var theSuper As CaseSupervisorClass = MainThread.CaseSupervisor  // Get a reference to the supervisor
@@ -2857,6 +3099,10 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		MyPlotItems() As PlotItemClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Necdet As NecdetsClass
 	#tag EndProperty
 
@@ -2866,6 +3112,18 @@ End
 
 	#tag Property, Flags = &h0
 		PlotEndIndex As Integer = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PlotItemsList() As PlotItemClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PlotNHItemsList() As PlotItemClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PlotNumItemsList() As PlotItemClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2947,49 +3205,13 @@ End
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events ClearSaveDataButton
-	#tag Event
-		Sub Pressed()
-		  PlotItemsListBox.RemoveAllRows
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events AddVariableButton
-	#tag Event
-		Sub Pressed()
-		  If IsValidVariableName(ChooseVariableComboBox.Text) Then
-		    PlotItemsListBox.AddRow(ChooseVariableComboBox.Text)
-		  Else
-		    System.Beep
-		  End If
-		  ChooseVariableComboBox.Text = ""
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events ChooseVariableComboBox
+#tag Events ChooseVariablePopupMenu
 	#tag Event
 		Sub SelectionChanged(item As DesktopMenuItem)
 		  If Not Setting Then
-		    If IsValidVariableName(me.Text) Then PlotItemsListBox.AddRow(me.Text)
-		    Setting = True
-		    me.SelectedRowIndex = 0
-		    Setting = False
+		    CustomizeChosenPlotItem(me.SelectedRowText, me.RowTagAt(me.SelectedRowIndex))
 		  End If
 		End Sub
-	#tag EndEvent
-	#tag Event
-		Function KeyDown(key As String) As Boolean
-		  If key = Chr(13) Then
-		    If IsValidVariableName(me.Text) Then
-		      PlotItemsListBox.AddRow(me.Text)
-		    Else
-		      System.Beep
-		    End If
-		    me.Text = ""
-		    Return True
-		  End If
-		  Return False
-		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events StartStopButton
@@ -3185,6 +3407,22 @@ End
 		Function HeaderPressed(column as Integer) As Boolean
 		  Return True // do not allow sorting
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events SideCasesCheckbox
+	#tag Event
+		Sub ValueChanged()
+		  If me.Value Then
+		    SideCaseParamMenu.SelectedRowIndex = 10
+		    SideCasesEpMenu.SelectedRowIndex = 6
+		  Else
+		    SideCaseParamMenu.SelectedRowIndex = -1
+		    SideCasesEpMenu.SelectedRowIndex = -1
+		  End If
+		  SideCaseParamMenu.Enabled = me.Value
+		  SideCasesEpMenu.Enabled = me.Value
+		  
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag ViewBehavior

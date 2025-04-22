@@ -8,9 +8,9 @@ Protected Class CaseSupervisorClass
 		  // the following gives the number of main time steps to execute
 		  Δτr = CaseInfo.ΔT/CaseInfo.GM
 		  // Define the parameter shift
-		  ep = 1.0e-6
+		  // ep = 1.0e-6
 		  // Define the Necdet class to store data from side cases
-		  necdet = New NecdetsClass(CaseInfo, ep)
+		  // necdet = New NecdetsClass(CaseInfo, ep)
 		  // Create and initialize cases with the shift in the parameter
 		  CaseList(0) = CaseInfo // this is an identity equality: CaseList(0) *is* CaseInfo
 		  // create clones for side cases. Clones are different objects but with the same parameters

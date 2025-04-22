@@ -9,11 +9,15 @@ Protected Module ParamIndexes
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DM As Integer = 9
+		DlnM As Integer = 9
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DR As Integer = 12
+		DlnR As Integer = 12
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Dlnτc As Integer = 7
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -38,10 +42,6 @@ Protected Module ParamIndexes
 
 	#tag Property, Flags = &h0
 		Dλ0 As Integer = 8
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		Dτc As Integer = 7
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -114,7 +114,135 @@ Protected Module ParamIndexes
 			Name="Dχ1"
 			Visible=false
 			Group="Behavior"
-			InitialValue=""
+			InitialValue="0"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DLastIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue="14"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DLastSpinIndex"
+			Visible=false
+			Group="Behavior"
+			InitialValue="7"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DlnM"
+			Visible=false
+			Group="Behavior"
+			InitialValue="9"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DlnR"
+			Visible=false
+			Group="Behavior"
+			InitialValue="12"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dβ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="10"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dδ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="6"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΘ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="13"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dθ1"
+			Visible=false
+			Group="Behavior"
+			InitialValue="1"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dθ2"
+			Visible=false
+			Group="Behavior"
+			InitialValue="4"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dλ0"
+			Visible=false
+			Group="Behavior"
+			InitialValue="8"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dlnτc"
+			Visible=false
+			Group="Behavior"
+			InitialValue="7"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DΦ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="14"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dφ1"
+			Visible=false
+			Group="Behavior"
+			InitialValue="2"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dφ2"
+			Visible=false
+			Group="Behavior"
+			InitialValue="5"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dχ2"
+			Visible=false
+			Group="Behavior"
+			InitialValue="3"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue="11"
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty

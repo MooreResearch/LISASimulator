@@ -2,40 +2,6 @@
 Protected Class WaveBuilderClass
 	#tag Method, Flags = &h21
 		Private Sub AssembleDerivatives()
-		  // These static constants help us build the detector functions
-		  // (Static variables are only calculated once the first time this method is
-		  // called and retain their values during future calls.)
-		  
-		  Static cos2ψ As Double = Cos(2*Parameters.ψ)
-		  Static sin2ψ As Double = Sin(2*Parameters.ψ)
-		  Static σ1 As Double = 1.5*Parameters.π + 2.0*Parameters.ρ0
-		  Static σ2 As Double = (4/3)*Parameters.π + σ1
-		  
-		  Static dpc1 As Double = 3.0*Sqrt(3.0)/128.0
-		  Static dpc2 As Double = Sqrt(3.0)/128.0
-		  Static dpc3 As Double = 3.0/32.0
-		  Static dxc1 As Double = Sqrt(3.0)/32.0
-		  Static dxc2 As Double = 3.0/32.0
-		  
-		  Static sΘ As Double = Sin(Parameters.Θ)
-		  Static cΘ As Double = Cos(Parameters.Θ)
-		  Static s2Θ As Double = 2*sΘ*cΘ
-		  Static c2Θ As Double = cΘ*cΘ - sΘ*sΘ
-		  
-		  // These static variables help with the calculation of the wave amplitude
-		  // and its derivatives
-		  Static η As Double = 0.25*(1.0-Parameters.δ*Parameters.δ)
-		  h0 = 2.0*Parameters.M*η/Parameters.R
-		  Static dh0dlnM As Double = h0
-		  dh0dδ = -0.5*h0*Parameters.δ/η
-		  Static dh0dlnR As Double = -h0
-		  
-		  // These static variables indicate which polarization we are calculating
-		  // or whether we are calculating a derivative with respect to v.
-		  Static cross As Boolean = True
-		  Static plus As Boolean = False
-		  Static vderiv As Boolean = True
-		  
 		  // Local variables to hold cross and plus polarizations
 		  Var hp As Double
 		  Var hx As Double
@@ -60,8 +26,8 @@ Protected Class WaveBuilderClass
 		  // to the line of sight. This will be selected if Parameters.Detectors = 0.
 		  // To get the plus polarization in the source frame, choose ψ = 0.
 		  // To get the cross polarization, choose ψ = π/4.
-		  fp = cos2ψ
-		  fx = sin2ψ
+		  fp = Cos2ψ
+		  fx = Sin2ψ
 		  
 		  // Otherwise, we will calculate these factors for the LISA detector,
 		  // which requires a more complicated calculation
@@ -77,20 +43,20 @@ Protected Class WaveBuilderClass
 		    Var c311 As Double = Cos(3.0*ρ - σ1 - Parameters.Φ)
 		    Var c111 As Double = Cos(ρ - σ1 + Parameters.Φ)
 		    
-		    Var dp As Double = dpc1*(-6.0*s210 + 9.0*s012 - s412) + dpc2*c2Θ*(18.0*s210 + 9.0*s012 - s412) _
-		    - dpc3*s2Θ*(s311 - 3.0*s111)
-		    Var dx As Double = dxc1*cΘ*(9.0*c012 - c412) - dxc2*sΘ*(s311 - 3.0*s111)
-		    Var ddpdΘ As Double = -2.0*dpc2*s2Θ*(18.0*s210 + 9.0*s012 - s412) - 2.0*dpc3*c2Θ*(s311 - 3.0*s111)
-		    Var ddxdΘ As Double = -dxc1*sΘ*(9.0*c012 - c412) - dxc2*cΘ*(s311 - 3.0*s111)
-		    Var ddpdΦ As Double = dpc1*(-18.0*c012 + 2.0*c412) + dpc2*c2Θ*(-18.0*c012 + 2.0*c412) _
-		    + dpc3*s2Θ*(c311 - 3.0*c111)
-		    Var ddxdΦ As Double = dxc1*cΘ*(18.0*s012 - 2.0*s412) - dxc2*sΘ*(c311 + 3.0*c111)
-		    Var fp1 As Double = cos2ψ*dp - sin2ψ*dx
-		    Var fx1 As Double = sin2ψ*dp + cos2ψ*dx
-		    Var dfp1dΘ As Double = cos2ψ*ddpdΘ - sin2ψ*ddxdΘ
-		    Var dfx1dΘ As Double = sin2ψ*ddpdΘ + cos2ψ*ddxdΘ
-		    Var dfp1dΦ As Double = cos2ψ*ddpdΦ - sin2ψ*ddxdΦ
-		    Var dfx1dΦ As Double = sin2ψ*ddpdΦ + cos2ψ*ddxdΦ
+		    Var dp As Double = Dpc1*(-6.0*s210 + 9.0*s012 - s412) + Dpc2*C2Θ*(18.0*s210 + 9.0*s012 - s412) _
+		    - Dpc3*S2Θ*(s311 - 3.0*s111)
+		    Var dx As Double = Dxc1*CΘ*(9.0*c012 - c412) - Dxc2*SΘ*(s311 - 3.0*s111)
+		    Var ddpdΘ As Double = -2.0*Dpc2*S2Θ*(18.0*s210 + 9.0*s012 - s412) - 2.0*Dpc3*C2Θ*(s311 - 3.0*s111)
+		    Var ddxdΘ As Double = -Dxc1*SΘ*(9.0*c012 - c412) - Dxc2*CΘ*(s311 - 3.0*s111)
+		    Var ddpdΦ As Double = Dpc1*(-18.0*c012 + 2.0*c412) + Dpc2*C2Θ*(-18.0*c012 + 2.0*c412) _
+		    + Dpc3*S2Θ*(c311 - 3.0*c111)
+		    Var ddxdΦ As Double = Dxc1*CΘ*(18.0*s012 - 2.0*s412) - Dxc2*SΘ*(c311 + 3.0*c111)
+		    Var fp1 As Double = Cos2ψ*dp - Sin2ψ*dx
+		    Var fx1 As Double = Sin2ψ*dp + Cos2ψ*dx
+		    Var dfp1dΘ As Double = Cos2ψ*ddpdΘ - Sin2ψ*ddxdΘ
+		    Var dfx1dΘ As Double = Sin2ψ*ddpdΘ + Cos2ψ*ddxdΘ
+		    Var dfp1dΦ As Double = Cos2ψ*ddpdΦ - Sin2ψ*ddxdΦ
+		    Var dfx1dΦ As Double = Sin2ψ*ddpdΦ + Cos2ψ*ddxdΦ
 		    
 		    // repeat the whole thing again for detector 2
 		    Var fp2 As Double
@@ -111,82 +77,82 @@ Protected Class WaveBuilderClass
 		      c311 = Cos(3.0*ρ - σ2 - Parameters.Φ)
 		      c111 = Cos(ρ - σ2 + Parameters.Φ)
 		      
-		      dp = dpc1*(-6.0*s210 + 9.0*s012 - s412) + dpc2*c2Θ*(18.0*s210 + 9.0*s012 - s412) _
-		      - dpc3*s2Θ*(s311 - 3.0*s111)
-		      dx = dxc1*cΘ*(9.0*c012 - c412) - dxc2*sΘ*(s311 - 3.0*s111)
-		      ddpdΘ = -2.0*dpc2*s2Θ*(18.0*s210 + 9.0*s012 - s412) - 2.0*dpc3*c2Θ*(s311 - 3.0*s111)
-		      ddxdΘ = -dxc1*sΘ*(9.0*c012 - c412) - dxc2*cΘ*(s311 - 3.0*s111)
-		      ddpdΦ = dpc1*(-18.0*c012 + 2.0*c412) + dpc2*c2Θ*(-18.0*c012 + 2.0*c412) _
-		      + dpc3*s2Θ*(c311 - 3.0*c111)
-		      ddxdΦ = dxc1*cΘ*(18.0*s012 - 2.0*s412) - dxc2*sΘ*(c311 + 3.0*c111)
-		      fp2 = cos2ψ*dp - sin2ψ*dx
-		      fx2 = sin2ψ*dp + cos2ψ*dx
-		      dfp2dΘ = cos2ψ*ddpdΘ - sin2ψ*ddxdΘ
-		      dfx2dΘ = sin2ψ*ddpdΘ + cos2ψ*ddxdΘ
-		      dfp2dΦ = cos2ψ*ddpdΦ - sin2ψ*ddxdΦ
-		      dfx2dΦ = sin2ψ*ddpdΦ + cos2ψ*ddxdΦ
+		      dp = Dpc1*(-6.0*s210 + 9.0*s012 - s412) + Dpc2*C2Θ*(18.0*s210 + 9.0*s012 - s412) _
+		      - Dpc3*S2Θ*(s311 - 3.0*s111)
+		      dx = Dxc1*CΘ*(9.0*c012 - c412) - Dxc2*SΘ*(s311 - 3.0*s111)
+		      ddpdΘ = -2.0*Dpc2*S2Θ*(18.0*s210 + 9.0*s012 - s412) - 2.0*Dpc3*C2Θ*(s311 - 3.0*s111)
+		      ddxdΘ = -Dxc1*CΘ*(9.0*c012 - c412) - Dxc2*CΘ*(s311 - 3.0*s111)
+		      ddpdΦ = Dpc1*(-18.0*c012 + 2.0*c412) + Dpc2*C2Θ*(-18.0*c012 + 2.0*c412) _
+		      + Dpc3*S2Θ*(c311 - 3.0*c111)
+		      ddxdΦ = Dxc1*CΘ*(18.0*s012 - 2.0*s412) - Dxc2*SΘ*(c311 + 3.0*c111)
+		      fp2 = Cos2ψ*dp - Sin2ψ*dx
+		      fx2 = Sin2ψ*dp + Cos2ψ*dx
+		      dfp2dΘ = Cos2ψ*ddpdΘ - Sin2ψ*ddxdΘ
+		      dfx2dΘ = Sin2ψ*ddpdΘ + Cos2ψ*ddxdΘ
+		      dfp2dΦ = Cos2ψ*ddpdΦ - Sin2ψ*ddxdΦ
+		      dfx2dΦ = Sin2ψ*ddpdΦ + Cos2ψ*ddxdΦ
 		    End If
 		    fp = fp1 + fp2
 		    fx = fx1 + fx2
 		  End If
 		  
 		  // Get the wave itself
-		  hp = GetHSum(A,W,plus)
-		  hx = GetHSum(A,W,cross)
-		  H = h0*(fp*hp + fx*hx)
+		  hp = GetHSum(A,W,Plus)
+		  hx = GetHSum(A,W,Cross)
+		  H = H0*(fp*hp + fx*hx)
 		  
 		  // Now let's do the β-derivative, which is the easiest
-		  hp = GetHSum(DADβ,W,plus)
-		  hx = GetHSum(DADβ,W,cross)
-		  DHDq(dβ) = h0*(fp*hp + fx*hx)
+		  hp = GetHSum(DADβ,W,Plus)
+		  hx = GetHSum(DADβ,W,Cross)
+		  DH(dβ) = h0*(fp*hp + fx*hx)
 		  
 		  // Calculate the δ derivative, which is the worst
-		  Var dhp As Double = GetHSum(DADδ,W,plus) 
-		  dhp = dhp + GetHSum(DADι,W,plus)*SpinResults.DιI(Dδ)
-		  dhp = dhp + GetHSum(DADχax,W,plus)*SpinResults.DχaxI(Dδ)
-		  dhp = dhp + GetHSum(DADχay,W,plus)*SpinResults.DχayI(Dδ)
-		  dhp = dhp + GetHSum(DADχaz,W,plus)*SpinResults.DχazI(Dδ)
-		  dhp = dhp + GetHSum(DADχsx,W,plus)*SpinResults.DχsxI(Dδ)
-		  dhp = dhp + GetHSum(DADχsy,W,plus)*SpinResults.DχsyI(Dδ)
-		  dhp = dhp + GetHSum(DADχsz,W,plus)*SpinResults.DχszI(Dδ)
-		  dhp = dhp + GetHSum(A,DWDα,plus)*SpinResults.DαI(Dδ)
-		  dhp = dhp + GetHSum(A,DWDΨ,plus)*SpinResults.DΨI(Dδ)
-		  dhp = dhp + GetHSum(A,W,plus,vderiv)*SpinResults.DVI(Dδ)
-		  Var dhx As Double = GetHSum(DADδ,W,cross)
-		  dhx = dhx + GetHSum(DADι,W,cross)*SpinResults.DιI(Dδ) 
-		  dhx = dhx + GetHSum(DADχax,W,cross)*SpinResults.DχaxI(Dδ)
-		  dhx = dhx + GetHSum(DADχay,W,cross)*SpinResults.DχayI(Dδ)
-		  dhx = dhx + GetHSum(DADχaz,W,cross)*SpinResults.DχazI(Dδ)
-		  dhx = dhx + GetHSum(DADχsx,W,cross)*SpinResults.DχsxI(Dδ)
-		  dhx = dhx + GetHSum(DADχsy,W,cross)*SpinResults.DχsyI(Dδ)
-		  dhx = dhx + GetHSum(DADχsz,W,cross)*SpinResults.DχszI(Dδ)
-		  dhx = dhx + GetHSum(A,DWDα,cross)*SpinResults.DαI(Dδ)
-		  dhx = dhx + GetHSum(A,DWDΨ,cross)*SpinResults.DΨI(Dδ)
-		  dhx = dhx + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dδ)
-		  DHDq(Dδ) = h0*(fp*dhp+fx*dhx) + dh0dδ*(fp*hp+fx*hx)
+		  Var dhp As Double = GetHSum(DADδ,W,Plus) 
+		  dhp = dhp + GetHSum(DADι,W,Plus)*SpinResults.DιI(Dδ)
+		  dhp = dhp + GetHSum(DADχax,W,Plus)*SpinResults.DχaxI(Dδ)
+		  dhp = dhp + GetHSum(DADχay,W,Plus)*SpinResults.DχayI(Dδ)
+		  dhp = dhp + GetHSum(DADχaz,W,Plus)*SpinResults.DχazI(Dδ)
+		  dhp = dhp + GetHSum(DADχsx,W,Plus)*SpinResults.DχsxI(Dδ)
+		  dhp = dhp + GetHSum(DADχsy,W,Plus)*SpinResults.DχsyI(Dδ)
+		  dhp = dhp + GetHSum(DADχsz,W,Plus)*SpinResults.DχszI(Dδ)
+		  dhp = dhp + GetHSum(A,DWDα,Plus)*SpinResults.DαI(Dδ)
+		  dhp = dhp + GetHSum(A,DWDΨ,Plus)*SpinResults.DΨI(Dδ)
+		  dhp = dhp + GetHSum(A,W,Plus,Vderiv)*SpinResults.DVI(Dδ)
+		  Var dhx As Double = GetHSum(DADδ,W,Cross)
+		  dhx = dhx + GetHSum(DADι,W,Cross)*SpinResults.DιI(Dδ) 
+		  dhx = dhx + GetHSum(DADχax,W,Cross)*SpinResults.DχaxI(Dδ)
+		  dhx = dhx + GetHSum(DADχay,W,Cross)*SpinResults.DχayI(Dδ)
+		  dhx = dhx + GetHSum(DADχaz,W,Cross)*SpinResults.DχazI(Dδ)
+		  dhx = dhx + GetHSum(DADχsx,W,Cross)*SpinResults.DχsxI(Dδ)
+		  dhx = dhx + GetHSum(DADχsy,W,Cross)*SpinResults.DχsyI(Dδ)
+		  dhx = dhx + GetHSum(DADχsz,W,Cross)*SpinResults.DχszI(Dδ)
+		  dhx = dhx + GetHSum(A,DWDα,Cross)*SpinResults.DαI(Dδ)
+		  dhx = dhx + GetHSum(A,DWDΨ,Cross)*SpinResults.DΨI(Dδ)
+		  dhx = dhx + GetHSum(A,W,Cross,Vderiv)*SpinResults.DVI(Dδ)
+		  DH(Dδ) = h0*(fp*dhp+fx*dhx) + dH0(Dδ)*(fp*hp+fx*hx)
 		  
 		  // Calculate the τc derivative
-		  dhp = GetHSum(DADι,W,plus)*SpinResults.DιI(Dτc)
-		  dhp = dhp + GetHSum(DADχax,W,plus)*SpinResults.DχaxI(Dτc)
-		  dhp = dhp + GetHSum(DADχay,W,plus)*SpinResults.DχayI(Dτc)
-		  dhp = dhp + GetHSum(DADχaz,W,plus)*SpinResults.DχazI(Dτc)
-		  dhp = dhp + GetHSum(DADχsx,W,plus)*SpinResults.DχsxI(Dτc)
-		  dhp = dhp + GetHSum(DADχsy,W,plus)*SpinResults.DχsyI(Dτc)
-		  dhp = dhp + GetHSum(DADχsz,W,plus)*SpinResults.DχszI(Dτc)
-		  dhp = dhp + GetHSum(A,DWDα,plus)*SpinResults.DαI(Dτc)
-		  dhp = dhp + GetHSum(A,DWDΨ,plus)*SpinResults.DΨI(Dτc)
-		  dhp = dhp + GetHSum(A,W,plus,vderiv)*SpinResults.DVI(Dτc)
-		  dhx = GetHSum(DADι,W,cross)*SpinResults.DιI(Dτc) 
-		  dhx = dhx + GetHSum(DADχax,W,cross)*SpinResults.DχaxI(Dτc)
-		  dhx = dhx + GetHSum(DADχay,W,cross)*SpinResults.DχayI(Dτc)
-		  dhx = dhx + GetHSum(DADχaz,W,cross)*SpinResults.DχazI(Dτc)
-		  dhx = dhx + GetHSum(DADχsx,W,cross)*SpinResults.DχsxI(Dτc)
-		  dhx = dhx + GetHSum(DADχsy,W,cross)*SpinResults.DχsyI(Dτc)
-		  dhx = dhx + GetHSum(DADχsz,W,cross)*SpinResults.DχszI(Dτc)
-		  dhx = dhx + GetHSum(A,DWDα,cross)*SpinResults.DαI(Dτc)
-		  dhx = dhx + GetHSum(A,DWDΨ,cross)*SpinResults.DΨI(Dτc)
-		  dhx = dhx + GetHSum(A,W,cross,vderiv)*SpinResults.DVI(Dτc)
-		  DHDq(Dτc) = h0*(fp*dhp+fx*dhx)
+		  dhp = GetHSum(DADι,W,Plus)*SpinResults.DιI(Dlnτc)
+		  dhp = dhp + GetHSum(DADχax,W,Plus)*SpinResults.DχaxI(Dlnτc)
+		  dhp = dhp + GetHSum(DADχay,W,Plus)*SpinResults.DχayI(Dlnτc)
+		  dhp = dhp + GetHSum(DADχaz,W,Plus)*SpinResults.DχazI(Dlnτc)
+		  dhp = dhp + GetHSum(DADχsx,W,Plus)*SpinResults.DχsxI(Dlnτc)
+		  dhp = dhp + GetHSum(DADχsy,W,Plus)*SpinResults.DχsyI(Dlnτc)
+		  dhp = dhp + GetHSum(DADχsz,W,Plus)*SpinResults.DχszI(Dlnτc)
+		  dhp = dhp + GetHSum(A,DWDα,Plus)*SpinResults.DαI(Dlnτc)
+		  dhp = dhp + GetHSum(A,DWDΨ,Plus)*SpinResults.DΨI(Dlnτc)
+		  dhp = dhp + GetHSum(A,W,Plus,Vderiv)*SpinResults.DVI(Dlnτc)
+		  dhx = GetHSum(DADι,W,Cross)*SpinResults.DιI(Dlnτc) 
+		  dhx = dhx + GetHSum(DADχax,W,Cross)*SpinResults.DχaxI(Dlnτc)
+		  dhx = dhx + GetHSum(DADχay,W,Cross)*SpinResults.DχayI(Dlnτc)
+		  dhx = dhx + GetHSum(DADχaz,W,Cross)*SpinResults.DχazI(Dlnτc)
+		  dhx = dhx + GetHSum(DADχsx,W,Cross)*SpinResults.DχsxI(Dlnτc)
+		  dhx = dhx + GetHSum(DADχsy,W,Cross)*SpinResults.DχsyI(Dlnτc)
+		  dhx = dhx + GetHSum(DADχsz,W,Cross)*SpinResults.DχszI(Dlnτc)
+		  dhx = dhx + GetHSum(A,DWDα,Cross)*SpinResults.DαI(Dlnτc)
+		  dhx = dhx + GetHSum(A,DWDΨ,Cross)*SpinResults.DΨI(Dlnτc)
+		  dhx = dhx + GetHSum(A,W,Cross,Vderiv)*SpinResults.DVI(Dlnτc)
+		  DH(Dlnτc) = h0*(fp*dhp+fx*dhx)
 		End Sub
 	#tag EndMethod
 
@@ -1111,36 +1077,67 @@ Protected Class WaveBuilderClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(P As CaseInfoClass = Nil)
-		  // If P is Nil we are just creating the class to check variable names
-		  If P <> Nil Then
-		    // Initialize constants
-		    Parameters = P
-		    π = P.π
-		    VeSinΘ = P.Ve*Sin(P.Θ)
-		    VeCosΘ = P.Ve*Cos(P.Θ)
-		    Δτr = P.ΔT/P.GM
-		    Δτ = Δτr/(1.0 + P.Z)
-		    SpinEvolver = New SpinEvolverClass(P)
-		    
-		    // Initialize the Noise class
-		    //Noise = New NoiseClass(Parameters.ΔT)
-		    
-		    // Set up classes for calculating derivatives
-		    
-		    δFunctions = New DeltaFuncsClass
-		    δFunctions.SetValues(P.δ)
-		    δFunDerivs = New DeltaFuncsClass
-		    δFunDerivs.SetDerivs(P.δ)
-		    
-		    βFunctions = New BetaFuncsClass
-		    βFunctions.SetValues(P.β)
-		    βFunDerivs = New BetaFuncsClass
-		    βFunDerivs.SetDerivs(P.β)
-		    
-		    ιFunctions = New IotaFuncsClass
-		    ιFunDerivs = New IotaFuncsClass
-		    
+		Sub Constructor(P As CaseInfoClass)
+		  // Initialize constants
+		  Parameters = P
+		  π = P.π
+		  VeSinΘ = P.Ve*Sin(P.Θ)
+		  VeCosΘ = P.Ve*Cos(P.Θ)
+		  Δτr = P.ΔT/P.GM
+		  Δτ = Δτr/(1.0 + P.Z)
+		  η = 0.25*(1.0 - P.δ*P.δ)
+		  H0 = 2.0*P.M*η/P.R
+		  
+		  // Detector function constants
+		  Cos2ψ = Cos(2*P.ψ)
+		  Sin2ψ = Sin(2*P.ψ)
+		  σ1 = 1.5*π + 2.0*P.ρ0
+		  σ2  = (4/3)*π + σ1
+		  
+		  Dpc1 = 3.0*Sqrt(3.0)/128.0
+		  Dpc2 = Sqrt(3.0)/128.0
+		  Dpc3 = 3.0/32.0
+		  Dxc1 = Sqrt(3.0)/32.0
+		  Dxc2 = 3.0/32.0
+		  
+		  SΘ = Sin(P.Θ)
+		  CΘ= Cos(P.Θ)
+		  S2Θ = 2*sΘ*cΘ
+		  C2Θ = cΘ*cΘ - sΘ*sΘ
+		  
+		  Cross = True
+		  Plus = False
+		  Vderiv = True
+		  
+		  // Intialize derivatives of H0
+		  DH0(Dδ) = -0.5*H0*P.δ/η
+		  DH0(DlnM) = H0
+		  DH0(DlnR) = -H0
+		  // (The others are zero by default)
+		  
+		  // Initialize the SpinEvolver class
+		  SpinEvolver = New SpinEvolverClass(P)
+		  
+		  // Initialize the Noise class
+		  //Noise = New NoiseClass(Parameters.ΔT)
+		  
+		  // Set up classes for calculating derivatives
+		  δFunctions = New DeltaFuncsClass
+		  δFunctions.SetValues(P.δ)
+		  δFunDerivs = New DeltaFuncsClass
+		  δFunDerivs.SetDerivs(P.δ)
+		  
+		  βFunctions = New BetaFuncsClass
+		  βFunctions.SetValues(P.β)
+		  βFunDerivs = New BetaFuncsClass
+		  βFunDerivs.SetDerivs(P.β)
+		  
+		  ιFunctions = New IotaFuncsClass
+		  ιFunDerivs = New IotaFuncsClass
+		  
+		  If Not P.SideVariable.IsEmpty Then
+		    SideBuilderMinus = New WaveBuilderClass(P.GetSideCase(-P.ε))
+		    SideBuilderPlus = New WaveBuilderClass(P.GetSideCase(P.ε))
 		  End If
 		End Sub
 	#tag EndMethod
@@ -1148,9 +1145,7 @@ Protected Class WaveBuilderClass
 	#tag Method, Flags = &h0
 		Function DidDetectorStepOK(StepNumber As Integer) As Boolean
 		  // If we are within two detector steps of coalescence, bail out
-		  If (StepNumber + 2)*Δτ > Parameters.τc Then
-		    Return False
-		  End If
+		  If (StepNumber + 2)*Δτ > Parameters.τc Then Return False
 		  
 		  // Otherwise, check if we can get data from the spin evolver
 		  τrDN = StepNumber*Δτr
@@ -1171,8 +1166,14 @@ Protected Class WaveBuilderClass
 		  // Calculate the wave
 		  AssembleDerivatives
 		  
+		  // If we are doing side cases, then step the side cases also
+		  If Not Parameters.SideVariable.IsEmpty Then
+		    If Not SideBuilderMinus.DidDetectorStepOK(StepNumber) Then Return False
+		    If Not SideBuilderPlus.DidDetectorStepOK(StepNumber) Then Return False
+		  End If
+		  
 		  // Write out useful information for plotting (if this is not a case from a file)
-		  If Parameters.DataRecorder <> Nil Then Parameters.DataRecorder.WriteData
+		  If Not Parameters.IsSideCase Then Parameters.DataRecorder.WriteData
 		  
 		  // We have completed the detector step successfully
 		  Return True
@@ -1355,7 +1356,7 @@ Protected Class WaveBuilderClass
 		  Select Case arrayName
 		  Case "fdiff"
 		    //If index1 <= UBound(necdet.nDHDq) Then Return ((necdet.nDHDq(index1) - DHDq(index1)) / DHDq(index1)) / necdet.h0diff
-		    If index1 <= UBound(necdet.nDHDq) Then Return (necdet.nDHDq(index1) - DHDq(index1)) / necdet.h0diff
+		    If index1 <= UBound(necdet.nDHDq) Then Return (necdet.nDHDq(index1) - DH(index1)) / necdet.h0diff
 		  Case "nDHDq"
 		    If index1 <= UBound(necdet.nDHDq) Then Return necdet.nDHDq(index1)
 		  Case "nDVI"
@@ -1402,6 +1403,22 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		C2Θ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Cos2ψ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Cross As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		CΘ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		DADι(250) As Double
 	#tag EndProperty
 
@@ -1438,11 +1455,23 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Dh0dδ As Double
+		DH(14) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DHDq(14) As Double
+		DH0(14) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Dpc1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Dpc2 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Dpc3 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1451,6 +1480,14 @@ Protected Class WaveBuilderClass
 
 	#tag Property, Flags = &h0
 		DWDΨ(250) As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Dxc1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Dxc2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1494,11 +1531,39 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Plus As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		S2Θ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SideBuilderMinus As WaveBuilderClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SideBuilderPlus As WaveBuilderClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Sin2ψ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		SpinEvolver As SpinEvolverClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		SpinResults As SpinResultsClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		SΘ As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		VDeriv As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1546,7 +1611,19 @@ Protected Class WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		η As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		π As Double = 3.1415926535897
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		σ1 As Double
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		σ2 As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1712,14 +1789,6 @@ Protected Class WaveBuilderClass
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Dh0dδ"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="FP"
 			Visible=false
 			Group="Behavior"
@@ -1737,6 +1806,142 @@ Protected Class WaveBuilderClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="H0"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="C2Θ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Cos2ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Cross"
+			Visible=false
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CΘ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dpc1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dpc2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dpc3"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dxc1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Dxc2"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Plus"
+			Visible=false
+			Group="Behavior"
+			InitialValue="False"
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="S2Θ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Sin2ψ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SΘ"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="VDeriv"
+			Visible=false
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="η"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="σ1"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="σ2"
 			Visible=false
 			Group="Behavior"
 			InitialValue=""

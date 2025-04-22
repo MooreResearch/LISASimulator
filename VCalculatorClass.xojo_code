@@ -141,6 +141,7 @@ Protected Class VCalculatorClass
 		  Ψc = -Ψorb + Theλ0
 		  DΨcDδ = -DP0Dδ/V5*Ψops - DΨorbDV*DVDδ _
 		  - P0/V5*(DP2Dδ*V2 + DP3Dδ*V3 +DP4Dδ*V4 + DP6Dδ*V6 + DP7Dδ*V7)
+		  DΨcDτc = -DΨorbDV*DVDτc
 		  DΨcDχ1ℓ = -DΨorbDV*DVDχ1ℓ - P0/V5*(DP3Dχ1ℓ*V3 + DP6Dχ1ℓ*V6 + DP7Dχ1ℓ*V7)
 		  DΨcDχ2ℓ = -DΨorbDV*DVDχ2ℓ - P0/V5*(DP3Dχ2ℓ*V3 + DP6Dχ2ℓ*V6 + DP7Dχ2ℓ*V7)
 		  
@@ -149,16 +150,22 @@ Protected Class VCalculatorClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DVDotDδForLastV() As Double
-		  Return DA0Dδ/3*V9*(1 + A2*V2 + A3*V3 + A4*V4 + A5*V5 + (A6 + B6*Log(V))*V6 + A7*V7) _
-		  + A0/3*V9*(DA2Dδ*V2 + DA3Dδ*V3 + DA4Dδ*V4 + DA5Dδ*V5 + DA6Dδ*V6 + DA7Dδ*V7) _
-		  + DVDotDV*DVDδ
+		Function DVDlnτcForLastV() As Double
+		  Return τc*DVDτc
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DVDotDτcForLastV() As Double
-		  Return DVDotDV*DVDτc
+		Function DVDotDlnτcForLastV() As Double
+		  Return DVDotDV*DVDτc*τc
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DVDotDδForLastV() As Double
+		  Return DA0Dδ/3*V9*(1 + A2*V2 + A3*V3 + A4*V4 + A5*V5 + (A6 + B6*Log(V))*V6 + A7*V7) _
+		  + A0/3*V9*(DA2Dδ*V2 + DA3Dδ*V3 + DA4Dδ*V4 + DA5Dδ*V5 + DA6Dδ*V6 + DA7Dδ*V7) _
+		  + DVDotDV*DVDδ
 		End Function
 	#tag EndMethod
 
@@ -181,12 +188,6 @@ Protected Class VCalculatorClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DVDτcForLastV() As Double
-		  Return DVDτc
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function DVDχ1ℓForLastV() As Double
 		  Return DVDχ1ℓ
 		End Function
@@ -199,15 +200,15 @@ Protected Class VCalculatorClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DΨorbDδForLastV() As Double
-		  Return DΨcDδ + DP0Dδ/V5*Ψops + DΨorbDV*DVDδ _
-		  + P0/V5*(DP2Dδ*V2 + DP3Dδ*V3 + DP4Dδ*V4 + DP5Dδ*V5*LogVIV0 + DP6Dδ*V6 + DP7Dδ*V7)
+		Function DΨorbDlnτcForLastV() As Double
+		  Return (DΨcDτc + DΨorbDV*DVDτc)*τc
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DΨorbDτcForLastV() As Double
-		  Return DΨcDτc + DΨorbDV*DVDτc
+		Function DΨorbDδForLastV() As Double
+		  Return DΨcDδ + DP0Dδ/V5*Ψops + DΨorbDV*DVDδ _
+		  + P0/V5*(DP2Dδ*V2 + DP3Dδ*V3 + DP4Dδ*V4 + DP5Dδ*V5*LogVIV0 + DP6Dδ*V6 + DP7Dδ*V7)
 		End Function
 	#tag EndMethod
 
@@ -227,14 +228,14 @@ Protected Class VCalculatorClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DΨtailDδForLastV() As Double
-		  Return DΨtailDV*DVDδ
+		Function DΨtailDlnτcForLastV() As Double
+		  Return DΨtailDV*DVDτc*τc
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DΨtailDτcForLastV() As Double
-		  Return DΨtailDV*DVDτc
+		Function DΨtailDδForLastV() As Double
+		  Return DΨtailDV*DVDδ
 		End Function
 	#tag EndMethod
 

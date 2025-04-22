@@ -91,15 +91,15 @@ Protected Class SpinEvolverClass
 		  dj0zI(Dδ) = μ1*χ1zL - μ2*χ2zL + DℓI(Dδ)
 		  
 		  // Calculate τc-derivatives of the above quantities
-		  dχ1xLI(Dτc) = 0.0
-		  dχ1yLI(Dτc) = 0.0
-		  dχ1zLI(Dτc) = 0.0
-		  dχ2xLI(Dτc) = 0.0
-		  dχ2yLI(Dτc) = 0.0
-		  dχ2zLI(Dτc) = 0.0
-		  dj0xI(Dτc) = 0.0
-		  dj0yI(Dτc) = 0.0
-		  dj0zI(Dτc) = dℓI(Dτc)
+		  dχ1xLI(Dlnτc) = 0.0
+		  dχ1yLI(Dlnτc) = 0.0
+		  dχ1zLI(Dlnτc) = 0.0
+		  dχ2xLI(Dlnτc) = 0.0
+		  dχ2yLI(Dlnτc) = 0.0
+		  dχ2zLI(Dlnτc) = 0.0
+		  dj0xI(Dlnτc) = 0.0
+		  dj0yI(Dlnτc) = 0.0
+		  dj0zI(Dlnτc) = dℓI(Dlnτc)
 		  
 		  // Calculate χ1-derivatives of the above quantities
 		  dχ1xLI(Dχ1) = Sin(θ1)*Cos(φ1)
@@ -269,7 +269,7 @@ Protected Class SpinEvolverClass
 		  
 		  // Calculate derivatives of V at the time in question
 		  DVI(Dδ) = VCalc.DVDδForLastV
-		  DVI(Dτc) = VCalc.DVDτcForLastV
+		  DVI(Dlnτc) = VCalc.DVDlnτcForLastV
 		  Var dvIdχ1ℓ As Double = VCalc.DVDχ1ℓForLastV
 		  DVI(Dχ1) = dvIdχ1ℓ*Cos(θ1)
 		  DVI(Dθ1) = -dvIdχ1ℓ*χ1*Sin(θ1)
@@ -292,7 +292,7 @@ Protected Class SpinEvolverClass
 		  // Calculate the orbital phase and its derivatives at the time in question
 		  Ψorb = VCalc.ΨorbForLastV
 		  DΨorbI(Dδ) = VCalc.DΨorbDδForLastV
-		  DΨorbI(Dτc) = VCalc.DΨorbDτcForLastV
+		  DΨorbI(Dlnτc) = VCalc.DΨorbDlnτcForLastV
 		  Var dΨorbIdχ1ℓ As Double = VCalc.DΨorbDχ1ℓForLastV
 		  DΨorbI(Dχ1) = dΨorbIdχ1ℓ*Cos(θ1)
 		  DΨorbI(Dθ1) = -dΨorbIdχ1ℓ*χ1*Sin(θ1)
@@ -305,7 +305,7 @@ Protected Class SpinEvolverClass
 		  // Calculate the phase tail and its derivatives at the time in question
 		  Ψtail = VCalc.ΨtailForLastV
 		  DΨtailI(Dδ) = VCalc.DΨtailDδForLastV
-		  DΨtailI(Dτc) = VCalc.DΨtailDτcForLastV
+		  DΨtailI(Dlnτc) = VCalc.DΨtailDlnτcForLastV
 		  Var dΨtailIdχ1ℓ As Double = VCalc.DΨtailDχ1ℓForLastV
 		  DΨtailI(Dχ1) = dΨtailIdχ1ℓ*Cos(θ1)
 		  DΨtailI(Dθ1) = -dΨtailIdχ1ℓ*χ1*Sin(θ1)
@@ -459,18 +459,18 @@ Protected Class SpinEvolverClass
 		  DL4I(Dδ)  = 19/16*δ - δ*η/24
 		  
 		  // Calculate τc-derivatives of these constants
-		  DC10I(Dτc) = 0.0
-		  DC10I(Dτc) = 0.0
-		  DC12I(Dτc) = 0.0
-		  DC22I(Dτc) = 0.0
-		  DC14I(Dτc) = 0.0
-		  DC24I(Dτc) = 0.0
-		  DSℓI(Dτc) = 0.0
-		  DΣℓI(Dτc) = 0.0
-		  DL0I(Dτc) = 0.0
-		  DL2I(Dτc) = 0.0
-		  DL3I(Dτc) = 0.0
-		  DL4I(Dτc) = 0.0
+		  DC10I(Dlnτc) = 0.0
+		  DC10I(Dlnτc) = 0.0
+		  DC12I(Dlnτc) = 0.0
+		  DC22I(Dlnτc) = 0.0
+		  DC14I(Dlnτc) = 0.0
+		  DC24I(Dlnτc) = 0.0
+		  DSℓI(Dlnτc) = 0.0
+		  DΣℓI(Dlnτc) = 0.0
+		  DL0I(Dlnτc) = 0.0
+		  DL2I(Dlnτc) = 0.0
+		  DL3I(Dlnτc) = 0.0
+		  DL4I(Dlnτc) = 0.0
 		  
 		  // Calculate χ1-derivatives of these constants
 		  DC10I(Dχ1) = 0.0
@@ -632,7 +632,7 @@ Protected Class SpinEvolverClass
 		  // Get values of the derivatives of vDot at the present time
 		  Var dvDotI(7) As Double
 		  dvDotI(Dδ)  = VCalc.DVDotDδForLastV
-		  dvDotI(Dτc) = VCalc.DVDotDτcForLastV
+		  dvDotI(Dlnτc) = VCalc.DVDotDlnτcForLastV
 		  Var dvDotIdχ1ℓ As Double = VCalc.DVDotDχ1ℓForLastV
 		  dvDotI(Dχ1) = dvDotIdχ1ℓ*Cos(θ1)
 		  dvDotI(Dθ1) = -dvDotIdχ1ℓ*χ1*Sin(θ1)
@@ -886,7 +886,7 @@ Protected Class SpinEvolverClass
 		  // Get values of the derivatives of vDot at t = 0
 		  Var dvDotI(7) As Double
 		  dvDotI(Dδ) = VCalc.DVDotDδForLastV
-		  dvDotI(Dτc) = VCalc.DVDotDτcForLastV
+		  dvDotI(Dlnτc) = VCalc.DVDotDlnτcForLastV
 		  Var dvDotIdχ1ℓ As Double = VCalc.DVDotDχ1ℓForLastV
 		  dvDotI(Dχ1) = dvDotIdχ1ℓ*Cos(θ1)
 		  dvDotI(Dθ1) = -dvDotIdχ1ℓ*χ1*Sin(θ1)
@@ -995,7 +995,7 @@ Protected Class SpinEvolverClass
 		  
 		  // Get values of the derivatives of vDot at the new step
 		  dvDotI(Dδ) = VCalc.DVDotDδForLastV
-		  dvDotI(Dτc) = VCalc.DVDotDτcForLastV
+		  dvDotI(Dlnτc) = VCalc.DVDotDlnτcForLastV
 		  dvDotIdχ1ℓ = VCalc.DVDotDχ1ℓForLastV
 		  dvDotI(Dχ1) = dvDotIdχ1ℓ*Cos(θ1)
 		  dvDotI(Dθ1) = -dvDotIdχ1ℓ*χ1*Sin(θ1)
