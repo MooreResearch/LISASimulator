@@ -133,7 +133,7 @@ Protected Class SpinEvolverClass
 		    data.V = VN
 		    data.Ψ = Ψorb + Ψtail
 		    Return data
-		  Else // If we have at least one nonaligned spin, then we need to evolve
+		  Else // If we have at least one nonaligned spin, then we need to evolve.
 		    // Cycle through steps until we get beyond the requested time
 		    // If DoStepSucceeded = False then we have reached coalescence
 		    While τ > τN
@@ -246,6 +246,7 @@ Protected Class SpinEvolverClass
 		  αF = αF + ΔCycle*2*π
 		  
 		  // Evolve the precession phase
+		  Var αDotN As Double = (ℓy(1)*ℓxDotN - ℓx(1)*ℓyDotN)/(ℓx(1)*ℓx(1) + ℓy(1)*ℓy(1))
 		  Var ΨprF As Double = Ψpr(0) + TwoΔτ*αDotN*Cos(ι(1))
 		  
 		  // From here on, the future step just calculated becomes the present step
