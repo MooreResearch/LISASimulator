@@ -1,72 +1,169 @@
 #tag Module
 Protected Module ParamIndexes
-	#tag Property, Flags = &h0
-		DLastIndex As Integer = 14
-	#tag EndProperty
+	#tag Note, Name = About Parameter Indexes
+		The D... indices are for derivatives and should reflect the physical ordering
+		 of parameters working from the stars themselves outward to the detector:
+		
+		   Dχ1 = 0
+		   Dθ1 = 1
+		   Dφ1 = 2
+		   Dχ2 = 3
+		   Dθ2 = 4
+		   Dφ2 = 5
+		   Dδ = 6
+		   Dlnτc = 7
+		   Dλ0 = 8
+		   DlnM = 9
+		   Dβ = 10
+		   Dψ = 11
+		   DlnR = 12
+		   DΘ = 13
+		   DΦ = 14
+		
+		The LastSpinIndex = 7 represents the last parameter that affects the
+		evolution of the spins. The LastParamIndex = 14 represents the last
+		binary system parameter.
+		
+		The ix... indices are for reading in case information from the user interface
+		in the RunWindow or from data files. These indices should follow the order
+		in which the corresponding parameters appear in the user interface. The
+		LastCaseIndex = 21 represents the last value to be read from the interface
+		or file for a given case.
+		
+	#tag EndNote
 
-	#tag Property, Flags = &h0
-		DLastSpinIndex As Integer = 7
-	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		DlnM As Integer = 9
-	#tag EndProperty
+	#tag Constant, Name = DlnM, Type = Double, Dynamic = False, Default = \"9", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		DlnR As Integer = 12
-	#tag EndProperty
+	#tag Constant, Name = DlnR, Type = Double, Dynamic = False, Default = \"12", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dlnτc As Integer = 7
-	#tag EndProperty
+	#tag Constant, Name = Dlnτc, Type = Double, Dynamic = False, Default = \"7", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dβ As Integer = 10
-	#tag EndProperty
+	#tag Constant, Name = Dβ, Type = Double, Dynamic = False, Default = \"10", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dδ As Integer = 6
-	#tag EndProperty
+	#tag Constant, Name = Dδ, Type = Double, Dynamic = False, Default = \"6", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		DΘ As Integer = 13
-	#tag EndProperty
+	#tag Constant, Name = DΘ, Type = Double, Dynamic = False, Default = \"13", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dθ1 As Integer = 1
-	#tag EndProperty
+	#tag Constant, Name = Dθ1, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dθ2 As Integer = 4
-	#tag EndProperty
+	#tag Constant, Name = Dθ2, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dλ0 As Integer = 8
-	#tag EndProperty
+	#tag Constant, Name = Dλ0, Type = Double, Dynamic = False, Default = \"8", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		DΦ As Integer = 14
-	#tag EndProperty
+	#tag Constant, Name = DΦ, Type = Double, Dynamic = False, Default = \"14", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dφ1 As Integer = 2
-	#tag EndProperty
+	#tag Constant, Name = Dφ1, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dφ2 As Integer = 5
-	#tag EndProperty
+	#tag Constant, Name = Dφ2, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dχ1 As Integer = 0
-	#tag EndProperty
+	#tag Constant, Name = Dχ1, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dχ2 As Integer = 3
-	#tag EndProperty
+	#tag Constant, Name = Dχ2, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
 
-	#tag Property, Flags = &h0
-		Dψ As Integer = 11
-	#tag EndProperty
+	#tag Constant, Name = Dψ, Type = Double, Dynamic = False, Default = \"11", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixDet, Type = Double, Dynamic = False, Default = \"19", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixDetΘ0, Type = Double, Dynamic = False, Default = \"20", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixDetρ0, Type = Double, Dynamic = False, Default = \"22", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixDetΦ0, Type = Double, Dynamic = False, Default = \"21", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixDur, Type = Double, Dynamic = False, Default = \"16", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixID, Type = Double, Dynamic = False, Default = \"23", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixM, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixPNA, Type = Double, Dynamic = False, Default = \"17", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixPNΨ, Type = Double, Dynamic = False, Default = \"18", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixR, Type = Double, Dynamic = False, Default = \"12", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixT, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixβ, Type = Double, Dynamic = False, Default = \"10", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixδ, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixΔT, Type = Double, Dynamic = False, Default = \"15", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixΘ, Type = Double, Dynamic = False, Default = \"13", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixθ1, Type = Double, Dynamic = False, Default = \"5", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixθ2, Type = Double, Dynamic = False, Default = \"8", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixλ0, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixΦ, Type = Double, Dynamic = False, Default = \"14", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixφ1, Type = Double, Dynamic = False, Default = \"6", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixφ2, Type = Double, Dynamic = False, Default = \"9", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixχ1, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixχ2, Type = Double, Dynamic = False, Default = \"7", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = ixψ, Type = Double, Dynamic = False, Default = \"11", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = LastCaseIndex, Type = Double, Dynamic = False, Default = \"23", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = LastParamIndex, Type = Double, Dynamic = False, Default = \"14", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = LastSpinIndex, Type = Double, Dynamic = False, Default = \"7", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = εDefault, Type = String, Dynamic = False, Default = \"1e-6", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = π, Type = Double, Dynamic = False, Default = \"3.141592653589793238", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
@@ -107,142 +204,6 @@ Protected Module ParamIndexes
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dχ1"
-			Visible=false
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DLastIndex"
-			Visible=false
-			Group="Behavior"
-			InitialValue="14"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DLastSpinIndex"
-			Visible=false
-			Group="Behavior"
-			InitialValue="7"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DlnM"
-			Visible=false
-			Group="Behavior"
-			InitialValue="9"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DlnR"
-			Visible=false
-			Group="Behavior"
-			InitialValue="12"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dβ"
-			Visible=false
-			Group="Behavior"
-			InitialValue="10"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dδ"
-			Visible=false
-			Group="Behavior"
-			InitialValue="6"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΘ"
-			Visible=false
-			Group="Behavior"
-			InitialValue="13"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dθ1"
-			Visible=false
-			Group="Behavior"
-			InitialValue="1"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dθ2"
-			Visible=false
-			Group="Behavior"
-			InitialValue="4"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dλ0"
-			Visible=false
-			Group="Behavior"
-			InitialValue="8"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dlnτc"
-			Visible=false
-			Group="Behavior"
-			InitialValue="7"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DΦ"
-			Visible=false
-			Group="Behavior"
-			InitialValue="14"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dφ1"
-			Visible=false
-			Group="Behavior"
-			InitialValue="2"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dφ2"
-			Visible=false
-			Group="Behavior"
-			InitialValue="5"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dχ2"
-			Visible=false
-			Group="Behavior"
-			InitialValue="3"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Dψ"
-			Visible=false
-			Group="Behavior"
-			InitialValue="11"
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty

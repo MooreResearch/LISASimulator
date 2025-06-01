@@ -492,6 +492,14 @@ Protected Class BetaFuncsClass
 			Type="Double"
 			EditorType=""
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="cβ2s2β"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

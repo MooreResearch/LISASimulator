@@ -12,9 +12,9 @@ Inherits Thread
 		    CaseSupervisor.DoSteps  // execute steps for that case
 		    // If we are saving to disk, we should close the data file after each case is complete
 		    // (any data saved to memory will be destroyed when the application quits)
-		    theCase.DataRecorder.CloseData
+		    CaseSupervisor.DataRecorder.CloseData
 		  Next
-		  MainWindow.AllCasesDone = True // Let the main window know we are done
+		  RunWindow.AllCasesDone = True // Let the main window know we are done
 		  
 		  
 		  
@@ -39,6 +39,53 @@ Inherits Thread
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DebugIdentifier"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ThreadID"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ThreadState"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="ThreadStates"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Running"
+				"1 - Waiting"
+				"2 - Paused"
+				"3 - Sleeping"
+				"4 - NotRunning"
+			#tag EndEnumValues
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Type"
 			Visible=true
