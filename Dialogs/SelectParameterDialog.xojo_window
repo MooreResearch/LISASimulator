@@ -24,7 +24,7 @@ Begin DesktopWindow SelectParameterDialog
    Title           =   "Untitled"
    Type            =   2
    Visible         =   True
-   Width           =   348
+   Width           =   306
    Begin DesktopLabel TitleLabel
       AllowAutoDeactivate=   True
       Bold            =   False
@@ -47,7 +47,7 @@ Begin DesktopWindow SelectParameterDialog
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
-      Text            =   "Evaluate this derivative with respect to parameter:"
+      Text            =   "Choose the denominator of this derivative:"
       TextAlignment   =   0
       TextColor       =   &c000000
       Tooltip         =   ""
@@ -55,7 +55,7 @@ Begin DesktopWindow SelectParameterDialog
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   308
+      Width           =   266
    End
    Begin DesktopPopupMenu ParameterPopupMenu
       AllowAutoDeactivate=   True
@@ -66,9 +66,9 @@ Begin DesktopWindow SelectParameterDialog
       FontUnit        =   0
       Height          =   20
       Index           =   -2147483648
-      InitialValue    =   "χ1\nθ1\nφ1\nχ2\nθ2\nφ2\nδ\nτc\nλ0\nM\nβ\nψ\nR\nΘ\nΦ\n(Cancel)"
+      InitialValue    =   "Dχ1\nDθ1\nDφ1\nDχ2\nDθ2\nDφ2\nDδ\nDlnτc\nDλ0\nDlnM\nDβ\nDψ\nDlnR\nDΘ\nDΦ\n(Cancel)"
       Italic          =   False
-      Left            =   126
+      Left            =   105
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -362,6 +362,6 @@ End
 		Group="Behavior"
 		InitialValue=""
 		Type="String"
-		EditorType=""
+		EditorType="MultiLineEditor"
 	#tag EndViewProperty
 #tag EndViewBehavior

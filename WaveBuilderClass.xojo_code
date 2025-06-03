@@ -1073,7 +1073,7 @@ Protected Class WaveBuilderClass
 
 
 	#tag Property, Flags = &h0
-		A(250) As Double
+		A(LastWaveTermIndex) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

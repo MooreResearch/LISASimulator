@@ -1374,7 +1374,6 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Opening()
-		  //Necdet = New NecdetsClass(Nil,1)
 		  LoadPlotItemsList
 		  UpdateChooseVarMenu
 		End Sub
@@ -1394,53 +1393,28 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub CustomizeChosenPlotItem(TheName As String, TheXScript As String)
-		  Var selectedVariableName As String = TheName
-		  Var selectedVariableXScript As String = TheXScript
-		  Var chosenParameter As String
-		  If selectedVariableName.Contains("j") Then
-		    SelectComponentDialog.ShowModal
-		    chosenParameter = SelectComponentDialog.Component
-		    If chosenParameter = "(Cancel)" Then
-		      selectedVariableName = ""
-		    Else
-		      selectedVariableName = selectedVariableName.ReplaceAll("j", chosenParameter)
-		      selectedVariableXScript = selectedVariableXScript.ReplaceAll("j", chosenParameter)
-		    End If
-		  End If
-		  If selectedVariableName.Contains("q") Then
+		Sub CustomizeChosenPlotItem(TheItem As PlotItemClass)
+		  If TheItem.GetIndexMax = LastParamIndex Then
+		    Var chosenParameter As String
 		    SelectParameterDialog.ShowModal
 		    chosenParameter = SelectParameterDialog.Param
 		    If chosenParameter = "(Cancel)" Then
-		      selectedVariableName = ""
+		      Return
 		    Else
-		      selectedVariableName = selectedVariableName.ReplaceAll("@", chosenParameter)
-		      selectedVariableName = selectedVariableName.ReplaceAll("q", chosenParameter)
+		      TheItem.SetIndex(Index4Derivative(chosenParameter))
 		    End If
-		  End If
-		  If selectedVariableName.Contains("$") Then
-		    SelectOrbitParameterDialog.ShowModal
-		    chosenParameter = SelectParameterDialog.Param
-		    If chosenParameter = "(Cancel)" Then
-		      selectedVariableName = ""
-		    Else
-		      selectedVariableName = selectedVariableName.ReplaceAll("$", chosenParameter)
-		      selectedVariableName = selectedVariableName.ReplaceAll("q", chosenParameter)
-		    End If
-		  End If
-		  If selectedVariableName.Contains("#") Then
+		  ElseIf TheItem.GetIndexMax = LastWaveTermIndex Then
+		    Var chosenParameter As String
 		    SelectIndexDialog.ShowModal
 		    chosenParameter = SelectIndexDialog.SubmittedIndex
-		    If chosenParameter.IsEmpty Then
-		      selectedVariableName = ""
+		    If chosenParameter = "" Then  // if we have cancelled
+		      Return
 		    Else
-		      selectedVariableName = selectedVariableName.ReplaceAll("#", chosenParameter)
+		      TheItem.SetIndex(chosenParameter.ToInteger)
 		    End If
 		  End If
-		  If Not selectedVariableName.IsEmpty Then
-		    PlotItemsListBox.AddRow(selectedVariableName)
-		    PlotItemsListBox.RowTagAt(PlotItemsListBox.LastAddedRowIndex) = selectedVariableXScript
-		  End If
+		  PlotItemsListBox.AddRow(TheItem.GetName)
+		  PlotItemsListBox.RowTagAt(PlotItemsListBox.LastAddedRowIndex) = TheItem
 		End Sub
 	#tag EndMethod
 
@@ -1488,7 +1462,7 @@ End
 	#tag Method, Flags = &h0
 		Sub DoStart()
 		  // Start running a case or cases
-		  TheCases.ResizeTo(-1)  // Clear out any pre-existing cases
+		  TheCases.RemoveAll  // Clear out any pre-existing cases
 		  if RunFileCheckBox.Value then // if we are running cases from a file
 		    Try
 		      GetCasesFromFile // get the cases from the file (this might generate an exception)
@@ -1502,6 +1476,8 @@ End
 		  Else // we are getting the case from the display
 		    TheCases.Add(GetDisplayCase) // get the case
 		  End if
+		  LoadPlotItemsList // reload the plot items list with fresh values
+		  UpdateChooseVarMenu // update the menu
 		  AllCasesDone = False // set the flag indicating whether we have run all cases
 		  DisableInterface // disable any parameter or saving information while we are running
 		  ValueOfStatusLabel.Text = "Running" // indicate the status
@@ -1602,18 +1578,18 @@ End
 		  For i As Integer = 1 to εListBox.LastRowIndex  // for all remaining entries in the  epsilon list box
 		    theEps = theEps + "," + εListBox.CellTextAt(i) // add a comma followed by the next item in the list box
 		  Next
-		  Return New CaseInfoClass(theParams, theEps, GetSaveNames)
+		  Return New CaseInfoClass(theParams, theEps, GetMyPlotItems, DataDestinationMenu.SelectedRowText = "file")
 		  
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetSaveNames() As String
+		Function GetMyPlotItems() As PlotItemClass()
 		  // This method returns an array consisting of the list of plot items 
 		  // in the PlotItemsListBox. Note that to be consistent with other
 		  // methods, we must always have a "t-y" item appearing first.
-		  Var theNames As String
+		  Var thePlotItems() As PlotItemClass // create the array to return
 		  If PlotItemsListBox.LastRowIndex > -1 Then // if we have any items at all
 		    // Look through the items for "t-y", and remove it if it appears
 		    For i As Integer = 0 to PlotItemsListBox.LastRowIndex
@@ -1623,15 +1599,13 @@ End
 		    Next
 		    If PlotItemsListBox.LastRowIndex > -1 Then // if we have any items left
 		      PlotItemsListBox.AddRowAt(0,"t-y") // make sure the first row is "t-y"
-		      theNames = DataDestinationMenu.SelectedRowText
 		      // Now read the items from the listbox and add them to theNames
-		      For i As Integer = 0 to PlotItemsListBox.LastRowIndex
-		        theNames = theNames + "," + PlotItemsListBox.CellTextAt(i)
+		      For i As Integer = 0 to PlotItemsListBox.LastRowIndex // add the remaining items to the array
+		        thePlotItems.Add(PlotItemsListBox.RowTagAt(i))
 		      Next
 		    End If
 		  End If
-		  // Return the comma-delimited list of names (will be empty if we have nothing to plot)
-		  Return theNames
+		  Return thePlotItems
 		End Function
 	#tag EndMethod
 
@@ -1650,43 +1624,13 @@ End
 
 	#tag Method, Flags = &h0
 		Sub LoadPlotItemsList()
-		  // This method creates a dictionary of possible variables that we might plot.
-		  // Each item consists of a display value for the ChooseVariablePopupMenu,
-		  // and a XojoScript for computing that item in the context of the main WaveBuilder
-		  // A "q" symbol signals that the user must select a parameter for the derivative
-		  // when choosing from the menu, and the selected parameter should replace "q"
-		  // wherever it appears. A "$" in the XojoScript signals that this parameter
-		  // must be from the orbit parameters χ1, θ1, φ1, χ2, θ2, φ2, δ, τc, and should be
-		  // erased when the user makes that selection.  A "#" signals that the user must
-		  // select an index from 0 to 250, which will replace the "#" in both the name and
-		  // the script. A "j" signals that the user must select a component from x, y, z,
-		  // which will replace the "j" in both the name and the script.
+		  // This method creates a list of possible variables that we might plot.
+		  // There should be one item for each subclass of PlotItemsClass defined in the
+		  // PlotItemSubclasses folder.
 		  
-		  PlotItemsList.Add(New PlotItemClass("t-y", "τrDN*Parameters.GM/Parameters.Year"))
-		  PlotItemsList.Add(New PlotItemClass("H", "H"))
-		  PlotItemsList.Add(New PlotItemClass("dH/dq", "DHDQ(Dq)"))
-		  PlotItemsList.Add(New PlotItemClass("A(#)", "A(#)"))
-		  PlotItemsList.Add(New PlotItemClass("dA/dι(#)", "DADι(#)"))
-		  PlotItemsList.Add(New PlotItemClass("dA/dβ(#)", "DADβ(#)"))
-		  PlotItemsList.Add(New PlotItemClass("dA/dδ(#)", "DADδ(#)"))
-		  PlotItemsList.Add(New PlotItemClass("dA/dχaj(#)", "DADχaj(#)"))
-		  PlotItemsList.Add(New PlotItemClass("dA/dχsj(#)", "DADχsj(#)"))
-		  PlotItemsList.Add(New PlotItemClass("W(#)", "W(#)"))
-		  PlotItemsList.Add(New PlotItemClass("dW/dα(#)", "DWDα(#)"))
-		  PlotItemsList.Add(New PlotItemClass("dW/dψ(#)", "DWDψ(#)"))
-		  PlotItemsList.Add(New PlotItemClass("V", "SpinResults.V"))
-		  PlotItemsList.Add(New PlotItemClass("ι", "SpinResults.ι"))
-		  PlotItemsList.Add(New PlotItemClass("α", "SpinResults.α"))
-		  PlotItemsList.Add(New PlotItemClass("ψ", "SpinResults.ψ"))
-		  PlotItemsList.Add(New PlotItemClass("χ1j", "0.5*(SpinResults.χsj+SpinResults.χaj)"))
-		  PlotItemsList.Add(New PlotItemClass("χ2j", "0.5*(SpinResults.χsj-SpinResults.χaj)"))
-		  PlotItemsList.Add(New PlotItemClass("χaj", "SpinResults.χaj"))
-		  PlotItemsList.Add(New PlotItemClass("χsj", "SpinResults.χsj"))
-		  PlotItemsList.Add(New PlotItemClass("dV/dq$", "SpinResults.DVI(Dq)"))
-		  PlotItemsList.Add(New PlotItemClass("dι/dq$", "SpinResults.DιI(Dq)"))
-		  PlotItemsList.Add(New PlotItemClass("dα/dq$", "SpinResults.DαI(Dq"))
-		  PlotItemsList.Add(New PlotItemClass("dχaj/dq$", "SpinResults.DχajI(Dq)"))
-		  PlotItemsList.Add(New PlotItemClass("dχsj/dq$", "SpinResults.DχsjI(Dq)"))
+		  PlotItemsList.RemoveAll 
+		  PlotItemsList.Add(New PlotItemH)
+		  PlotItemsList.Add(New PlotItemDH)
 		End Sub
 	#tag EndMethod
 
@@ -1864,22 +1808,16 @@ End
 		  Setting = True
 		  ChooseVariablePopupMenu.RemoveAllRows
 		  For Each plotitem As PlotItemClass in PlotItemsList
-		    ChooseVariablePopupMenu.AddRow(plotitem.Name)
+		    Var Found As Boolean = False
+		    For i As Integer = 0 to PlotItemsListBox.LastRowIndex
+		      Found = Found Or plotitem = PlotItemsListBox.RowTagAt(i)
+		      If Found Then Exit
+		    Next
+		    If Not Found Then
+		      ChooseVariablePopupMenu.AddRow(plotitem.GetName)
+		      ChooseVariablePopupMenu.RowTagAt(ChooseVariablePopupMenu.LastAddedRowIndex) = plotitem
+		    End If
 		  Next
-		  'If SideCasesCheckbox.Value = True Then
-		  'Var sideCaseParameter As String = SideCaseParamMenu.SelectedRowText
-		  'Var parameterIsOrbit As Boolean = SideCaseParamMenu.SelectedRowIndex < 8
-		  'For Each plotitem As PlotItemClass in PlotNumItemsList
-		  'If plotitem.Name.Contains("@") Then
-		  'plotitem.Name = plotitem.Name.ReplaceAll("@",sideCaseParameter)
-		  'ChooseVariablePopupMenu.AddRow(plotitem.Name)
-		  'ChooseVariablePopupMenu.RowTagAt(ChooseVariablePopupMenu.LastAddedRowIndex) = GetXScriptFor(plotitem)
-		  'Elseif plotitem.Name.Contains("$") And parameterIsOrbit Then
-		  'plotitem.Name = plotitem.Name.ReplaceAll("$", sideCaseParameter)
-		  'ChooseVariablePopupMenu.AddRow(plotitem.Name)
-		  'End If
-		  'Next
-		  'End If
 		  ChooseVariablePopupMenu.SelectedRowIndex = -1
 		  Setting = False
 		  
@@ -1975,14 +1913,6 @@ End
 
 	#tag Property, Flags = &h0
 		AllCasesDone As Boolean = False
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		LastStoreVariableIndex As Integer = 16
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		MyPlotItems() As PlotItemClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -2099,13 +2029,12 @@ End
 		    If me.SelectedRowIndex = DesktopListBox.NoSelection Then
 		      System.Beep // report nothing to delete
 		    Else  // otherwise
-		      Var row As Integer = me.LastRowIndex // start with the last row
-		      Do
-		        // delete any row that is selected
-		        If me.RowSelectedAt(row) Then me.RemoveRowAt(row)
-		        row = row - 1 // point to the previous row
-		      Loop Until row = -1 // repeat until we have no more rows to check
+		      Var row As Integer = me.SelectedRowIndex
+		      Var plotitem As PlotItemClass = me.RowTagAt(row)
+		      plotitem.Reset
+		      me.RemoveRowAt(row)
 		    End If
+		    UpdateChooseVarMenu
 		    Return True // indicates we have handled the keystroke
 		  End If
 		  Return False // if not delete or backspace, let someone else handle it
@@ -2116,7 +2045,8 @@ End
 	#tag Event
 		Sub SelectionChanged(item As DesktopMenuItem)
 		  If Not Setting Then
-		    CustomizeChosenPlotItem(me.SelectedRowText, me.RowTagAt(me.SelectedRowIndex))
+		    CustomizeChosenPlotItem(me.RowTagAt(me.SelectedRowIndex))
+		    UpdateChooseVarMenu
 		  End If
 		End Sub
 	#tag EndEvent
@@ -2139,6 +2069,16 @@ End
 		Function HeaderPressed(column as Integer) As Boolean
 		  Return True // Do not allow sorting
 		  
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub Opening()
+		  me.ColumnTypeAt(0) = DesktopListBox.CellTypes.TextField
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function CellPressed(row As Integer, column As Integer, x As Integer, y As Integer) As Boolean
+		  me.EditCellAt(row, column)
 		End Function
 	#tag EndEvent
 #tag EndEvents
@@ -2418,14 +2358,6 @@ End
 		Group="Behavior"
 		InitialValue=""
 		Type="Boolean"
-		EditorType=""
-	#tag EndViewProperty
-	#tag ViewProperty
-		Name="LastStoreVariableIndex"
-		Visible=false
-		Group="Behavior"
-		InitialValue="16"
-		Type="Integer"
 		EditorType=""
 	#tag EndViewProperty
 #tag EndViewBehavior

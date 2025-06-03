@@ -395,6 +395,8 @@ Protected Class SpinEvolverClass
 		  α(1) = α(1) + ΔCycles*2*π
 		  
 		  // Initialize the precession phase
+		  Var αDot0 As Double = (ℓy(0)*ℓxDot0 - ℓx(0)*ℓyDot0)/(ℓx(0)*ℓx(0) + ℓy(0)*ℓy(0))
+		  Var αDot1 As Double = (ℓy(1)*ℓxDot1 - ℓx(1)*ℓyDot1)/(ℓx(1)*ℓx(1) + ℓy(1)*ℓy(1))
 		  Ψpr(0) = 0.0
 		  Ψpr(1) = -0.5*ΔτhP*(αDot0*Cos(ι(0)) + αDot1*Cos(ι(1)))
 		  

@@ -93,6 +93,7 @@ Protected Class CaseSupervisorClass
 		  // The CaseSupervisor class handles running a particular case
 		  StartTicks = System.Ticks // record starting time
 		  BaseCase = currentCaseInfo // save the parameters for the current case
+		  BaseWaveBuilder = New WaveBuilderClass(BaseCase)  // create the base wavebuilder
 		  
 		  // the following items specify the unitless time between detector steps
 		  Δτr = BaseCase.ΔT / BaseCase.GM
@@ -104,6 +105,7 @@ Protected Class CaseSupervisorClass
 		  
 		  // Set up difference factors and side case WaveBuilders
 		  Var εVals() As Double = BaseCase.GetεVals
+		  OneI2ε.ResizeTo(LastParamIndex)
 		  For i As Integer = 0 to LastParamIndex
 		    If εVals(i) = 0.0 Then
 		      OneI2ε(i) = 0.0  // This is the signal to ignore this case
@@ -115,23 +117,8 @@ Protected Class CaseSupervisorClass
 		    End If
 		  Next
 		  
-		  // Set up indexes for post-Newtonian power series
-		  H0PLastIndex = 4
-		  H1PLastIndex = 18
-		  H2PLastIndex = 46
-		  H3PLastIndex = 128
-		  H0XLastIndex = 132
-		  H1XLastIndex = 145
-		  H2XLastIndex = 172
-		  H3XLastIndex = 250
-		  
 		  // Set up the DataRecorder
-		  DataRecorder = New DataRecorderClass
-		  Var arraySize As Integer = -1
-		  Var VarNames() As String = BaseCase.GetVars2Save
-		  If VarNames(0) = "memory" Then arraySize = NSteps
-		  VarNames.RemoveAt(0)
-		  DataRecorder.SetVariableNames(VarNames, arraySize)
+		  DataRecorder = New DataRecorderClass(BaseCase.GetVars2Save, BaseCase.GetDataDestination, self, NSteps)
 		  
 		  // Create and initialize the ATA matrix
 		  //ATAMatrix = New Matrix(15) // Initalize an empty 15x15 matrix
@@ -161,7 +148,7 @@ Protected Class CaseSupervisorClass
 		      End If
 		      If allOK Then
 		        AssembleDerivatives
-		        If DataRecorder <> Nil Then DataRecorder.WriteData
+		        DataRecorder.WriteData
 		        // Add to the ATA and calculate uncertainties
 		      Else
 		        Exit // if we encountered any coalescence in any case, then abort the main loop
@@ -210,43 +197,11 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		DHI() As Double
+		DHI(LastParamIndex) As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		H As Double
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private H0PLastIndex As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private H0XLastIndex As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private H1PLastIndex As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private H1XLastIndex As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private H2PLastIndex As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private H2XLastIndex As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private H3PLastIndex As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private H3XLastIndex As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

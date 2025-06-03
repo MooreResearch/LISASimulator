@@ -1,5 +1,47 @@
 #tag Module
 Protected Module ParamIndexes
+	#tag Method, Flags = &h0
+		Function Index4Derivative(TheName As String) As Integer
+		  // This method converts the name of a derivative denominator
+		  // (as a string) to the corresponding index, as defined in this module
+		  Select Case TheName
+		  Case "DlnM"
+		    Return DlnM
+		  Case "DlnR"
+		    Return DlnR
+		  Case "Dlnτc"
+		    Return Dlnτc
+		  Case "Dβ"
+		    Return Dβ
+		  Case "Dδ"
+		    Return Dδ
+		  Case "DΘ"
+		    Return DΘ
+		  Case "Dθ1"
+		    Return Dθ1
+		  Case "Dθ2"
+		    Return Dθ2
+		  Case "Dλ0"
+		    Return Dλ0
+		  Case "DΦ"
+		    Return DΦ
+		  Case "Dφ1"
+		    Return Dφ1
+		  Case "Dφ2"
+		    Return Dφ2
+		  Case "Dχ1"
+		    Return Dχ1
+		  Case "Dχ2"
+		    Return Dχ2
+		  Case "Dψ"
+		    Return Dψ
+		  Else
+		    Return -1  // Error indication
+		  End Select
+		End Function
+	#tag EndMethod
+
+
 	#tag Note, Name = About Parameter Indexes
 		The D... indices are for derivatives and should reflect the physical ordering
 		 of parameters working from the stars themselves outward to the detector:
@@ -76,6 +118,30 @@ Protected Module ParamIndexes
 	#tag EndConstant
 
 	#tag Constant, Name = Dψ, Type = Double, Dynamic = False, Default = \"11", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = H0PLastIndex, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = H0XLastIndex, Type = Double, Dynamic = False, Default = \"132", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = H1PLastIndex, Type = Double, Dynamic = False, Default = \"18", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = H1XLastIndex, Type = Double, Dynamic = False, Default = \"145", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = H2PLastIndex, Type = Double, Dynamic = False, Default = \"46", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = H2XLastIndex, Type = Double, Dynamic = False, Default = \"172", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = H3PLastIndex, Type = Double, Dynamic = False, Default = \"128", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = H3XLastIndex, Type = Double, Dynamic = False, Default = \"250", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = ixDet, Type = Double, Dynamic = False, Default = \"19", Scope = Public
@@ -157,6 +223,9 @@ Protected Module ParamIndexes
 	#tag EndConstant
 
 	#tag Constant, Name = LastSpinIndex, Type = Double, Dynamic = False, Default = \"7", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = LastWaveTermIndex, Type = Double, Dynamic = False, Default = \"250", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = εDefault, Type = String, Dynamic = False, Default = \"1e-6", Scope = Public

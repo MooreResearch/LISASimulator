@@ -46,8 +46,8 @@ Protected Class CaseInfoClass
 		Private Function Clone() As CaseInfoClass
 		  // This generates a clone of the base parameter class.
 		  // Note that Ve and Year do not need to be cloned, because they
-		  // have defined default values. Note also that IsBaseCase, Vars2Save,
-		  // and εValues are not cloned, because clones will be used
+		  // have defined default values. Note also that IsBaseCase, Vars2Plot,
+		  // DataToFlie, and εValues are not cloned, because clones will be used
 		  // only to create side cases.
 		  
 		  Var c As New CaseInfoClass
@@ -97,7 +97,7 @@ Protected Class CaseInfoClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(Parameters As String, Epsilons As String, VarsToSave As String)
+		Sub Constructor(Parameters as String, Epsilons as String, VarsToSave() as PlotItemClass, DataDestination as Boolean)
 		  Var radiansFromDegrees As Double = 180.0/π
 		  Var p As String = Parameters.ReplaceAll(" ", "") // clear out any spaces
 		  Var params() As String = p.Split(",")
@@ -141,9 +141,11 @@ Protected Class CaseInfoClass
 		  Next
 		  εValues = epValues
 		  
-		  // Get variable names to save (first item should be "memory" or "file")
-		  Var vstring As String = VarsToSave.ReplaceAll(" ", "")
-		  Vars2Save = vstring.Split(",")
+		  // Get list of plot items
+		  Vars2Save = VarsToSave
+		  
+		  // Set where plot items are to be saved
+		  DataToFile = DataDestination
 		  
 		  // Initialize the detector
 		  Detector.Initialize(me)
@@ -151,6 +153,12 @@ Protected Class CaseInfoClass
 		  
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetDataDestination() As Boolean
+		  Return DataToFile
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -201,7 +209,7 @@ Protected Class CaseInfoClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetVars2Save() As String()
+		Function GetVars2Save() As PlotItemClass()
 		  Return Vars2Save
 		End Function
 	#tag EndMethod
@@ -212,6 +220,10 @@ Protected Class CaseInfoClass
 		End Function
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h21
+		Private DataToFile As Boolean
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		Detector As DetectorInterface
@@ -282,7 +294,7 @@ Protected Class CaseInfoClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Vars2Save() As String
+		Private Vars2Save() As PlotItemClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

@@ -4,7 +4,7 @@ Implements DetectorInterface
 	#tag Method, Flags = &h0
 		Function GetFPAndFX(Tau As Double) As Double()
 		  // Part of the DetectorInterface interface.
-		  
+		  Return Array(Cos(2*Params.ψ), Sin(2*Params.ψ))
 		  
 		End Function
 	#tag EndMethod

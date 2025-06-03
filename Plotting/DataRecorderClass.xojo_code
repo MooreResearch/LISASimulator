@@ -14,16 +14,29 @@ Protected Class DataRecorderClass
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Constructor(VarsToSave() as PlotItemClass, DataDestination as Boolean, TheContext as CaseSupervisorClass, ArraySize as Integer)
+		  Items2Save = VarsToSave
+		  For Each item As PlotItemClass In Items2Save
+		    item.SetContext(TheContext)
+		  Next
+		  DataToFile = DataDestination
+		  ArrayMax = ArraySize
+		  CreateFolder
+		  
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub CreateFolder()
 		  // This method creates a folder for the data items to be saved and initializes
 		  // binary streams for each of the items to be saved. It returns "OK" if all
 		  // went well, and an error message otherwise.
 		  
-		  // The following if statement ensures that we have some variable names.
-		  // Otherwise, we do nothing.
-		  If VNames.LastIndex > -1 Then
-		    If ArrayMax < 0 Then // if we are writing to hard disk
+		  // Only do something if we have some variable names.
+		  If Items2Save.LastIndex > -1 Then
+		    If DataToFile Then // if we are writing to hard disk
 		      Try
 		        Var d As New FolderItem("") // get directory containing the application
 		        Var dateTimeOfNow As DateTime = DateTime.Now // current date
@@ -36,9 +49,9 @@ Protected Class DataRecorderClass
 		        d = d.Child("LD"+ DateTimeString) // set up folder item for the enclosing folder
 		        d.CreateFolder // create the folder
 		        Var f As FolderItem
-		        Bs.ResizeTo(VNames.LastIndex) // make sure we have as many elements as vNames().
-		        For i As Integer = 0 to VNames.LastIndex // go through all the variable names
-		          f = d.Child(VNames(i) + ".lsb") // define a file for each
+		        Bs.ResizeTo(Items2Save.LastIndex) // make sure we have as many streams we have items
+		        For i As Integer = 0 to Items2Save.LastIndex // go through all the plot items
+		          f = d.Child(Items2Save(i).GetName + ".lsb") // define a file for each
 		          Bs(i) = BinaryStream.Create(f) // create a binary stream for each
 		        Next
 		      Catch e As RuntimeException
@@ -52,9 +65,9 @@ Protected Class DataRecorderClass
 		        Raise e
 		      End If
 		    Else // we must be storing data to memory instead
-		      Ms.ResizeTo(VNames.LastIndex)
-		      For i As Integer = 0 to VNames.LastIndex
-		        Ms(i) = New MemoryStreamClass(VNames(i), ArrayMax)
+		      Ms.ResizeTo(Items2Save.LastIndex)
+		      For i As Integer = 0 to Items2Save.LastIndex
+		        Ms(i) = New MemoryStreamClass(Items2Save(i).GetName, ArrayMax)
 		      Next
 		    End If
 		  End If
@@ -79,11 +92,11 @@ Protected Class DataRecorderClass
 		  // deal with such exceptions somehow.
 		  
 		  // If we have no names to compare with, return nothing
-		  If VNames.LastIndex = -1 Then Return Nil
+		  If Items2Save.LastIndex = -1 Then Return Nil
 		  Var foundItemIndex As Integer = -1
 		  // Look through the list of names
-		  For i As Integer = 0 to VNames.LastIndex
-		    If VNames(i) = TheName Then // if we have found our name
+		  For i As Integer = 0 to Items2Save.LastIndex
+		    If Items2Save(i).GetName = TheName Then // if we have found our name
 		      foundItemIndex = i
 		    End If
 		  Next
@@ -113,28 +126,14 @@ Protected Class DataRecorderClass
 
 	#tag Method, Flags = &h0
 		Function GetVariableNames() As String()
-		  // Create a copy of the VNames array (so the user can't mess with the protected array)
+		  // Get a list of names from the Items2Save list.
 		  Var theNames() As String
-		  theNames.ResizeTo(VNames.LastIndex)
-		  For i As Integer = 0 to VNames.LastIndex
-		    theNames(i) = VNames(i)
+		  theNames.ResizeTo(Items2Save.LastIndex)
+		  For i As Integer = 0 to Items2Save.LastIndex
+		    theNames(i) = Items2Save(i).GetName
 		  Next
 		  Return theNames
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetDataSource(theSource As WaveBuilderClass)
-		  DataSource = theSource
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetVariableNames(theNames() As String, arraySize As Integer = -1)
-		  VNames = theNames
-		  ArrayMax = arraySize
-		  CreateFolder
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -144,7 +143,7 @@ Protected Class DataRecorderClass
 		  // or if the optional parameter specifying the number of doubles to store
 		  // is supplied, data is written internally to memory. 
 		  
-		  If VNames.LastIndex > -1 Then // If we have some data to write
+		  If Items2Save.LastIndex > -1 Then // If we have some data to write
 		    If Ms.LastIndex =  -1 Then // If we have no memory streams, we must be writing data to disk
 		      If Bs.LastIndex = -1 Then // if we also have no binary streams
 		        Var e as New RuntimeException  // that is an error
@@ -152,8 +151,8 @@ Protected Class DataRecorderClass
 		        Raise e
 		      Else
 		        Try
-		          For i as Integer = 0 to VNames.LastIndex
-		            Bs(i).WriteDouble(DataSource.GetNamedValue(VNames(i)))
+		          For i as Integer = 0 to Items2Save.LastIndex
+		            Bs(i).WriteDouble(Items2Save(i).GetValue)
 		          Next
 		        Catch e As RuntimeException
 		          CloseData // fatal error means that we should close out the files
@@ -166,8 +165,8 @@ Protected Class DataRecorderClass
 		        e.Message = "WriteData: No output streams defined for data"
 		        Raise e
 		      Else // otherwise, write the data to the memory streams
-		        For i as Integer = 0 to VNames.LastIndex
-		          Ms(i).Write(DataSource.GetNamedValue(VNames(i)))
+		        For i as Integer = 0 to Items2Save.LastIndex
+		          Ms(i).Write(Items2Save(i).GetValue)
 		        Next
 		      End If
 		    End If
@@ -182,22 +181,17 @@ Protected Class DataRecorderClass
 		can write data to memory instead of to hard disk files.
 		
 		In some place accessible to the routines generating data that you want to save,
-		define a property to hold an instance of this class. As you start a run create a new
-		instance of the class, and put it in the property. Also call the "SetVariableNames"
-		with an array of valid variable names and an optional array size if you are saving to
-		memory. This should generally be the maximum number of steps that the program
-		will execute. (If you do not specify an array size or set it to -1, the class will assume
-		that you are writing to the hard drive instead of memory.) As you start, you should
-		also call the "SetDataSource" method with the WaveBuilderClass instance that
-		will provide the data.
+		define a property to hold an instance of this class. As you start a run, create a new
+		instance of the class, providing with a list of PlotItemClass, a flag indicating whether
+		to store to memory (false) or files on a hard drive (true), the WaveBuilder context in
+		which the Plotitem's XojoScript will run, and an array size for items stored to memory
+		(the last will be ignored if we are writing to a file).
 		
 		Then, EXACTLY ONCE per main program time step, one should call the WriteData
-		method. It will extract the values for the variables named in the list and write
-		them to data or to memory. This method will call the WaveBuilderClass's
-		GetNamedValue for each item in the list and save the provided data to memory
-		or to the hard drive.
+		method. It will run each item's XojoScript to obtain the data value and write
+		that value to data or to memory.
 		
-		If we are writing data to disk, the "SetVariableNames" method creates a folder whose
+		If we are writing data to disk, the constructor method creates a folder whose
 		name has the format "LDyymmddhhmmss" where the small letters are replaced by the
 		date and time the folder was created (so that each folder is unique) and a set of data files
 		inside that folder. Each file will have the name specified by an element of the array
@@ -231,15 +225,15 @@ Protected Class DataRecorderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private DataSource As WaveBuilderClass
+		Private DataToFile As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Items2Save() As PlotItemClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private Ms() As MemoryStreamClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private VNames() As String
 	#tag EndProperty
 
 

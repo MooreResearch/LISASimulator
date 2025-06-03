@@ -1,49 +1,28 @@
 #tag Class
-Protected Class PlotItemClass
+Protected Class PlotItemDH
+Inherits PlotItemClass
 	#tag Method, Flags = &h0
 		Function GetIndexMax() As Integer
-		  Return -1
+		  Return LastParamIndex
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetName() As String
-		  
+		  If Index > -1 Then
+		    Return "DHI(" + Index.ToString + ")"
+		  Else
+		    Return "DHI()"
+		  End If
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetValue() As Double
+		  Return CS.DHI(Index)
 		  
 		End Function
 	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Reset()
-		  Index = -1
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetContext(TheContext As CaseSupervisorClass)
-		  CS = TheContext
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetIndex(TheIndex As Integer)
-		  
-		End Sub
-	#tag EndMethod
-
-
-	#tag Property, Flags = &h1
-		Protected CS As CaseSupervisorClass
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected Index As Integer = -1
-	#tag EndProperty
 
 
 	#tag ViewBehavior
@@ -52,14 +31,6 @@ Protected Class PlotItemClass
 			Visible=true
 			Group="ID"
 			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Index"
-			Visible=true
-			Group="ID"
-			InitialValue="-2147483648"
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
