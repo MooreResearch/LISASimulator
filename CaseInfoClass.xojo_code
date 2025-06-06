@@ -166,8 +166,8 @@ Protected Class CaseInfoClass
 		  // This creates a new side case from the base class and tweaks the
 		  // the specified parameter
 		  Var c As CaseInfoClass = Clone
-		  Var myε As Double = εValues(PIndex)
-		  If myε > 0.0 Then
+		  Var myε As Double = εValues(PIndex)*Sign
+		  If myε <> 0.0 Then
 		    Select Case PIndex
 		    Case Dχ1
 		      c.χ1 = c.χ1 + myε

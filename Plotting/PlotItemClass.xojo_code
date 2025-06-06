@@ -32,7 +32,7 @@ Protected Class PlotItemClass
 
 	#tag Method, Flags = &h0
 		Sub SetIndex(TheIndex As Integer)
-		  
+		  Index = TheIndex
 		End Sub
 	#tag EndMethod
 

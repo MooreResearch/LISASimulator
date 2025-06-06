@@ -35,6 +35,7 @@ Protected Class CaseSupervisorClass
 		      For j As Integer = 0 to LastWaveTermIndex
 		        dhdq = dhdq + (AP(j) - AM(j))*oneOver2ε*w(j) + A(j)*(dwdα(j)*dαdq + dwdΨ(j)*dΨdq)
 		      Next
+		      Var dhdqString As String = dhdq.ToString
 		      DHI(i) = dhdq
 		    End If
 		  Next
@@ -52,13 +53,8 @@ Protected Class CaseSupervisorClass
 		  Δτr = BaseCase.ΔT / BaseCase.GM
 		  NSteps = Floor(BaseCase.RunDuration / BaseCase.ΔT)
 		  
-		  // Expand the arrays for the side cases to the correct size
-		  SideWBPlusFor.ResizeTo(LastParamIndex)
-		  SideWBMinusFor.ResizeTo(LastParamIndex)
-		  
 		  // Set up difference factors and side case WaveBuilders
 		  Var εVals() As Double = BaseCase.GetεVals
-		  OneI2ε.ResizeTo(LastParamIndex)
 		  For i As Integer = 0 to LastParamIndex
 		    If εVals(i) = 0.0 Then
 		      OneI2ε(i) = 0.0  // This is the signal to ignore this case
@@ -166,7 +162,7 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		OneI2ε() As Integer
+		OneI2ε(LastParamIndex) As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

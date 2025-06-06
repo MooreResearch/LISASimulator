@@ -1,6 +1,47 @@
 #tag Module
 Protected Module ParamIndexes
 	#tag Method, Flags = &h0
+		Function Derivative4Index(TheIndex As Integer) As String
+		  // This method converts the name of a derivative denominator
+		  // (as a string) to the corresponding index, as defined in this module
+		  Select Case TheIndex
+		  Case DlnM
+		    Return "DlnM"
+		  Case DlnR
+		    Return "DlnR"
+		  Case Dlnτc
+		    Return "Dlnτc"
+		  Case Dβ
+		    Return "Dβ"
+		  Case Dδ
+		    Return "Dδ"
+		  Case DΘ
+		    Return "DΘ"
+		  Case Dθ1
+		    Return "Dθ1"
+		  Case Dθ2
+		    Return "Dθ2"
+		  Case Dλ0
+		    Return "Dλ0"
+		  Case DΦ
+		    Return "DΦ"
+		  Case Dφ1
+		    Return "Dφ1"
+		  Case Dφ2
+		    Return "Dφ2"
+		  Case Dχ1
+		    Return "Dχ1"
+		  Case Dχ2
+		    Return "Dχ2"
+		  Case Dψ
+		    Return "Dψ"
+		  Else
+		    Return "error"  // Error indication
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Index4Derivative(TheName As String) As Integer
 		  // This method converts the name of a derivative denominator
 		  // (as a string) to the corresponding index, as defined in this module

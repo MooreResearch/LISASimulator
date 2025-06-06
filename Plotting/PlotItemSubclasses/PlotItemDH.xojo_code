@@ -10,7 +10,7 @@ Inherits PlotItemClass
 	#tag Method, Flags = &h0
 		Function GetName() As String
 		  If Index > -1 Then
-		    Return "DHI(" + Index.ToString + ")"
+		    Return "DHI(" + Derivative4Index(Index) + ")"
 		  Else
 		    Return "DHI()"
 		  End If
