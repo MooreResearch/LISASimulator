@@ -12,7 +12,9 @@ Inherits Thread
 		    CaseSupervisor.DoSteps  // execute steps for that case
 		    // If we are saving to disk, we should close the data file after each case is complete
 		    // (any data saved to memory will be destroyed when the application quits)
-		    CaseSupervisor.DataRecorder.CloseData
+		    If theCase.GetDataDestination Then CaseSupervisor.DataRecorder.CloseData
+		    // Save a reference to the last supervisor to enable analysis or graphing
+		    RunWindow.LastCaseSupervisor = CaseSupervisor
 		  Next
 		  RunWindow.AllCasesDone = True // Let the main window know we are done
 		  

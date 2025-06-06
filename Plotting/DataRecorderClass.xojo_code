@@ -137,6 +137,12 @@ Protected Class DataRecorderClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function HasItems() As Boolean
+		  Return Items2Save.LastIndex > -1
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub WriteData()
 		  // This method writes a record consisting of a set of double values.
 		  // The first time this method is called, it sets up a folder of files on disk,
@@ -166,7 +172,8 @@ Protected Class DataRecorderClass
 		        Raise e
 		      Else // otherwise, write the data to the memory streams
 		        For i as Integer = 0 to Items2Save.LastIndex
-		          Ms(i).Write(Items2Save(i).GetValue)
+		          Var theValue As Double = Items2Save(i).GetValue
+		          Ms(i).Write(theValue)
 		        Next
 		      End If
 		    End If

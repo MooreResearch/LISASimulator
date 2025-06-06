@@ -4,6 +4,20 @@ Protected Class CaseSupervisorClass
 		Sub AssembleDerivatives()
 		  // This method calculates the derivative of the signal h with respect
 		  // to each parameter
+		  
+		  Var A() As Double = BaseWaveBuilder.A
+		  Var w() As Double = BaseWaveBuilder.W
+		  
+		  // First get the value of the signal H
+		  Var hSum As Double = 0.0
+		  For j As Integer = 0 to LastWaveTermIndex
+		    hSum = hSum + A(j)*w(j)
+		  Next
+		  H = hSum
+		  
+		  // Now calculate the derivatives
+		  Var dwdα() As Double = BaseWaveBuilder.DWDα
+		  Var dwdΨ() As Double = BaseWaveBuilder.DWDΨ
 		  For i As Integer = 0 to LastParamIndex
 		    If OneI2ε(i) = 0.0 Then // This is the signal that we are ignoring this parameter
 		      DHI(i) = 0.0  // setting the derivative equal to zero is the signal for this
@@ -11,77 +25,16 @@ Protected Class CaseSupervisorClass
 		      Var oneOver2ε As Double = OneI2ε(i)
 		      Var wbPlus As WaveBuilderClass = SideWBPlusFor(i)
 		      Var wbMin As WaveBuilderClass = SideWBMinusFor(i)
-		      Var bWB As WaveBuilderClass = BaseWaveBuilder
-		      Var A() As Double = bWB.A
 		      Var AP() As Double = wbPlus.A
 		      Var AM() As Double = wbMin.A
-		      Var w() As Double = bWB.W
-		      Var dwdα() As Double = bWB.DWDα
-		      Var dwdΨ() As Double = bWB.DWDΨ
 		      Var dαdq As Double = (wbPlus.αDN - wbMin.αDN)*oneOver2ε
 		      Var dΨdq As Double = (wbPlus.ΨrDN - wbMin.ΨrDN)*oneOver2ε
-		      Var pn As Integer = BaseCase.PNForA
-		      Var v As Double = bWB.SpinResults.V
-		      Var v2 As Double = v*v
-		      Var v3 As Double = v2*v
-		      Var h0 As Double = v2*bWB.H0
-		      Var h0ip As Double = v2*wbPlus.H0
-		      Var h0im As Double = v2*wbMin.H0
-		      Var fp As Double = bWB.FP
-		      Var fx As Double = bWB.FX
-		      Var fpip As Double = wbPlus.FP
-		      Var fpim As Double = wbMin.FP
-		      Var fxip As Double = wbPlus.FX
-		      Var fxim As Double = wbMin.FX
-		      Var hterm() As Double
-		      hterm.ResizeTo(H3XLastIndex)
-		      Var dhdq As Double
+		      Var dhdq As Double = 0.0
 		      
-		      // First handle plus polarization terms
-		      For j As Integer = 0 to H3PLastIndex
-		        hterm(j) = (h0ip*fpip*AP(j) - h0im*fpim*AM(j))*oneOver2ε*w(j) + h0*fp*A(j)*(dwdα(j)*dαdq + dwdΨ(j)*dΨdq)
+		      // Calculate derivatives
+		      For j As Integer = 0 to LastWaveTermIndex
+		        dhdq = dhdq + (AP(j) - AM(j))*oneOver2ε*w(j) + A(j)*(dwdα(j)*dαdq + dwdΨ(j)*dΨdq)
 		      Next
-		      For j As Integer = 0 to H0PLastIndex
-		        dhdq = dhdq + hterm(j)
-		      Next
-		      If pn > 0 Then
-		        For j As Integer = H0PLastIndex + 1 to H1PLastIndex
-		          dhdq = dhdq + hterm(j)*v
-		        Next
-		        If pn > 1 Then
-		          For j As Integer = H1PLastIndex + 1 to H2PLastIndex
-		            dhdq = dhdq + hterm(j)*v2
-		          Next
-		          If pn > 2 Then
-		            For j As Integer = H2PLastIndex + 1 to H3PLastIndex
-		              dhdq = dhdq + hterm(j)*v3
-		            Next
-		          End If
-		        End If
-		      End If
-		      
-		      // Now handle cross polarization terms
-		      For j As Integer = H3PLastIndex + 1 to H3XLastIndex
-		        hterm(j) = (h0ip*fxip*AP(j) - h0im*fxim*AM(j))*oneOver2ε*w(j) + h0*fx*A(j)*(dwdα(j)*dαdq + dwdΨ(j)*dΨdq)
-		      Next
-		      For j As Integer = H3PLastIndex + 1 to H0XLastIndex
-		        dhdq = dhdq + hterm(j)
-		      Next
-		      If pn > 0 Then
-		        For j As Integer = H0XLastIndex + 1 to H1XLastIndex
-		          dhdq = dhdq + hterm(j)*v
-		        Next
-		        If pn > 1 Then
-		          For j As Integer = H1XLastIndex + 1 to H2XLastIndex
-		            dhdq = dhdq + hterm(j)*v2
-		          Next
-		          If pn > 2 Then
-		            For j As Integer = H2XLastIndex + 1 to H3XLastIndex
-		              dhdq = dhdq + hterm(j)*v3
-		            Next
-		          End If
-		        End If
-		      End If
 		      DHI(i) = dhdq
 		    End If
 		  Next
@@ -140,8 +93,8 @@ Protected Class CaseSupervisorClass
 		      allOK = BaseWaveBuilder.DidDetectorStepOK(N) // do the base case step
 		      If allOK Then // if the base case hasn't coalesced yet, then
 		        For i As Integer = 0 to LastParamIndex // Execute all the side cases
-		          If OneI2ε(i) <> 0.0 Then // If we have a side case to execute
-		            allOK = allOK And SideWBPlusFor(i).DidDetectorStepOK(N) And SideWBPlusFor(i).DidDetectorStepOK(N)
+		          If SideWBPlusFor(i) <> Nil Then // If we have a side case to execute
+		            allOK = allOK And SideWBPlusFor(i).DidDetectorStepOK(N) And SideWBMinusFor(i).DidDetectorStepOK(N)
 		            If not allOK Then Exit // if any of the side cases coalesce, then abort the side-case loop
 		          End If
 		        Next
@@ -217,11 +170,11 @@ Protected Class CaseSupervisorClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SideWBMinusFor() As WaveBuilderClass
+		SideWBMinusFor(LastParamIndex) As WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SideWBPlusFor() As WaveBuilderClass
+		SideWBPlusFor(LastParamIndex) As WaveBuilderClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

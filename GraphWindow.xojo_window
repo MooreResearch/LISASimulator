@@ -11,7 +11,7 @@ Begin DesktopWindow GraphWindow
    HasMaximizeButton=   True
    HasMinimizeButton=   True
    HasTitleBar     =   True
-   Height          =   800
+   Height          =   806
    ImplicitInstance=   True
    MacProcID       =   0
    MaximumHeight   =   32000
@@ -68,7 +68,7 @@ Begin DesktopWindow GraphWindow
       Index           =   -2147483648
       InitialValue    =   ""
       Italic          =   False
-      Left            =   20
+      Left            =   226
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -80,55 +80,26 @@ Begin DesktopWindow GraphWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   68
+      Top             =   40
       Transparent     =   False
       Underline       =   False
       Visible         =   True
       Width           =   126
    End
-   Begin DesktopPopupMenu ScaleMenu
-      AllowAutoDeactivate=   True
-      Bold            =   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      Height          =   20
-      Index           =   -2147483648
-      InitialValue    =   "1.0\n0.5\n0.2\n0.1\n0.05\n0.02\n0.01\n0.005\n0.002\n0.001\n0.0005\n0.0002\n0.0001\n0.00005\n0.00001\n"
-      Italic          =   False
-      Left            =   889
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      SelectedRowIndex=   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Tooltip         =   ""
-      Top             =   72
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   91
-   End
-   Begin DesktopSlider StartSlider
+   Begin DesktopSlider WidthSlider
       AllowAutoDeactivate=   True
       AllowLiveScrolling=   True
       Enabled         =   True
       Height          =   30
       Index           =   -2147483648
-      Left            =   541
+      Left            =   580
       LineStep        =   1
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   False
+      LockRight       =   True
       LockTop         =   True
-      MaximumValue    =   1000
+      MaximumValue    =   800
       MinimumValue    =   0
       PageStep        =   100
       Scope           =   0
@@ -137,43 +108,11 @@ Begin DesktopWindow GraphWindow
       TabStop         =   True
       TickMarkStyle   =   2
       Tooltip         =   ""
-      Top             =   40
+      Top             =   44
       Transparent     =   False
       Value           =   0
       Visible         =   True
-      Width           =   439
-   End
-   Begin DesktopLabel CaptionForStartSliderLabel
-      AllowAutoDeactivate=   True
-      Bold            =   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      Height          =   20
-      Index           =   -2147483648
-      Italic          =   False
-      Left            =   372
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Multiline       =   False
-      Scope           =   0
-      Selectable      =   False
-      TabIndex        =   4
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Text            =   "Start (y):"
-      TextAlignment   =   0
-      TextColor       =   &c000000
-      Tooltip         =   ""
-      Top             =   42
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   60
+      Width           =   400
    End
    Begin PlotCanvas MyPlotCanvas
       AllowAutoDeactivate=   True
@@ -183,7 +122,7 @@ Begin DesktopWindow GraphWindow
       Backdrop        =   0
       DrawGrid        =   True
       Enabled         =   True
-      Height          =   674
+      Height          =   680
       Index           =   -2147483648
       Left            =   20
       LockBottom      =   True
@@ -204,12 +143,12 @@ Begin DesktopWindow GraphWindow
       TitleFontSize   =   18.0
       TitleOffset     =   15.0
       Tooltip         =   ""
-      Top             =   106
+      Top             =   78
       Transparent     =   True
       Visible         =   True
       Width           =   960
    End
-   Begin DesktopLabel ValueOfGraphStartLabel
+   Begin DesktopLabel ValueOfGraphWidthLabel
       AllowAutoDeactivate=   True
       Bold            =   False
       Enabled         =   True
@@ -219,7 +158,7 @@ Begin DesktopWindow GraphWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   434
+      Left            =   695
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -231,202 +170,15 @@ Begin DesktopWindow GraphWindow
       TabIndex        =   6
       TabPanelIndex   =   0
       TabStop         =   True
-      Text            =   "0.00000000"
+      Text            =   "0"
       TextAlignment   =   0
       TextColor       =   &c000000
       Tooltip         =   ""
-      Top             =   42
+      Top             =   12
       Transparent     =   False
       Underline       =   False
       Visible         =   True
       Width           =   82
-   End
-   Begin DesktopLabel CaptionForGraphWidthLabel
-      AllowAutoDeactivate=   True
-      Bold            =   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      Height          =   20
-      Index           =   -2147483648
-      Italic          =   False
-      Left            =   743
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Multiline       =   False
-      Scope           =   0
-      Selectable      =   False
-      TabIndex        =   7
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Text            =   "Graph Width / All Data:"
-      TextAlignment   =   0
-      TextColor       =   &c000000
-      Tooltip         =   ""
-      Top             =   69
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   141
-   End
-   Begin DesktopButton BumpUpButton
-      AllowAutoDeactivate=   True
-      Bold            =   False
-      Cancel          =   False
-      Caption         =   "Up"
-      Default         =   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      Height          =   20
-      Index           =   -2147483648
-      Italic          =   False
-      Left            =   453
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      MacButtonStyle  =   0
-      Scope           =   0
-      TabIndex        =   8
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Tooltip         =   ""
-      Top             =   69
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   51
-   End
-   Begin DesktopLabel CaptionForBumpLabel
-      AllowAutoDeactivate=   True
-      Bold            =   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      Height          =   20
-      Index           =   -2147483648
-      Italic          =   False
-      Left            =   372
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Multiline       =   False
-      Scope           =   0
-      Selectable      =   False
-      TabIndex        =   9
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Text            =   "Bump Start"
-      TextAlignment   =   0
-      TextColor       =   &c000000
-      Tooltip         =   ""
-      Top             =   69
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   77
-   End
-   Begin DesktopButton BumpDownButton
-      AllowAutoDeactivate=   True
-      Bold            =   False
-      Cancel          =   False
-      Caption         =   "Down"
-      Default         =   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      Height          =   20
-      Index           =   -2147483648
-      Italic          =   False
-      Left            =   516
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      MacButtonStyle  =   0
-      Scope           =   0
-      TabIndex        =   10
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Tooltip         =   ""
-      Top             =   69
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   51
-   End
-   Begin DesktopLabel CaptionForBumpTypeLabel
-      AllowAutoDeactivate=   True
-      Bold            =   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      Height          =   20
-      Index           =   -2147483648
-      Italic          =   False
-      Left            =   579
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Multiline       =   False
-      Scope           =   0
-      Selectable      =   False
-      TabIndex        =   11
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Text            =   "by"
-      TextAlignment   =   0
-      TextColor       =   &c000000
-      Tooltip         =   ""
-      Top             =   69
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   24
-   End
-   Begin DesktopPopupMenu BumpTypePopupMenu
-      AllowAutoDeactivate=   True
-      Bold            =   False
-      Enabled         =   True
-      FontName        =   "System"
-      FontSize        =   0.0
-      FontUnit        =   0
-      Height          =   20
-      Index           =   -2147483648
-      InitialValue    =   "Single Step\nWindow Width\n10 Steps\n100 Steps\n1000 Steps\n0.00001 Of Span\n0.0001 Of Span\n0.001 Of Span\n0.01 Of Span\n0.1 Of Span"
-      Italic          =   False
-      Left            =   603
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      SelectedRowIndex=   0
-      TabIndex        =   12
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Tooltip         =   ""
-      Top             =   72
-      Transparent     =   False
-      Underline       =   False
-      Visible         =   True
-      Width           =   128
    End
    Begin DesktopLabel CaptionVsLabel
       AllowAutoDeactivate=   True
@@ -438,7 +190,7 @@ Begin DesktopWindow GraphWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   154
+      Left            =   364
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -454,7 +206,7 @@ Begin DesktopWindow GraphWindow
       TextAlignment   =   0
       TextColor       =   &c000000
       Tooltip         =   ""
-      Top             =   72
+      Top             =   44
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -469,9 +221,9 @@ Begin DesktopWindow GraphWindow
       FontUnit        =   0
       Height          =   20
       Index           =   -2147483648
-      InitialValue    =   "t-y"
+      InitialValue    =   "t-s"
       Italic          =   False
-      Left            =   181
+      Left            =   394
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -483,7 +235,7 @@ Begin DesktopWindow GraphWindow
       TabPanelIndex   =   0
       TabStop         =   True
       Tooltip         =   ""
-      Top             =   73
+      Top             =   47
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -560,7 +312,7 @@ Begin DesktopWindow GraphWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   247
+      Left            =   226
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -580,107 +332,192 @@ Begin DesktopWindow GraphWindow
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   269
+      Width           =   119
+   End
+   Begin DesktopLabel CaptionForWidthSliderLabel
+      AllowAutoDeactivate=   True
+      Bold            =   False
+      Enabled         =   True
+      FontName        =   "System"
+      FontSize        =   0.0
+      FontUnit        =   0
+      Height          =   20
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   580
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      Multiline       =   False
+      Scope           =   0
+      Selectable      =   False
+      TabIndex        =   18
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Text            =   "Graph Width (s):"
+      TextAlignment   =   0
+      TextColor       =   &c000000
+      Tooltip         =   ""
+      Top             =   12
+      Transparent     =   False
+      Underline       =   False
+      Visible         =   True
+      Width           =   103
+   End
+   Begin DesktopScrollbar StartScrollbar
+      AllowAutoDeactivate=   True
+      AllowFocus      =   True
+      AllowLiveScrolling=   False
+      Enabled         =   False
+      Height          =   15
+      Index           =   -2147483648
+      Left            =   20
+      LineStep        =   1
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   True
+      LockTop         =   False
+      MaximumValue    =   1000
+      MinimumValue    =   0
+      PageStep        =   20
+      Scope           =   0
+      TabIndex        =   19
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Tooltip         =   ""
+      Top             =   771
+      Transparent     =   False
+      Value           =   0
+      Visible         =   True
+      Width           =   960
    End
 End
 #tag EndDesktopWindow
 
 #tag WindowCode
-	#tag Method, Flags = &h0
-		Sub DoBump(Down as Boolean)
-		  Var trialStep As Integer
-		  Select Case BumpTypePopupMenu.SelectedRowText
-		  Case "Single Step"
-		    trialStep = 1
-		  Case "Window Width"
-		    Var selectedScale As Double = ScaleMenu.SelectedRowText.ToDouble
-		    trialStep = Round(selectedScale * PlotTimes.LastIndex)
-		  Case "10 Steps"
-		    trialStep = 10
-		  Case "100 Steps"
-		    trialStep = 100
-		  Case "1000 Steps"
-		    trialStep = 1000
-		  Case "0.00001 Of Span"
-		    trialStep = Round(0.00001*PlotTimes.LastIndex)
-		  Case "0.0001 Of Span"
-		    trialStep = Round(0.0001*PlotTimes.LastIndex)
-		  Case "0.001 Of Span"
-		    trialStep = Round(0.001*PlotTimes.LastIndex)
-		  Case "0.01 Of Span"
-		    trialStep = Round(0.01*PlotTimes.LastIndex)
-		  Case "0.1 of Span"
-		    trialStep = Round(0.01*PlotTimes.LastIndex)
-		  End Select
-		  If Down Then
-		    PlotStartIndex = PlotStartIndex - trialStep
-		    If PlotStartIndex < 0 Then PlotStartIndex = 0
-		  Else
-		    PlotStartIndex = PlotStartIndex + trialStep
-		    If PlotStartIndex > PlotTimes.LastIndex - 5 Then PlotStartIndex = PlotTimes.LastIndex - 5
-		  End If
+	#tag Event
+		Sub Activated()
+		  PlotTimes = TheSupervisor.DataRecorder.GetDataFor("t-s")
 		  Setting = True
-		  StartSlider.Value = Round(PlotStartIndex/PlotTimes.LastIndex*StartSlider.MaximumValue)
+		  GraphChoicePopupMenu.RemoveAllRows
+		  Var theNames() As String = TheSupervisor.DataRecorder.GetVariableNames
+		  For i As Integer = 1 To theNames.LastIndex
+		    GraphChoicePopupMenu.AddRow(theNames(i))
+		  Next
+		  GraphChoicePopupMenu.SelectedRowIndex = -1
+		  StartScrollbar.Enabled = False
+		  WidthSlider.Enabled = False
 		  Setting = False
+		End Sub
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h0
+		Function CalcTimeFromWidthValue(TheWidth As Integer) As Double
+		  Return Pow(10.0, TheWidth)*10.0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function CalcWidthValueFromTime(TheTime As Double) As Integer
+		  Return Round((Log(TheTime)/Log(10.0) - 1.0)*100.0)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ChangeStart(StartValue As Integer)
+		  PlotStartIndex = StartValue
+		  UpdatePlot
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ChangeWidth(WidthValue As Integer)
+		  Var theTime As Double = CalcTimeFromWidthValue(WidthValue)
+		  If theTime >= EndTime Then
+		    SetWidthToMax
+		  Else
+		    ValueOfGraphWidthLabel.Text = theTime.ToString
+		    Var theBarWidth As Integer = Round(1000*theTime/EndTime)
+		    If theBarWidth >= 1000 Then
+		      SetWidthToMax
+		    Else
+		      Setting = True
+		      StartScrollbar.MaximumValue = 1000 - theBarWidth
+		      StartScrollbar.PageStep = theBarWidth
+		      Setting = False
+		      PlotStartIndex = Round(StartScrollbar.Value/1000*PlotTimes.LastIndex)
+		      PlotEndIndex = Round(theBarWidth/1000*PlotTimes.LastIndex)
+		      If PlotStartIndex >= PlotEndIndex - 5 Then PlotStartIndex = PlotEndIndex - 5
+		      StartScrollbar.Enabled = True
+		    End If
+		  End If
 		  UpdatePlot
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub PlotSelectedItem(TheItem As String)
-		  If MyPlotData = Nil Then  // if this is the first call, then we must load the start/stop settings
-		    // Set the start of the plot
-		    PlotStartIndex = Round(StartSlider.Value/StartSlider.MaximumValue*PlotTimes.LastIndex)
-		    If PlotStartIndex > PlotTimes.LastIndex -5 Then PlotStartIndex = PlotTimes.LastIndex - 5
-		    
-		    // Get the plot scale
-		    Var selectedScale As Double = ScaleMenu.SelectedRowText.ToDouble
-		    
-		    // Calculate the new EndTimeIndex
-		    PlotEndIndex = Round(selectedScale * PlotTimes.LastIndex) + PlotStartIndex
-		    
-		    // Ensure EndTimeIndex does not exceed the maximum index
-		    If PlotEndIndex > PlotTimes.LastIndex Then
-		      PlotEndIndex = PlotTimes.LastIndex
-		    End If
+		  If MyPlotData = Nil Then  // if this is the first call, then we will initialize the start and stop indices
+		    EndTime = PlotTimes.LastIndex * TheSupervisor.BaseCase.ΔT // this is the maximum plot time span
+		    SetStartToZero // set the start scale to zero
+		    SetWidthToMax // Set scale slider to reflect the maximum
 		  End If
 		  
 		  MyPlotData = New PlotData
-		  // Var values() As Double = TheCases(0).DataRecorder.GetDataFor(TheItem)
-		  //MyPlotData.SetPlotArrays(PlotTimes, values)
+		  Var values() As Double = TheSupervisor.DataRecorder.GetDataFor(TheItem)
+		  MyPlotData.SetPlotArrays(PlotTimes, values)
 		  MyPlotData.SetPlotIndexRange(PlotStartIndex, PlotEndIndex)
 		  MyPlotCanvas.TheTitle = "Plot of " + TheItem + " as a Function of Time"
-		  MyPlotCanvas.SetXAxisLabel("$t$ in years")
+		  MyPlotCanvas.SetXAxisLabel("$t$ in seconds")
 		  MyPlotCanvas.SetYAxisLabel(TheItem)
 		  MyPlotCanvas.ClearPlotData
 		  MyPlotCanvas.AddDataToPlot(MyPlotData)
+		  WidthSlider.Enabled = True
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetStartToZero()
+		  Setting = True
+		  StartScrollbar.Value = 0
+		  Setting = False
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetWidthToMax()
+		  Setting = True
+		  WidthSlider.Value = CalcWidthValueFromTime(EndTime)
+		  StartScrollbar.Value = 0
+		  StartScrollbar.MaximumValue = 1000
+		  Setting = False
+		  ValueOfGraphWidthLabel.Text = EndTime.ToString
+		  StartScrollbar.Enabled = False
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub UpdatePlot()
+		  // Call this after updating the plot starting time or width
 		  If MyPlotData = Nil Then Return // no data to plot
 		  
 		  // Make sure that the start index is small enough to display at least 5 steps
 		  If PlotStartIndex > PlotTimes.LastIndex - 5 Then PlotStartIndex = PlotTimes.LastIndex - 5
 		  
-		  // Get the plot scale
-		  Var selectedScale As Double = ScaleMenu.SelectedRowText.ToDouble
-		  
-		  // Calculate the new EndTimeIndex
-		  PlotEndIndex = Round(selectedScale * PlotTimes.LastIndex) + PlotStartIndex
-		  
-		  // Ensure EndTimeIndex does not exceed the maximum index
-		  If PlotEndIndex > PlotTimes.LastIndex Then
-		    PlotEndIndex = PlotTimes.LastIndex
-		  End If
-		  
 		  MyPlotData.SetPlotIndexRange(PlotStartIndex, PlotEndIndex)
 		  MyPlotCanvas.AddDataToPlot(Nil)
-		  MyPlotCanvas.Refresh
 		End Sub
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		EndTime As Double
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		MyPlotData As PlotData
@@ -702,47 +539,32 @@ End
 		Setting As Boolean
 	#tag EndProperty
 
+	#tag Property, Flags = &h0
+		TheSupervisor As CaseSupervisorClass
+	#tag EndProperty
+
 
 #tag EndWindowCode
 
 #tag Events GraphChoicePopupMenu
 	#tag Event
 		Sub SelectionChanged(item As DesktopMenuItem)
-		  If not Setting Then
-		    PlotSelectedItem(me.SelectedRowText)
-		  End If
+		  If not Setting Then PlotSelectedItem(me.SelectedRowText)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events ScaleMenu
-	#tag Event
-		Sub SelectionChanged(item As DesktopMenuItem)
-		  UpdatePlot
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events StartSlider
+#tag Events WidthSlider
 	#tag Event
 		Sub ValueChanged()
-		  If Not Setting Then
-		    PlotStartIndex = Round(me.Value/me.MaximumValue*PlotTimes.LastIndex)
-		    ValueOfGraphStartLabel.Text = Format(me.Value/me.MaximumValue*PlotTimes(PlotTimes.LastIndex), "0.00000000")
-		    UpdatePlot
-		  End If
+		  If Not Setting Then ChangeWidth(me.Value)
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events BumpUpButton
+#tag Events StartScrollbar
 	#tag Event
-		Sub Pressed()
-		  DoBump(False)
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events BumpDownButton
-	#tag Event
-		Sub Pressed()
-		  DoBump(True)
+		Sub ValueChanged()
+		  If Not Setting Then ChangeStart(me.Value)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -996,6 +818,30 @@ End
 		Group="Behavior"
 		InitialValue="-1"
 		Type="Integer"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="PlotEndIndex"
+		Visible=false
+		Group="Behavior"
+		InitialValue="-1"
+		Type="Integer"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Setting"
+		Visible=false
+		Group="Behavior"
+		InitialValue=""
+		Type="Boolean"
+		EditorType=""
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="EndTime"
+		Visible=false
+		Group="Behavior"
+		InitialValue=""
+		Type="Double"
 		EditorType=""
 	#tag EndViewProperty
 #tag EndViewBehavior

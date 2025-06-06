@@ -640,7 +640,7 @@ Begin DesktopWindow RunWindow
          Cancel          =   False
          Caption         =   "Graph Data"
          Default         =   False
-         Enabled         =   True
+         Enabled         =   False
          FontName        =   "System"
          FontSize        =   0.0
          FontUnit        =   0
@@ -1215,7 +1215,7 @@ Begin DesktopWindow RunWindow
       Cancel          =   False
       Caption         =   "Analyze"
       Default         =   False
-      Enabled         =   True
+      Enabled         =   False
       FontName        =   "System"
       FontSize        =   0.0
       FontUnit        =   0
@@ -1427,6 +1427,7 @@ End
 		  εListBox.Enabled = False
 		  UncertaintyListBox.Enabled = False
 		  GraphButton.Enabled = False
+		  AnalyzeButton.Enabled = False
 		  DataDestinationMenu.Enabled = False
 		  ChooseVariablePopupMenu.Enabled = False
 		  PlotItemsListBox.Enabled = False
@@ -1463,6 +1464,7 @@ End
 		Sub DoStart()
 		  // Start running a case or cases
 		  TheCases.RemoveAll  // Clear out any pre-existing cases
+		  LastCaseSupervisor = Nil // We do not yet have a case to analyze or graph
 		  if RunFileCheckBox.Value then // if we are running cases from a file
 		    Try
 		      GetCasesFromFile // get the cases from the file (this might generate an exception)
@@ -1510,6 +1512,7 @@ End
 		  εListBox.Enabled = True
 		  UncertaintyListBox.Enabled = True
 		  GraphButton.Enabled = True
+		  AnalyzeButton.Enabled = True
 		  DataDestinationMenu.Enabled = True
 		  ChooseVariablePopupMenu.Enabled = True
 		  PlotItemsListBox.Enabled = True
@@ -1588,17 +1591,18 @@ End
 		Function GetMyPlotItems() As PlotItemClass()
 		  // This method returns an array consisting of the list of plot items 
 		  // in the PlotItemsListBox. Note that to be consistent with other
-		  // methods, we must always have a "t-y" item appearing first.
+		  // methods, we must always have a "t-s" item appearing first.
 		  Var thePlotItems() As PlotItemClass // create the array to return
 		  If PlotItemsListBox.LastRowIndex > -1 Then // if we have any items at all
-		    // Look through the items for "t-y", and remove it if it appears
+		    // Look through the items for "t-s", and remove it if it appears
 		    For i As Integer = 0 to PlotItemsListBox.LastRowIndex
-		      If PlotItemsListBox.CellTextAt(i) = "t-y" Then
+		      If PlotItemsListBox.CellTextAt(i) = "t-s" Then
 		        PlotItemsListBox.RemoveRowAt(i)
 		      End If
 		    Next
 		    If PlotItemsListBox.LastRowIndex > -1 Then // if we have any items left
-		      PlotItemsListBox.AddRowAt(0,"t-y") // make sure the first row is "t-y"
+		      PlotItemsListBox.AddRowAt(0,"t-s") // make sure the first row is "t-s"
+		      PlotItemsListBox.RowTagAt(0) = New PlotItemTs
 		      // Now read the items from the listbox and add them to theNames
 		      For i As Integer = 0 to PlotItemsListBox.LastRowIndex // add the remaining items to the array
 		        thePlotItems.Add(PlotItemsListBox.RowTagAt(i))
@@ -1631,6 +1635,15 @@ End
 		  PlotItemsList.RemoveAll 
 		  PlotItemsList.Add(New PlotItemH)
 		  PlotItemsList.Add(New PlotItemDH)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub OpenGraphWindow()
+		  If LastCaseSupervisor <> Nil And LastCaseSupervisor.DataRecorder.HasItems Then
+		    GraphWindow.TheSupervisor = LastCaseSupervisor
+		    GraphWindow.Show
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -1837,7 +1850,11 @@ End
 		  ValueOfStepNumberLabel.Text = theSuper.N.ToString // step number
 		  If MainThread.State = Thread.Running then  // if the thread is running
 		    CaseProgressBar.Value = Round(theSuper.N*100/theSuper.NSteps)  // update the progress bar
-		  Else // the thread has stopped, meaning that this case is done
+		    If LastCaseSupervisor <> Nil Then // if we have a completed case to analyze or graph, enable these buttons
+		      AnalyzeButton.Enabled = True
+		      GraphButton.Enabled = LastCaseSupervisor.DataRecorder.HasItems // we need to have data to graph to enable
+		    End If
+		  Else // the thread has stopped, meaning that all cases are done
 		    CaseProgressBar.Value = 0  // reset the progress bar
 		    StartStopButton.Caption = "Run" // fix the button label
 		    InterfaceUpdateTimer.RunMode = Timer.RunModes.Off // and we need no more updates
@@ -1916,6 +1933,10 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		LastCaseSupervisor As CaseSupervisorClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		OutputFile As FolderItem
 	#tag EndProperty
 
@@ -1934,6 +1955,13 @@ End
 
 #tag EndWindowCode
 
+#tag Events GraphButton
+	#tag Event
+		Sub Pressed()
+		  OpenGraphWindow
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events InterfaceUpdateTimer
 	#tag Event
 		Sub Action()
