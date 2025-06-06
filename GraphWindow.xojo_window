@@ -18,7 +18,7 @@ Begin DesktopWindow GraphWindow
    MaximumWidth    =   32000
    MenuBar         =   ""
    MenuBarVisible  =   False
-   MinimumHeight   =   800
+   MinimumHeight   =   806
    MinimumWidth    =   1000
    Resizeable      =   True
    Title           =   "Graph for Run"
@@ -87,9 +87,9 @@ Begin DesktopWindow GraphWindow
       Width           =   126
    End
    Begin DesktopSlider WidthSlider
-      AllowAutoDeactivate=   True
+      AllowAutoDeactivate=   False
       AllowLiveScrolling=   True
-      Enabled         =   True
+      Enabled         =   False
       Height          =   30
       Index           =   -2147483648
       Left            =   580
@@ -158,7 +158,7 @@ Begin DesktopWindow GraphWindow
       Height          =   20
       Index           =   -2147483648
       Italic          =   False
-      Left            =   695
+      Left            =   678
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -178,7 +178,7 @@ Begin DesktopWindow GraphWindow
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   82
+      Width           =   302
    End
    Begin DesktopLabel CaptionVsLabel
       AllowAutoDeactivate=   True
@@ -357,7 +357,7 @@ Begin DesktopWindow GraphWindow
       TabIndex        =   18
       TabPanelIndex   =   0
       TabStop         =   True
-      Text            =   "Graph Width (s):"
+      Text            =   "Graph Width:"
       TextAlignment   =   0
       TextColor       =   &c000000
       Tooltip         =   ""
@@ -365,12 +365,12 @@ Begin DesktopWindow GraphWindow
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   103
+      Width           =   86
    End
    Begin DesktopScrollbar StartScrollbar
       AllowAutoDeactivate=   True
       AllowFocus      =   True
-      AllowLiveScrolling=   False
+      AllowLiveScrolling=   True
       Enabled         =   False
       Height          =   15
       Index           =   -2147483648
@@ -411,6 +411,7 @@ End
 		  GraphChoicePopupMenu.SelectedRowIndex = -1
 		  StartScrollbar.Enabled = False
 		  WidthSlider.Enabled = False
+		  ValueOfGraphWidthLabel.Text = ""
 		  Setting = False
 		End Sub
 	#tag EndEvent
@@ -418,7 +419,7 @@ End
 
 	#tag Method, Flags = &h0
 		Function CalcTimeFromWidthValue(TheWidth As Integer) As Double
-		  Return Pow(10.0, TheWidth)*10.0
+		  Return Pow(10.0, TheWidth/100)*10.0
 		End Function
 	#tag EndMethod
 
@@ -430,7 +431,8 @@ End
 
 	#tag Method, Flags = &h0
 		Sub ChangeStart(StartValue As Integer)
-		  PlotStartIndex = StartValue
+		  PlotStartIndex = Round(StartScrollbar.Value/1000*PlotTimes.LastIndex)
+		  PlotEndIndex = PlotStartIndex + Round(StartScrollbar.PageStep/1000*PlotTimes.LastIndex)
 		  UpdatePlot
 		End Sub
 	#tag EndMethod
@@ -438,23 +440,19 @@ End
 	#tag Method, Flags = &h0
 		Sub ChangeWidth(WidthValue As Integer)
 		  Var theTime As Double = CalcTimeFromWidthValue(WidthValue)
-		  If theTime >= EndTime Then
-		    SetWidthToMax
+		  SetWidthDisplay(theTime)
+		  Var theBarWidth As Integer = Round(1000*theTime/EndTime)
+		  If theBarWidth >= 1000 Then 
+		    StartScrollbar.Enabled = False
 		  Else
-		    ValueOfGraphWidthLabel.Text = theTime.ToString
-		    Var theBarWidth As Integer = Round(1000*theTime/EndTime)
-		    If theBarWidth >= 1000 Then
-		      SetWidthToMax
-		    Else
-		      Setting = True
-		      StartScrollbar.MaximumValue = 1000 - theBarWidth
-		      StartScrollbar.PageStep = theBarWidth
-		      Setting = False
-		      PlotStartIndex = Round(StartScrollbar.Value/1000*PlotTimes.LastIndex)
-		      PlotEndIndex = Round(theBarWidth/1000*PlotTimes.LastIndex)
-		      If PlotStartIndex >= PlotEndIndex - 5 Then PlotStartIndex = PlotEndIndex - 5
-		      StartScrollbar.Enabled = True
-		    End If
+		    Setting = True
+		    StartScrollbar.MaximumValue = 1000 - theBarWidth
+		    StartScrollbar.PageStep = theBarWidth
+		    Setting = False
+		    PlotStartIndex = Round(StartScrollbar.Value/1000*PlotTimes.LastIndex)
+		    PlotEndIndex = PlotStartIndex + Round(theBarWidth/1000*PlotTimes.LastIndex)
+		    If PlotStartIndex >= PlotEndIndex - 5 Then PlotStartIndex = PlotEndIndex - 5
+		    StartScrollbar.Enabled = True
 		  End If
 		  UpdatePlot
 		End Sub
@@ -490,13 +488,21 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub SetWidthDisplay(TheTime As Double)
+		  Var theYears As Double = TheTime / TheSupervisor.BaseCase.Year
+		  Var theDays As Double = TheTime / (3600*24)
+		  ValueOfGraphWidthLabel.Text = TheTime.ToString + " s = " + TheDays.ToString + " d = " + TheYears.ToString + " y"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub SetWidthToMax()
 		  Setting = True
 		  WidthSlider.Value = CalcWidthValueFromTime(EndTime)
 		  StartScrollbar.Value = 0
 		  StartScrollbar.MaximumValue = 1000
 		  Setting = False
-		  ValueOfGraphWidthLabel.Text = EndTime.ToString
+		  SetWidthDisplay(EndTime)
 		  StartScrollbar.Enabled = False
 		End Sub
 	#tag EndMethod
@@ -511,6 +517,7 @@ End
 		  
 		  MyPlotData.SetPlotIndexRange(PlotStartIndex, PlotEndIndex)
 		  MyPlotCanvas.AddDataToPlot(Nil)
+		  MyPlotCanvas.Refresh
 		End Sub
 	#tag EndMethod
 
